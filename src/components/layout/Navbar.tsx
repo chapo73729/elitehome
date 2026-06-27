@@ -2,14 +2,17 @@
 
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { usePathname, useRouter } from "next/navigation";
 import { NAV, SITE } from "@/lib/site";
 import { scrollToTarget } from "./SmoothScroll";
 import { Magnetic } from "@/components/ui/Magnetic";
 
-export function Navbar({ ready }: { ready: boolean }) {
+export function Navbar({ ready = true }: { ready?: boolean }) {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState<string>("");
+  const pathname = usePathname();
+  const router = useRouter();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40);
@@ -39,7 +42,18 @@ export function Navbar({ ready }: { ready: boolean }) {
 
   const go = (href: string) => {
     setOpen(false);
+    // when off the homepage, navigate home (with hash) instead of scrolling
+    if (href.startsWith("#") && pathname !== "/") {
+      router.push("/" + href);
+      return;
+    }
     scrollToTarget(href);
+  };
+
+  const goHome = () => {
+    setOpen(false);
+    if (pathname !== "/") router.push("/");
+    else scrollToTarget(0);
   };
 
   return (
@@ -58,7 +72,7 @@ export function Navbar({ ready }: { ready: boolean }) {
           {/* wordmark */}
           <Magnetic strength={0.25}>
             <button
-              onClick={() => scrollToTarget(0)}
+              onClick={goHome}
               className="font-display text-lg font-bold tracking-tight text-chalk"
               data-cursor
             >

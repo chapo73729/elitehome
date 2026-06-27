@@ -8,7 +8,7 @@ export const SITE = {
   tagline: "Private Ventures",
   domain: "ardlabs.com",
   url: "https://ardlabs.com",
-  email: "contact@ardmupro.ch",
+  email: "info@ardlabs.com",
   description:
     "ARDLABS® — Private Ventures. A future-facing laboratory engineering artificial intelligence, software, automation, industrial and maritime ventures across a global network.",
   locale: "en",
@@ -39,6 +39,8 @@ export const CITIES = [
   { name: "New York", lat: 40.7128, lon: -74.006, primary: true },
 ] as const;
 
+export type MotifVariant = "ai" | "code" | "industrial" | "ocean";
+
 export const INDUSTRIES = [
   {
     id: "ai",
@@ -47,6 +49,29 @@ export const INDUSTRIES = [
     blurb:
       "Frontier models, autonomous agents and GPU-scale reasoning systems engineered for real-world deployment.",
     accent: "#5b8cff",
+    motif: "ai" as MotifVariant,
+    tagline: "Intelligence, engineered.",
+    overview:
+      "We build artificial intelligence the way others build infrastructure — to be load-bearing. From frontier model research to autonomous agents that plan, act and self-correct, our systems are designed to make consequential decisions in production, not to impress in a demo.",
+    capabilities: [
+      "Frontier model training & fine-tuning",
+      "Autonomous multi-agent systems",
+      "Real-time inference at GPU scale",
+      "Retrieval & reasoning pipelines",
+      "Alignment, evaluation & guardrails",
+      "On-prem & sovereign deployment",
+    ],
+    approach: [
+      { t: "Research", d: "Novel architectures validated against real-world benchmarks." },
+      { t: "Engineer", d: "Models hardened into reliable, observable production systems." },
+      { t: "Deploy", d: "Inference tuned for latency, cost and uptime at scale." },
+      { t: "Compound", d: "Systems that learn from deployment and improve continuously." },
+    ],
+    metrics: [
+      { value: "10¹⁵", label: "FLOPs per training run" },
+      { value: "<40ms", label: "Inference latency" },
+      { value: "24/7", label: "Autonomous operation" },
+    ],
   },
   {
     id: "software",
@@ -55,6 +80,29 @@ export const INDUSTRIES = [
     blurb:
       "Mission-critical platforms, real-time systems and developer infrastructure built to outlast a decade.",
     accent: "#7af2e0",
+    motif: "code" as MotifVariant,
+    tagline: "Code that compiles the future.",
+    overview:
+      "Software is the substrate of every venture we run. We write mission-critical platforms, real-time systems and developer infrastructure with a single bias: longevity. Code that is fast today and still legible, secure and extensible a decade from now.",
+    capabilities: [
+      "Distributed real-time systems",
+      "Developer platforms & SDKs",
+      "Edge & latency-zero runtimes",
+      "High-assurance backends (Rust)",
+      "Design systems & web experiences",
+      "Observability & SRE by default",
+    ],
+    approach: [
+      { t: "Architect", d: "Systems designed for the load they'll carry in five years." },
+      { t: "Build", d: "Small, fast teams shipping production code continuously." },
+      { t: "Harden", d: "Tested, instrumented and secured before it ships." },
+      { t: "Scale", d: "Infrastructure that grows without rewrites." },
+    ],
+    metrics: [
+      { value: "99.99%", label: "Platform uptime" },
+      { value: "<1ms", label: "Edge response" },
+      { value: "∞", label: "Horizontal scale" },
+    ],
   },
   {
     id: "automation",
@@ -63,6 +111,29 @@ export const INDUSTRIES = [
     blurb:
       "Self-orchestrating pipelines that turn manual operations into measurable, compounding leverage.",
     accent: "#b98cff",
+    motif: "ai" as MotifVariant,
+    tagline: "Leverage that compounds.",
+    overview:
+      "Every manual operation is latent leverage. We design self-orchestrating pipelines that absorb repetitive work and convert it into measurable, compounding output — freeing teams to do only what humans should.",
+    capabilities: [
+      "Process intelligence & mapping",
+      "Workflow orchestration engines",
+      "Robotic process automation",
+      "Event-driven pipelines",
+      "Human-in-the-loop controls",
+      "ROI instrumentation",
+    ],
+    approach: [
+      { t: "Map", d: "Every operation observed, measured and modelled." },
+      { t: "Orchestrate", d: "Pipelines that route work without supervision." },
+      { t: "Verify", d: "Human checkpoints where stakes demand them." },
+      { t: "Multiply", d: "Output that compounds as the system learns." },
+    ],
+    metrics: [
+      { value: "90%", label: "Manual work removed" },
+      { value: "10×", label: "Throughput gain" },
+      { value: "0", label: "Dropped tasks" },
+    ],
   },
   {
     id: "industrial",
@@ -71,6 +142,29 @@ export const INDUSTRIES = [
     blurb:
       "Robotics, precision manufacturing and instrumented factories where atoms meet algorithms.",
     accent: "#ff8c5b",
+    motif: "industrial" as MotifVariant,
+    tagline: "Where atoms meet algorithms.",
+    overview:
+      "We bring software discipline to the physical world. Robotics, precision manufacturing and fully instrumented factories — where every machine reports, every process is measured, and the same intelligence that runs our software governs the floor.",
+    capabilities: [
+      "Industrial robotics & cells",
+      "Precision manufacturing",
+      "Factory telemetry & digital twins",
+      "Predictive maintenance",
+      "Quality vision systems",
+      "Supply-chain integration",
+    ],
+    approach: [
+      { t: "Instrument", d: "Every machine and process made observable." },
+      { t: "Automate", d: "Robotic cells that reconfigure around demand." },
+      { t: "Predict", d: "Failures forecast before they halt the line." },
+      { t: "Optimise", d: "Throughput tuned by the same models that run AI." },
+    ],
+    metrics: [
+      { value: "μm", label: "Tolerances" },
+      { value: "−35%", label: "Downtime" },
+      { value: "100%", label: "Traceability" },
+    ],
   },
   {
     id: "strategy",
@@ -79,6 +173,29 @@ export const INDUSTRIES = [
     blurb:
       "Capital, structure and long-horizon strategy for ventures designed to define their category.",
     accent: "#ffd15b",
+    motif: "ai" as MotifVariant,
+    tagline: "Built to define a category.",
+    overview:
+      "Some ventures are built to compete; ours are built to define. We bring patient capital, deliberate structure and a century-long horizon to a small number of ventures each year — and engineer them to own their category.",
+    capabilities: [
+      "Patient capital deployment",
+      "Venture architecture & structure",
+      "Market & category strategy",
+      "Operating partnerships",
+      "M&A and consolidation",
+      "Governance & long-horizon planning",
+    ],
+    approach: [
+      { t: "Select", d: "A few convictions, pursued completely." },
+      { t: "Structure", d: "Capital and governance designed to last." },
+      { t: "Operate", d: "Hands-on partnership, not passive ownership." },
+      { t: "Endure", d: "Decisions made for decades, not quarters." },
+    ],
+    metrics: [
+      { value: "$2.4B", label: "Under engineering" },
+      { value: "100y", label: "Planning horizon" },
+      { value: "47+", label: "Active ventures" },
+    ],
   },
   {
     id: "maritime",
@@ -87,6 +204,29 @@ export const INDUSTRIES = [
     blurb:
       "Fleet intelligence, route optimisation and ocean logistics navigated by data, not instinct.",
     accent: "#5be0ff",
+    motif: "ocean" as MotifVariant,
+    tagline: "An ocean, read like a dataset.",
+    overview:
+      "The ocean is the largest unoptimised system on earth. We navigate it with data — fleet intelligence, route optimisation and logistics that turn weather, currents and markets into a single, navigable model.",
+    capabilities: [
+      "Fleet intelligence platforms",
+      "Route & fuel optimisation",
+      "Weather & current modelling",
+      "Port & logistics orchestration",
+      "Radar / GPS data fusion",
+      "Emissions & compliance",
+    ],
+    approach: [
+      { t: "Sense", d: "Radar, GPS, weather and market data fused live." },
+      { t: "Model", d: "The ocean rendered as an optimisable system." },
+      { t: "Route", d: "Paths chosen for cost, time and emissions." },
+      { t: "Deliver", d: "Cargo moved with predictability, not luck." },
+    ],
+    metrics: [
+      { value: "−18%", label: "Transit cost" },
+      { value: "Live", label: "Fleet tracking" },
+      { value: "Global", label: "Shipping lanes" },
+    ],
   },
 ] as const;
 

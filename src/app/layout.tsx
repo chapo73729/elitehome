@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { fontDisplay, fontSans, fontMono } from "@/lib/fonts";
 import { SITE } from "@/lib/site";
 import { JsonLd } from "@/components/layout/JsonLd";
+import { Providers } from "@/components/layout/Providers";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -73,7 +74,7 @@ export default function RootLayout({
     >
       <body>
         <JsonLd />
-        {children}
+        <Providers>{children}</Providers>
         <div className="grain" aria-hidden />
         <div className="vignette" aria-hidden />
       </body>

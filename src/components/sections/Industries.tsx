@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef } from "react";
+import Link from "next/link";
 import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 import { SectionHeading } from "@/components/ui/Section";
 import { Reveal } from "@/components/ui/Reveal";
@@ -40,14 +41,20 @@ function IndustryCard({
   };
 
   return (
-    <Reveal delay={(i % 3) * 0.08}>
+    <Reveal delay={(i % 3) * 0.08} className="h-full">
       <motion.div
         ref={ref}
         onPointerMove={onMove}
         onPointerLeave={onLeave}
         style={{ rotateX: rx, rotateY: ry, transformPerspective: 1000 }}
-        className="group relative h-full overflow-hidden rounded-3xl hairline bg-ink p-8 transition-colors duration-500 hover:border-white/15"
+        className="group relative h-full"
       >
+       <Link
+        href={`/industries/${industry.id}`}
+        data-cursor
+        aria-label={`Explore ${industry.title}`}
+        className="relative block h-full overflow-hidden rounded-3xl hairline bg-ink p-8 transition-colors duration-500 hover:border-white/15"
+       >
         {/* cursor spotlight */}
         <div
           className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100"
@@ -70,8 +77,8 @@ function IndustryCard({
             >
               {industry.index}
             </span>
-            <span className="font-mono text-xs text-fog opacity-0 transition-all duration-500 group-hover:translate-x-0 group-hover:opacity-100">
-              →
+            <span className="font-mono text-xs tracking-widest text-fog opacity-0 transition-all duration-500 group-hover:-translate-y-0.5 group-hover:text-chalk group-hover:opacity-100">
+              EXPLORE →
             </span>
           </div>
 
@@ -89,6 +96,7 @@ function IndustryCard({
             }}
           />
         </div>
+       </Link>
       </motion.div>
     </Reveal>
   );
