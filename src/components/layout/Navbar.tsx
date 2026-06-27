@@ -6,6 +6,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { NAV, SITE } from "@/lib/site";
 import { scrollToTarget } from "./SmoothScroll";
 import { Magnetic } from "@/components/ui/Magnetic";
+import { SoundToggle } from "./SoundToggle";
 
 export function Navbar({ ready = true }: { ready?: boolean }) {
   const [scrolled, setScrolled] = useState(false);
@@ -116,7 +117,8 @@ export function Navbar({ ready = true }: { ready?: boolean }) {
             })}
           </nav>
 
-          <div className="hidden md:block">
+          <div className="hidden items-center gap-2 md:flex">
+            <SoundToggle />
             <Magnetic strength={0.3}>
               <button
                 onClick={() => go("#contact")}
@@ -169,6 +171,15 @@ export function Navbar({ ready = true }: { ready?: boolean }) {
                 {item.label}
               </motion.button>
             ))}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.35 }}
+              className="mt-8 flex items-center gap-3 font-mono text-xs tracking-widest text-fog"
+            >
+              <span>SOUND</span>
+              <SoundToggle />
+            </motion.div>
           </motion.div>
         )}
       </AnimatePresence>

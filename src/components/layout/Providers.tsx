@@ -7,6 +7,7 @@ import { Navbar } from "./Navbar";
 import { Footer } from "./Footer";
 import { SectionNav } from "./SectionNav";
 import { BackToTop } from "./BackToTop";
+import { SoundSystem } from "./SoundSystem";
 import { ScrollProgress } from "@/components/ui/ScrollProgress";
 
 /**
@@ -28,6 +29,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
       </a>
       <Cursor />
       <ScrollProgress />
+      <SoundSystem />
       {isHome && <SectionNav />}
       <BackToTop />
       <SmoothScroll>
