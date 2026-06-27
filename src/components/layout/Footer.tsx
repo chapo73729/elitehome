@@ -2,6 +2,8 @@
 
 import { NAV, SITE } from "@/lib/site";
 import { scrollToTarget } from "./SmoothScroll";
+import { AccentSwitcher } from "@/components/feature/AccentSwitcher";
+import { copyText, toast } from "@/lib/toast";
 
 export function Footer() {
   const year = 2026;
@@ -38,17 +40,24 @@ export function Footer() {
 
           <div className="md:col-span-3">
             <div className="eyebrow mb-5">Contact</div>
-            <a
-              href={`mailto:${SITE.email}`}
-              className="link-underline text-mist transition-colors hover:text-chalk"
+            <button
+              onClick={async () => {
+                if (await copyText(SITE.email)) toast("Email copied", "✓");
+              }}
+              data-cursor
+              className="link-underline text-left text-mist transition-colors hover:text-chalk"
+              title="Click to copy"
             >
               {SITE.email}
-            </a>
+            </button>
             <p className="mt-6 text-sm text-fog">
               Prague · Geneva · Singapore
               <br />
               Dubai · Tokyo · New York
             </p>
+            <div className="mt-8">
+              <AccentSwitcher />
+            </div>
           </div>
         </div>
 
@@ -56,9 +65,17 @@ export function Footer() {
           <span>
             © {year} {SITE.legal} — All rights reserved.
           </span>
-          <span className="flex items-center gap-2">
-            <span className="inline-block h-1.5 w-1.5 animate-pulse rounded-full bg-accent-2" />
-            All systems operational
+          <span className="flex items-center gap-4">
+            <span className="hidden items-center gap-1.5 sm:flex">
+              Press
+              <kbd className="rounded border border-white/15 px-1.5 py-0.5 text-[0.65rem] text-mist">
+                ⌘K
+              </kbd>
+            </span>
+            <span className="flex items-center gap-2">
+              <span className="inline-block h-1.5 w-1.5 animate-pulse rounded-full bg-accent-2" />
+              All systems operational
+            </span>
           </span>
         </div>
       </div>

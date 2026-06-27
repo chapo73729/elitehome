@@ -1,7 +1,7 @@
 "use client";
 
-import { useMemo, useRef } from "react";
-import { Canvas, useFrame } from "@react-three/fiber";
+import { useEffect, useMemo, useRef } from "react";
+import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { EffectComposer, Bloom } from "@react-three/postprocessing";
 import * as THREE from "three";
 import { CITIES } from "@/lib/site";
@@ -182,6 +182,9 @@ function Satellite({ radius, speed, incl, phase }: { radius: number; speed: numb
 
 function Scene() {
   const group = useRef<THREE.Group>(null);
+  const { gl } = useThree();
+  const drag = useRef(false);
+  const vel = useRef({ x: 0, y: 0 });
   const cityVecs = useMemo(() => CITIES.map((c) => latLonToVec3(c.lat, c.lon)), []);
   const arcs = useMemo(() => {
     const pairs: [number, number][] = [
@@ -190,11 +193,53 @@ function Scene() {
     return pairs.map(([a, b], i) => ({ from: cityVecs[a], to: cityVecs[b], delay: i * 0.12 }));
   }, [cityVecs]);
 
+  // drag-to-rotate with inertia
+  useEffect(() => {
+    const el = gl.domElement;
+    const down = () => {
+      drag.current = true;
+      el.style.cursor = "grabbing";
+    };
+    const up = () => {
+      drag.current = false;
+      el.style.cursor = "grab";
+    };
+    const move = (e: PointerEvent) => {
+      if (!drag.current || !group.current) return;
+      vel.current.y = e.movementX * 0.005;
+      vel.current.x = e.movementY * 0.005;
+      group.current.rotation.y += vel.current.y;
+      group.current.rotation.x = THREE.MathUtils.clamp(
+        group.current.rotation.x + vel.current.x,
+        -0.8,
+        0.8
+      );
+    };
+    el.style.cursor = "grab";
+    el.addEventListener("pointerdown", down);
+    window.addEventListener("pointerup", up);
+    el.addEventListener("pointermove", move);
+    return () => {
+      el.removeEventListener("pointerdown", down);
+      window.removeEventListener("pointerup", up);
+      el.removeEventListener("pointermove", move);
+    };
+  }, [gl]);
+
   useFrame((state, delta) => {
-    if (group.current) {
-      group.current.rotation.y += delta * 0.07;
-      group.current.rotation.x = state.pointer.y * 0.18;
-    }
+    if (!group.current) return;
+    if (drag.current) return; // user is steering
+    // inertia
+    group.current.rotation.y += vel.current.y;
+    group.current.rotation.x = THREE.MathUtils.clamp(
+      group.current.rotation.x + vel.current.x,
+      -0.8,
+      0.8
+    );
+    vel.current.y *= 0.94;
+    vel.current.x *= 0.9;
+    // gentle idle spin once inertia fades
+    group.current.rotation.y += delta * 0.07 * (1 - Math.min(1, Math.abs(vel.current.y) * 80));
   });
 
   return (

@@ -3,6 +3,7 @@
 import { type ReactNode } from "react";
 import clsx from "clsx";
 import { Reveal } from "./Reveal";
+import { SkewText } from "./SkewText";
 
 export function Section({
   id,
@@ -49,9 +50,11 @@ export function SectionHeading({
         </div>
       </Reveal>
       <Reveal delay={0.08}>
-        <h2 className="text-section-title text-gradient mt-7 max-w-4xl text-balance">
-          {title}
-        </h2>
+        <SkewText>
+          <h2 className="text-section-title text-gradient mt-7 max-w-4xl text-balance">
+            {title}
+          </h2>
+        </SkewText>
       </Reveal>
       {intro && (
         <Reveal delay={0.16}>

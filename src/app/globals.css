@@ -284,6 +284,15 @@ html.hide-cursor * {
   to { transform: rotate(360deg); }
 }
 
+/* ---------- Hyperdrive (Konami easter egg) ---------- */
+html.hyperdrive {
+  filter: saturate(1.5) brightness(1.08) contrast(1.05);
+  transition: filter 0.4s ease;
+}
+html.hyperdrive .marquee-track {
+  animation-duration: 8s !important;
+}
+
 /* ---------- Reduced motion ---------- */
 @media (prefers-reduced-motion: reduce) {
   *,
