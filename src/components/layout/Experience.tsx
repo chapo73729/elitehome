@@ -10,10 +10,12 @@ import { GlobalNetwork } from "@/components/sections/GlobalNetwork";
 import { Industries } from "@/components/sections/Industries";
 import { Capabilities } from "@/components/sections/Capabilities";
 import { ResearchLab } from "@/components/sections/ResearchLab";
+import { Synthesis } from "@/components/sections/Synthesis";
 import { TechStack } from "@/components/sections/TechStack";
 import { Stats } from "@/components/sections/Stats";
 import { Timeline } from "@/components/sections/Timeline";
 import { Projects } from "@/components/sections/Projects";
+import { InsightsTeaser } from "@/components/sections/InsightsTeaser";
 import { Contact } from "@/components/sections/Contact";
 
 /**
@@ -35,10 +37,12 @@ export function Experience() {
         <Industries />
         <Capabilities />
         <ResearchLab />
+        <Synthesis />
         <TechStack />
         <Stats />
         <Timeline />
         <Projects />
+        <InsightsTeaser />
         <Contact />
       </main>
     </>

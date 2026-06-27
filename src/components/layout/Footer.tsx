@@ -63,6 +63,9 @@ export function Footer() {
         </div>
 
         <div className="mt-16 flex flex-wrap items-center gap-x-6 gap-y-2 hairline-t pt-8 font-mono text-xs tracking-wider text-fog">
+          <Link href="/insights" className="transition-colors hover:text-chalk">
+            {f.insights ?? "Insights"}
+          </Link>
           <Link href="/legal/imprint" className="transition-colors hover:text-chalk">
             {f.legalNotice}
           </Link>

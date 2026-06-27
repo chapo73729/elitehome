@@ -48,6 +48,14 @@ const en = {
     ],
     outro: "This is the laboratory of the future.",
   },
+  synthesis: {
+    eyebrow: "Living Synthesis",
+    title: "One system, many forms.",
+    intro:
+      "Intelligence, network, infrastructure — the same effort, recomposed. Click to reshape the field; move your cursor to disturb it.",
+    hint: "Click to morph · move to disturb",
+    shapes: ["Core", "Network", "Continuum", "Lattice"],
+  },
   core: {
     eyebrow: "Interactive AI Core",
     title: "A living intelligence, wired from first principles.",
@@ -412,6 +420,7 @@ const en = {
     contact: "Contact",
     copyHint: "Click to copy",
     copied: "Email copied",
+    insights: "Insights",
     legalNotice: "Legal Notice",
     privacy: "Privacy",
     terms: "Terms",
@@ -475,6 +484,14 @@ const fr: DeepPartial<Content> = {
       "réunies en un seul système d'exploitation.",
     ],
     outro: "Voici le laboratoire du futur.",
+  },
+  synthesis: {
+    eyebrow: "Synthèse vivante",
+    title: "Un système, plusieurs formes.",
+    intro:
+      "Intelligence, réseau, infrastructure — un même effort, recomposé. Cliquez pour transformer le champ ; bougez le curseur pour le perturber.",
+    hint: "Cliquez pour transformer · bougez pour perturber",
+    shapes: ["Cœur", "Réseau", "Continuum", "Treillis"],
   },
   core: {
     eyebrow: "Cœur IA interactif",
@@ -800,6 +817,7 @@ const fr: DeepPartial<Content> = {
     contact: "Contact",
     copyHint: "Cliquer pour copier",
     copied: "Email copié",
+    insights: "Perspectives",
     legalNotice: "Mentions légales",
     privacy: "Confidentialité",
     terms: "Conditions",
