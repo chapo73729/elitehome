@@ -1,11 +1,17 @@
 "use client";
 
 import Link from "next/link";
+import dynamic from "next/dynamic";
 import { motion } from "framer-motion";
 import { Reveal } from "@/components/ui/Reveal";
 import { Button } from "@/components/ui/Button";
 import { CanvasMotif } from "@/components/ui/CanvasMotif";
+import { SceneBoundary } from "@/components/three/SceneBoundary";
+import { useSceneVisibility } from "@/hooks/useSceneVisibility";
 import type { INDUSTRIES } from "@/lib/site";
+
+const Ocean3D = dynamic(() => import("@/components/three/Ocean3D"), { ssr: false });
+const NeuralCore = dynamic(() => import("@/components/three/NeuralCore"), { ssr: false });
 
 type Industry = (typeof INDUSTRIES)[number];
 
@@ -21,13 +27,24 @@ export function IndustryDetail({
   next: { id: string; title: string };
 }) {
   const accent = industry.accent;
+  const scene = useSceneVisibility<HTMLDivElement>({ mountMargin: "600px 0px" });
+  const Scene3D =
+    industry.id === "maritime" ? Ocean3D : industry.id === "ai" ? NeuralCore : null;
 
   return (
     <main className="relative">
       {/* ---------- HERO ---------- */}
       <section className="relative flex min-h-[92svh] items-end overflow-hidden pb-16 pt-40">
-        <div className="absolute inset-0">
-          <CanvasMotif variant={industry.motif} className="h-full w-full" />
+        <div ref={scene.ref} className="absolute inset-0">
+          {Scene3D ? (
+            <SceneBoundary
+              fallback={<CanvasMotif variant={industry.motif} className="h-full w-full" />}
+            >
+              {scene.mounted && <Scene3D frameloop={scene.frameloop} />}
+            </SceneBoundary>
+          ) : (
+            <CanvasMotif variant={industry.motif} className="h-full w-full" />
+          )}
         </div>
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(90%_90%_at_50%_0%,transparent_20%,#050505_85%)]" />
         <div
