@@ -49,7 +49,7 @@ export function IndustryDetail({
   return (
     <main className="relative">
       {/* ---------- HERO ---------- */}
-      <section className="relative flex min-h-[92svh] items-end overflow-hidden pb-16 pt-40">
+      <section className="relative flex min-h-[92svh] items-end overflow-hidden pb-16 pt-40 [@media(max-height:680px)]:pt-28">
         <div ref={scene.ref} className="absolute inset-0">
           {Scene3D ? (
             <SceneBoundary

@@ -51,16 +51,16 @@ export function CookieConsent() {
           transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
           role="dialog"
           aria-label="Cookie notice"
-          className="fixed bottom-4 left-4 z-[170] max-w-sm rounded-2xl glass p-5"
+          className="fixed bottom-3 left-3 right-3 z-[170] rounded-2xl glass p-4 sm:right-auto sm:max-w-[340px]"
         >
-          <p className="text-sm text-mist">
+          <p className="text-xs leading-relaxed text-mist">
             {t.body}{" "}
             <Link href="/legal/privacy" className="link-underline text-chalk">
               {t.privacy}
             </Link>
             .
           </p>
-          <div className="mt-4 flex items-center gap-3">
+          <div className="mt-3 flex items-center gap-3">
             <button
               onClick={() => choose("accepted")}
               data-cursor

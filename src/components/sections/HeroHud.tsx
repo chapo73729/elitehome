@@ -46,7 +46,7 @@ export function HeroHud({ ready }: { ready: boolean }) {
   return (
     <div
       aria-hidden
-      className="pointer-events-none absolute inset-0 z-[5] hidden md:block font-mono text-[0.6rem] tracking-[0.25em] text-fog"
+      className="pointer-events-none absolute inset-0 z-[5] hidden font-mono text-[0.6rem] tracking-[0.25em] text-fog md:block [@media(max-height:680px)]:!hidden"
     >
       {/* corner brackets */}
       {[

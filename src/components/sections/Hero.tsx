@@ -42,7 +42,7 @@ export function Hero({ ready }: { ready: boolean }) {
           initial={{ opacity: 0, y: 16 }}
           animate={ready ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 1, ease: EASE, delay: 0.3 }}
-          className="eyebrow mb-8"
+          className="eyebrow mb-8 [@media(max-height:680px)]:mb-3"
         >
           {c.eyebrow}
         </motion.span>
@@ -58,7 +58,7 @@ export function Hero({ ready }: { ready: boolean }) {
           initial={{ opacity: 0, y: 20 }}
           animate={ready ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 1, ease: EASE, delay: 0.9 }}
-          className="mt-7 max-w-xl text-balance text-base text-mist md:text-lg"
+          className="mt-7 max-w-xl text-balance text-base text-mist md:text-lg [@media(max-height:680px)]:mt-3 [@media(max-height:680px)]:text-sm"
         >
           {c.subtitle}
         </motion.p>
@@ -67,7 +67,7 @@ export function Hero({ ready }: { ready: boolean }) {
           initial={{ opacity: 0, y: 20 }}
           animate={ready ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 1, ease: EASE, delay: 1.1 }}
-          className="mt-11 flex flex-wrap items-center justify-center gap-4"
+          className="mt-11 flex flex-wrap items-center justify-center gap-4 [@media(max-height:680px)]:mt-5"
         >
           <Button href="#industries" variant="primary">
             {c.explore}
@@ -84,7 +84,7 @@ export function Hero({ ready }: { ready: boolean }) {
         initial={{ opacity: 0 }}
         animate={ready ? { opacity: 1 } : {}}
         transition={{ duration: 1, delay: 1.6 }}
-        className="absolute bottom-8 left-1/2 z-10 flex -translate-x-1/2 flex-col items-center gap-3"
+        className="absolute bottom-8 left-1/2 z-10 flex -translate-x-1/2 flex-col items-center gap-3 [@media(max-height:680px)]:hidden"
       >
         <span className="font-mono text-[0.62rem] tracking-[0.34em] text-fog">
           {c.scroll}

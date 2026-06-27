@@ -284,6 +284,16 @@ html.hide-cursor * {
   to { transform: rotate(360deg); }
 }
 
+/* ---------- Short viewports (landscape phones) ---------- */
+@media (max-height: 640px) {
+  .text-mega {
+    font-size: clamp(2.2rem, 8vw, 4.5rem);
+  }
+  .text-giant {
+    font-size: clamp(1.8rem, 6vw, 3.25rem);
+  }
+}
+
 /* ---------- Hyperdrive (Konami easter egg) ---------- */
 html.hyperdrive {
   filter: saturate(1.5) brightness(1.08) contrast(1.05);
