@@ -12,6 +12,17 @@ import type { INDUSTRIES } from "@/lib/site";
 
 const Ocean3D = dynamic(() => import("@/components/three/Ocean3D"), { ssr: false });
 const NeuralCore = dynamic(() => import("@/components/three/NeuralCore"), { ssr: false });
+const DataStream3D = dynamic(() => import("@/components/three/DataStream3D"), { ssr: false });
+const CogMachine3D = dynamic(() => import("@/components/three/CogMachine3D"), { ssr: false });
+
+const SCENE_BY_ID: Record<string, any> = {
+  ai: NeuralCore,
+  strategy: NeuralCore,
+  software: DataStream3D,
+  automation: DataStream3D,
+  industrial: CogMachine3D,
+  maritime: Ocean3D,
+};
 
 type Industry = (typeof INDUSTRIES)[number];
 
@@ -28,8 +39,7 @@ export function IndustryDetail({
 }) {
   const accent = industry.accent;
   const scene = useSceneVisibility<HTMLDivElement>({ mountMargin: "600px 0px" });
-  const Scene3D =
-    industry.id === "maritime" ? Ocean3D : industry.id === "ai" ? NeuralCore : null;
+  const Scene3D = SCENE_BY_ID[industry.id] ?? null;
 
   return (
     <main className="relative">
