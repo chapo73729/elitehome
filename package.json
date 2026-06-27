@@ -1,17 +1,37 @@
 {
-  "name": "@example/starter",
-  "version": "0.0.1",
+  "name": "ardlabs",
+  "version": "1.0.0",
   "private": true,
+  "description": "ARDLABS® — Private Ventures. A cinematic, immersive laboratory of the future.",
   "scripts": {
-    "dev": "astro dev",
-    "start": "astro dev",
-    "build": "astro build",
-    "preview": "astro preview"
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@react-three/drei": "^10.0.6",
+    "@react-three/fiber": "^9.1.0",
+    "@react-three/postprocessing": "^3.0.4",
+    "clsx": "^2.1.1",
+    "framer-motion": "^12.4.0",
+    "gsap": "^3.12.7",
+    "lenis": "^1.1.20",
+    "next": "^15.2.0",
+    "postprocessing": "^6.36.4",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "three": "^0.174.0"
   },
   "devDependencies": {
-    "@astrojs/preact": "^1.0.2",
-    "@astrojs/sitemap": "^1.0.0",
-    "@netlify/netlify-marketing-tokens": "^1.1.0",
-    "astro": "^2.0.0"
+    "@tailwindcss/postcss": "^4.0.9",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "@types/three": "^0.174.0",
+    "eslint": "^9",
+    "eslint-config-next": "^15.2.0",
+    "tailwindcss": "^4.0.9",
+    "typescript": "^5"
   }
 }

@@ -1,47 +1,71 @@
-![Netlify examples](netlify-badge-examples.png)
+# ARDLABS® — Private Ventures
 
-# Netlify Feature Tour
+> A cinematic, immersive marketing site for ARDLABS® — engineered to feel like
+> stepping into a laboratory of the future.
 
-**Access this demo site**: https://feature-tour.netlify.app
+Dark, luxurious, minimal and ultra-immersive: a custom particle boot sequence,
+a GPU particle planet, an interactive neural core, a live global network globe,
+and a dozen scroll-driven sections built for an Awwwards-grade finish.
 
-[![Netlify Status](https://api.netlify.com/api/v1/badges/fad6792e-1c44-44db-bd79-ea74b42b0f89/deploy-status)](https://app.netlify.com/sites/feature-tour/deploys)
+## Tech stack
 
-## About this example site
+- **Next.js 15** (App Router) · **React 19** · **TypeScript**
+- **Three.js** + **React Three Fiber** + **Drei** + **postprocessing** (Bloom, Vignette, Chromatic Aberration, Noise)
+- **GSAP-grade motion** via **Framer Motion**
+- **Lenis** smooth scroll
+- **Tailwind CSS v4**
+- Custom **GLSL shaders** (simplex-noise particle planet, fresnel atmosphere, twinkling starfield)
 
-This site provides a path to get started learning about Netlify features.
+## Experience
 
-- 📚 [Docs Getting Started Tutorial](https://docs.netlify.com/get-started/?utm_medium=social&utm_source=github&utm_campaign=devex-ph&utm_content=devex-examples)
+| # | Section | Highlight |
+|---|---------|-----------|
+| — | Loader | Particles assemble the ARDLABS wordmark, then explode into the hero |
+| — | Hero | GPU particle planet, mouse-reactive, scroll-driven camera dolly |
+| 01 | Vision | AI-style word-by-word "writing" reveal |
+| 02 | AI Core | Interactive 3D neural network with travelling signal pulses |
+| 03 | Global Network | Dotted globe, city markers, animated arcs & orbiting satellites |
+| 04 | Industries | Six magnetic, tilt-reactive "universe" cards |
+| 05–08 | Capabilities | AI · Software · Industrial · Maritime, each with a bespoke canvas motif |
+| 09 | Timeline | Scroll-tracked innovation spine |
+| 11 | Tech Stack | Interactive wall + infinite marquee |
+| 12 | Statistics | Animated counters |
+| 13 | Future Projects | Holographic, perspective-tilt cards |
+| 14 | Contact | Aurora background + modern enquiry form |
 
-## Speedily deploy your own version
+## Performance & quality
 
-Deploy your own version of this example site by selecting the Deploy to Netlify Button below. This will automatically:
+- 3D scenes are **dynamically imported** (`ssr: false`) and **device-tiered** — particle
+  counts and post-processing scale to the hardware.
+- Canvas motifs **pause when offscreen** (IntersectionObserver).
+- Full **reduced-motion** support; the loader and smooth scroll degrade gracefully.
+- Complete **SEO**: metadata, Schema.org JSON-LD, Open Graph + Twitter cards,
+  dynamic OG image, sitemap, robots and web manifest.
+- Custom blended cursor, magnetic buttons, film grain, vignette and scroll progress.
 
-- Clone a copy of this repo to your own GitHub account
-- Create a new project in your [Netlify account](https://app.netlify.com/?utm_medium=social&utm_source=github&utm_campaign=devex&utm_content=devex-examples), linked to your new repo
-- Create an automated deployment pipeline to watch for changes on your repo
-- Build and deploy your new site
+## Development
 
-[![Deploy To Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/netlify/netlify-feature-tour&utm_medium=social&utm_source=github&utm_campaign=devex&utm_content=devex-examples)
-
-## Install and run this example locally
-
-You can clone this example repo to explore its features and implementation and to run it locally.
-
-```shell
-
-# 1. Clone the repository to your local development environment
-git clone git@github.com:netlify/feature-tour.git
-
-# 2. Move into the project directory
-cd feature-tour
-
-# 3. Install code dependencies
+```bash
 npm install
+npm run dev      # http://localhost:3000
+npm run build    # production build
+npm run start    # serve the production build
+```
 
-# 4. Install the Netlify CLI to let you locally serve your site using Netlify's features
-npm install -g netlify-cli
+> Tip: the production build benefits from extra heap on constrained machines —
+> `NODE_OPTIONS="--max-old-space-size=3072" npm run build`.
 
-# 5. Serve your site using Netlify Dev
-netlify dev
+## Structure
 
+```
+src/
+  app/                 # routes, metadata, sitemap, robots, manifest, OG image
+  components/
+    loader/            # cinematic boot sequence
+    layout/            # smooth scroll, cursor, navbar, footer, experience shell
+    sections/          # all page sections
+    three/             # R3F scenes + GLSL shaders
+    ui/                # buttons, reveals, counters, canvas motifs, marquee
+  hooks/               # device-tier detection
+  lib/                 # site content & fonts
 ```
