@@ -58,9 +58,9 @@ export default function Terms() {
       <section>
         <h2>Governing law</h2>
         <p>
-          These terms are governed by the laws of{" "}
-          <Fill>[jurisdiction, e.g. Switzerland]</Fill>, and disputes are subject
-          to the courts of <Fill>[competent venue]</Fill>.
+          These terms are governed by the laws of the Czech Republic, and any
+          disputes arising from them are subject to the exclusive jurisdiction of
+          the competent courts of Prague.
         </p>
       </section>
     </LegalPage>

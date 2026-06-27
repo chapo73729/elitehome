@@ -19,11 +19,12 @@ export default function Imprint() {
           as {SITE.legal}.
         </p>
         <p>
-          Registered office: <Fill>[Street, postal code, city, country]</Fill>
+          Registered office: <Fill>[Street, postal code, Prague, Czech Republic]</Fill>
           <br />
-          Commercial register no.: <Fill>[e.g. CHE-XXX.XXX.XXX]</Fill>
+          Company ID (IČO): <Fill>[e.g. 12345678]</Fill>, registered in the Czech
+          Commercial Register
           <br />
-          VAT no.: <Fill>[VAT number]</Fill>
+          VAT no. (DIČ): <Fill>[e.g. CZ12345678]</Fill>
         </p>
       </section>
 

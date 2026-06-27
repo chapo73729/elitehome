@@ -68,7 +68,9 @@ export default function Privacy() {
           Subject to applicable law, you may request access, correction,
           deletion, restriction or portability of your data, and object to its
           processing. To exercise these rights, contact{" "}
-          <a href={`mailto:${SITE.email}`}>{SITE.email}</a>.
+          <a href={`mailto:${SITE.email}`}>{SITE.email}</a>. You also have the
+          right to lodge a complaint with the Czech Data Protection Authority
+          (Úřad pro ochranu osobních údajů).
         </p>
       </section>
 
