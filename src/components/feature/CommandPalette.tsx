@@ -83,6 +83,12 @@ export function CommandPalette() {
   useEffect(() => setSel(0), [q]);
 
   const onListKey = (e: React.KeyboardEvent) => {
+    if (e.key === "Tab") {
+      // trap focus inside the palette
+      e.preventDefault();
+      inputRef.current?.focus();
+      return;
+    }
     if (e.key === "ArrowDown") {
       e.preventDefault();
       setSel((s) => Math.min(s + 1, filtered.length - 1));

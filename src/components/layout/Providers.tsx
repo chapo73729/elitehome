@@ -9,6 +9,7 @@ import { Footer } from "./Footer";
 import { SectionNav } from "./SectionNav";
 import { BackToTop } from "./BackToTop";
 import { SoundSystem } from "./SoundSystem";
+import { CookieConsent } from "./CookieConsent";
 import { ScrollProgress } from "@/components/ui/ScrollProgress";
 import { Toaster } from "@/components/ui/Toaster";
 import { CommandPalette } from "@/components/feature/CommandPalette";
@@ -50,6 +51,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
       <ContextMenu />
       <Toaster />
       <ShowreelControl />
+      <CookieConsent />
       {isHome && <SectionNav />}
       <BackToTop />
       <SmoothScroll>

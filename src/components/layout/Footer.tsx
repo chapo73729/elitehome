@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { NAV, SITE } from "@/lib/site";
 import { scrollToTarget } from "./SmoothScroll";
 import { AccentSwitcher } from "@/components/feature/AccentSwitcher";
@@ -61,7 +62,19 @@ export function Footer() {
           </div>
         </div>
 
-        <div className="mt-20 flex flex-col items-start justify-between gap-4 hairline-t pt-8 font-mono text-xs tracking-wider text-fog md:flex-row md:items-center">
+        <div className="mt-16 flex flex-wrap items-center gap-x-6 gap-y-2 hairline-t pt-8 font-mono text-xs tracking-wider text-fog">
+          <Link href="/legal/imprint" className="transition-colors hover:text-chalk">
+            Legal Notice
+          </Link>
+          <Link href="/legal/privacy" className="transition-colors hover:text-chalk">
+            Privacy
+          </Link>
+          <Link href="/legal/terms" className="transition-colors hover:text-chalk">
+            Terms
+          </Link>
+        </div>
+
+        <div className="mt-6 flex flex-col items-start justify-between gap-4 font-mono text-xs tracking-wider text-fog md:flex-row md:items-center">
           <span>
             © {year} {SITE.legal} — All rights reserved.
           </span>
