@@ -15,6 +15,9 @@ export function Cursor() {
     const coarse = window.matchMedia("(pointer: coarse)").matches;
     if (coarse) return;
 
+    // hide the native cursor only now that the custom one is live
+    document.documentElement.classList.add("hide-cursor");
+
     const dot = dotRef.current!;
     const ring = ringRef.current!;
 
@@ -68,6 +71,7 @@ export function Cursor() {
 
     return () => {
       cancelAnimationFrame(raf);
+      document.documentElement.classList.remove("hide-cursor");
       window.removeEventListener("pointermove", onMove);
       window.removeEventListener("pointerout", onLeave);
       window.removeEventListener("pointerdown", onDown);

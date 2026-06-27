@@ -276,6 +276,15 @@ export function Loader({ onComplete }: { onComplete: () => void }) {
             transition={{ duration: 0.4 }}
           >
             <span className="uppercase">ARDLABS® · Private Ventures</span>
+            <span className="hidden text-accent-2/80 uppercase sm:inline">
+              {phase === "ignite"
+                ? "Initializing core"
+                : phase === "form"
+                  ? "Assembling lattice"
+                  : phase === "hold"
+                    ? "Calibrating"
+                    : "Entering"}
+            </span>
             <span className="text-chalk tabular-nums">
               {String(progress).padStart(3, "0")}
             </span>

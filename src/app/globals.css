@@ -63,11 +63,17 @@ body {
   color: var(--color-chalk);
   font-family: var(--font-sans);
   overflow-x: hidden;
+}
+
+/* hide the native cursor only while the custom cursor is mounted & active */
+html.hide-cursor,
+html.hide-cursor * {
   cursor: none;
 }
 
 @media (hover: none), (pointer: coarse) {
-  body {
+  html.hide-cursor,
+  html.hide-cursor * {
     cursor: auto;
   }
 }

@@ -12,6 +12,7 @@ import { AICore } from "@/components/sections/AICore";
 import { GlobalNetwork } from "@/components/sections/GlobalNetwork";
 import { Industries } from "@/components/sections/Industries";
 import { Capabilities } from "@/components/sections/Capabilities";
+import { ResearchLab } from "@/components/sections/ResearchLab";
 import { TechStack } from "@/components/sections/TechStack";
 import { Stats } from "@/components/sections/Stats";
 import { Timeline } from "@/components/sections/Timeline";
@@ -36,6 +37,7 @@ export function Experience() {
           <GlobalNetwork />
           <Industries />
           <Capabilities />
+          <ResearchLab />
           <TechStack />
           <Stats />
           <Timeline />

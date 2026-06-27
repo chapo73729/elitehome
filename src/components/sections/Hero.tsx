@@ -3,6 +3,7 @@
 import dynamic from "next/dynamic";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/Button";
+import { HeroHud } from "./HeroHud";
 
 const HeroScene = dynamic(() => import("@/components/three/HeroScene"), {
   ssr: false,
@@ -24,6 +25,9 @@ export function Hero({ ready }: { ready: boolean }) {
 
       {/* radial floor glow */}
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(60%_50%_at_50%_115%,rgba(91,140,255,0.18),transparent_70%)]" />
+
+      {/* diegetic HUD */}
+      <HeroHud ready={ready} />
 
       {/* content */}
       <div className="container-x relative z-10 flex flex-col items-center text-center">

@@ -9,6 +9,7 @@ import { Magnetic } from "@/components/ui/Magnetic";
 export function Navbar({ ready }: { ready: boolean }) {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
+  const [active, setActive] = useState<string>("");
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40);
@@ -16,6 +17,25 @@ export function Navbar({ ready }: { ready: boolean }) {
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
+
+  // track the section currently in view to light up the matching nav item
+  useEffect(() => {
+    const ids = NAV.map((n) => n.href.replace("#", ""));
+    const els = ids
+      .map((id) => document.getElementById(id))
+      .filter(Boolean) as HTMLElement[];
+    if (!els.length) return;
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => {
+          if (e.isIntersecting) setActive("#" + e.target.id);
+        });
+      },
+      { rootMargin: "-45% 0px -50% 0px", threshold: 0 }
+    );
+    els.forEach((el) => io.observe(el));
+    return () => io.disconnect();
+  }, [ready]);
 
   const go = (href: string) => {
     setOpen(false);
@@ -49,15 +69,27 @@ export function Navbar({ ready }: { ready: boolean }) {
 
           {/* desktop nav pill */}
           <nav className="hidden items-center gap-1 rounded-full px-2 py-2 md:flex glass">
-            {NAV.map((item) => (
-              <button
-                key={item.href}
-                onClick={() => go(item.href)}
-                className="relative rounded-full px-4 py-1.5 text-sm text-mist transition-colors duration-300 hover:text-chalk"
-              >
-                {item.label}
-              </button>
-            ))}
+            {NAV.map((item) => {
+              const isActive = active === item.href;
+              return (
+                <button
+                  key={item.href}
+                  onClick={() => go(item.href)}
+                  className={`relative rounded-full px-4 py-1.5 text-sm transition-colors duration-300 ${
+                    isActive ? "text-void" : "text-mist hover:text-chalk"
+                  }`}
+                >
+                  {isActive && (
+                    <motion.span
+                      layoutId="nav-pill"
+                      className="absolute inset-0 -z-0 rounded-full bg-chalk"
+                      transition={{ type: "spring", stiffness: 380, damping: 32 }}
+                    />
+                  )}
+                  <span className="relative z-10">{item.label}</span>
+                </button>
+              );
+            })}
           </nav>
 
           <div className="hidden md:block">
