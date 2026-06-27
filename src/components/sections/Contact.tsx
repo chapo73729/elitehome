@@ -3,29 +3,50 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Reveal } from "@/components/ui/Reveal";
-import { Button } from "@/components/ui/Button";
 import { SITE } from "@/lib/site";
 
 const FIELDS = ["AI", "Software", "Automation", "Industrial", "Strategy", "Maritime"];
 
-export function Contact() {
-  const [sent, setSent] = useState(false);
-  const [field, setField] = useState<string>("AI");
+type Status = "idle" | "sending" | "sent" | "error";
 
-  const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+export function Contact() {
+  const [status, setStatus] = useState<Status>("idle");
+  const [field, setField] = useState<string>("AI");
+  const sent = status === "sent";
+
+  const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const form = e.currentTarget;
-    const data = new FormData(form);
-    const name = String(data.get("name") || "");
-    const email = String(data.get("email") || "");
-    const message = String(data.get("message") || "");
-    const subject = encodeURIComponent(`ARDLABS enquiry — ${field}`);
-    const body = encodeURIComponent(
-      `Name: ${name}\nEmail: ${email}\nDomain: ${field}\n\n${message}`
-    );
-    // graceful fallback: open the user's mail client pre-filled
-    window.location.href = `mailto:${SITE.email}?subject=${subject}&body=${body}`;
-    setSent(true);
+    if (status === "sending") return;
+    const data = new FormData(e.currentTarget);
+    const payload = {
+      name: String(data.get("name") || ""),
+      email: String(data.get("email") || ""),
+      message: String(data.get("message") || ""),
+      domain: field,
+      company: String(data.get("company") || ""), // honeypot
+    };
+
+    setStatus("sending");
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      if (res.ok) {
+        setStatus("sent");
+        return;
+      }
+      // not configured / failed → graceful mail fallback to the PUBLIC address
+      const subject = encodeURIComponent(`ARDLABS enquiry — ${field}`);
+      const body = encodeURIComponent(
+        `Name: ${payload.name}\nEmail: ${payload.email}\nDomain: ${field}\n\n${payload.message}`
+      );
+      window.location.href = `mailto:${SITE.email}?subject=${subject}&body=${body}`;
+      setStatus("sent");
+    } catch {
+      setStatus("error");
+    }
   };
 
   return (
@@ -80,14 +101,14 @@ export function Contact() {
                       <span className="text-2xl text-accent-2">✓</span>
                     </div>
                     <h3 className="mt-6 font-display text-2xl text-chalk">
-                      Transmission opened.
+                      Transmission received.
                     </h3>
                     <p className="mt-3 max-w-xs text-sm text-mist">
-                      Your mail client should be composing a message to our team.
-                      We respond to every signal worth answering.
+                      Thank you — your message is on its way to our team. We
+                      respond to every signal worth answering.
                     </p>
                     <button
-                      onClick={() => setSent(false)}
+                      onClick={() => setStatus("idle")}
                       className="link-underline mt-8 text-sm text-mist"
                     >
                       Send another
@@ -139,10 +160,45 @@ export function Contact() {
                         className="w-full resize-none rounded-2xl border border-white/10 bg-void/60 px-4 py-3 text-sm text-chalk outline-none transition-colors placeholder:text-fog focus:border-accent/50"
                       />
                     </div>
-                    <Button>
-                      Transmit
-                      <span aria-hidden>→</span>
-                    </Button>
+
+                    {/* honeypot — hidden from humans, catches bots */}
+                    <input
+                      type="text"
+                      name="company"
+                      tabIndex={-1}
+                      autoComplete="off"
+                      aria-hidden
+                      className="absolute left-[-9999px] h-0 w-0 opacity-0"
+                    />
+
+                    <div className="flex flex-wrap items-center gap-4">
+                      <button
+                        type="submit"
+                        disabled={status === "sending"}
+                        data-cursor
+                        className="group relative inline-flex items-center justify-center gap-2 overflow-hidden rounded-full bg-chalk px-7 py-3.5 text-sm font-medium text-void transition-transform duration-300 hover:scale-[1.03] disabled:cursor-not-allowed disabled:opacity-70"
+                      >
+                        {status === "sending" ? (
+                          <>
+                            <span className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-void/30 border-t-void" />
+                            Transmitting…
+                          </>
+                        ) : (
+                          <>
+                            Transmit <span aria-hidden>→</span>
+                          </>
+                        )}
+                      </button>
+                      {status === "error" && (
+                        <span className="text-sm text-accent-3">
+                          Couldn&apos;t send — please email{" "}
+                          <a className="link-underline" href={`mailto:${SITE.email}`}>
+                            {SITE.email}
+                          </a>
+                          .
+                        </span>
+                      )}
+                    </div>
                   </motion.form>
                 )}
               </AnimatePresence>
