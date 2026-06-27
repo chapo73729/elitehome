@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import { MotionConfig } from "framer-motion";
 import { usePathname } from "next/navigation";
 import { SmoothScroll } from "./SmoothScroll";
 import { Cursor } from "./Cursor";
@@ -42,7 +43,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
   }, []);
 
   return (
-    <>
+    <MotionConfig reducedMotion="user">
       <a
         href="#vision"
         className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[300] focus:rounded-full focus:bg-chalk focus:px-5 focus:py-2.5 focus:text-sm focus:font-medium focus:text-void"
@@ -69,6 +70,6 @@ export function Providers({ children }: { children: React.ReactNode }) {
         {children}
         <Footer />
       </SmoothScroll>
-    </>
+    </MotionConfig>
   );
 }

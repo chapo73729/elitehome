@@ -92,14 +92,42 @@ function HoloCard({
 
 function ProjectModal({ p, onClose }: { p: Project; onClose: () => void }) {
   const reqLabel = useContent().projects.requestBriefing;
+  const dialogRef = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
-    const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();
+    const prevFocus = document.activeElement as HTMLElement | null;
+    const dialog = dialogRef.current;
+    // focus the dialog when it opens
+    setTimeout(() => dialog?.focus(), 40);
+
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        onClose();
+        return;
+      }
+      if (e.key === "Tab" && dialog) {
+        const focusables = dialog.querySelectorAll<HTMLElement>(
+          'a[href], button, input, textarea, [tabindex]:not([tabindex="-1"])'
+        );
+        if (!focusables.length) return;
+        const first = focusables[0];
+        const last = focusables[focusables.length - 1];
+        if (e.shiftKey && document.activeElement === first) {
+          e.preventDefault();
+          last.focus();
+        } else if (!e.shiftKey && document.activeElement === last) {
+          e.preventDefault();
+          first.focus();
+        }
+      }
+    };
     window.addEventListener("keydown", onKey);
     const lenis = (window as any).__lenis;
     lenis?.stop?.();
     return () => {
       window.removeEventListener("keydown", onKey);
       lenis?.start?.();
+      prevFocus?.focus?.();
     };
   }, [onClose]);
 
@@ -118,6 +146,8 @@ function ProjectModal({ p, onClose }: { p: Project; onClose: () => void }) {
         aria-hidden
       />
       <motion.div
+        ref={dialogRef}
+        tabIndex={-1}
         initial={{ opacity: 0, scale: 0.92, y: 24 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.95, y: 12 }}
@@ -125,7 +155,7 @@ function ProjectModal({ p, onClose }: { p: Project; onClose: () => void }) {
         role="dialog"
         aria-modal="true"
         aria-label={p.name}
-        className="relative z-10 w-full max-w-2xl overflow-hidden rounded-3xl glass p-8 md:p-12"
+        className="relative z-10 w-full max-w-2xl overflow-hidden rounded-3xl glass p-8 outline-none md:p-12"
       >
         <div className="pointer-events-none absolute inset-0 opacity-[0.05] [background:repeating-linear-gradient(0deg,#fff_0px,#fff_1px,transparent_1px,transparent_4px)]" />
         <div className="pointer-events-none absolute -right-20 -top-20 h-56 w-56 rounded-full bg-accent/20 blur-3xl" />

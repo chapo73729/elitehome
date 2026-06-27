@@ -13,6 +13,7 @@ class AudioManager {
   private listeners = new Set<Listener>();
   private _enabled = false;
   private lastHover = 0;
+  private stopTimer: ReturnType<typeof setTimeout> | null = null;
 
   get enabled() {
     return this._enabled;
@@ -62,6 +63,11 @@ class AudioManager {
     const ctx = this.ensureCtx();
     if (!ctx || !this.master) return;
     if (ctx.state === "suspended") ctx.resume();
+    // cancel any pending ambient teardown from a recent disable()
+    if (this.stopTimer) {
+      clearTimeout(this.stopTimer);
+      this.stopTimer = null;
+    }
     this._enabled = true;
     localStorage.setItem("ardlabs-sound", "on");
     // fade master in
@@ -83,7 +89,11 @@ class AudioManager {
       this.master.gain.setValueAtTime(this.master.gain.value, t);
       this.master.gain.linearRampToValueAtTime(0, t + 0.4);
     }
-    setTimeout(() => this.ambient?.stop(), 450);
+    if (this.stopTimer) clearTimeout(this.stopTimer);
+    this.stopTimer = setTimeout(() => {
+      this.ambient?.stop();
+      this.stopTimer = null;
+    }, 450);
     this.emit();
   }
 

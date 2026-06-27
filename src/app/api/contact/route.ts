@@ -19,6 +19,10 @@ const hits = new Map<string, { count: number; reset: number }>();
 
 function rateLimited(ip: string): boolean {
   const now = Date.now();
+  // opportunistically prune expired entries so the map can't grow unbounded
+  if (hits.size > 1000) {
+    for (const [k, v] of hits) if (now > v.reset) hits.delete(k);
+  }
   const entry = hits.get(ip);
   if (!entry || now > entry.reset) {
     hits.set(ip, { count: 1, reset: now + WINDOW_MS });
