@@ -2,13 +2,14 @@
 
 import { useRef } from "react";
 import { motion, useInView } from "framer-motion";
-import { VISION_LINES } from "@/lib/site";
+import { useContent } from "@/lib/content";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 
 export function Vision() {
   const ref = useRef<HTMLDivElement>(null);
   const inView = useInView(ref, { once: true, margin: "-25% 0px" });
+  const c = useContent().vision;
 
   // flatten to words with an absolute index for sequential reveal
   let counter = 0;
@@ -26,15 +27,16 @@ export function Vision() {
           className="flex items-center gap-3 font-mono text-xs tracking-[0.3em] text-accent"
         >
           <span className="inline-block h-1.5 w-1.5 animate-pulse rounded-full bg-accent" />
-          ARDLABS.AI · COMPOSING VISION
+          {c.tag}
         </motion.div>
 
         <h2 className="text-giant mt-10 max-w-5xl">
-          {VISION_LINES.map((line, li) => (
+          {c.lines.map((line, li) => (
             <span key={li} className="block">
               {line.split(" ").map((word) => {
                 const idx = counter++;
-                const accent = word.toLowerCase().includes("engineer");
+                const w = word.toLowerCase();
+                const accent = w.includes("engineer") || w.includes("concevons");
                 return (
                   <span key={idx} className="inline-block overflow-hidden">
                     <motion.span
@@ -71,9 +73,7 @@ export function Vision() {
           transition={{ duration: 0.9, ease: EASE, delay: 1.6 }}
           className="mt-14 max-w-md text-balance text-mist"
         >
-          Every venture begins as a hypothesis and ends as infrastructure.
-          We hold the rare positions — patient capital, deep engineering and a
-          century-long horizon.
+          {c.para}
         </motion.p>
       </div>
     </section>

@@ -79,11 +79,7 @@ export default async function IndustryPage({
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <IndustryDetail
-        industry={industry}
-        prev={{ id: prev.id, title: prev.title }}
-        next={{ id: next.id, title: next.title }}
-      />
+      <IndustryDetail id={industry.id} prevId={prev.id} nextId={next.id} />
     </>
   );
 }

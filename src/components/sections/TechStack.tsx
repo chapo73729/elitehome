@@ -4,16 +4,13 @@ import { SectionHeading } from "@/components/ui/Section";
 import { Reveal } from "@/components/ui/Reveal";
 import { Marquee } from "@/components/ui/Marquee";
 import { TECH } from "@/lib/site";
+import { useContent } from "@/lib/content";
 
 export function TechStack() {
+  const c = useContent().stack;
   return (
     <section id="stack" className="relative z-10 scroll-mt-24 overflow-hidden bg-void py-28 md:py-40">
-      <SectionHeading
-        index="11"
-        eyebrow="Technology Stack"
-        title="The instruments behind the work."
-        intro="A deliberately small set of tools, mastered completely — from the metal to the model."
-      />
+      <SectionHeading index="11" eyebrow={c.eyebrow} title={c.title} intro={c.intro} />
 
       <div className="container-x mt-16">
         <div className="grid grid-cols-2 gap-px overflow-hidden rounded-2xl hairline sm:grid-cols-3 lg:grid-cols-4">
@@ -35,7 +32,7 @@ export function TechStack() {
       </div>
 
       <div className="mt-24 select-none opacity-90">
-        <Marquee items={["Engineering", "Intelligence", "Infrastructure", "Velocity", "Precision"]} />
+        <Marquee items={c.marquee} />
       </div>
     </section>
   );

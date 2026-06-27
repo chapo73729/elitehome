@@ -4,7 +4,7 @@ import { useRef } from "react";
 import { motion, useScroll, useSpring } from "framer-motion";
 import { SectionHeading } from "@/components/ui/Section";
 import { Reveal } from "@/components/ui/Reveal";
-import { TIMELINE } from "@/lib/site";
+import { useContent } from "@/lib/content";
 
 export function Timeline() {
   const ref = useRef<HTMLDivElement>(null);
@@ -13,14 +13,12 @@ export function Timeline() {
     offset: ["start 60%", "end 70%"],
   });
   const lineScale = useSpring(scrollYProgress, { stiffness: 80, damping: 24 });
+  const c = useContent().timeline;
+  const TIMELINE = c.items;
 
   return (
     <section className="relative z-10 scroll-mt-24 bg-void py-28 md:py-40">
-      <SectionHeading
-        index="09"
-        eyebrow="Innovation Timeline"
-        title="A trajectory measured in decades."
-      />
+      <SectionHeading index="09" eyebrow={c.eyebrow} title={c.title} />
 
       <div ref={ref} className="container-x relative mt-20">
         {/* spine */}

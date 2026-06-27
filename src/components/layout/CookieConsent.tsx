@@ -3,8 +3,26 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
+import { useLang } from "@/lib/lang";
+
+const T = {
+  en: {
+    body: "We use only essential storage to run the site and remember your preferences. No third-party tracking.",
+    privacy: "Privacy",
+    got: "Got it",
+    essential: "Essential only",
+  },
+  fr: {
+    body: "Nous utilisons uniquement le stockage essentiel pour faire fonctionner le site et mémoriser vos préférences. Aucun traçage tiers.",
+    privacy: "Confidentialité",
+    got: "J'ai compris",
+    essential: "Essentiel uniquement",
+  },
+};
 
 export function CookieConsent() {
+  const lang = useLang();
+  const t = T[lang];
   const [show, setShow] = useState(false);
 
   useEffect(() => {
@@ -36,10 +54,9 @@ export function CookieConsent() {
           className="fixed bottom-4 left-4 z-[170] max-w-sm rounded-2xl glass p-5"
         >
           <p className="text-sm text-mist">
-            We use only essential storage to run the site and remember your
-            preferences. No third-party tracking.{" "}
+            {t.body}{" "}
             <Link href="/legal/privacy" className="link-underline text-chalk">
-              Privacy
+              {t.privacy}
             </Link>
             .
           </p>
@@ -49,14 +66,14 @@ export function CookieConsent() {
               data-cursor
               className="rounded-full bg-chalk px-4 py-2 text-xs font-medium text-void transition-transform duration-300 hover:scale-[1.03]"
             >
-              Got it
+              {t.got}
             </button>
             <button
               onClick={() => choose("essential")}
               data-cursor
               className="rounded-full hairline px-4 py-2 text-xs text-mist transition-colors hover:text-chalk"
             >
-              Essential only
+              {t.essential}
             </button>
           </div>
         </motion.div>

@@ -4,20 +4,17 @@ import dynamic from "next/dynamic";
 import { Reveal } from "@/components/ui/Reveal";
 import { SceneBoundary } from "@/components/three/SceneBoundary";
 import { useSceneVisibility } from "@/hooks/useSceneVisibility";
+import { useContent } from "@/lib/content";
 
 const NeuralCore = dynamic(() => import("@/components/three/NeuralCore"), {
   ssr: false,
   loading: () => null,
 });
 
-const POINTS = [
-  { k: "Reasoning", v: "Autonomous agents that plan, act and self-correct." },
-  { k: "Scale", v: "GPU clusters orchestrated for frontier-model training." },
-  { k: "Deployment", v: "Inference engineered for production, not demos." },
-];
-
 export function AICore() {
   const scene = useSceneVisibility<HTMLDivElement>();
+  const c = useContent().core;
+  const POINTS = c.points;
   return (
     <section
       id="core"
@@ -35,18 +32,17 @@ export function AICore() {
         <Reveal>
           <div className="flex items-center gap-4">
             <span className="font-mono text-xs text-accent">02</span>
-            <span className="eyebrow">Interactive AI Core</span>
+            <span className="eyebrow">{c.eyebrow}</span>
           </div>
         </Reveal>
         <Reveal delay={0.08}>
           <h2 className="text-section-title text-gradient mt-7 max-w-3xl text-balance">
-            A living intelligence, wired from first principles.
+            {c.title}
           </h2>
         </Reveal>
         <Reveal delay={0.16}>
           <p className="mt-6 max-w-md text-balance text-mist">
-            Thousands of neurons firing in real time. Move your cursor — the
-            lattice responds, the way our systems respond to the world.
+            {c.intro}
           </p>
         </Reveal>
 

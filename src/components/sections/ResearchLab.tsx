@@ -4,20 +4,17 @@ import dynamic from "next/dynamic";
 import { Reveal } from "@/components/ui/Reveal";
 import { SceneBoundary } from "@/components/three/SceneBoundary";
 import { useSceneVisibility } from "@/hooks/useSceneVisibility";
+import { useContent } from "@/lib/content";
 
 const Lab = dynamic(() => import("@/components/three/ResearchLab"), {
   ssr: false,
   loading: () => null,
 });
 
-const READOUTS = [
-  { k: "STATUS", v: "Operational" },
-  { k: "ENTITIES", v: "Holographic" },
-  { k: "ACCESS", v: "Restricted" },
-];
-
 export function ResearchLab() {
   const scene = useSceneVisibility<HTMLDivElement>();
+  const c = useContent().research;
+  const READOUTS = c.readouts;
   return (
     <section
       id="research"
@@ -34,21 +31,19 @@ export function ResearchLab() {
         <Reveal>
           <div className="flex items-center gap-4">
             <span className="font-mono text-xs text-accent">10</span>
-            <span className="eyebrow">Research Lab</span>
+            <span className="eyebrow">{c.eyebrow}</span>
           </div>
         </Reveal>
 
         <div className="max-w-xl">
           <Reveal delay={0.08}>
             <h2 className="text-section-title text-gradient text-balance">
-              Step inside the apparatus.
+              {c.title}
             </h2>
           </Reveal>
           <Reveal delay={0.16}>
             <p className="mt-6 max-w-md text-balance text-mist">
-              Floating instruments, holographic readouts and a self-rotating
-              core — a working model of how intelligence, data and matter
-              converge under one roof.
+              {c.intro}
             </p>
           </Reveal>
 

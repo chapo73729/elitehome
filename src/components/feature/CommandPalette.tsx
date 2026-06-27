@@ -3,7 +3,8 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useRouter, usePathname } from "next/navigation";
-import { NAV, INDUSTRIES, SITE } from "@/lib/site";
+import { SITE } from "@/lib/site";
+import { useContent } from "@/lib/content";
 import { scrollToTarget } from "@/components/layout/SmoothScroll";
 import { audio } from "@/lib/audio";
 import { startShowreel } from "@/lib/showreel";
@@ -19,6 +20,9 @@ export function CommandPalette() {
   const inputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
   const pathname = usePathname();
+  const content = useContent();
+  const NAV = content.nav;
+  const INDUSTRIES = content.industries.items;
 
   const goSection = (href: string) => {
     if (pathname !== "/") router.push("/" + href);
@@ -50,7 +54,7 @@ export function CommandPalette() {
     );
     return list;
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pathname]);
+  }, [pathname, content]);
 
   const filtered = useMemo(() => {
     const s = q.trim().toLowerCase();

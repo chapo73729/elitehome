@@ -5,14 +5,16 @@ import Link from "next/link";
 import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 import { SectionHeading } from "@/components/ui/Section";
 import { Reveal } from "@/components/ui/Reveal";
-import { INDUSTRIES } from "@/lib/site";
+import { useContent } from "@/lib/content";
 
 function IndustryCard({
   industry,
   i,
+  exploreLabel,
 }: {
-  industry: (typeof INDUSTRIES)[number];
+  industry: any;
   i: number;
+  exploreLabel: string;
 }) {
   const ref = useRef<HTMLDivElement>(null);
   const mx = useMotionValue(0.5);
@@ -78,7 +80,7 @@ function IndustryCard({
               {industry.index}
             </span>
             <span className="font-mono text-xs tracking-widest text-fog opacity-0 transition-all duration-500 group-hover:-translate-y-0.5 group-hover:text-chalk group-hover:opacity-100">
-              EXPLORE →
+              {exploreLabel}
             </span>
           </div>
 
@@ -103,19 +105,15 @@ function IndustryCard({
 }
 
 export function Industries() {
+  const c = useContent().industries;
   return (
     <section id="industries" className="relative z-10 scroll-mt-24 bg-void py-28 md:py-40">
-      <SectionHeading
-        index="04"
-        eyebrow="Industries"
-        title="Six universes. One laboratory."
-        intro="Each venture runs as its own world — distinct teams, distinct physics, a shared standard of engineering."
-      />
+      <SectionHeading index="04" eyebrow={c.eyebrow} title={c.title} intro={c.intro} />
 
       <div className="container-x mt-16">
         <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          {INDUSTRIES.map((ind, i) => (
-            <IndustryCard key={ind.id} industry={ind} i={i} />
+          {c.items.map((ind, i) => (
+            <IndustryCard key={ind.id} industry={ind} i={i} exploreLabel={c.explore} />
           ))}
         </div>
 
@@ -126,7 +124,7 @@ export function Industries() {
               data-cursor
               className="group inline-flex items-center gap-2 rounded-full hairline px-6 py-3 text-sm text-mist transition-colors duration-500 hover:border-white/25 hover:text-chalk"
             >
-              View all six industries
+              {c.viewAll}
               <span className="transition-transform duration-500 group-hover:translate-x-1">
                 →
               </span>

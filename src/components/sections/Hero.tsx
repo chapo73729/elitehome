@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/Button";
 import { HeroHud } from "./HeroHud";
 import { SceneBoundary } from "@/components/three/SceneBoundary";
 import { useSceneVisibility } from "@/hooks/useSceneVisibility";
+import { useContent } from "@/lib/content";
 
 const HeroScene = dynamic(() => import("@/components/three/HeroScene"), {
   ssr: false,
@@ -16,6 +17,7 @@ const EASE = [0.16, 1, 0.3, 1] as const;
 
 export function Hero({ ready }: { ready: boolean }) {
   const scene = useSceneVisibility<HTMLDivElement>({ mountMargin: "800px 0px" });
+  const c = useContent().hero;
   return (
     <section
       id="hero"
@@ -42,7 +44,7 @@ export function Hero({ ready }: { ready: boolean }) {
           transition={{ duration: 1, ease: EASE, delay: 0.3 }}
           className="eyebrow mb-8"
         >
-          Private Ventures · Est. 2019
+          {c.eyebrow}
         </motion.span>
 
         <h1 className="text-mega text-gradient select-none">
@@ -58,9 +60,7 @@ export function Hero({ ready }: { ready: boolean }) {
           transition={{ duration: 1, ease: EASE, delay: 0.9 }}
           className="mt-7 max-w-xl text-balance text-base text-mist md:text-lg"
         >
-          A laboratory of the future — engineering artificial intelligence,
-          software, automation and physical infrastructure at the scale of
-          nations.
+          {c.subtitle}
         </motion.p>
 
         <motion.div
@@ -70,11 +70,11 @@ export function Hero({ ready }: { ready: boolean }) {
           className="mt-11 flex flex-wrap items-center justify-center gap-4"
         >
           <Button href="#industries" variant="primary">
-            Explore the lab
+            {c.explore}
             <span aria-hidden>→</span>
           </Button>
           <Button href="#contact" variant="ghost">
-            Engage ARDLABS
+            {c.engage}
           </Button>
         </motion.div>
       </div>
@@ -87,7 +87,7 @@ export function Hero({ ready }: { ready: boolean }) {
         className="absolute bottom-8 left-1/2 z-10 flex -translate-x-1/2 flex-col items-center gap-3"
       >
         <span className="font-mono text-[0.62rem] tracking-[0.34em] text-fog">
-          SCROLL
+          {c.scroll}
         </span>
         <span className="relative block h-10 w-px overflow-hidden bg-white/10">
           <motion.span

@@ -3,10 +3,12 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { usePathname, useRouter } from "next/navigation";
-import { NAV, SITE } from "@/lib/site";
+import { SITE } from "@/lib/site";
+import { useContent } from "@/lib/content";
 import { scrollToTarget } from "./SmoothScroll";
 import { Magnetic } from "@/components/ui/Magnetic";
 import { SoundToggle } from "./SoundToggle";
+import { LanguageToggle } from "@/components/feature/LanguageToggle";
 
 export function Navbar({ ready = true }: { ready?: boolean }) {
   const [scrolled, setScrolled] = useState(false);
@@ -14,6 +16,8 @@ export function Navbar({ ready = true }: { ready?: boolean }) {
   const [active, setActive] = useState<string>("");
   const pathname = usePathname();
   const router = useRouter();
+  const c = useContent();
+  const NAV = c.nav;
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40);
@@ -39,7 +43,7 @@ export function Navbar({ ready = true }: { ready?: boolean }) {
     );
     els.forEach((el) => io.observe(el));
     return () => io.disconnect();
-  }, [ready]);
+  }, [ready, NAV]);
 
   // close the mobile menu on Escape
   useEffect(() => {
@@ -118,13 +122,14 @@ export function Navbar({ ready = true }: { ready?: boolean }) {
           </nav>
 
           <div className="hidden items-center gap-2 md:flex">
+            <LanguageToggle />
             <SoundToggle />
             <Magnetic strength={0.3}>
               <button
                 onClick={() => go("#contact")}
                 className="rounded-full bg-chalk px-5 py-2.5 text-sm font-medium text-void transition-transform duration-300 hover:scale-[1.03]"
               >
-                Engage
+                {c.common.engage}
               </button>
             </Magnetic>
           </div>
@@ -175,10 +180,13 @@ export function Navbar({ ready = true }: { ready?: boolean }) {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.35 }}
-              className="mt-8 flex items-center gap-3 font-mono text-xs tracking-widest text-fog"
+              className="mt-8 flex items-center gap-6 font-mono text-xs tracking-widest text-fog"
             >
-              <span>SOUND</span>
-              <SoundToggle />
+              <span className="flex items-center gap-3">
+                <span>SOUND</span>
+                <SoundToggle />
+              </span>
+              <LanguageToggle />
             </motion.div>
           </motion.div>
         )}

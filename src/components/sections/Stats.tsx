@@ -2,9 +2,10 @@
 
 import { Reveal } from "@/components/ui/Reveal";
 import { Counter } from "@/components/ui/Counter";
-import { STATS } from "@/lib/site";
+import { useContent } from "@/lib/content";
 
 export function Stats() {
+  const STATS = useContent().stats.items;
   return (
     <section className="relative z-10 bg-void py-24 md:py-32">
       <div className="container-x">

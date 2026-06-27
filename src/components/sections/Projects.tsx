@@ -12,18 +12,20 @@ import {
 import { SectionHeading } from "@/components/ui/Section";
 import { Reveal } from "@/components/ui/Reveal";
 import { Button } from "@/components/ui/Button";
-import { PROJECTS } from "@/lib/site";
+import { useContent } from "@/lib/content";
 
-type Project = (typeof PROJECTS)[number];
+type Project = any;
 
 function HoloCard({
   p,
   i,
   onOpen,
+  openLabel,
 }: {
   p: Project;
   i: number;
   onOpen: () => void;
+  openLabel: string;
 }) {
   const ref = useRef<HTMLButtonElement>(null);
   const mx = useMotionValue(0.5);
@@ -79,7 +81,7 @@ function HoloCard({
               {p.stage}
             </span>
             <span className="font-mono text-xs tracking-widest text-mist opacity-0 transition-all duration-500 group-hover:translate-x-0 group-hover:text-chalk group-hover:opacity-100">
-              OPEN →
+              {openLabel}
             </span>
           </div>
         </div>
@@ -89,6 +91,7 @@ function HoloCard({
 }
 
 function ProjectModal({ p, onClose }: { p: Project; onClose: () => void }) {
+  const reqLabel = useContent().projects.requestBriefing;
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();
     window.addEventListener("keydown", onKey);
@@ -157,7 +160,7 @@ function ProjectModal({ p, onClose }: { p: Project; onClose: () => void }) {
           <p className="mt-6 text-balance leading-relaxed text-mist">{p.detail}</p>
 
           <div className="mt-8 grid gap-px overflow-hidden rounded-2xl hairline sm:grid-cols-3">
-            {p.highlights.map((h) => (
+            {p.highlights.map((h: string) => (
               <div key={h} className="bg-ink/60 p-4 text-center">
                 <span className="text-sm text-chalk">{h}</span>
               </div>
@@ -166,7 +169,7 @@ function ProjectModal({ p, onClose }: { p: Project; onClose: () => void }) {
 
           <div className="mt-8">
             <Button href="/#contact" variant="ghost" onClick={onClose}>
-              Request a briefing <span aria-hidden>→</span>
+              {reqLabel} <span aria-hidden>→</span>
             </Button>
           </div>
         </div>
@@ -178,19 +181,15 @@ function ProjectModal({ p, onClose }: { p: Project; onClose: () => void }) {
 
 export function Projects() {
   const [open, setOpen] = useState<Project | null>(null);
+  const c = useContent().projects;
 
   return (
     <section id="projects" className="relative z-10 scroll-mt-24 bg-void py-28 md:py-40">
-      <SectionHeading
-        index="13"
-        eyebrow="Future Projects"
-        title="Engineered behind closed doors."
-        intro="A glimpse of ventures currently under construction inside the lab. Open one."
-      />
+      <SectionHeading index="13" eyebrow={c.eyebrow} title={c.title} intro={c.intro} />
       <div className="container-x mt-16">
         <div className="grid gap-5 md:grid-cols-2">
-          {PROJECTS.map((p, i) => (
-            <HoloCard key={p.code} p={p} i={i} onOpen={() => setOpen(p)} />
+          {c.items.map((p, i) => (
+            <HoloCard key={p.code} p={p} i={i} onOpen={() => setOpen(p)} openLabel={c.open} />
           ))}
         </div>
       </div>

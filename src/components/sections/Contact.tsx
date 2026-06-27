@@ -4,14 +4,15 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Reveal } from "@/components/ui/Reveal";
 import { SITE } from "@/lib/site";
-
-const FIELDS = ["AI", "Software", "Automation", "Industrial", "Strategy", "Maritime"];
+import { useContent } from "@/lib/content";
 
 type Status = "idle" | "sending" | "sent" | "error";
 
 export function Contact() {
+  const t = useContent().contact;
+  const FIELDS = t.domains;
   const [status, setStatus] = useState<Status>("idle");
-  const [field, setField] = useState<string>("AI");
+  const [field, setField] = useState<string>(FIELDS[0]);
   const sent = status === "sent";
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -62,19 +63,15 @@ export function Contact() {
         <div className="grid gap-16 lg:grid-cols-2">
           <div>
             <Reveal>
-              <span className="eyebrow">Contact · Section 14</span>
+              <span className="eyebrow">{t.eyebrow}</span>
             </Reveal>
             <Reveal delay={0.08}>
               <h2 className="text-giant text-gradient mt-6 max-w-xl text-balance">
-                Let&apos;s build the improbable.
+                {t.title}
               </h2>
             </Reveal>
             <Reveal delay={0.16}>
-              <p className="mt-6 max-w-md text-balance text-mist">
-                We partner with a small number of founders, operators and
-                institutions each year. Tell us what you&apos;re trying to make
-                inevitable.
-              </p>
+              <p className="mt-6 max-w-md text-balance text-mist">{t.intro}</p>
             </Reveal>
             <Reveal delay={0.24}>
               <a
@@ -101,17 +98,14 @@ export function Contact() {
                       <span className="text-2xl text-accent-2">✓</span>
                     </div>
                     <h3 className="mt-6 font-display text-2xl text-chalk">
-                      Transmission received.
+                      {t.sentTitle}
                     </h3>
-                    <p className="mt-3 max-w-xs text-sm text-mist">
-                      Thank you — your message is on its way to our team. We
-                      respond to every signal worth answering.
-                    </p>
+                    <p className="mt-3 max-w-xs text-sm text-mist">{t.sentBody}</p>
                     <button
                       onClick={() => setStatus("idle")}
                       className="link-underline mt-8 text-sm text-mist"
                     >
-                      Send another
+                      {t.sendAnother}
                     </button>
                   </motion.div>
                 ) : (
@@ -123,16 +117,16 @@ export function Contact() {
                     exit={{ opacity: 0 }}
                     className="space-y-6"
                   >
-                    <Input name="name" label="Name" placeholder="Ada Lovelace" required />
+                    <Input name="name" label={t.name} placeholder={t.namePlaceholder} required />
                     <Input
                       name="email"
                       type="email"
-                      label="Email"
-                      placeholder="you@company.com"
+                      label={t.email}
+                      placeholder={t.emailPlaceholder}
                       required
                     />
                     <div>
-                      <label className="eyebrow mb-3 block">Domain</label>
+                      <label className="eyebrow mb-3 block">{t.domain}</label>
                       <div className="flex flex-wrap gap-2">
                         {FIELDS.map((f) => (
                           <button
@@ -151,12 +145,12 @@ export function Contact() {
                       </div>
                     </div>
                     <div>
-                      <label className="eyebrow mb-3 block">Message</label>
+                      <label className="eyebrow mb-3 block">{t.message}</label>
                       <textarea
                         name="message"
                         rows={4}
                         required
-                        placeholder="What are you building?"
+                        placeholder={t.messagePlaceholder}
                         className="w-full resize-none rounded-2xl border border-white/10 bg-void/60 px-4 py-3 text-sm text-chalk outline-none transition-colors placeholder:text-fog focus:border-accent/50"
                       />
                     </div>
@@ -181,17 +175,17 @@ export function Contact() {
                         {status === "sending" ? (
                           <>
                             <span className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-void/30 border-t-void" />
-                            Transmitting…
+                            {t.transmitting}
                           </>
                         ) : (
                           <>
-                            Transmit <span aria-hidden>→</span>
+                            {t.transmit} <span aria-hidden>→</span>
                           </>
                         )}
                       </button>
                       {status === "error" && (
                         <span className="text-sm text-accent-3">
-                          Couldn&apos;t send — please email{" "}
+                          {t.errorPrefix}{" "}
                           <a className="link-underline" href={`mailto:${SITE.email}`}>
                             {SITE.email}
                           </a>

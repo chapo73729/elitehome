@@ -3,6 +3,7 @@
 import dynamic from "next/dynamic";
 import { Reveal } from "@/components/ui/Reveal";
 import { CITIES } from "@/lib/site";
+import { useContent } from "@/lib/content";
 import { SceneBoundary } from "@/components/three/SceneBoundary";
 import { useSceneVisibility } from "@/hooks/useSceneVisibility";
 
@@ -13,6 +14,7 @@ const Globe = dynamic(() => import("@/components/three/Globe"), {
 
 export function GlobalNetwork() {
   const scene = useSceneVisibility<HTMLDivElement>();
+  const c = useContent().network;
   return (
     <section
       id="network"
@@ -22,7 +24,7 @@ export function GlobalNetwork() {
         <Reveal>
           <div className="flex items-center gap-4">
             <span className="font-mono text-xs text-accent">03</span>
-            <span className="eyebrow">Global Network</span>
+            <span className="eyebrow">{c.eyebrow}</span>
             <span className="h-px flex-1 bg-gradient-to-r from-white/15 to-transparent" />
           </div>
         </Reveal>
@@ -32,13 +34,12 @@ export function GlobalNetwork() {
         <div className="container-x lg:pr-0">
           <Reveal delay={0.08}>
             <h2 className="text-section-title text-gradient max-w-xl text-balance">
-              One operating fabric. Six anchors. Every timezone.
+              {c.title}
             </h2>
           </Reveal>
           <Reveal delay={0.16}>
             <p className="mt-6 max-w-md text-balance text-mist">
-              Data, capital and talent move continuously between our hubs —
-              routed, optimised and secured in real time.
+              {c.intro}
             </p>
           </Reveal>
 

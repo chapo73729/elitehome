@@ -2,43 +2,10 @@
 
 import { Reveal } from "@/components/ui/Reveal";
 import { CanvasMotif } from "@/components/ui/CanvasMotif";
-
-const CAPS = [
-  {
-    n: "05",
-    tag: "Artificial Intelligence",
-    title: "A facility for thinking machines.",
-    text: "Server halls, holographic readouts and floating code. Neural networks visualised at GPU scale — intelligence you can watch reason.",
-    variant: "ai" as const,
-    chips: ["Neural networks", "GPU clusters", "Inference"],
-  },
-  {
-    n: "06",
-    tag: "Software",
-    title: "Code that compiles the future.",
-    text: "Streaming pipelines, floating windows, live compilations. Algorithms rendered in real time — every commit a moving part of a larger machine.",
-    variant: "code" as const,
-    chips: ["Real-time systems", "Distributed runtime", "Edge"],
-  },
-  {
-    n: "07",
-    tag: "Industrial",
-    title: "Where atoms meet algorithms.",
-    text: "Robotic arms, instrumented factories, metal and sparks. Precision manufacturing governed by the same intelligence that runs our software.",
-    variant: "industrial" as const,
-    chips: ["Robotics", "Precision", "Telemetry"],
-  },
-  {
-    n: "08",
-    tag: "Maritime Operations",
-    title: "An ocean, read like a dataset.",
-    text: "Simulated seas, cargo routes, radar and GPS. Fleet intelligence that turns the unpredictable ocean into an optimised, navigable system.",
-    variant: "ocean" as const,
-    chips: ["Fleet AI", "Routing", "Logistics"],
-  },
-];
+import { useContent } from "@/lib/content";
 
 export function Capabilities() {
+  const CAPS = useContent().capabilities.items;
   return (
     <section id="lab" className="relative z-10 scroll-mt-24 bg-void">
       {CAPS.map((c, i) => (

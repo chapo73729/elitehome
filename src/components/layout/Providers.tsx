@@ -19,6 +19,7 @@ import { Konami } from "@/components/feature/Konami";
 import { TabTitle } from "@/components/feature/TabTitle";
 import { Shortcuts } from "@/components/feature/Shortcuts";
 import { initAccent } from "@/lib/accent";
+import { initLang } from "@/lib/lang";
 
 /**
  * Global site chrome shared by every route: smooth scroll, custom cursor,
@@ -31,6 +32,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     initAccent();
+    initLang();
   }, []);
 
   return (

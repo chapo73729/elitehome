@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/Button";
 import { CanvasMotif } from "@/components/ui/CanvasMotif";
 import { SceneBoundary } from "@/components/three/SceneBoundary";
 import { useSceneVisibility } from "@/hooks/useSceneVisibility";
-import type { INDUSTRIES } from "@/lib/site";
+import { useContent } from "@/lib/content";
 
 const Ocean3D = dynamic(() => import("@/components/three/Ocean3D"), { ssr: false });
 const NeuralCore = dynamic(() => import("@/components/three/NeuralCore"), { ssr: false });
@@ -24,19 +24,24 @@ const SCENE_BY_ID: Record<string, any> = {
   maritime: Ocean3D,
 };
 
-type Industry = (typeof INDUSTRIES)[number];
-
 const EASE = [0.16, 1, 0.3, 1] as const;
 
 export function IndustryDetail({
-  industry,
-  prev,
-  next,
+  id,
+  prevId,
+  nextId,
 }: {
-  industry: Industry;
-  prev: { id: string; title: string };
-  next: { id: string; title: string };
+  id: string;
+  prevId: string;
+  nextId: string;
 }) {
+  const c = useContent();
+  const L = c.industry;
+  const items = c.industries.items;
+  const industry = items.find((x) => x.id === id) ?? items[0];
+  const prev = items.find((x) => x.id === prevId) ?? items[0];
+  const next = items.find((x) => x.id === nextId) ?? items[0];
+
   const accent = industry.accent;
   const scene = useSceneVisibility<HTMLDivElement>({ mountMargin: "600px 0px" });
   const Scene3D = SCENE_BY_ID[industry.id] ?? null;
@@ -68,7 +73,7 @@ export function IndustryDetail({
               href="/industries"
               className="link-underline inline-flex items-center gap-2 font-mono text-xs tracking-widest text-mist"
             >
-              ← All industries
+              {L.all}
             </Link>
           </Reveal>
 
@@ -88,7 +93,7 @@ export function IndustryDetail({
               transition={{ duration: 0.8, ease: EASE, delay: 0.15 }}
               className="eyebrow"
             >
-              Industry
+              {L.label}
             </motion.span>
           </div>
 
@@ -126,7 +131,7 @@ export function IndustryDetail({
                   className="inline-block h-2 w-2 rounded-full"
                   style={{ background: accent }}
                 />
-                <span className="eyebrow">Overview</span>
+                <span className="eyebrow">{L.overview}</span>
               </div>
             </Reveal>
           </div>
@@ -166,7 +171,7 @@ export function IndustryDetail({
         <div className="container-x">
           <Reveal>
             <div className="flex items-center gap-4">
-              <span className="eyebrow">Capabilities</span>
+              <span className="eyebrow">{L.capabilities}</span>
               <span className="h-px flex-1 bg-gradient-to-r from-white/15 to-transparent" />
             </div>
           </Reveal>
@@ -193,7 +198,7 @@ export function IndustryDetail({
         <div className="container-x">
           <Reveal>
             <h2 className="text-section-title text-gradient max-w-2xl text-balance">
-              How we operate.
+              {L.howWeOperate}
             </h2>
           </Reveal>
           <div className="mt-14 grid gap-10 md:grid-cols-4">
@@ -226,13 +231,13 @@ export function IndustryDetail({
         <div className="container-x relative text-center">
           <Reveal>
             <h2 className="text-giant text-gradient mx-auto max-w-3xl text-balance">
-              Build {industry.title.toLowerCase()} with ARDLABS.
+              {L.ctaPrefix} {industry.title.toLowerCase()} {L.ctaSuffix}
             </h2>
           </Reveal>
           <Reveal delay={0.1}>
             <div className="mt-10 flex justify-center">
               <Button href="/#contact" variant="primary">
-                Start a conversation <span aria-hidden>→</span>
+                {L.startConversation} <span aria-hidden>→</span>
               </Button>
             </div>
           </Reveal>
@@ -246,7 +251,7 @@ export function IndustryDetail({
             href={`/industries/${prev.id}`}
             className="group bg-ink p-8 transition-colors duration-500 hover:bg-smoke"
           >
-            <div className="font-mono text-xs tracking-widest text-fog">← PREVIOUS</div>
+            <div className="font-mono text-xs tracking-widest text-fog">{L.prev}</div>
             <div className="mt-3 font-display text-xl text-mist transition-colors group-hover:text-chalk">
               {prev.title}
             </div>
@@ -255,7 +260,7 @@ export function IndustryDetail({
             href={`/industries/${next.id}`}
             className="group bg-ink p-8 text-right transition-colors duration-500 hover:bg-smoke"
           >
-            <div className="font-mono text-xs tracking-widest text-fog">NEXT →</div>
+            <div className="font-mono text-xs tracking-widest text-fog">{L.next}</div>
             <div className="mt-3 font-display text-xl text-mist transition-colors group-hover:text-chalk">
               {next.title}
             </div>
