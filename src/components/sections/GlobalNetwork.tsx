@@ -6,6 +6,7 @@ import { CITIES } from "@/lib/site";
 import { useContent } from "@/lib/content";
 import { SceneBoundary } from "@/components/three/SceneBoundary";
 import { useSceneVisibility } from "@/hooks/useSceneVisibility";
+import { NetworkHud } from "./NetworkHud";
 
 const Globe = dynamic(() => import("@/components/three/Globe"), {
   ssr: false,
@@ -63,6 +64,9 @@ export function GlobalNetwork() {
           <SceneBoundary>
             {scene.mounted && <Globe frameloop={scene.frameloop} />}
           </SceneBoundary>
+          <div className="absolute bottom-4 left-4 hidden md:block">
+            <NetworkHud />
+          </div>
         </div>
       </div>
     </section>

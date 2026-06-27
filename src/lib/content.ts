@@ -38,6 +38,16 @@ const en = {
     lines: ["We do not predict the future.", "We engineer it — privately,", "with a long horizon."],
     para: "Every venture begins as a hypothesis and ends as infrastructure. We hold the rare positions — patient capital, deep engineering and a long-term view.",
   },
+  cinematic: {
+    tag: "MANIFESTO",
+    lines: [
+      "Most companies optimise quarters.",
+      "We compound decades.",
+      "Intelligence, infrastructure, and patience —",
+      "engineered into one operating system.",
+    ],
+    outro: "This is the laboratory of the future.",
+  },
   core: {
     eyebrow: "Interactive AI Core",
     title: "A living intelligence, wired from first principles.",
@@ -455,6 +465,16 @@ const fr: DeepPartial<Content> = {
     tag: "ARDLABS.AI · COMPOSITION DE LA VISION",
     lines: ["Nous ne prédisons pas le futur.", "Nous le concevons — en privé,", "avec un horizon long."],
     para: "Chaque projet débute comme une hypothèse et finit comme une infrastructure. Nous occupons des positions rares — capital patient, ingénierie de pointe et vision de long terme.",
+  },
+  cinematic: {
+    tag: "MANIFESTE",
+    lines: [
+      "La plupart des entreprises optimisent des trimestres.",
+      "Nous composons des décennies.",
+      "Intelligence, infrastructure et patience —",
+      "réunies en un seul système d'exploitation.",
+    ],
+    outro: "Voici le laboratoire du futur.",
   },
   core: {
     eyebrow: "Cœur IA interactif",

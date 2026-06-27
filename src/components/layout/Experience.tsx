@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Loader } from "@/components/loader/Loader";
 import { Hero } from "@/components/sections/Hero";
 import { Vision } from "@/components/sections/Vision";
+import { Cinematic } from "@/components/sections/Cinematic";
 import { AICore } from "@/components/sections/AICore";
 import { GlobalNetwork } from "@/components/sections/GlobalNetwork";
 import { Industries } from "@/components/sections/Industries";
@@ -28,6 +29,7 @@ export function Experience() {
       <main className="relative">
         <Hero ready={ready} />
         <Vision />
+        <Cinematic />
         <AICore />
         <GlobalNetwork />
         <Industries />
