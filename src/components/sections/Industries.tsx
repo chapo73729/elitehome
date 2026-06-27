@@ -118,6 +118,21 @@ export function Industries() {
             <IndustryCard key={ind.id} industry={ind} i={i} />
           ))}
         </div>
+
+        <Reveal delay={0.1}>
+          <div className="mt-10 flex justify-center">
+            <Link
+              href="/industries"
+              data-cursor
+              className="group inline-flex items-center gap-2 rounded-full hairline px-6 py-3 text-sm text-mist transition-colors duration-500 hover:border-white/25 hover:text-chalk"
+            >
+              View all six industries
+              <span className="transition-transform duration-500 group-hover:translate-x-1">
+                →
+              </span>
+            </Link>
+          </div>
+        </Reveal>
       </div>
     </section>
   );

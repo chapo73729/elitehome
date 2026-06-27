@@ -2,6 +2,8 @@
 
 import dynamic from "next/dynamic";
 import { Reveal } from "@/components/ui/Reveal";
+import { SceneBoundary } from "@/components/three/SceneBoundary";
+import { useSceneVisibility } from "@/hooks/useSceneVisibility";
 
 const Lab = dynamic(() => import("@/components/three/ResearchLab"), {
   ssr: false,
@@ -15,13 +17,16 @@ const READOUTS = [
 ];
 
 export function ResearchLab() {
+  const scene = useSceneVisibility<HTMLDivElement>();
   return (
     <section
       id="research"
       className="relative z-10 min-h-[100svh] overflow-hidden bg-void py-28 md:py-36"
     >
-      <div className="absolute inset-0">
-        <Lab />
+      <div ref={scene.ref} className="absolute inset-0">
+        <SceneBoundary>
+          {scene.mounted && <Lab frameloop={scene.frameloop} />}
+        </SceneBoundary>
       </div>
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(75%_70%_at_50%_50%,transparent_35%,#050505_92%)]" />
 

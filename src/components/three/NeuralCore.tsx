@@ -154,10 +154,15 @@ function Neurons({ nodeCount = 90 }: { nodeCount?: number }) {
   );
 }
 
-export default function NeuralCore() {
+export default function NeuralCore({
+  frameloop = "always",
+}: {
+  frameloop?: "always" | "never";
+}) {
   return (
     <Canvas
       className="!absolute inset-0"
+      frameloop={frameloop}
       dpr={[1, 1.75]}
       gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
       camera={{ position: [0, 0, 5.2], fov: 50 }}

@@ -40,6 +40,15 @@ export function Navbar({ ready = true }: { ready?: boolean }) {
     return () => io.disconnect();
   }, [ready]);
 
+  // close the mobile menu on Escape
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setOpen(false);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, []);
+
   const go = (href: string) => {
     setOpen(false);
     // when off the homepage, navigate home (with hash) instead of scrolling
@@ -89,6 +98,7 @@ export function Navbar({ ready = true }: { ready?: boolean }) {
                 <button
                   key={item.href}
                   onClick={() => go(item.href)}
+                  aria-current={isActive ? "true" : undefined}
                   className={`relative rounded-full px-4 py-1.5 text-sm transition-colors duration-300 ${
                     isActive ? "text-void" : "text-mist hover:text-chalk"
                   }`}
@@ -121,7 +131,8 @@ export function Navbar({ ready = true }: { ready?: boolean }) {
           <button
             onClick={() => setOpen((o) => !o)}
             className="relative z-[130] flex h-10 w-10 flex-col items-center justify-center gap-1.5 md:hidden"
-            aria-label="Menu"
+            aria-label={open ? "Close menu" : "Open menu"}
+            aria-expanded={open}
           >
             <span
               className={`h-px w-6 bg-chalk transition-transform duration-300 ${

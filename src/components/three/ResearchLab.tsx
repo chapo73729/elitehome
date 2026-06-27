@@ -168,10 +168,15 @@ function Rig() {
   );
 }
 
-export default function ResearchLab() {
+export default function ResearchLab({
+  frameloop = "always",
+}: {
+  frameloop?: "always" | "never";
+}) {
   return (
     <Canvas
       className="!absolute inset-0"
+      frameloop={frameloop}
       dpr={[1, 1.75]}
       gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
       camera={{ position: [0, 0.5, 7], fov: 45 }}

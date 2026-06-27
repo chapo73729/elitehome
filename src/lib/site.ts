@@ -279,24 +279,40 @@ export const PROJECTS = [
     name: "Helix Core",
     field: "Artificial Intelligence",
     text: "A self-supervising reasoning engine for high-stakes decision environments.",
+    detail:
+      "Helix Core is an autonomous reasoning engine designed for environments where a wrong call is unacceptable — capital allocation, infrastructure control, crisis response. It plans, acts, audits its own reasoning and escalates to humans only when confidence drops below threshold.",
+    highlights: ["Self-auditing reasoning", "Sub-second decisions", "Human escalation paths"],
+    stage: "Stage III · Pilot",
   },
   {
     code: "PRJ—M12",
     name: "Tideglass",
     field: "Maritime Operations",
     text: "Real-time fleet intelligence reducing transit cost across global shipping lanes.",
+    detail:
+      "Tideglass fuses radar, AIS, weather and market data into a single live model of the ocean, then routes fleets for the optimal balance of time, fuel and emissions. Early deployments cut transit cost by double digits across major lanes.",
+    highlights: ["−18% transit cost", "Live fleet model", "Emissions-aware routing"],
+    stage: "Stage IV · Scaling",
   },
   {
     code: "PRJ—R04",
     name: "Foundry",
     field: "Industrial Services",
     text: "Instrumented micro-factories that reconfigure themselves around demand.",
+    detail:
+      "Foundry is a blueprint for micro-factories that sense demand and physically reconfigure their production lines to meet it — robotic cells, digital twins and predictive maintenance governed by the same intelligence that runs our software.",
+    highlights: ["Self-reconfiguring lines", "Digital twin", "−35% downtime"],
+    stage: "Stage II · Prototype",
   },
   {
     code: "PRJ—S77",
     name: "Continuum",
     field: "Software",
     text: "A distributed runtime powering the next generation of latency-zero applications.",
+    detail:
+      "Continuum is a distributed runtime that places computation at the edge, microseconds from the user. It powers applications that feel instantaneous anywhere on earth, with a developer experience as simple as deploying to a single machine.",
+    highlights: ["Edge-native runtime", "<1ms response", "Single-binary deploy"],
+    stage: "Stage III · Pilot",
   },
 ] as const;
 

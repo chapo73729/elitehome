@@ -225,10 +225,15 @@ function Scene() {
   );
 }
 
-export default function Globe() {
+export default function Globe({
+  frameloop = "always",
+}: {
+  frameloop?: "always" | "never";
+}) {
   return (
     <Canvas
       className="!absolute inset-0"
+      frameloop={frameloop}
       dpr={[1, 1.75]}
       gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
       camera={{ position: [0, 0.6, 6], fov: 45 }}

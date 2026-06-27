@@ -3,6 +3,8 @@
 import dynamic from "next/dynamic";
 import { Reveal } from "@/components/ui/Reveal";
 import { CITIES } from "@/lib/site";
+import { SceneBoundary } from "@/components/three/SceneBoundary";
+import { useSceneVisibility } from "@/hooks/useSceneVisibility";
 
 const Globe = dynamic(() => import("@/components/three/Globe"), {
   ssr: false,
@@ -10,6 +12,7 @@ const Globe = dynamic(() => import("@/components/three/Globe"), {
 });
 
 export function GlobalNetwork() {
+  const scene = useSceneVisibility<HTMLDivElement>();
   return (
     <section
       id="network"
@@ -52,8 +55,13 @@ export function GlobalNetwork() {
         </div>
 
         {/* globe canvas */}
-        <div className="relative h-[60vh] min-h-[420px] w-full lg:h-[78vh]">
-          <Globe />
+        <div
+          ref={scene.ref}
+          className="relative h-[60vh] min-h-[420px] w-full lg:h-[78vh]"
+        >
+          <SceneBoundary>
+            {scene.mounted && <Globe frameloop={scene.frameloop} />}
+          </SceneBoundary>
         </div>
       </div>
     </section>

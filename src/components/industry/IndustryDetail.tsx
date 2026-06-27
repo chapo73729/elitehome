@@ -38,7 +38,7 @@ export function IndustryDetail({
         <div className="container-x relative z-10">
           <Reveal>
             <Link
-              href="/#industries"
+              href="/industries"
               className="link-underline inline-flex items-center gap-2 font-mono text-xs tracking-widest text-mist"
             >
               ← All industries

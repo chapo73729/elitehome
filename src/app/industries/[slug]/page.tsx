@@ -46,11 +46,44 @@ export default async function IndustryPage({
   const prev = INDUSTRIES[(idx - 1 + INDUSTRIES.length) % INDUSTRIES.length];
   const next = INDUSTRIES[(idx + 1) % INDUSTRIES.length];
 
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Service",
+        name: industry.title,
+        description: industry.overview,
+        provider: { "@type": "Organization", name: SITE.legal, url: SITE.url },
+        areaServed: "Worldwide",
+        url: `${SITE.url}/industries/${industry.id}`,
+      },
+      {
+        "@type": "BreadcrumbList",
+        itemListElement: [
+          { "@type": "ListItem", position: 1, name: "Home", item: SITE.url },
+          { "@type": "ListItem", position: 2, name: "Industries", item: `${SITE.url}/industries` },
+          {
+            "@type": "ListItem",
+            position: 3,
+            name: industry.title,
+            item: `${SITE.url}/industries/${industry.id}`,
+          },
+        ],
+      },
+    ],
+  };
+
   return (
-    <IndustryDetail
-      industry={industry}
-      prev={{ id: prev.id, title: prev.title }}
-      next={{ id: next.id, title: next.title }}
-    />
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <IndustryDetail
+        industry={industry}
+        prev={{ id: prev.id, title: prev.title }}
+        next={{ id: next.id, title: next.title }}
+      />
+    </>
   );
 }

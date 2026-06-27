@@ -57,7 +57,11 @@ function Effects({ tier }: { tier: Tier }) {
   );
 }
 
-export default function HeroScene() {
+export default function HeroScene({
+  frameloop = "always",
+}: {
+  frameloop?: "always" | "never";
+}) {
   const tier = useDeviceTier();
   const planetCount = tier === "low" ? 5500 : tier === "mid" ? 9000 : 15000;
   const starCount = tier === "low" ? 700 : tier === "mid" ? 1300 : 2000;
@@ -65,6 +69,7 @@ export default function HeroScene() {
   return (
     <Canvas
       className="!absolute inset-0"
+      frameloop={frameloop}
       dpr={tier === "low" ? [1, 1.25] : [1, 1.8]}
       gl={{
         antialias: false,

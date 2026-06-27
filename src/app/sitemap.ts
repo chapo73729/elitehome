@@ -10,6 +10,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "monthly",
       priority: 1,
     },
+    {
+      url: `${SITE.url}/industries`,
+      lastModified: now,
+      changeFrequency: "monthly",
+      priority: 0.9,
+    },
     ...INDUSTRIES.map((i) => ({
       url: `${SITE.url}/industries/${i.id}`,
       lastModified: now,

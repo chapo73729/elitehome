@@ -4,6 +4,8 @@ import dynamic from "next/dynamic";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/Button";
 import { HeroHud } from "./HeroHud";
+import { SceneBoundary } from "@/components/three/SceneBoundary";
+import { useSceneVisibility } from "@/hooks/useSceneVisibility";
 
 const HeroScene = dynamic(() => import("@/components/three/HeroScene"), {
   ssr: false,
@@ -13,14 +15,17 @@ const HeroScene = dynamic(() => import("@/components/three/HeroScene"), {
 const EASE = [0.16, 1, 0.3, 1] as const;
 
 export function Hero({ ready }: { ready: boolean }) {
+  const scene = useSceneVisibility<HTMLDivElement>({ mountMargin: "800px 0px" });
   return (
     <section
       id="hero"
       className="relative flex min-h-[100svh] items-center justify-center overflow-hidden"
     >
       {/* 3D field */}
-      <div className="absolute inset-0">
-        <HeroScene />
+      <div ref={scene.ref} className="absolute inset-0">
+        <SceneBoundary>
+          {scene.mounted && <HeroScene frameloop={scene.frameloop} />}
+        </SceneBoundary>
       </div>
 
       {/* radial floor glow */}
