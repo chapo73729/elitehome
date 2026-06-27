@@ -10,6 +10,9 @@ import { audio } from "@/lib/audio";
 import { startShowreel } from "@/lib/showreel";
 import { ACCENTS, applyAccent } from "@/lib/accent";
 import { toast, copyText } from "@/lib/toast";
+import { togglePerf } from "@/lib/perf";
+import { openTerminal } from "@/components/feature/Terminal";
+import { unlock } from "@/lib/achievements";
 
 type Cmd = { id: string; label: string; group: string; hint?: string; run: () => void };
 
@@ -39,7 +42,9 @@ export function CommandPalette() {
       list.push({ id: "ind" + i.id, label: i.title, group: "Industries", run: () => router.push(`/industries/${i.id}`) })
     );
     list.push({ id: "ind-all", label: "All industries", group: "Industries", run: () => router.push("/industries") });
-    list.push({ id: "showreel", label: "Play showreel", group: "Actions", hint: "auto-tour", run: () => { router.push("/"); setTimeout(startShowreel, 400); } });
+    list.push({ id: "showreel", label: "Play showreel", group: "Actions", hint: "auto-tour", run: () => { unlock("spectator"); router.push("/"); setTimeout(startShowreel, 400); } });
+    list.push({ id: "terminal", label: "Open console", group: "Actions", hint: "~", run: () => openTerminal() });
+    list.push({ id: "perf", label: "Toggle performance mode", group: "Actions", run: () => { togglePerf(); unlock("minimalist"); toast("Performance mode toggled", "⚡"); } });
     list.push({ id: "sound", label: "Toggle sound", group: "Actions", run: () => audio.toggle() });
     list.push({
       id: "copy",
@@ -50,7 +55,7 @@ export function CommandPalette() {
       },
     });
     ACCENTS.forEach((a) =>
-      list.push({ id: "acc" + a.id, label: `Accent · ${a.name}`, group: "Theme", run: () => { applyAccent(a.id); toast(`${a.name} accent`, "◆"); } })
+      list.push({ id: "acc" + a.id, label: `Accent · ${a.name}`, group: "Theme", run: () => { applyAccent(a.id); unlock("chameleon"); toast(`${a.name} accent`, "◆"); } })
     );
     return list;
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -78,6 +83,7 @@ export function CommandPalette() {
 
   useEffect(() => {
     if (open) {
+      unlock("palette");
       setQ("");
       setSel(0);
       setTimeout(() => inputRef.current?.focus(), 30);

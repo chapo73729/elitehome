@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { usePerf } from "@/lib/perf";
 
 export type Tier = "low" | "mid" | "high";
 
@@ -10,6 +11,7 @@ export type Tier = "low" | "mid" | "high";
  */
 export function useDeviceTier(): Tier {
   const [tier, setTier] = useState<Tier>("high");
+  const perf = usePerf();
 
   useEffect(() => {
     const cores = navigator.hardwareConcurrency || 4;
@@ -26,5 +28,6 @@ export function useDeviceTier(): Tier {
     }
   }, []);
 
-  return tier;
+  // Performance mode always forces the lightest tier.
+  return perf ? "low" : tier;
 }

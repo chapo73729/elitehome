@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { ACCENTS, applyAccent, onAccent } from "@/lib/accent";
+import { unlock } from "@/lib/achievements";
 
 export function AccentSwitcher() {
   const [active, setActive] = useState("quantum");
@@ -14,7 +15,10 @@ export function AccentSwitcher() {
         {ACCENTS.map((a) => (
           <button
             key={a.id}
-            onClick={() => applyAccent(a.id)}
+            onClick={() => {
+              applyAccent(a.id);
+              unlock("chameleon");
+            }}
             data-cursor
             aria-label={a.name}
             aria-pressed={active === a.id}

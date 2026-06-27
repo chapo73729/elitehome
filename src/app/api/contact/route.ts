@@ -12,7 +12,31 @@ import { NextResponse } from "next/server";
  */
 export const runtime = "nodejs";
 
+// ---- basic in-memory rate limiting (per instance) ----
+const WINDOW_MS = 10 * 60 * 1000; // 10 minutes
+const MAX_HITS = 5;
+const hits = new Map<string, { count: number; reset: number }>();
+
+function rateLimited(ip: string): boolean {
+  const now = Date.now();
+  const entry = hits.get(ip);
+  if (!entry || now > entry.reset) {
+    hits.set(ip, { count: 1, reset: now + WINDOW_MS });
+    return false;
+  }
+  entry.count += 1;
+  return entry.count > MAX_HITS;
+}
+
 export async function POST(req: Request) {
+  const ip =
+    req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
+    req.headers.get("x-real-ip") ||
+    "unknown";
+  if (rateLimited(ip)) {
+    return NextResponse.json({ ok: false, error: "rate_limited" }, { status: 429 });
+  }
+
   let body: Record<string, unknown>;
   try {
     body = await req.json();
@@ -27,7 +51,15 @@ export async function POST(req: Request) {
   const honeypot = String(body.company ?? "").trim(); // spam trap
 
   if (honeypot) return NextResponse.json({ ok: true }); // silently drop bots
-  if (!name || !email || !message || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
+  if (
+    !name ||
+    !email ||
+    !message ||
+    name.length > 120 ||
+    email.length > 160 ||
+    message.length > 4000 ||
+    !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)
+  ) {
     return NextResponse.json({ ok: false, error: "invalid" }, { status: 422 });
   }
 

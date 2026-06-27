@@ -18,8 +18,12 @@ import { ShowreelControl } from "@/components/feature/ShowreelControl";
 import { Konami } from "@/components/feature/Konami";
 import { TabTitle } from "@/components/feature/TabTitle";
 import { Shortcuts } from "@/components/feature/Shortcuts";
+import { PWARegister } from "./PWARegister";
+import { Terminal } from "@/components/feature/Terminal";
 import { initAccent } from "@/lib/accent";
 import { initLang } from "@/lib/lang";
+import { initPerf } from "@/lib/perf";
+import { initAchievements } from "@/lib/achievements";
 
 /**
  * Global site chrome shared by every route: smooth scroll, custom cursor,
@@ -33,6 +37,8 @@ export function Providers({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     initAccent();
     initLang();
+    initPerf();
+    initAchievements();
   }, []);
 
   return (
@@ -51,6 +57,8 @@ export function Providers({ children }: { children: React.ReactNode }) {
       <Konami />
       <CommandPalette />
       <ContextMenu />
+      <Terminal />
+      <PWARegister />
       <Toaster />
       <ShowreelControl />
       <CookieConsent />

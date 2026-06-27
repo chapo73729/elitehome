@@ -3,6 +3,7 @@
 import { useEffect } from "react";
 import { audio } from "@/lib/audio";
 import { toast } from "@/lib/toast";
+import { unlock } from "@/lib/achievements";
 
 const SEQ = [
   "ArrowUp", "ArrowUp", "ArrowDown", "ArrowDown",
@@ -34,6 +35,7 @@ export function Konami() {
 }
 
 function fire() {
+  unlock("konami");
   toast("HYPERDRIVE ENGAGED", "⚡");
   try {
     audio.enable();
