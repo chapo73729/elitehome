@@ -34,7 +34,7 @@ export default function Careers() {
   return (
     <main className="relative">
       <section className="relative overflow-hidden pb-10 pt-40">
-        <PageHeaderFX accent="#b48cff" />
+        <PageHeaderFX accent="#4f8cff" />
         <div className="pointer-events-none absolute -top-40 left-1/2 h-[50vh] w-[50vh] -translate-x-1/2 rounded-full bg-accent/12 blur-[150px]" />
         <div className="container-x relative max-w-4xl">
           <Link href="/" className="link-underline font-mono text-xs tracking-widest text-mist">
@@ -46,7 +46,7 @@ export default function Careers() {
           </h1>
           <p className="mt-6 max-w-2xl text-balance text-lg text-mist">
             We hire a small number of exceptional engineers, scientists and
-            designers — people who would rather build one load-bearing thing than
+            designers — people who would rather build one dependable thing than
             ten impressive ones.
           </p>
         </div>

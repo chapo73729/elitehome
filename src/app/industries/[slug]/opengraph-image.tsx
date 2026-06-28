@@ -17,7 +17,7 @@ export default async function Image({
   const { slug } = await params;
   const industry = INDUSTRIES.find((i) => i.id === slug);
   const title = industry?.title ?? SITE.legal;
-  const accent = industry?.accent ?? "#5b8cff";
+  const accent = industry?.accent ?? "#4f8cff";
   const index = industry?.index ?? "";
 
   return new ImageResponse(

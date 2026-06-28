@@ -19,7 +19,7 @@ export default function Og() {
           justifyContent: "center",
           background: "#050505",
           backgroundImage:
-            "radial-gradient(60% 60% at 50% 120%, rgba(91,140,255,0.35), transparent 70%)",
+            "radial-gradient(60% 60% at 50% 120%, rgba(79,140,255,0.35), transparent 70%)",
           color: "#fff",
           fontFamily: "sans-serif",
         }}
@@ -34,7 +34,7 @@ export default function Og() {
           }}
         >
           ARDLABS
-          <span style={{ fontSize: 48, color: "#5b8cff", marginTop: 18 }}>®</span>
+          <span style={{ fontSize: 48, color: "#4f8cff", marginTop: 18 }}>®</span>
         </div>
         <div
           style={{

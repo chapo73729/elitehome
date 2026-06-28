@@ -5,7 +5,7 @@ import { Contact } from "@/components/sections/Contact";
 export const metadata: Metadata = {
   title: "Contact",
   description:
-    "Engage ARDLABS® — start a conversation about artificial intelligence, software, automation or physical infrastructure.",
+    "Engage ARDLABS® — start a conversation about designing and building software, platforms, data & AI, and cloud.",
   alternates: { canonical: "/contact" },
   openGraph: {
     title: "Contact · ARDLABS®",

@@ -22,10 +22,10 @@ export function TechStack() {
               >
                 {/* continuous staggered glow — the grid breathes at rest */}
                 <span
-                  className="pointer-events-none absolute inset-0 bg-[radial-gradient(120%_120%_at_50%_120%,rgba(91,140,255,0.16),transparent_60%)]"
+                  className="pointer-events-none absolute inset-0 bg-[radial-gradient(120%_120%_at_50%_120%,rgba(79,140,255,0.16),transparent_60%)]"
                   style={{ animation: `cell-pulse 6s ease-in-out ${(i % 8) * 0.55}s infinite` }}
                 />
-                <span className="absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100 bg-[radial-gradient(120%_120%_at_50%_120%,rgba(122,242,224,0.22),transparent_60%)]" />
+                <span className="absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100 bg-[radial-gradient(120%_120%_at_50%_120%,rgba(107,157,255,0.22),transparent_60%)]" />
                 <span className="relative font-display text-xl font-medium text-chalk/90 transition-all duration-500 group-hover:-translate-y-1 group-hover:text-chalk">
                   {t}
                 </span>

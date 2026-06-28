@@ -5,11 +5,11 @@ import { PageHeaderFX } from "@/components/ui/PageHeaderFX";
 export const metadata: Metadata = {
   title: "Approach",
   description:
-    "How ARDLABS® works — a long-horizon method that turns a hypothesis into load-bearing infrastructure.",
+    "How ARDLABS® works — a studio method that turns a problem into reliable software, shipped and supported.",
   alternates: { canonical: "/approach" },
   openGraph: {
     title: "Approach · ARDLABS®",
-    description: "How we turn a hypothesis into load-bearing infrastructure.",
+    description: "How we turn a problem into reliable software, shipped end to end.",
     url: "/approach",
   },
 };
@@ -17,28 +17,28 @@ export const metadata: Metadata = {
 const PHASES = [
   {
     n: "01",
-    t: "Hypothesis",
-    d: "Every venture begins as a sharp, falsifiable thesis about how an industry will change — and what has to be built for that change to become inevitable.",
+    t: "Frame",
+    d: "We start by framing the real problem, the constraints and the bet — not the feature list. Clarity here is what keeps the rest of the project honest.",
   },
   {
     n: "02",
-    t: "Research",
-    d: "We pressure-test the thesis against reality: prototypes, evaluations and the unglamorous work of measuring rather than admiring. Most ideas are corrected here.",
+    t: "Prototype",
+    d: "We pressure-test the idea against reality: prototypes and evaluations that exercise the riskiest assumptions first. Most directions are corrected here, cheaply.",
   },
   {
     n: "03",
-    t: "Engineer",
-    d: "What survives is built to the second standard — load-bearing, observable and dependable at its worst, not just capable on average.",
+    t: "Design & build",
+    d: "What survives is designed and engineered end to end — interfaces that are clear and code that stays fast, secure and legible for years.",
   },
   {
     n: "04",
-    t: "Deploy",
-    d: "We ship into production with guardrails, fallbacks and the operational tooling that lets a system be relied upon, then learn from how it behaves under load.",
+    t: "Harden & ship",
+    d: "We test, instrument and secure before launch, then ship into production with guardrails, fallbacks and the observability that lets a system be relied upon.",
   },
   {
     n: "05",
-    t: "Scale & own",
-    d: "Proven ventures are scaled across our fabric and held privately — compounding over years rather than being optimised for an exit.",
+    t: "Support",
+    d: "We stay for the part that matters: maintaining, measuring and improving the software well beyond launch, so it keeps working as it grows.",
   },
 ];
 
@@ -53,7 +53,7 @@ export default function Approach() {
   return (
     <main className="relative">
       <section className="relative overflow-hidden pb-10 pt-40">
-        <PageHeaderFX accent="#7af2e0" />
+        <PageHeaderFX accent="#4f8cff" />
         <div className="pointer-events-none absolute -top-40 left-1/2 h-[50vh] w-[50vh] -translate-x-1/2 rounded-full bg-accent/12 blur-[150px]" />
         <div className="container-x relative max-w-4xl">
           <Link href="/" className="link-underline font-mono text-xs tracking-widest text-mist">
@@ -61,12 +61,12 @@ export default function Approach() {
           </Link>
           <p className="eyebrow mt-8">Approach</p>
           <h1 className="text-giant text-gradient mt-4 max-w-3xl text-balance">
-            Hypothesis to infrastructure.
+            Problem to product.
           </h1>
           <p className="mt-6 max-w-2xl text-balance text-lg text-mist">
-            Every venture begins as a hypothesis and ends as infrastructure. The
-            method between those two points is deliberate, and it&rsquo;s the same
-            across every domain we work in.
+            Every project begins as a problem and ends as a product that holds
+            up. The method between those two points is deliberate, and it&rsquo;s
+            the same across every pole we work in.
           </p>
         </div>
       </section>
@@ -106,7 +106,7 @@ export default function Approach() {
       <section className="relative z-10 bg-void py-20">
         <div className="container-x max-w-3xl text-center">
           <h2 className="text-section-title text-gradient text-balance">
-            Have a problem worth a decade?
+            Have something worth building right?
           </h2>
           <div className="mt-8 flex flex-wrap justify-center gap-4">
             <Link

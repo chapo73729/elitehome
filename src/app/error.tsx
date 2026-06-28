@@ -24,8 +24,8 @@ export default function Error({
         <span className="eyebrow">System anomaly</span>
         <h1 className="text-giant text-gradient mt-6 select-none">Signal interrupted.</h1>
         <p className="mx-auto mt-6 max-w-md text-balance text-mist">
-          An unexpected error disrupted this view. The lab is stable — please try
-          again.
+          An unexpected error disrupted this view. The system is stable — please
+          try again.
         </p>
         <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
           <button

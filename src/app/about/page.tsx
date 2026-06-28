@@ -67,10 +67,10 @@ export default function About() {
         <div className="container-x max-w-3xl space-y-6">
           <h2 className="font-display text-2xl font-semibold text-chalk">Why we exist</h2>
           <p className="leading-relaxed text-mist">
-            Most studios ship features. We engineer products. Every project
-            starts as a hard question — what to build, why, and how it will hold
-            up — and ends as software, a platform or an AI system that works in
-            production and keeps working long after launch.
+            Most studios stop at features. We engineer the whole product. Every
+            project starts as a hard question — what to build, why, and how it
+            will hold up — and ends as software, a platform or an AI system that
+            works in production and keeps working long after launch.
           </p>
           <p className="leading-relaxed text-mist">
             Digital engineering is the umbrella. Under it, four poles cover an

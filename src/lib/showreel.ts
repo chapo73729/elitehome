@@ -3,13 +3,10 @@ import { scrollToTarget } from "@/components/layout/SmoothScroll";
 
 const SECTIONS = [
   "hero",
-  "vision",
+  "manifesto",
   "core",
   "network",
   "industries",
-  "lab",
-  "research",
-  "stack",
   "contact",
 ];
 

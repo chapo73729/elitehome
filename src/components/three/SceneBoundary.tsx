@@ -24,7 +24,7 @@ export class SceneBoundary extends React.Component<
     if (this.state.hasError) {
       return (
         this.props.fallback ?? (
-          <div className="absolute inset-0 bg-[radial-gradient(60%_60%_at_50%_50%,rgba(91,140,255,0.12),transparent_70%)]" />
+          <div className="absolute inset-0 bg-[radial-gradient(60%_60%_at_50%_50%,rgba(79,140,255,0.12),transparent_70%)]" />
         )
       );
     }

@@ -94,8 +94,8 @@ function Stream({ lanes, perLane }: { lanes: number; perLane: number }) {
   const uniforms = useMemo(
     () => ({
       uTime: { value: 0 },
-      uColorA: { value: new THREE.Color("#7af2e0") },
-      uColorB: { value: new THREE.Color("#5b8cff") },
+      uColorA: { value: new THREE.Color("#6b9dff") },
+      uColorB: { value: new THREE.Color("#4f8cff") },
     }),
     []
   );

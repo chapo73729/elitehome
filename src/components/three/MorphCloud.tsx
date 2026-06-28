@@ -111,8 +111,8 @@ function Cloud({
   const uniforms = useMemo(
     () => ({
       uTime: { value: 0 },
-      uColorA: { value: new THREE.Color("#5b8cff") },
-      uColorB: { value: new THREE.Color("#7af2e0") },
+      uColorA: { value: new THREE.Color("#4f8cff") },
+      uColorB: { value: new THREE.Color("#6b9dff") },
     }),
     []
   );

@@ -81,7 +81,7 @@ function NodeBox({ n }: { n: Node }) {
       <div
         className={`relative flex items-center justify-center rounded-xl border bg-ink/90 backdrop-blur-sm ${
           n.big
-            ? "h-12 gap-2 border-accent/40 px-4 shadow-[0_0_24px_rgba(91,140,255,0.25)]"
+            ? "h-12 gap-2 border-accent/40 px-4 shadow-[0_0_24px_rgba(79,140,255,0.25)]"
             : "h-11 w-11 border-white/15"
         }`}
       >
@@ -151,7 +151,7 @@ export function WorkflowDiagram() {
                       strokeDasharray={dashed ? "5 6" : undefined}
                       vectorEffect="non-scaling-stroke"
                     />
-                    <circle r={3.2} fill="#7af2e0">
+                    <circle r={3.2} fill="#6b9dff">
                       <animateMotion
                         dur={`${2.6 + i * 0.25}s`}
                         repeatCount="indefinite"

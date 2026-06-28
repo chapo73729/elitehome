@@ -90,11 +90,11 @@ function Core() {
     <group>
       <mesh ref={inner}>
         <icosahedronGeometry args={[1, 1]} />
-        <meshBasicMaterial color="#9fe8ff" wireframe transparent opacity={0.9} />
+        <meshBasicMaterial color="#bcd6ff" wireframe transparent opacity={0.9} />
       </mesh>
       <mesh ref={outer}>
         <icosahedronGeometry args={[1.55, 1]} />
-        <meshBasicMaterial color="#5b8cff" wireframe transparent opacity={0.3} />
+        <meshBasicMaterial color="#4f8cff" wireframe transparent opacity={0.3} />
       </mesh>
       {/* layered energy nucleus — bright cyan-white core in a soft blue halo */}
       <mesh>
@@ -103,11 +103,11 @@ function Core() {
       </mesh>
       <mesh>
         <sphereGeometry args={[0.34, 24, 24]} />
-        <meshBasicMaterial color="#7ab8ff" transparent opacity={0.45} blending={THREE.AdditiveBlending} depthWrite={false} />
+        <meshBasicMaterial color="#6b9dff" transparent opacity={0.45} blending={THREE.AdditiveBlending} depthWrite={false} />
       </mesh>
       <mesh>
         <sphereGeometry args={[0.5, 24, 24]} />
-        <meshBasicMaterial color="#2a4a8f" transparent opacity={0.22} blending={THREE.AdditiveBlending} depthWrite={false} />
+        <meshBasicMaterial color="#3d6fe0" transparent opacity={0.22} blending={THREE.AdditiveBlending} depthWrite={false} />
       </mesh>
     </group>
   );
@@ -145,7 +145,7 @@ function OrbitingNodes({ count = 40 }: { count?: number }) {
       </bufferGeometry>
       <pointsMaterial
         size={0.08}
-        color="#7af2e0"
+        color="#6b9dff"
         transparent
         sizeAttenuation
         depthWrite={false}
@@ -168,10 +168,10 @@ function Rig() {
     <group ref={group}>
       <Core />
       <OrbitingNodes />
-      <HoloPanel position={[2.6, 0.8, -0.5]} rotation={[0, -0.5, 0.05]} color="#5b8cff" />
-      <HoloPanel position={[-2.7, -0.4, 0.3]} rotation={[0, 0.6, -0.05]} color="#7af2e0" scale={0.85} />
-      <HoloPanel position={[1.4, -1.6, 1]} rotation={[0.2, -0.3, 0]} color="#b98cff" scale={0.7} />
-      <HoloPanel position={[-1.6, 1.7, -0.8]} rotation={[-0.15, 0.4, 0.05]} color="#9fe8ff" scale={0.75} />
+      <HoloPanel position={[2.6, 0.8, -0.5]} rotation={[0, -0.5, 0.05]} color="#4f8cff" />
+      <HoloPanel position={[-2.7, -0.4, 0.3]} rotation={[0, 0.6, -0.05]} color="#6b9dff" scale={0.85} />
+      <HoloPanel position={[1.4, -1.6, 1]} rotation={[0.2, -0.3, 0]} color="#3d6fe0" scale={0.7} />
+      <HoloPanel position={[-1.6, 1.7, -0.8]} rotation={[-0.15, 0.4, 0.05]} color="#bcd6ff" scale={0.75} />
     </group>
   );
 }

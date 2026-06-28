@@ -105,7 +105,7 @@ function Arc({ from, to, delay }: { from: THREE.Vector3; to: THREE.Vector3; dela
           <bufferAttribute attach="attributes-position" args={[linePositions, 3]} />
         </bufferGeometry>
         <lineBasicMaterial
-          color="#5b8cff"
+          color="#4f8cff"
           transparent
           opacity={0.35}
           blending={THREE.AdditiveBlending}
@@ -118,7 +118,7 @@ function Arc({ from, to, delay }: { from: THREE.Vector3; to: THREE.Vector3; dela
         </bufferGeometry>
         <pointsMaterial
           size={0.13}
-          color="#9fe8ff"
+          color="#bcd6ff"
           transparent
           sizeAttenuation
           depthWrite={false}
@@ -191,7 +191,7 @@ function CityLabels({
             <div className="relative">
               <span className="flex h-2 w-2">
                 <span className="absolute inline-flex h-2 w-2 animate-ping rounded-full bg-accent-2 opacity-60" />
-                <span className="relative inline-flex h-2 w-2 rounded-full bg-accent-2 shadow-[0_0_8px_2px_rgba(122,242,224,0.6)]" />
+                <span className="relative inline-flex h-2 w-2 rounded-full bg-accent-2 shadow-[0_0_8px_2px_rgba(107,157,255,0.6)]" />
               </span>
               <span className="absolute left-3.5 top-1/2 -translate-y-1/2 whitespace-nowrap font-mono text-[0.6rem] uppercase tracking-[0.18em] text-chalk [text-shadow:0_1px_5px_rgba(0,0,0,0.9)]">
                 {c.name}
@@ -219,7 +219,7 @@ function Satellite({ radius, speed, incl, phase }: { radius: number; speed: numb
   return (
     <mesh ref={ref}>
       <sphereGeometry args={[0.035, 8, 8]} />
-      <meshBasicMaterial color="#7af2e0" />
+      <meshBasicMaterial color="#6b9dff" />
     </mesh>
   );
 }

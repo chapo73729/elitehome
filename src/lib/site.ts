@@ -14,15 +14,6 @@ export const SITE = {
   locale: "en",
 } as const;
 
-export const NAV = [
-  { label: "Vision", href: "#vision" },
-  { label: "Core", href: "#core" },
-  { label: "Network", href: "#network" },
-  { label: "Industries", href: "#industries" },
-  { label: "Lab", href: "#lab" },
-  { label: "Contact", href: "#contact" },
-] as const;
-
 export const STATS = [
   { value: "2019", label: "Founded" },
   { value: "Prague", label: "Based in" },
@@ -186,28 +177,28 @@ export const TECH = [
 export const TIMELINE = [
   {
     year: "2019",
-    title: "Genesis",
-    text: "ARDLABS is founded as a private engineering studio with a single conviction: build the future before it is named.",
+    title: "Founded",
+    text: "ARDLABS is founded in Prague as a digital engineering studio with a single conviction: design and build software that holds up.",
   },
   {
     year: "2021",
-    title: "Intelligence",
-    text: "First in-house neural architectures reach production, powering autonomous decision systems across ventures.",
+    title: "The team",
+    text: "The studio grows into a senior bench of designers and engineers, shipping web, mobile and SaaS products end to end.",
   },
   {
     year: "2023",
-    title: "Expansion",
-    text: "Operations span six continents. Industrial robotics and maritime intelligence join the portfolio.",
+    title: "Data & AI",
+    text: "We expand into applied AI, automation and data — putting models and dashboards to work inside real operations.",
   },
   {
     year: "2025",
-    title: "Convergence",
-    text: "AI, software and physical infrastructure merge into a single, self-improving operating fabric.",
+    title: "Cloud & scale",
+    text: "Cloud architecture and infrastructure become a full pole, engineered for uptime and growth.",
   },
   {
     year: "2027",
-    title: "Horizon",
-    text: "Autonomous ventures that design, fund and operate themselves — engineered, governed and owned privately.",
+    title: "Four poles",
+    text: "Strategy, design & development, data & AI and cloud operate as one team covering an idea from question to product.",
   },
 ] as const;
 

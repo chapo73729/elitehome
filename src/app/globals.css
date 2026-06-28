@@ -102,6 +102,10 @@ html.hide-cursor * {
   html.hide-cursor * {
     cursor: auto;
   }
+  /* touch taps shouldn't flash the keyboard focus ring */
+  :focus-visible {
+    outline: none;
+  }
 }
 
 ::selection {
@@ -138,7 +142,8 @@ html.hide-cursor * {
   font-weight: 700;
   line-height: 0.92;
   letter-spacing: -0.04em;
-  font-size: clamp(3.2rem, 13vw, 16rem);
+  font-size: clamp(2.6rem, 12vw, 16rem);
+  overflow-wrap: break-word;
 }
 
 .text-giant {

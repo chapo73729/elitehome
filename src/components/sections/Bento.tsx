@@ -22,7 +22,7 @@ export function Bento() {
               <article className="group relative flex h-full flex-col justify-between overflow-hidden rounded-3xl hairline bg-ink p-7 transition-colors duration-500 hover:border-white/15">
                 <div
                   className="pointer-events-none absolute -right-16 -top-16 h-44 w-44 rounded-full opacity-20 blur-3xl transition-all duration-700 group-hover:scale-150 group-hover:opacity-40"
-                  style={{ background: i === 0 ? "#5b8cff" : i % 2 ? "#7af2e0" : "#b48cff" }}
+                  style={{ background: i === 0 ? "#4f8cff" : i % 2 ? "#6b9dff" : "#3d6fe0" }}
                 />
                 <div className="relative z-10">
                   <span className="font-mono text-xs text-accent">

@@ -38,7 +38,7 @@ export function Timeline() {
             >
               {/* node */}
               <span className="absolute left-0 top-1.5 z-10 flex h-4 w-4 -translate-x-[1px] items-center justify-center rounded-full bg-void md:left-1/2 md:-translate-x-1/2">
-                <span className="h-2 w-2 rounded-full bg-accent-2 shadow-[0_0_14px_3px_rgba(122,242,224,0.6)]" />
+                <span className="h-2 w-2 rounded-full bg-accent-2 shadow-[0_0_14px_3px_rgba(107,157,255,0.6)]" />
               </span>
 
               <Reveal className={i % 2 === 0 ? "md:text-right md:pr-4" : "md:[direction:ltr] md:pl-4 md:col-start-2"}>

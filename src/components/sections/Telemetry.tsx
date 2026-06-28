@@ -66,8 +66,8 @@ function LoadRing() {
           />
           <defs>
             <linearGradient id="loadGrad" x1="0" y1="0" x2="1" y2="1">
-              <stop offset="0" stopColor="#7af2e0" />
-              <stop offset="1" stopColor="#5b8cff" />
+              <stop offset="0" stopColor="#6b9dff" />
+              <stop offset="1" stopColor="#4f8cff" />
             </linearGradient>
           </defs>
         </svg>
@@ -104,7 +104,7 @@ function SlaChart() {
               >
                 <span
                   className={`absolute -top-1.5 left-1/2 h-2.5 w-2.5 -translate-x-1/2 rounded-full ${
-                    h === 100 ? "bg-accent-2 shadow-[0_0_10px_2px_rgba(122,242,224,0.6)]" : "bg-chalk"
+                    h === 100 ? "bg-accent-2 shadow-[0_0_10px_2px_rgba(107,157,255,0.6)]" : "bg-chalk"
                   }`}
                 />
               </motion.div>
@@ -135,8 +135,8 @@ function Speedometer() {
           />
           <defs>
             <linearGradient id="spdGrad" x1="0" y1="0" x2="1" y2="0">
-              <stop offset="0" stopColor="#5b8cff" />
-              <stop offset="1" stopColor="#7af2e0" />
+              <stop offset="0" stopColor="#4f8cff" />
+              <stop offset="1" stopColor="#6b9dff" />
             </linearGradient>
           </defs>
         </svg>

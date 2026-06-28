@@ -1,6 +1,6 @@
 /**
- * Case-study content. Built on the venture list in site.ts but expanded into
- * full challenge → approach → outcome narratives. Outcomes are framed
+ * Case-study content. Illustrative digital-studio projects expanded into
+ * full problem → approach → outcome narratives. Outcomes are framed
  * qualitatively; any figure shown is illustrative of intent, not a claim.
  */
 
@@ -23,31 +23,31 @@ export const WORK: CaseStudy[] = [
     slug: "helix-core",
     code: "PRJ—AX9",
     name: "Helix Core",
-    field: "Artificial Intelligence",
-    accent: "#5b8cff",
+    field: "Data & AI",
+    accent: "#4f8cff",
     summary:
-      "A self-supervising reasoning engine for environments where a wrong call is unacceptable.",
-    stage: "Stage III · Pilot",
+      "An AI decision-support engine for operations teams who can't afford a wrong call.",
+    stage: "Shipped · In production",
     challenge: [
-      "High-stakes decisions — capital allocation, infrastructure control, crisis response — cannot be delegated to systems that are merely capable on average. They demand systems that are dependable at their worst, and that know when they are uncertain.",
-      "The hard problem was never raw intelligence. It was trust: making an autonomous system that escalates to a human at exactly the right moment, with a reasoning trail a human can audit.",
+      "High-stakes operational decisions can't be handed to a model that is merely accurate on average. The team needed a system that is dependable at its worst — and that knows when it is uncertain.",
+      "The hard problem was never raw capability. It was trust: an assistant that escalates to a human at exactly the right moment, with a reasoning trail a person can audit.",
     ],
     approach: [
       {
         title: "Reason in a closed loop",
-        body: "Helix plans, acts, observes the result and critiques its own reasoning before committing. Robustness comes from the loop, not from any single step being perfect.",
+        body: "Helix plans, acts, observes the result and critiques its own output before committing. Robustness comes from the loop, not from any single step being perfect.",
       },
       {
         title: "Calibrated confidence",
-        body: "Every decision carries a calibrated confidence score. Below a threshold, the system stops and escalates — with the full chain of reasoning attached for human review.",
+        body: "Every recommendation carries a calibrated confidence score. Below a threshold, the system stops and escalates — with the full chain of reasoning attached for human review.",
       },
       {
         title: "Auditable by construction",
-        body: "Each action is logged as an inspectable artefact, so an operator can reconstruct exactly why a decision was made long after the fact.",
+        body: "Each action is logged as an inspectable record, so an operator can reconstruct exactly why a decision was made long after the fact.",
       },
     ],
     outcome: [
-      "In pilot environments, Helix handles the routine majority of decisions autonomously while surfacing the genuinely ambiguous ones to humans early.",
+      "In production, Helix handles the routine majority of decisions automatically while surfacing the genuinely ambiguous ones to the team early.",
       "The result is not a system that replaces judgement, but one that concentrates human attention where it matters most.",
     ],
     highlights: ["Self-auditing reasoning", "Sub-second decisions", "Human escalation paths"],
@@ -56,77 +56,77 @@ export const WORK: CaseStudy[] = [
     slug: "tideglass",
     code: "PRJ—M12",
     name: "Tideglass",
-    field: "Maritime Operations",
-    accent: "#7af2e0",
+    field: "SaaS Platform",
+    accent: "#6b9dff",
     summary:
-      "Real-time fleet intelligence that routes ships for the best balance of time, fuel and emissions.",
-    stage: "Stage IV · Scaling",
+      "A logistics SaaS dashboard that turns scattered operational data into live, routable decisions.",
+    stage: "Shipped · Scaling",
     challenge: [
-      "Global shipping runs on thin margins and stale information. Routing decisions are often made against forecasts that are hours old, leaving fuel, time and emissions on the table.",
-      "The opportunity was to give operators a single, live model of the ocean — and to route against it continuously rather than once per voyage.",
+      "The client's logistics operation ran on thin margins and stale information, spread across a patchwork of disconnected tools. Decisions were often made against data that was hours old.",
+      "The opportunity was to give operators a single, live picture of their network — and to plan against it continuously rather than once a day.",
     ],
     approach: [
       {
         title: "Fuse every signal",
-        body: "Tideglass merges radar, AIS, weather and market data into one continuously-updated model of conditions across global lanes.",
+        body: "Tideglass merges tracking, scheduling, cost and external data feeds into one continuously-updated model of the operation.",
       },
       {
-        title: "Optimise the whole voyage",
-        body: "Rather than shortest-path, the engine balances time, fuel and emissions against each operator's priorities, re-routing as conditions change.",
+        title: "Optimise the whole route",
+        body: "Rather than shortest-path, the engine balances time, cost and reliability against each operator's priorities, re-planning as conditions change.",
       },
       {
         title: "Operator in the loop",
-        body: "Recommendations are explainable and overridable — the system advises, the captain decides.",
+        body: "Recommendations are explainable and overridable — the system advises, the dispatcher decides.",
       },
     ],
     outcome: [
-      "Early deployments meaningfully reduced transit cost across major lanes while lowering emissions on the same routes.",
-      "Operators gained a live, shared picture of their fleet that replaced a patchwork of disconnected tools.",
+      "Early rollout meaningfully reduced operating cost across the network while improving on-time reliability.",
+      "Operators gained a live, shared dashboard that replaced a patchwork of spreadsheets and disconnected tools.",
     ],
-    highlights: ["Live fleet model", "Emissions-aware routing", "Explainable recommendations"],
+    highlights: ["Live operations model", "Cost-aware routing", "Explainable recommendations"],
   },
   {
     slug: "foundry",
     code: "PRJ—R04",
     name: "Foundry",
-    field: "Industrial Services",
-    accent: "#ffae6b",
+    field: "Internal Tooling",
+    accent: "#3d6fe0",
     summary:
-      "Instrumented micro-factories that sense demand and physically reconfigure to meet it.",
-    stage: "Stage II · Prototype",
+      "A manufacturing operations dashboard and internal tooling suite that makes a plant floor legible.",
+    stage: "Shipped · In production",
     challenge: [
-      "Traditional factories are optimised for one product at scale. When demand shifts, retooling is slow and expensive — and capacity sits idle in between.",
-      "The question was whether a production line could reconfigure itself around demand, the way software reallocates compute.",
+      "The client's plant ran on tribal knowledge and end-of-shift paperwork. When something slipped, no one could see it until it was already a problem.",
+      "The question was whether the day-to-day state of operations could be made visible in real time — and whether the manual reporting grind could be removed entirely.",
     ],
     approach: [
       {
-        title: "Sense demand directly",
-        body: "Foundry lines read real demand signals and plan their own configuration ahead of need.",
+        title: "Instrument the floor",
+        body: "Foundry pulls live signals from existing line systems and sensors into a single operational data layer — no rip-and-replace.",
       },
       {
-        title: "Reconfigure physically",
-        body: "Robotic cells and a live digital twin let a line change what it builds without a manual retooling cycle.",
+        title: "Surface the state",
+        body: "A real-time dashboard and internal tools give supervisors a clear, shared view of throughput, exceptions and bottlenecks as they happen.",
       },
       {
         title: "Predict, don't react",
-        body: "The same intelligence that runs our software governs maintenance — predicting failures before they halt a line.",
+        body: "Models flag the conditions that precede downtime, so maintenance is scheduled before a line stops rather than after.",
       },
     ],
     outcome: [
-      "Prototype cells demonstrated self-reconfiguration between products and a marked reduction in unplanned downtime.",
-      "The blueprint points toward factories that behave less like fixed plant and more like programmable infrastructure.",
+      "Supervisors gained a live view of the floor and a marked reduction in unplanned downtime.",
+      "Hours of manual end-of-shift reporting were replaced by dashboards that are always current.",
     ],
-    highlights: ["Self-reconfiguring lines", "Digital twin", "Predictive maintenance"],
+    highlights: ["Real-time dashboard", "Operational data layer", "Predictive maintenance"],
   },
   {
     slug: "continuum",
     code: "PRJ—S77",
     name: "Continuum",
-    field: "Software",
-    accent: "#b48cff",
+    field: "Platform",
+    accent: "#5ea2ff",
     summary:
       "A distributed runtime that places computation microseconds from the user.",
-    stage: "Stage III · Pilot",
+    stage: "Shipped · In production",
     challenge: [
       "Modern applications are expected to feel instantaneous everywhere — but the infrastructure to achieve that has historically been complex, costly and reserved for the largest engineering teams.",
       "The goal was edge performance with the developer experience of deploying to a single machine.",
@@ -146,7 +146,7 @@ export const WORK: CaseStudy[] = [
       },
     ],
     outcome: [
-      "Pilot applications achieved response times that feel instantaneous to users, without bespoke infrastructure work.",
+      "Applications achieved response times that feel instantaneous to users, without bespoke infrastructure work.",
       "Small teams gained capabilities that previously required a dedicated platform organisation.",
     ],
     highlights: ["Edge-native runtime", "Single-binary deploy", "Global failover"],

@@ -6,11 +6,11 @@ import { PageHeaderFX } from "@/components/ui/PageHeaderFX";
 export const metadata: Metadata = {
   title: "Work",
   description:
-    "Selected ventures from ARDLABS® — case studies across artificial intelligence, software, industrial and maritime engineering.",
+    "Selected work from ARDLABS® — software, platforms, data and cloud projects, shipped end to end.",
   alternates: { canonical: "/work" },
   openGraph: {
     title: "Work · ARDLABS®",
-    description: "Selected ventures across AI, software, industrial and maritime.",
+    description: "Software, platforms, data and cloud projects, shipped end to end.",
     url: "/work",
   },
 };
@@ -27,11 +27,11 @@ export default function WorkIndex() {
           </Link>
           <p className="eyebrow mt-8">Work</p>
           <h1 className="text-giant text-gradient mt-4 max-w-3xl text-balance">
-            Ventures engineered to be load-bearing.
+            Work, engineered to the detail.
           </h1>
           <p className="mt-6 max-w-xl text-balance text-mist">
-            A selection of what we build — each one run as its own world, held to
-            a shared standard of engineering.
+            A selection of what we build — software, platforms, data and cloud,
+            each held to a shared standard of engineering.
           </p>
         </div>
       </section>
