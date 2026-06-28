@@ -9,13 +9,18 @@ import { AICore } from "@/components/sections/AICore";
 import { GlobalNetwork } from "@/components/sections/GlobalNetwork";
 import { Industries } from "@/components/sections/Industries";
 import { Capabilities } from "@/components/sections/Capabilities";
+import { Bento } from "@/components/sections/Bento";
 import { ResearchLab } from "@/components/sections/ResearchLab";
 import { Synthesis } from "@/components/sections/Synthesis";
 import { TechStack } from "@/components/sections/TechStack";
 import { Stats } from "@/components/sections/Stats";
+import { Partners } from "@/components/sections/Partners";
 import { Timeline } from "@/components/sections/Timeline";
 import { Projects } from "@/components/sections/Projects";
+import { Testimonials } from "@/components/sections/Testimonials";
 import { InsightsTeaser } from "@/components/sections/InsightsTeaser";
+import { Faq } from "@/components/sections/Faq";
+import { CtaBanner } from "@/components/sections/CtaBanner";
 import { Contact } from "@/components/sections/Contact";
 
 /**
@@ -36,13 +41,18 @@ export function Experience() {
         <GlobalNetwork />
         <Industries />
         <Capabilities />
+        <Bento />
         <ResearchLab />
         <Synthesis />
         <TechStack />
         <Stats />
+        <Partners />
         <Timeline />
         <Projects />
+        <Testimonials />
         <InsightsTeaser />
+        <Faq />
+        <CtaBanner />
         <Contact />
       </main>
     </>
