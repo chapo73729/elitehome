@@ -62,6 +62,26 @@ export function AICore() {
             </Reveal>
           ))}
         </div>
+
+        {/* peak-motivation CTA: a low-friction prompt right after the wow */}
+        <Reveal delay={0.16}>
+          <div className="mt-10 flex max-w-3xl flex-wrap items-center gap-x-6 gap-y-3">
+            <p className="font-display text-lg text-chalk">{c.cta}</p>
+            <a
+              href="#contact"
+              data-cursor
+              className="group inline-flex items-center gap-2 text-sm font-medium text-accent-2 transition-colors hover:text-chalk"
+            >
+              {c.ctaButton}
+              <span
+                aria-hidden
+                className="transition-transform duration-300 group-hover:translate-x-1"
+              >
+                →
+              </span>
+            </a>
+          </div>
+        </Reveal>
       </div>
     </section>
   );

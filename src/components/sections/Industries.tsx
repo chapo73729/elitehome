@@ -121,6 +121,20 @@ function IndustryCard({
               background: `linear-gradient(90deg, ${industry.accent}, transparent)`,
             }}
           />
+
+          {/* proof peek — capabilities revealed on hover (substance = trust) */}
+          {Array.isArray(industry.capabilities) && (
+            <ul className="mt-4 flex flex-wrap gap-1.5 opacity-0 transition-opacity duration-500 group-hover:opacity-100">
+              {industry.capabilities.slice(0, 3).map((cap: string) => (
+                <li
+                  key={cap}
+                  className="rounded-full hairline px-2.5 py-1 font-mono text-[0.6rem] tracking-wide text-mist"
+                >
+                  {cap}
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
        </Link>
       </motion.div>

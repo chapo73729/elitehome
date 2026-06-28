@@ -66,6 +66,8 @@ const en = {
       { k: "Automation", v: "Process automation that removes the manual grind." },
       { k: "Data", v: "Pipelines and dashboards that turn operations into decisions." },
     ],
+    cta: "Have an operation that should run like this?",
+    ctaButton: "Start a project",
   },
   network: {
     eyebrow: "Global Network",
@@ -506,6 +508,8 @@ const fr: DeepPartial<Content> = {
       { k: "Automatisation", v: "Automatisation des process qui supprime le travail manuel." },
       { k: "Données", v: "Pipelines et tableaux de bord qui transforment l'opérationnel en décisions." },
     ],
+    cta: "Une opération qui devrait tourner comme ça ?",
+    ctaButton: "Démarrer un projet",
   },
   network: {
     eyebrow: "Réseau mondial",
