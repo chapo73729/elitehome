@@ -8,7 +8,6 @@ import { AmbientBackdrop } from "./AmbientBackdrop";
 import { Cursor } from "./Cursor";
 import { Navbar } from "./Navbar";
 import { Footer } from "./Footer";
-import { SectionNav } from "./SectionNav";
 import { BackToTop } from "./BackToTop";
 import { SoundSystem } from "./SoundSystem";
 import { CookieConsent } from "./CookieConsent";
@@ -51,7 +50,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
       >
         Skip to content
       </a>
-      <AmbientBackdrop />
+      {!isHome && <AmbientBackdrop />}
       <Cursor />
       <ScrollProgress />
       <SoundSystem />
@@ -64,13 +63,12 @@ export function Providers({ children }: { children: React.ReactNode }) {
       <PWARegister />
       <Toaster />
       <ShowreelControl />
-      <CookieConsent />
-      {isHome && <SectionNav />}
-      <BackToTop />
+      {!isHome && <CookieConsent />}
+      {!isHome && <BackToTop />}
       <SmoothScroll>
-        <Navbar />
+        {!isHome && <Navbar />}
         {children}
-        <Footer />
+        {!isHome && <Footer />}
       </SmoothScroll>
     </MotionConfig>
   );
