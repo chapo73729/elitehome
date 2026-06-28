@@ -96,10 +96,18 @@ function Core() {
         <icosahedronGeometry args={[1.55, 1]} />
         <meshBasicMaterial color="#5b8cff" wireframe transparent opacity={0.3} />
       </mesh>
-      {/* glowing nucleus */}
+      {/* layered energy nucleus — bright cyan-white core in a soft blue halo */}
       <mesh>
-        <sphereGeometry args={[0.32, 24, 24]} />
-        <meshBasicMaterial color="#ffffff" />
+        <sphereGeometry args={[0.2, 24, 24]} />
+        <meshBasicMaterial color="#e6f5ff" />
+      </mesh>
+      <mesh>
+        <sphereGeometry args={[0.34, 24, 24]} />
+        <meshBasicMaterial color="#7ab8ff" transparent opacity={0.45} blending={THREE.AdditiveBlending} depthWrite={false} />
+      </mesh>
+      <mesh>
+        <sphereGeometry args={[0.5, 24, 24]} />
+        <meshBasicMaterial color="#2a4a8f" transparent opacity={0.22} blending={THREE.AdditiveBlending} depthWrite={false} />
       </mesh>
     </group>
   );
@@ -184,7 +192,7 @@ export default function ResearchLab({
       <ambientLight intensity={0.6} />
       <Rig />
       <EffectComposer>
-        <Bloom intensity={1.0} luminanceThreshold={0.15} luminanceSmoothing={0.9} mipmapBlur />
+        <Bloom intensity={0.95} luminanceThreshold={0.3} luminanceSmoothing={0.9} mipmapBlur />
       </EffectComposer>
     </Canvas>
   );

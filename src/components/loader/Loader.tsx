@@ -169,7 +169,9 @@ export function Loader({ onComplete }: { onComplete: () => void }) {
           pt.y = pt.oy + (pt.hy - pt.oy) * lp;
           const alpha = 0.35 + 0.65 * lp;
           ctx.fillStyle = `hsla(${pt.hue}, 90%, ${70 + lp * 20}%, ${alpha})`;
-          ctx.fillRect(pt.x, pt.y, pt.size + 0.4, pt.size + 0.4);
+          ctx.beginPath();
+          ctx.arc(pt.x, pt.y, (pt.size + 0.5) * 0.7, 0, 6.2831853);
+          ctx.fill();
         }
         ctx.globalCompositeOperation = "source-over";
         raf = requestAnimationFrame(safeFrame);
@@ -186,7 +188,9 @@ export function Loader({ onComplete }: { onComplete: () => void }) {
           const jx = pt.hx + (Math.random() - 0.5) * 0.5 + breathe;
           const jy = pt.hy + (Math.random() - 0.5) * 0.5;
           ctx.fillStyle = `hsla(${pt.hue}, 95%, 86%, 0.95)`;
-          ctx.fillRect(jx, jy, pt.size + 0.6, pt.size + 0.6);
+          ctx.beginPath();
+          ctx.arc(jx, jy, (pt.size + 0.6) * 0.7, 0, 6.2831853);
+          ctx.fill();
         }
         ctx.globalCompositeOperation = "source-over";
         raf = requestAnimationFrame(safeFrame);
