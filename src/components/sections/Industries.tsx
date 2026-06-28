@@ -74,10 +74,11 @@ function IndustryCard({
             background: `radial-gradient(420px circle at var(--x,50%) var(--y,50%), ${industry.accent}22, transparent 60%)`,
           }}
         />
-        {/* living per-domain motif — faded into the card, intensifies on hover */}
+        {/* living per-domain motif — hidden at rest (clean, editorial),
+            revealed as a reward on hover so the grid never reads "stock AI" */}
         <div
           aria-hidden
-          className="pointer-events-none absolute inset-0 opacity-40 transition-opacity duration-700 group-hover:opacity-80"
+          className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-700 group-hover:opacity-70"
           style={{
             maskImage:
               "radial-gradient(120% 90% at 80% 0%, #000 0%, rgba(0,0,0,0.5) 45%, transparent 75%)",
