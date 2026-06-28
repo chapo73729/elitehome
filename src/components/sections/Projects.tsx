@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import Link from "next/link";
+import { LocaleLink } from "@/components/ui/LocaleLink";
 import { createPortal } from "react-dom";
 import {
   motion,
@@ -201,13 +201,13 @@ function ProjectModal({ p, onClose }: { p: Project; onClose: () => void }) {
           </div>
 
           <div className="mt-8 flex flex-wrap items-center gap-3">
-            <Link
+            <LocaleLink
               href={`/work/${slugify(p.name)}`}
               onClick={onClose}
               className="rounded-full bg-chalk px-7 py-3.5 text-sm font-medium text-void transition-opacity hover:opacity-90"
             >
               Read the case study <span aria-hidden>→</span>
-            </Link>
+            </LocaleLink>
             <Button href="/#contact" variant="ghost" onClick={onClose}>
               {reqLabel} <span aria-hidden>→</span>
             </Button>
@@ -233,12 +233,12 @@ export function Projects() {
           ))}
         </div>
         <div className="mt-12 text-center">
-          <Link
+          <LocaleLink
             href="/work"
             className="link-underline font-mono text-xs tracking-widest text-mist transition-colors hover:text-chalk"
           >
             VIEW ALL CASE STUDIES →
-          </Link>
+          </LocaleLink>
         </div>
       </div>
 

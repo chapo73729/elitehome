@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import { LocaleLink } from "@/components/ui/LocaleLink";
 import { Reveal } from "@/components/ui/Reveal";
 import { useContent } from "@/lib/content";
 
@@ -13,9 +13,9 @@ export function IndustriesIndexView() {
         <div className="pointer-events-none absolute -top-40 left-1/2 h-[55vh] w-[55vh] -translate-x-1/2 rounded-full bg-accent/15 blur-[140px]" />
         <div className="container-x relative">
           <Reveal>
-            <Link href="/" className="link-underline font-mono text-xs tracking-widest text-mist">
+            <LocaleLink href="/" className="link-underline font-mono text-xs tracking-widest text-mist">
               {L.home}
-            </Link>
+            </LocaleLink>
           </Reveal>
           <Reveal delay={0.06}>
             <span className="eyebrow mt-8 block">{c.eyebrow} · 04</span>
@@ -36,7 +36,7 @@ export function IndustriesIndexView() {
           <div className="grid gap-px overflow-hidden rounded-3xl hairline md:grid-cols-2">
             {c.items.map((ind, i) => (
               <Reveal key={ind.id} delay={(i % 2) * 0.08}>
-                <Link
+                <LocaleLink
                   href={`/services/${ind.id}`}
                   className="group relative flex h-full flex-col justify-between bg-ink p-8 transition-colors duration-500 hover:bg-smoke md:p-12"
                 >
@@ -58,7 +58,7 @@ export function IndustriesIndexView() {
                     </h2>
                     <p className="mt-4 max-w-md text-sm text-mist">{ind.blurb}</p>
                   </div>
-                </Link>
+                </LocaleLink>
               </Reveal>
             ))}
           </div>

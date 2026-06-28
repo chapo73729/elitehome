@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { useRouter } from "next/navigation";
+import { useLocaleRouter } from "@/hooks/useLocaleRouter";
 import { INDUSTRIES } from "@/lib/site";
 import { scrollToTarget } from "@/components/layout/SmoothScroll";
 import { applyAccent, ACCENTS } from "@/lib/accent";
@@ -116,7 +116,7 @@ export function Terminal() {
   const [value, setValue] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
   const bodyRef = useRef<HTMLDivElement>(null);
-  const router = useRouter();
+  const router = useLocaleRouter();
 
   useEffect(() => {
     _open = () => setOpen(true);

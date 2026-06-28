@@ -1,10 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Link from "next/link";
+import { LocaleLink } from "@/components/ui/LocaleLink";
 import { usePathname } from "next/navigation";
 import { motion } from "framer-motion";
 import { useContent } from "@/lib/content";
+import { stripLocale } from "@/lib/i18n";
 
 /**
  * Mobile-only thumb-reach call-to-action. A persistent, compact glass pill
@@ -20,7 +21,8 @@ import { useContent } from "@/lib/content";
 export function MobileCTA() {
   const pathname = usePathname();
   const label = useContent().hero.engage;
-  const href = pathname === "/" ? "#contact" : "/contact";
+  const isHome = stripLocale(pathname).rest === "/";
+  const href = isHome ? "#contact" : "/contact";
   const [show, setShow] = useState(false);
 
   // let the hero reach first paint before the CTA fades in
@@ -36,7 +38,7 @@ export function MobileCTA() {
       transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
       className="fixed bottom-[max(0.85rem,env(safe-area-inset-bottom))] left-3 z-[120] md:hidden"
     >
-      <Link
+      <LocaleLink
         href={href}
         data-cursor
         className="flex items-center gap-2 rounded-full glass px-4 py-2.5 text-sm font-medium text-chalk shadow-[0_8px_30px_rgba(0,0,0,0.45)] transition-colors duration-300 hover:border-white/25"
@@ -46,7 +48,7 @@ export function MobileCTA() {
           className="block h-1.5 w-1.5 rounded-full bg-accent shadow-[0_0_8px_2px_rgba(79,140,255,0.6)]"
         />
         {label}
-      </Link>
+      </LocaleLink>
     </motion.div>
   );
 }

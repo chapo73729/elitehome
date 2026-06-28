@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import { LocaleLink } from "@/components/ui/LocaleLink";
 import { SITE } from "@/lib/site";
 import { useContent } from "@/lib/content";
 import { scrollToTarget } from "./SmoothScroll";
@@ -86,33 +86,33 @@ export function Footer() {
         </div>
 
         <div className="mt-16 flex flex-wrap items-center gap-x-6 gap-y-2 hairline-t pt-8 font-mono text-xs tracking-wider text-fog">
-          <Link href="/about" className="transition-colors hover:text-chalk">
+          <LocaleLink href="/about" className="transition-colors hover:text-chalk">
             {t.about}
-          </Link>
-          <Link href="/work" className="transition-colors hover:text-chalk">
+          </LocaleLink>
+          <LocaleLink href="/work" className="transition-colors hover:text-chalk">
             {t.work}
-          </Link>
-          <Link href="/approach" className="transition-colors hover:text-chalk">
+          </LocaleLink>
+          <LocaleLink href="/approach" className="transition-colors hover:text-chalk">
             {t.approach}
-          </Link>
-          <Link href="/careers" className="transition-colors hover:text-chalk">
+          </LocaleLink>
+          <LocaleLink href="/careers" className="transition-colors hover:text-chalk">
             {t.careers}
-          </Link>
-          <Link href="/contact" className="transition-colors hover:text-chalk">
+          </LocaleLink>
+          <LocaleLink href="/contact" className="transition-colors hover:text-chalk">
             {t.contact}
-          </Link>
-          <Link href="/insights" className="transition-colors hover:text-chalk">
+          </LocaleLink>
+          <LocaleLink href="/insights" className="transition-colors hover:text-chalk">
             {f.insights ?? "Insights"}
-          </Link>
-          <Link href="/legal/imprint" className="transition-colors hover:text-chalk">
+          </LocaleLink>
+          <LocaleLink href="/legal/imprint" className="transition-colors hover:text-chalk">
             {f.legalNotice}
-          </Link>
-          <Link href="/legal/privacy" className="transition-colors hover:text-chalk">
+          </LocaleLink>
+          <LocaleLink href="/legal/privacy" className="transition-colors hover:text-chalk">
             {f.privacy}
-          </Link>
-          <Link href="/legal/terms" className="transition-colors hover:text-chalk">
+          </LocaleLink>
+          <LocaleLink href="/legal/terms" className="transition-colors hover:text-chalk">
             {f.terms}
-          </Link>
+          </LocaleLink>
         </div>
 
         <div className="mt-6 flex flex-col items-start justify-between gap-4 font-mono text-xs tracking-wider text-fog md:flex-row md:items-center">

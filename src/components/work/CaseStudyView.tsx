@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import { LocaleLink } from "@/components/ui/LocaleLink";
 import { WORK, getCase, localizeCase } from "@/lib/work";
 import { INDUSTRIES } from "@/lib/site";
 import { PageHeaderFX } from "@/components/ui/PageHeaderFX";
@@ -72,9 +72,9 @@ export function CaseStudyView({ slug }: { slug: string }) {
           style={{ backgroundColor: `${w.accent}1f` }}
         />
         <div className="container-x relative max-w-3xl">
-          <Link href="/work" className="link-underline font-mono text-xs tracking-widest text-mist">
+          <LocaleLink href="/work" className="link-underline font-mono text-xs tracking-widest text-mist">
             {t.back}
-          </Link>
+          </LocaleLink>
           <div className="mt-8 flex flex-wrap items-center gap-4 font-mono text-xs tracking-widest text-fog">
             <span style={{ color: w.accent }}>{w.code}</span>
             <span>{w.field}</span>
@@ -179,19 +179,19 @@ export function CaseStudyView({ slug }: { slug: string }) {
             </h2>
             <p className="mt-3 max-w-xl text-balance text-mist">{t.ctaBody}</p>
             <div className="mt-7 flex flex-wrap gap-4 font-mono text-xs tracking-widest">
-              <Link
+              <LocaleLink
                 href="/contact"
                 className="inline-flex items-center gap-2 rounded-full bg-chalk px-6 py-3 text-void transition-opacity hover:opacity-90"
               >
                 {t.startProject} <span aria-hidden>→</span>
-              </Link>
+              </LocaleLink>
               {pole && (
-                <Link
+                <LocaleLink
                   href={`/services/${pole.id}`}
                   className="inline-flex items-center gap-2 rounded-full border border-white/15 px-6 py-3 text-chalk transition-colors hover:border-white/30"
                 >
                   {poleTitle} <span aria-hidden>→</span>
-                </Link>
+                </LocaleLink>
               )}
             </div>
           </div>
@@ -204,7 +204,7 @@ export function CaseStudyView({ slug }: { slug: string }) {
           <ul className="grid gap-px overflow-hidden rounded-2xl hairline sm:grid-cols-2">
             {more.map((m) => (
               <li key={m.slug}>
-                <Link
+                <LocaleLink
                   href={`/work/${m.slug}`}
                   className="group block h-full bg-ink p-6 transition-colors hover:bg-white/[0.03]"
                 >
@@ -214,7 +214,7 @@ export function CaseStudyView({ slug }: { slug: string }) {
                   <h3 className="mt-2 font-display text-lg font-semibold text-chalk transition-colors group-hover:text-gradient">
                     {m.name}
                   </h3>
-                </Link>
+                </LocaleLink>
               </li>
             ))}
           </ul>

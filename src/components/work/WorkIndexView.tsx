@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import { LocaleLink } from "@/components/ui/LocaleLink";
 import { WORK, localizeCase } from "@/lib/work";
 import { PageHeaderFX } from "@/components/ui/PageHeaderFX";
 import { useLang } from "@/lib/lang";
@@ -49,9 +49,9 @@ export function WorkIndexView() {
         <PageHeaderFX />
         <div className="pointer-events-none absolute -top-40 left-1/2 h-[45vh] w-[45vh] -translate-x-1/2 rounded-full bg-accent/12 blur-[140px]" />
         <div className="container-x relative max-w-4xl">
-          <Link href="/" className="link-underline font-mono text-xs tracking-widest text-mist">
+          <LocaleLink href="/" className="link-underline font-mono text-xs tracking-widest text-mist">
             {t.home}
-          </Link>
+          </LocaleLink>
           <p className="eyebrow mt-8">{t.eyebrow}</p>
           <h1 className="text-giant text-gradient mt-4 max-w-3xl text-balance">
             {t.h1}
@@ -66,7 +66,7 @@ export function WorkIndexView() {
           <ul className="grid gap-px overflow-hidden rounded-3xl hairline md:grid-cols-2">
             {items.map((w) => (
               <li key={w.slug}>
-                <Link
+                <LocaleLink
                   href={`/work/${w.slug}`}
                   aria-label={`${w.name} — ${w.field} ${t.caseStudyAria}`}
                   className="group flex h-full flex-col bg-ink p-8 transition-colors hover:bg-white/[0.03] md:p-10"
@@ -89,13 +89,13 @@ export function WorkIndexView() {
                     {t.caseStudy}
                     <span className="transition-transform duration-300 group-hover:translate-x-1">→</span>
                   </span>
-                </Link>
+                </LocaleLink>
               </li>
             ))}
           </ul>
 
           <div className="mt-px grid gap-px overflow-hidden rounded-3xl hairline sm:grid-cols-2">
-            <Link
+            <LocaleLink
               href="/services"
               className="group bg-ink p-8 transition-colors hover:bg-white/[0.03]"
             >
@@ -103,8 +103,8 @@ export function WorkIndexView() {
               <div className="mt-3 font-display text-xl text-mist transition-colors group-hover:text-chalk">
                 {t.servicesCta}
               </div>
-            </Link>
-            <Link
+            </LocaleLink>
+            <LocaleLink
               href="/contact"
               className="group bg-ink p-8 text-right transition-colors hover:bg-white/[0.03]"
             >
@@ -112,7 +112,7 @@ export function WorkIndexView() {
               <div className="mt-3 font-display text-xl text-mist transition-colors group-hover:text-chalk">
                 {t.contactCta}
               </div>
-            </Link>
+            </LocaleLink>
           </div>
         </div>
       </section>

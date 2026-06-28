@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import { LocaleLink } from "@/components/ui/LocaleLink";
 import { INSIGHTS, localizeInsight } from "@/lib/insights";
 import { PageHeaderFX } from "@/components/ui/PageHeaderFX";
 import { useLang, type Lang } from "@/lib/lang";
@@ -45,12 +45,12 @@ export function InsightsIndexView() {
         <PageHeaderFX />
         <div className="pointer-events-none absolute -top-40 left-1/2 h-[45vh] w-[45vh] -translate-x-1/2 rounded-full bg-accent/12 blur-[140px]" />
         <div className="container-x relative max-w-4xl">
-          <Link
+          <LocaleLink
             href="/"
             className="link-underline font-mono text-xs tracking-widest text-mist"
           >
             {t.home}
-          </Link>
+          </LocaleLink>
           <p className="eyebrow mt-8">{t.eyebrow}</p>
           <h1 className="text-giant text-gradient mt-4 max-w-3xl text-balance">
             {t.h1}
@@ -64,7 +64,7 @@ export function InsightsIndexView() {
           <ul className="grid gap-px overflow-hidden rounded-3xl hairline">
             {posts.map((post) => (
               <li key={post.slug}>
-                <Link
+                <LocaleLink
                   href={`/insights/${post.slug}`}
                   className="group block bg-ink p-8 transition-colors hover:bg-white/[0.03] md:p-10"
                 >
@@ -85,7 +85,7 @@ export function InsightsIndexView() {
                       →
                     </span>
                   </span>
-                </Link>
+                </LocaleLink>
               </li>
             ))}
           </ul>

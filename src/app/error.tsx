@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import Link from "next/link";
+import { LocaleLink } from "@/components/ui/LocaleLink";
 import { useLang } from "@/lib/lang";
 
 const T = {
@@ -53,12 +53,12 @@ export default function Error({
           >
             {t.retry}
           </button>
-          <Link
+          <LocaleLink
             href="/"
             className="rounded-full hairline px-7 py-3.5 text-sm text-chalk transition-colors hover:border-white/25"
           >
             {t.home}
-          </Link>
+          </LocaleLink>
         </div>
       </div>
     </main>

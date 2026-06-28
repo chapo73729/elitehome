@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { useRouter } from "next/navigation";
+import { useLocaleRouter } from "@/hooks/useLocaleRouter";
 import { SITE } from "@/lib/site";
 import { audio } from "@/lib/audio";
 import { toast, copyText } from "@/lib/toast";
@@ -34,7 +34,7 @@ const T = {
 
 export function ContextMenu() {
   const [pt, setPt] = useState<Pt>(null);
-  const router = useRouter();
+  const router = useLocaleRouter();
   const t = T[useLang()];
 
   useEffect(() => {

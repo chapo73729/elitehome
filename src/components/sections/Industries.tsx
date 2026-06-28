@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef } from "react";
-import Link from "next/link";
+import { LocaleLink } from "@/components/ui/LocaleLink";
 import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 import { SectionHeading } from "@/components/ui/Section";
 import { Reveal } from "@/components/ui/Reveal";
@@ -59,7 +59,7 @@ function IndustryCard({
         style={{ rotateX: rx, rotateY: ry, transformPerspective: 1000 }}
         className="group relative h-full"
       >
-       <Link
+       <LocaleLink
         href={`/services/${industry.id}`}
         data-cursor
         aria-label={`Explore ${industry.title}`}
@@ -136,7 +136,7 @@ function IndustryCard({
             </ul>
           )}
         </div>
-       </Link>
+       </LocaleLink>
       </motion.div>
     </Reveal>
   );
@@ -157,7 +157,7 @@ export function Industries() {
 
         <Reveal delay={0.1}>
           <div className="mt-10 flex justify-center">
-            <Link
+            <LocaleLink
               href="/services"
               data-cursor
               className="group inline-flex items-center gap-2 rounded-full hairline px-6 py-3 text-sm text-mist transition-colors duration-500 hover:border-white/25 hover:text-chalk"
@@ -166,7 +166,7 @@ export function Industries() {
               <span className="transition-transform duration-500 group-hover:translate-x-1">
                 →
               </span>
-            </Link>
+            </LocaleLink>
           </div>
         </Reveal>
       </div>

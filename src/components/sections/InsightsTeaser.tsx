@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import { LocaleLink } from "@/components/ui/LocaleLink";
 import { Reveal } from "@/components/ui/Reveal";
 import { INSIGHTS } from "@/lib/insights";
 import { useContent } from "@/lib/content";
@@ -34,12 +34,12 @@ export function InsightsTeaser() {
             </h2>
           </Reveal>
           <Reveal delay={0.16}>
-            <Link
+            <LocaleLink
               href="/insights"
               className="link-underline font-mono text-xs tracking-widest text-mist transition-colors hover:text-chalk"
             >
               VIEW ALL →
-            </Link>
+            </LocaleLink>
           </Reveal>
         </div>
 
@@ -47,7 +47,7 @@ export function InsightsTeaser() {
           {posts.map((post, i) => (
             <Reveal key={post.slug} delay={i * 0.08} className="h-full">
               <li className="h-full">
-                <Link
+                <LocaleLink
                   href={`/insights/${post.slug}`}
                   className="group flex h-full flex-col bg-ink p-7 transition-colors hover:bg-white/[0.03]"
                 >
@@ -65,7 +65,7 @@ export function InsightsTeaser() {
                       →
                     </span>
                   </span>
-                </Link>
+                </LocaleLink>
               </li>
             </Reveal>
           ))}

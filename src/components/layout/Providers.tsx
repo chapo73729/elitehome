@@ -24,9 +24,9 @@ import { Shortcuts } from "@/components/feature/Shortcuts";
 import { PWARegister } from "./PWARegister";
 import { Terminal } from "@/components/feature/Terminal";
 import { initAccent } from "@/lib/accent";
-import { initLang } from "@/lib/lang";
 import { initPerf } from "@/lib/perf";
 import { initAchievements } from "@/lib/achievements";
+import { stripLocale } from "@/lib/i18n";
 
 /**
  * Global site chrome shared by every route: smooth scroll, custom cursor,
@@ -35,11 +35,10 @@ import { initAchievements } from "@/lib/achievements";
  */
 export function Providers({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  const isHome = pathname === "/";
+  const isHome = stripLocale(pathname).rest === "/";
 
   useEffect(() => {
     initAccent();
-    initLang();
     initPerf();
     initAchievements();
   }, []);

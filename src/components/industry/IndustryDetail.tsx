@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import { LocaleLink } from "@/components/ui/LocaleLink";
 import dynamic from "next/dynamic";
 import { motion } from "framer-motion";
 import { Reveal } from "@/components/ui/Reveal";
@@ -71,12 +71,12 @@ export function IndustryDetail({
 
         <div className="container-x relative z-10">
           <Reveal>
-            <Link
+            <LocaleLink
               href="/services"
               className="link-underline inline-flex items-center gap-2 font-mono text-xs tracking-widest text-mist"
             >
               {L.all}
-            </Link>
+            </LocaleLink>
           </Reveal>
 
           <div className="mt-8 flex items-center gap-4">
@@ -325,7 +325,7 @@ export function IndustryDetail({
               {relatedWork.map((w, i) => (
                 <Reveal key={w.slug} delay={(i % 2) * 0.06}>
                   <li>
-                    <Link
+                    <LocaleLink
                       href={`/work/${w.slug}`}
                       className="group flex h-full flex-col bg-ink p-7 transition-colors duration-500 hover:bg-smoke"
                     >
@@ -340,7 +340,7 @@ export function IndustryDetail({
                         {L.viewCase}
                         <span className="transition-transform duration-300 group-hover:translate-x-1" aria-hidden>→</span>
                       </span>
-                    </Link>
+                    </LocaleLink>
                   </li>
                 </Reveal>
               ))}
@@ -380,7 +380,7 @@ export function IndustryDetail({
       {/* ---------- PREV / NEXT ---------- */}
       <section className="relative z-10 bg-void">
         <div className="container-x grid gap-px overflow-hidden rounded-3xl hairline sm:grid-cols-2">
-          <Link
+          <LocaleLink
             href={`/services/${prev.id}`}
             className="group bg-ink p-8 transition-colors duration-500 hover:bg-smoke"
           >
@@ -388,8 +388,8 @@ export function IndustryDetail({
             <div className="mt-3 font-display text-xl text-mist transition-colors group-hover:text-chalk">
               {prev.title}
             </div>
-          </Link>
-          <Link
+          </LocaleLink>
+          <LocaleLink
             href={`/services/${next.id}`}
             className="group bg-ink p-8 text-right transition-colors duration-500 hover:bg-smoke"
           >
@@ -397,7 +397,7 @@ export function IndustryDetail({
             <div className="mt-3 font-display text-xl text-mist transition-colors group-hover:text-chalk">
               {next.title}
             </div>
-          </Link>
+          </LocaleLink>
         </div>
       </section>
     </main>

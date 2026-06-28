@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { NotFoundView } from "./[locale]/not-found-view";
+import { NotFoundView } from "./not-found-view";
 
 export const metadata: Metadata = {
   title: "Signal lost — 404",

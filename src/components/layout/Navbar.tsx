@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { SITE } from "@/lib/site";
 import { useContent } from "@/lib/content";
 import { scrollToTarget } from "./SmoothScroll";
@@ -10,6 +10,8 @@ import { Magnetic } from "@/components/ui/Magnetic";
 import { SoundToggle } from "./SoundToggle";
 import { LanguageToggle } from "@/components/feature/LanguageToggle";
 import { useLang } from "@/lib/lang";
+import { useLocaleRouter } from "@/hooks/useLocaleRouter";
+import { stripLocale } from "@/lib/i18n";
 
 const T = {
   en: { openMenu: "Open menu", closeMenu: "Close menu", sound: "SOUND" },
@@ -21,7 +23,8 @@ export function Navbar({ ready = true }: { ready?: boolean }) {
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState<string>("");
   const pathname = usePathname();
-  const router = useRouter();
+  const router = useLocaleRouter();
+  const isHome = stripLocale(pathname).rest === "/";
   const c = useContent();
   const NAV = c.nav;
   const t = T[useLang()];
@@ -64,7 +67,7 @@ export function Navbar({ ready = true }: { ready?: boolean }) {
   const go = (href: string) => {
     setOpen(false);
     // when off the homepage, navigate home (with hash) instead of scrolling
-    if (href.startsWith("#") && pathname !== "/") {
+    if (href.startsWith("#") && !isHome) {
       router.push("/" + href);
       return;
     }
@@ -73,7 +76,7 @@ export function Navbar({ ready = true }: { ready?: boolean }) {
 
   const goHome = () => {
     setOpen(false);
-    if (pathname !== "/") router.push("/");
+    if (!isHome) router.push("/");
     else scrollToTarget(0);
   };
 

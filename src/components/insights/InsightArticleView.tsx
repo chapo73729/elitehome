@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import { LocaleLink } from "@/components/ui/LocaleLink";
 import { INSIGHTS, getInsight, localizeInsight } from "@/lib/insights";
 import { PageHeaderFX } from "@/components/ui/PageHeaderFX";
 import { useLang, type Lang } from "@/lib/lang";
@@ -47,12 +47,12 @@ export function InsightArticleView({ slug }: { slug: string }) {
           style={{ backgroundColor: `${post.accent}1f` }}
         />
         <div className="container-x relative max-w-3xl">
-          <Link
+          <LocaleLink
             href="/insights"
             className="link-underline font-mono text-xs tracking-widest text-mist"
           >
             {t.back}
-          </Link>
+          </LocaleLink>
           <div className="mt-8 flex flex-wrap items-center gap-4 font-mono text-xs tracking-widest text-fog">
             <span style={{ color: post.accent }}>{post.category}</span>
             <span>{fmt(post.date, lang)}</span>
@@ -90,7 +90,7 @@ export function InsightArticleView({ slug }: { slug: string }) {
           <ul className="grid gap-px overflow-hidden rounded-2xl hairline sm:grid-cols-2">
             {more.map((p) => (
               <li key={p.slug}>
-                <Link
+                <LocaleLink
                   href={`/insights/${p.slug}`}
                   className="group block h-full bg-ink p-6 transition-colors hover:bg-white/[0.03]"
                 >
@@ -103,7 +103,7 @@ export function InsightArticleView({ slug }: { slug: string }) {
                   <h3 className="mt-2 font-display text-lg font-semibold text-chalk transition-colors group-hover:text-gradient">
                     {p.title}
                   </h3>
-                </Link>
+                </LocaleLink>
               </li>
             ))}
           </ul>

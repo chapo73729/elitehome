@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Link from "next/link";
+import { LocaleLink } from "@/components/ui/LocaleLink";
 import { AnimatePresence, motion } from "framer-motion";
 import { useLang } from "@/lib/lang";
 
@@ -55,9 +55,9 @@ export function CookieConsent() {
         >
           <p className="text-xs leading-relaxed text-mist">
             {t.body}{" "}
-            <Link href="/legal/privacy" className="link-underline text-chalk">
+            <LocaleLink href="/legal/privacy" className="link-underline text-chalk">
               {t.privacy}
-            </Link>
+            </LocaleLink>
             .
           </p>
           <div className="mt-3 flex items-center gap-3">

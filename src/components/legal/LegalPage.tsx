@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { LocaleLink } from "@/components/ui/LocaleLink";
 import type { ReactNode } from "react";
 
 export function LegalPage({
@@ -19,9 +19,9 @@ export function LegalPage({
       <section className="relative overflow-hidden pb-10 pt-40">
         <div className="pointer-events-none absolute -top-40 left-1/2 h-[45vh] w-[45vh] -translate-x-1/2 rounded-full bg-accent/12 blur-[140px]" />
         <div className="container-x relative max-w-3xl">
-          <Link href="/" className="link-underline font-mono text-xs tracking-widest text-mist">
+          <LocaleLink href="/" className="link-underline font-mono text-xs tracking-widest text-mist">
             {homeLabel}
-          </Link>
+          </LocaleLink>
           <h1 className="text-giant text-gradient mt-8 text-balance">{title}</h1>
           <p className="mt-4 font-mono text-xs tracking-widest text-fog">
             {updatedLabel} · {updated}

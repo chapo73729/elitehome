@@ -1,7 +1,9 @@
 "use client";
 
 import { useEffect } from "react";
-import { useRouter, usePathname } from "next/navigation";
+import { usePathname } from "next/navigation";
+import { useLocaleRouter } from "@/hooks/useLocaleRouter";
+import { stripLocale } from "@/lib/i18n";
 import { scrollToTarget } from "@/components/layout/SmoothScroll";
 import { audio } from "@/lib/audio";
 import { startShowreel } from "@/lib/showreel";
@@ -9,8 +11,9 @@ import { toast } from "@/lib/toast";
 
 /** Global single-key shortcuts (ignored while typing). */
 export function Shortcuts() {
-  const router = useRouter();
+  const router = useLocaleRouter();
   const pathname = usePathname();
+  const isHome = stripLocale(pathname).rest === "/";
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -20,11 +23,11 @@ export function Shortcuts() {
 
       switch (e.key.toLowerCase()) {
         case "t":
-          if (pathname !== "/") router.push("/");
+          if (!isHome) router.push("/");
           else scrollToTarget(0);
           break;
         case "c":
-          if (pathname !== "/") router.push("/#contact");
+          if (!isHome) router.push("/#contact");
           else scrollToTarget("#contact");
           break;
         case "i":
@@ -34,7 +37,7 @@ export function Shortcuts() {
           audio.toggle();
           break;
         case "s":
-          if (pathname === "/") startShowreel();
+          if (isHome) startShowreel();
           break;
         case "?":
           toast("⌘K — command palette · T top · C contact · I industries · M sound · S showreel", "⌨");
@@ -45,7 +48,8 @@ export function Shortcuts() {
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [pathname, router]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isHome]);
 
   return null;
 }

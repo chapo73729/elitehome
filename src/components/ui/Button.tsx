@@ -4,6 +4,8 @@ import { type ReactNode } from "react";
 import clsx from "clsx";
 import { Magnetic } from "./Magnetic";
 import { scrollToTarget } from "@/components/layout/SmoothScroll";
+import { useLang } from "@/lib/lang";
+import { localizePath } from "@/lib/i18n";
 
 interface ButtonProps {
   children: ReactNode;
@@ -20,6 +22,11 @@ export function Button({
   className,
   onClick,
 }: ButtonProps) {
+  const locale = useLang();
+  // hash-only links scroll in-page; everything internal gets a locale prefix
+  const resolvedHref =
+    href && !href.startsWith("#") ? localizePath(href, locale) : href;
+
   const base =
     "group relative inline-flex items-center justify-center gap-2 overflow-hidden rounded-full px-5 py-2.5 text-sm font-medium tracking-wide transition-colors duration-500 md:px-7 md:py-3.5";
   const styles =
@@ -50,7 +57,7 @@ export function Button({
   return (
     <Magnetic strength={0.35} className="inline-block">
       {href ? (
-        <a href={href} onClick={handle} className={clsx(base, styles, className)}>
+        <a href={resolvedHref} onClick={handle} className={clsx(base, styles, className)}>
           {inner}
         </a>
       ) : (

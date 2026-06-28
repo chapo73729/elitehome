@@ -2,7 +2,9 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { useRouter, usePathname } from "next/navigation";
+import { usePathname } from "next/navigation";
+import { useLocaleRouter } from "@/hooks/useLocaleRouter";
+import { stripLocale } from "@/lib/i18n";
 import { SITE } from "@/lib/site";
 import { useContent } from "@/lib/content";
 import { scrollToTarget } from "@/components/layout/SmoothScroll";
@@ -67,8 +69,9 @@ export function CommandPalette() {
   const [q, setQ] = useState("");
   const [sel, setSel] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);
-  const router = useRouter();
+  const router = useLocaleRouter();
   const pathname = usePathname();
+  const isHome = stripLocale(pathname).rest === "/";
   const content = useContent();
   const lang = useLang();
   const t = T[lang];
@@ -76,7 +79,7 @@ export function CommandPalette() {
   const INDUSTRIES = content.industries.items;
 
   const goSection = (href: string) => {
-    if (pathname !== "/") router.push("/" + href);
+    if (!isHome) router.push("/" + href);
     else scrollToTarget(href);
   };
 
@@ -85,7 +88,7 @@ export function CommandPalette() {
     NAV.forEach((n) =>
       list.push({ id: "nav" + n.href, label: n.label, group: t.groupNavigate, run: () => goSection(n.href) })
     );
-    list.push({ id: "top", label: t.backToTop, group: t.groupNavigate, run: () => (pathname !== "/" ? router.push("/") : scrollToTarget(0)) });
+    list.push({ id: "top", label: t.backToTop, group: t.groupNavigate, run: () => (!isHome ? router.push("/") : scrollToTarget(0)) });
     INDUSTRIES.forEach((i) =>
       list.push({ id: "ind" + i.id, label: i.title, group: t.groupServices, run: () => router.push(`/services/${i.id}`) })
     );
@@ -107,7 +110,7 @@ export function CommandPalette() {
     );
     return list;
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pathname, content, lang]);
+  }, [isHome, content, lang]);
 
   const filtered = useMemo(() => {
     const s = q.trim().toLowerCase();
