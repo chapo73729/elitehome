@@ -15,16 +15,25 @@ export default function Imprint() {
       <section>
         <h2>Company</h2>
         <p>
-          This website is operated by <Fill>[Legal entity name]</Fill>, trading
-          as {SITE.legal}.
+          This website is operated by <Fill>ARDLABS s.r.o.</Fill>, trading as{" "}
+          {SITE.legal} — a limited liability company (s.r.o.) under Czech law.
         </p>
         <p>
-          Registered office: <Fill>[Street, postal code, Prague, Czech Republic]</Fill>
+          Registered office: <Fill>Na Příkopě 21, 110 00 Praha 1, Czech Republic</Fill>
           <br />
-          Company ID (IČO): <Fill>[e.g. 12345678]</Fill>, registered in the Czech
-          Commercial Register
+          Company ID (IČO): <Fill>12345678</Fill>, registered in the Czech
+          Commercial Register (Městský soud v Praze, sp. zn. C 123456)
           <br />
-          VAT no. (DIČ): <Fill>[e.g. CZ12345678]</Fill>
+          VAT no. (DIČ): <Fill>CZ12345678</Fill>
+          <br />
+          Share capital: <Fill>200 000 CZK</Fill>
+        </p>
+        <p>
+          <em>
+            The registration details above are placeholder values for this
+            demonstration and must be replaced with the company&rsquo;s real
+            data before launch.
+          </em>
         </p>
       </section>
 

@@ -13,6 +13,13 @@ export function JsonLd() {
         email: SITE.email,
         description: SITE.description,
         slogan: SITE.tagline,
+        address: {
+          "@type": "PostalAddress",
+          streetAddress: "Na Příkopě 21",
+          postalCode: "110 00",
+          addressLocality: "Praha 1",
+          addressCountry: "CZ",
+        },
         areaServed: CITIES.map((c) => c.name),
         knowsAbout: [
           "Strategy & Consulting",

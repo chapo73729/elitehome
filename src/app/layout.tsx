@@ -3,6 +3,8 @@ import { fontDisplay, fontSans, fontMono } from "@/lib/fonts";
 import { SITE } from "@/lib/site";
 import { JsonLd } from "@/components/layout/JsonLd";
 import { Providers } from "@/components/layout/Providers";
+import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -77,6 +79,8 @@ export default function RootLayout({
         <Providers>{children}</Providers>
         <div className="grain" aria-hidden />
         <div className="vignette" aria-hidden />
+        <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );
