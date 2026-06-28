@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { SITE } from "@/lib/site";
+import { PageHeaderFX } from "@/components/ui/PageHeaderFX";
 
 export const metadata: Metadata = {
   title: "Careers",
@@ -33,6 +34,7 @@ export default function Careers() {
   return (
     <main className="relative">
       <section className="relative overflow-hidden pb-10 pt-40">
+        <PageHeaderFX accent="#b48cff" />
         <div className="pointer-events-none absolute -top-40 left-1/2 h-[50vh] w-[50vh] -translate-x-1/2 rounded-full bg-accent/12 blur-[150px]" />
         <div className="container-x relative max-w-4xl">
           <Link href="/" className="link-underline font-mono text-xs tracking-widest text-mist">

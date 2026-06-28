@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { INSIGHTS, getInsight } from "@/lib/insights";
 import { SITE } from "@/lib/site";
+import { PageHeaderFX } from "@/components/ui/PageHeaderFX";
 
 export function generateStaticParams() {
   return INSIGHTS.map((i) => ({ slug: i.slug }));
@@ -69,6 +70,7 @@ export default async function InsightArticle({
       />
 
       <section className="relative overflow-hidden pb-8 pt-40">
+        <PageHeaderFX accent={post.accent} />
         <div
           className="pointer-events-none absolute -top-40 left-1/2 h-[45vh] w-[45vh] -translate-x-1/2 rounded-full blur-[140px]"
           style={{ backgroundColor: `${post.accent}1f` }}

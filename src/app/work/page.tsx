@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { WORK } from "@/lib/work";
+import { PageHeaderFX } from "@/components/ui/PageHeaderFX";
 
 export const metadata: Metadata = {
   title: "Work",
@@ -18,6 +19,7 @@ export default function WorkIndex() {
   return (
     <main className="relative">
       <section className="relative overflow-hidden pb-8 pt-40">
+        <PageHeaderFX />
         <div className="pointer-events-none absolute -top-40 left-1/2 h-[45vh] w-[45vh] -translate-x-1/2 rounded-full bg-accent/12 blur-[140px]" />
         <div className="container-x relative max-w-4xl">
           <Link href="/" className="link-underline font-mono text-xs tracking-widest text-mist">

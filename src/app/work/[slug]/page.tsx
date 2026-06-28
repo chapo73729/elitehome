@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { WORK, getCase } from "@/lib/work";
 import { SITE } from "@/lib/site";
+import { PageHeaderFX } from "@/components/ui/PageHeaderFX";
 
 export function generateStaticParams() {
   return WORK.map((w) => ({ slug: w.slug }));
@@ -56,6 +57,7 @@ export default async function CaseStudyPage({
       />
 
       <section className="relative overflow-hidden pb-8 pt-40">
+        <PageHeaderFX accent={w.accent} />
         <div
           className="pointer-events-none absolute -top-40 left-1/2 h-[45vh] w-[45vh] -translate-x-1/2 rounded-full blur-[140px]"
           style={{ backgroundColor: `${w.accent}1f` }}
