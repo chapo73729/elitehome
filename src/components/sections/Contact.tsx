@@ -148,6 +148,8 @@ export function Contact() {
                             type="button"
                             key={f}
                             onClick={() => setField(f)}
+                            aria-pressed={field === f}
+                            aria-label={`Project type: ${f}`}
                             className={`rounded-full px-4 py-1.5 font-mono text-xs transition-all duration-300 ${
                               field === f
                                 ? "bg-accent text-void shadow-[0_0_18px_rgba(79,140,255,0.4)]"

@@ -142,6 +142,7 @@ export function CommandPalette() {
                 value={q}
                 onChange={(e) => setQ(e.target.value)}
                 placeholder="Search sections, industries, actions…"
+                aria-label="Search sections, industries and actions"
                 className="w-full bg-transparent text-chalk outline-none placeholder:text-fog"
               />
             </div>
