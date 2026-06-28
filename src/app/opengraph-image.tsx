@@ -45,7 +45,7 @@ export default function Og() {
             textTransform: "uppercase",
           }}
         >
-          Private Ventures
+          Digital Engineering Studio
         </div>
       </div>
     ),

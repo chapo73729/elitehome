@@ -76,8 +76,8 @@ export function Terminal() {
           "  help            this list",
           "  about           what is ARDLABS",
           "  whoami          current session",
-          "  industries      list industries",
-          "  open <id>       open an industry",
+          "  services        list service poles",
+          "  open <id>       open a service",
           "  contact         jump to contact",
           "  theme <name>    " + ACCENTS.map((a) => a.id).join(" | "),
           "  lang <en|fr>    switch language",
@@ -90,14 +90,16 @@ export function Terminal() {
         break;
       case "about":
         out([
-          "ARDLABS® — Private Ventures.",
-          "A laboratory of the future engineering AI, software,",
-          "automation and physical infrastructure.",
+          "ARDLABS® — Digital Engineering Studio.",
+          "We design and build software, platforms and AI",
+          "systems, refined to the detail. Four poles:",
+          "strategy, software, data & AI, cloud.",
         ]);
         break;
       case "whoami":
         out(["visitor@ardlabs — access: guest"]);
         break;
+      case "services":
       case "industries":
       case "ls":
         out(INDUSTRIES.map((i) => `  ${i.id.padEnd(12)} ${i.title}`));
@@ -109,7 +111,7 @@ export function Terminal() {
           unlock("explorer");
           router.push(`/industries/${id}`);
           setOpen(false);
-        } else out([`unknown industry: ${args[0] || "(none)"}`]);
+        } else out([`unknown service: ${args[0] || "(none)"}`]);
         break;
       }
       case "contact":

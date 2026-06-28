@@ -6,28 +6,28 @@ import { PageHeaderFX } from "@/components/ui/PageHeaderFX";
 export const metadata: Metadata = {
   title: "Careers",
   description:
-    "Join ARDLABS® — a small, senior team engineering artificial intelligence, software, automation and physical infrastructure for the long term.",
+    "Join ARDLABS® — a small, senior digital engineering studio building software, platforms and AI systems, refined to the detail.",
   alternates: { canonical: "/careers" },
   openGraph: {
     title: "Careers · ARDLABS®",
-    description: "Join a small, senior team building load-bearing systems for the long term.",
+    description: "Join a small, senior studio building reliable software, platforms and AI systems.",
     url: "/careers",
   },
 };
 
 const CULTURE = [
-  { t: "Senior by default", d: "Small teams of principals who build. Little hierarchy, high ownership, real autonomy." },
-  { t: "Long horizon", d: "Work measured in years, not sprints. We optimise for what compounds." },
-  { t: "Remote across hubs", d: "Work follows the sun across Prague, Geneva, Singapore, Dubai, Tokyo and New York." },
+  { t: "Senior by default", d: "Small teams of engineers who build. Little hierarchy, high ownership, real autonomy." },
+  { t: "A bias for shipping", d: "Work measured in shipped products, not sprints. We optimise for what holds up." },
+  { t: "Prague · worldwide", d: "Based in Prague, working with teams across every timezone — async by default." },
   { t: "Correctness culture", d: "We reward getting it right over getting it out — and we mean it." },
 ];
 
 const ROLES = [
-  { t: "AI Research Engineer", team: "AI Research", loc: "Remote · Global" },
-  { t: "Distributed Systems Engineer", team: "Software & Platform", loc: "Remote · Global" },
-  { t: "Robotics / Controls Engineer", team: "Industrial", loc: "Prague · Hybrid" },
-  { t: "Data & Modelling Scientist", team: "Maritime & Earth Systems", loc: "Remote · Global" },
-  { t: "Product Designer", team: "Design & Research", loc: "Remote · Global" },
+  { t: "Product Strategist", team: "Strategy & Consulting", loc: "Remote · Global" },
+  { t: "Full-Stack Engineer", team: "Design & Development", loc: "Remote · Global" },
+  { t: "Product Designer", team: "Design & Development", loc: "Remote · Global" },
+  { t: "AI / Data Engineer", team: "Data & AI", loc: "Remote · Global" },
+  { t: "Platform / DevOps Engineer", team: "Cloud & Infrastructure", loc: "Prague · Hybrid" },
 ];
 
 export default function Careers() {

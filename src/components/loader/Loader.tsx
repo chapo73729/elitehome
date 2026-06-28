@@ -279,7 +279,7 @@ export function Loader({ onComplete }: { onComplete: () => void }) {
             animate={{ opacity: phase === "explode" || phase === "done" ? 0 : 1 }}
             transition={{ duration: 0.4 }}
           >
-            <span className="uppercase">ARDLABS® · Private Ventures</span>
+            <span className="uppercase">ARDLABS® · Digital Engineering Studio</span>
             <span className="hidden text-accent-2/80 uppercase sm:inline">
               {phase === "ignite"
                 ? "Initializing core"

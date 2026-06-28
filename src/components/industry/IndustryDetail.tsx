@@ -10,18 +10,14 @@ import { SceneBoundary } from "@/components/three/SceneBoundary";
 import { useSceneVisibility } from "@/hooks/useSceneVisibility";
 import { useContent } from "@/lib/content";
 
-const Ocean3D = dynamic(() => import("@/components/three/Ocean3D"), { ssr: false });
 const NeuralFlow = dynamic(() => import("@/components/three/NeuralFlow"), { ssr: false });
 const DataStream3D = dynamic(() => import("@/components/three/DataStream3D"), { ssr: false });
-const CogMachine3D = dynamic(() => import("@/components/three/CogMachine3D"), { ssr: false });
 
 const SCENE_BY_ID: Record<string, any> = {
   ai: NeuralFlow,
   strategy: NeuralFlow,
   software: DataStream3D,
-  automation: DataStream3D,
-  industrial: CogMachine3D,
-  maritime: Ocean3D,
+  cloud: DataStream3D,
 };
 
 const EASE = [0.16, 1, 0.3, 1] as const;

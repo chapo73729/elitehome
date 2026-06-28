@@ -18,7 +18,7 @@ export function IndustriesIndexView() {
             </Link>
           </Reveal>
           <Reveal delay={0.06}>
-            <span className="eyebrow mt-8 block">{c.eyebrow} · 06</span>
+            <span className="eyebrow mt-8 block">{c.eyebrow} · 04</span>
           </Reveal>
           <Reveal delay={0.12}>
             <h1 className="text-mega text-gradient mt-5 max-w-4xl text-balance">

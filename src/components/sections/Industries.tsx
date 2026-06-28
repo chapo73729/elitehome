@@ -9,12 +9,10 @@ import { CanvasMotif } from "@/components/ui/CanvasMotif";
 import { useContent } from "@/lib/content";
 
 const MOTIF: Record<string, "code" | "ai" | "industrial" | "ocean"> = {
-  ai: "ai",
   strategy: "ai",
   software: "code",
-  automation: "code",
-  industrial: "industrial",
-  maritime: "ocean",
+  ai: "ai",
+  cloud: "code",
 };
 
 function IndustryCard({

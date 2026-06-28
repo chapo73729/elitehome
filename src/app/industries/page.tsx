@@ -3,13 +3,13 @@ import { SITE } from "@/lib/site";
 import { IndustriesIndexView } from "@/components/industry/IndustriesIndexView";
 
 export const metadata: Metadata = {
-  title: "Industries",
+  title: "Services",
   description:
-    "Six universes, one laboratory — Artificial Intelligence, Software, Automation, Industrial, Strategy and Maritime ventures engineered by ARDLABS®.",
+    "Four poles, one standard — Strategy & Consulting, Design & Development, Data & AI, and Cloud & Infrastructure, engineered by ARDLABS®.",
   alternates: { canonical: "/industries" },
   openGraph: {
-    title: `Industries — ${SITE.legal}`,
-    description: "Six universes, one laboratory.",
+    title: `Services — ${SITE.legal}`,
+    description: "Four poles. One standard.",
     url: `${SITE.url}/industries`,
   },
 };

@@ -6,12 +6,12 @@ import { PageHeaderFX } from "@/components/ui/PageHeaderFX";
 export const metadata: Metadata = {
   title: "Insights",
   description:
-    "Essays from ARDLABS® on long-horizon engineering, artificial intelligence as infrastructure, and operating as a global fabric.",
+    "Notes from ARDLABS® on digital engineering — shipping reliable software, applied AI, and infrastructure refined to the detail.",
   alternates: { canonical: "/insights" },
   openGraph: {
     title: "Insights · ARDLABS®",
     description:
-      "Essays on long-horizon engineering, AI as infrastructure, and operating as a global fabric.",
+      "Notes from the studio on digital engineering — software, AI and infrastructure, done right.",
     url: "/insights",
   },
 };
@@ -39,11 +39,11 @@ export default function InsightsIndex() {
           </Link>
           <p className="eyebrow mt-8">Insights</p>
           <h1 className="text-giant text-gradient mt-4 max-w-3xl text-balance">
-            Notes from the laboratory.
+            Notes from the studio.
           </h1>
           <p className="mt-6 max-w-xl text-balance text-mist">
-            Long-form thinking on how we engineer for the long horizon — and why
-            patience, dependability and a distributed fabric are the real
+            Long-form thinking on how we engineer software, platforms and AI
+            systems — and why clarity, reliability and detail are the real
             primitives.
           </p>
         </div>

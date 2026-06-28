@@ -5,41 +5,39 @@ import { PageHeaderFX } from "@/components/ui/PageHeaderFX";
 export const metadata: Metadata = {
   title: "About",
   description:
-    "ARDLABS® is a private laboratory engineering artificial intelligence, software, automation and physical infrastructure for the long term.",
+    "ARDLABS® is a digital engineering studio. We design and build software, platforms and AI systems — refined to the detail.",
   alternates: { canonical: "/about" },
   openGraph: {
     title: "About · ARDLABS®",
-    description: "A private laboratory engineering the next century of intelligence and infrastructure.",
+    description: "A digital engineering studio designing and building software, platforms and AI systems.",
     url: "/about",
   },
 };
 
 const PRINCIPLES = [
   {
-    k: "Long horizon",
-    v: "We measure progress in decades. It lets us attempt work whose payoff is invisible on a quarterly clock.",
+    k: "Refined to the detail",
+    v: "Everything we ship is built to hold up — fast, secure and legible — not just to demo well.",
   },
   {
-    k: "Load-bearing, not impressive",
-    v: "Everything we ship is built to be relied upon, not to demo well. Dependability is the standard.",
+    k: "Reliable, not impressive",
+    v: "Dependability is the standard. We engineer products to be relied upon in real operations.",
   },
   {
-    k: "Private by design",
-    v: "Patient capital and a small, senior bench let us build quietly and own what we create.",
+    k: "A bias for shipping",
+    v: "We start with the hard question and end with a product in production, maintained beyond launch.",
   },
   {
-    k: "One standard, many worlds",
-    v: "Each venture runs as its own domain — distinct teams, distinct physics — held to a shared standard of engineering.",
+    k: "One standard, four poles",
+    v: "Strategy, design & development, data & AI, and cloud — distinct disciplines, a shared standard of engineering.",
   },
 ];
 
 const DISCIPLINES = [
-  { t: "AI Research", d: "Frontier models, autonomous agents and the evaluation discipline that makes them dependable." },
-  { t: "Software & Platform", d: "Distributed runtimes and developer infrastructure engineered for production scale." },
-  { t: "Industrial & Robotics", d: "Instrumented machines, digital twins and self-reconfiguring production." },
-  { t: "Maritime & Earth Systems", d: "Live models of physical systems — oceans, fleets, networks — read like data." },
-  { t: "Capital & Operations", d: "Patient capital allocation and the operating fabric that connects every hub." },
-  { t: "Design & Research", d: "The interfaces and instrumentation that make complex systems legible." },
+  { t: "Strategy & Consulting", d: "Technology consulting, applied R&D and prototyping that turn an idea into a validated plan." },
+  { t: "Design & Development", d: "Custom software, web, mobile, SaaS and internal platforms — designed and engineered end to end." },
+  { t: "Data & AI", d: "Applied AI, intelligent automation and the dashboards that turn operations into decisions." },
+  { t: "Cloud & Infrastructure", d: "Cloud architecture, deployment, APIs and integrations engineered for uptime and scale." },
 ];
 
 export default function About() {
@@ -54,12 +52,12 @@ export default function About() {
           </Link>
           <p className="eyebrow mt-8">About</p>
           <h1 className="text-giant text-gradient mt-4 max-w-3xl text-balance">
-            A laboratory of the future.
+            A digital engineering studio.
           </h1>
           <p className="mt-6 max-w-2xl text-balance text-lg text-mist">
-            ARDLABS is a private venture laboratory. We engineer artificial
-            intelligence, software, automation and physical infrastructure — and
-            we hold them for the long term, as load-bearing systems rather than
+            ARDLABS is a digital engineering studio. We design and build
+            software, platforms and AI systems that are fast, reliable, and
+            refined to the detail — products built to hold up, not
             demonstrations.
           </p>
         </div>
@@ -69,18 +67,17 @@ export default function About() {
         <div className="container-x max-w-3xl space-y-6">
           <h2 className="font-display text-2xl font-semibold text-chalk">Why we exist</h2>
           <p className="leading-relaxed text-mist">
-            Most organisations optimise the next reporting period. It is rational
-            — and it quietly caps the kind of problems they can attempt. We chose
-            a different unit of time. When the horizon is a decade, a class of
-            work becomes available: foundational research, infrastructure that
-            compounds, and ventures that only become valuable once an entire
-            industry depends on them.
+            Most studios ship features. We engineer products. Every project
+            starts as a hard question — what to build, why, and how it will hold
+            up — and ends as software, a platform or an AI system that works in
+            production and keeps working long after launch.
           </p>
           <p className="leading-relaxed text-mist">
-            We treat patience as infrastructure — something built deliberately and
-            drawn on when the work demands it. Patient capital, a senior
-            engineering bench and a culture that rewards correctness over velocity
-            are what let a long-horizon thesis survive contact with reality.
+            Digital engineering is the umbrella. Under it, four poles cover an
+            idea end to end: strategy and consulting, design and development,
+            data and AI, and cloud and infrastructure. Deep engineering, clear
+            design and a bias for shipping are what let a hard idea survive
+            contact with reality.
           </p>
         </div>
       </section>
@@ -103,11 +100,11 @@ export default function About() {
         <div className="container-x max-w-5xl">
           <p className="eyebrow mb-3">How we&rsquo;re built</p>
           <h2 className="text-section-title text-gradient max-w-xl text-balance">
-            One bench, six disciplines.
+            One studio, four poles.
           </h2>
           <p className="mt-5 max-w-xl text-balance text-mist">
             We operate as a small, senior team organised by discipline rather than
-            by title — principals who build, across every timezone.
+            by title — engineers who build, across every timezone.
           </p>
           <div className="mt-10 grid gap-px overflow-hidden rounded-3xl hairline sm:grid-cols-2 lg:grid-cols-3">
             {DISCIPLINES.map((d) => (

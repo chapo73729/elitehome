@@ -50,7 +50,7 @@ export default async function Image({
             {title}
           </div>
           <div style={{ marginTop: 24, fontSize: 30, color: "#9a9aa3" }}>
-            {industry?.tagline ?? "Private Ventures"}
+            {industry?.tagline ?? "Digital Engineering Studio"}
           </div>
         </div>
       </div>

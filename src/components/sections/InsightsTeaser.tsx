@@ -30,7 +30,7 @@ export function InsightsTeaser() {
         <div className="mt-10 flex flex-wrap items-end justify-between gap-6">
           <Reveal delay={0.08}>
             <h2 className="text-section-title text-gradient max-w-xl text-balance">
-              Notes from the laboratory.
+              Notes from the studio.
             </h2>
           </Reveal>
           <Reveal delay={0.16}>

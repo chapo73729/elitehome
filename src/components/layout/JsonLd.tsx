@@ -15,12 +15,10 @@ export function JsonLd() {
         slogan: SITE.tagline,
         areaServed: CITIES.map((c) => c.name),
         knowsAbout: [
-          "Artificial Intelligence",
-          "Software Development",
-          "Automation",
-          "Industrial Services",
-          "Strategic Development",
-          "Maritime Operations",
+          "Strategy & Consulting",
+          "Design & Development",
+          "Data & AI",
+          "Cloud & Infrastructure",
         ],
       },
       {

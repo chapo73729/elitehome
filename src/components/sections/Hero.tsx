@@ -31,7 +31,7 @@ export function Hero({ ready }: { ready: boolean }) {
       </div>
 
       {/* radial floor glow */}
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(60%_50%_at_50%_115%,rgba(91,140,255,0.18),transparent_70%)]" />
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(60%_50%_at_50%_115%,rgba(79,140,255,0.18),transparent_70%)]" />
 
       {/* diegetic HUD */}
       <HeroHud ready={ready} />
@@ -55,10 +55,19 @@ export function Hero({ ready }: { ready: boolean }) {
         </h1>
 
         <motion.p
+          initial={{ opacity: 0, y: 18, filter: "blur(6px)" }}
+          animate={ready ? { opacity: 1, y: 0, filter: "blur(0px)" } : {}}
+          transition={{ duration: 1.1, ease: EASE, delay: 1.05 }}
+          className="mt-7 max-w-2xl text-balance font-display text-xl font-medium leading-snug text-chalk md:text-2xl [@media(max-height:680px)]:mt-3 [@media(max-height:680px)]:text-lg"
+        >
+          {c.headline}
+        </motion.p>
+
+        <motion.p
           initial={{ opacity: 0, y: 20, filter: "blur(6px)" }}
           animate={ready ? { opacity: 1, y: 0, filter: "blur(0px)" } : {}}
-          transition={{ duration: 1.1, ease: EASE, delay: 1.15 }}
-          className="mt-7 max-w-xl text-balance text-base text-mist md:text-lg [@media(max-height:680px)]:mt-3 [@media(max-height:680px)]:text-sm"
+          transition={{ duration: 1.1, ease: EASE, delay: 1.3 }}
+          className="mt-5 max-w-xl text-balance text-sm text-mist md:text-base [@media(max-height:680px)]:mt-2 [@media(max-height:680px)]:text-xs"
         >
           {c.subtitle}
         </motion.p>
