@@ -290,6 +290,20 @@ html.hide-cursor * {
   50% { opacity: 0.6; }
 }
 
+/* Slow-drifting aurora blobs for the persistent ambient backdrop */
+@keyframes aurora1 {
+  0%, 100% { transform: translate(-50%, -50%) scale(1); }
+  50% { transform: translate(-38%, -42%) scale(1.18); }
+}
+@keyframes aurora2 {
+  0%, 100% { transform: translate(25%, 0) scale(1); }
+  50% { transform: translate(14%, -10%) scale(1.14); }
+}
+@keyframes aurora3 {
+  0%, 100% { transform: translate(-50%, 0) scale(1); }
+  50% { transform: translate(-58%, 8%) scale(1.22); }
+}
+
 /* ---------- Short viewports (landscape phones) ---------- */
 @media (max-height: 640px) {
   .text-mega {

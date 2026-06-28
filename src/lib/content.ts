@@ -11,11 +11,10 @@ import type { MotifVariant } from "./site";
 
 const en = {
   nav: [
-    { label: "Vision", href: "#vision" },
-    { label: "Core", href: "#core" },
+    { label: "Manifesto", href: "#manifesto" },
+    { label: "AI Core", href: "#core" },
     { label: "Network", href: "#network" },
     { label: "Industries", href: "#industries" },
-    { label: "Lab", href: "#lab" },
     { label: "Contact", href: "#contact" },
   ],
   common: {
@@ -460,7 +459,7 @@ const en = {
     button: "Start a conversation",
   },
   contact: {
-    eyebrow: "Contact · Section 14",
+    eyebrow: "Contact · 04",
     title: "Let's build the improbable.",
     intro:
       "We partner with a small number of founders, operators and institutions. Tell us what you're trying to make inevitable.",
@@ -513,11 +512,10 @@ export type Content = typeof en;
 /* ---------- French overrides (text only; neutral fields inherit) ---------- */
 const fr: DeepPartial<Content> = {
   nav: [
-    { label: "Vision" },
-    { label: "Cœur" },
+    { label: "Manifeste" },
+    { label: "Cœur IA" },
     { label: "Réseau" },
     { label: "Industries" },
-    { label: "Labo" },
     { label: "Contact" },
   ],
   common: {
@@ -922,7 +920,7 @@ const fr: DeepPartial<Content> = {
     button: "Démarrer la conversation",
   },
   contact: {
-    eyebrow: "Contact · Section 14",
+    eyebrow: "Contact · 04",
     title: "Construisons l'improbable.",
     intro:
       "Nous nous associons à un petit nombre de fondateurs, d'opérateurs et d'institutions. Dites-nous ce que vous cherchez à rendre inévitable.",

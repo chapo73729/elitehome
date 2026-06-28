@@ -132,8 +132,8 @@ function IndustryCard({
 export function Industries() {
   const c = useContent().industries;
   return (
-    <section id="industries" className="relative z-10 scroll-mt-24 bg-void py-28 md:py-40">
-      <SectionHeading index="04" eyebrow={c.eyebrow} title={c.title} intro={c.intro} />
+    <section id="industries" className="relative z-10 scroll-mt-24 py-28 md:py-40">
+      <SectionHeading index="03" eyebrow={c.eyebrow} title={c.title} intro={c.intro} />
 
       <div className="container-x mt-16">
         <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">

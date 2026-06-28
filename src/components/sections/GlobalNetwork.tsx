@@ -11,12 +11,12 @@ export function GlobalNetwork() {
   return (
     <section
       id="network"
-      className="relative z-10 overflow-hidden bg-void py-28 md:py-36"
+      className="relative z-10 overflow-hidden py-28 md:py-36"
     >
       <div className="container-x">
         <Reveal>
           <div className="flex items-center gap-4">
-            <span className="font-mono text-xs text-accent">03</span>
+            <span className="font-mono text-xs text-accent">02</span>
             <span className="eyebrow">{c.eyebrow}</span>
             <span className="h-px flex-1 bg-gradient-to-r from-white/15 to-transparent" />
           </div>

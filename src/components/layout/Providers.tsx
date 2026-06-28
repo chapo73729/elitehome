@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import { MotionConfig } from "framer-motion";
 import { usePathname } from "next/navigation";
 import { SmoothScroll } from "./SmoothScroll";
+import { AmbientBackdrop } from "./AmbientBackdrop";
 import { Cursor } from "./Cursor";
 import { Navbar } from "./Navbar";
 import { Footer } from "./Footer";
@@ -45,11 +46,12 @@ export function Providers({ children }: { children: React.ReactNode }) {
   return (
     <MotionConfig reducedMotion="user">
       <a
-        href="#vision"
+        href="#manifesto"
         className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[300] focus:rounded-full focus:bg-chalk focus:px-5 focus:py-2.5 focus:text-sm focus:font-medium focus:text-void"
       >
         Skip to content
       </a>
+      <AmbientBackdrop />
       <Cursor />
       <ScrollProgress />
       <SoundSystem />

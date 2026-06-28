@@ -5,14 +5,10 @@ import { scrollToTarget } from "./SmoothScroll";
 
 const SECTIONS = [
   { id: "hero", label: "Top" },
-  { id: "vision", label: "Vision" },
   { id: "manifesto", label: "Manifesto" },
   { id: "core", label: "AI Core" },
   { id: "network", label: "Network" },
   { id: "industries", label: "Industries" },
-  { id: "lab", label: "Capabilities" },
-  { id: "research", label: "Research" },
-  { id: "stack", label: "Stack" },
   { id: "contact", label: "Contact" },
 ] as const;
 

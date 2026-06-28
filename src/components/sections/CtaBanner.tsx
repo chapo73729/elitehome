@@ -8,7 +8,7 @@ import { useContent } from "@/lib/content";
 export function CtaBanner() {
   const c = useContent().cta;
   return (
-    <section className="relative z-10 bg-void py-16 md:py-24">
+    <section className="relative z-10 py-16 md:py-24">
       <div className="container-x">
         <Reveal>
           <div className="relative overflow-hidden rounded-[2rem] hairline px-8 py-20 text-center md:px-16 md:py-28">

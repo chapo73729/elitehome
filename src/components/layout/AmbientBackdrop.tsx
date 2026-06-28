@@ -1,0 +1,21 @@
+"use client";
+
+/**
+ * A single persistent backdrop behind the entire site — slow-drifting aurora
+ * blobs over the void, so every section floats in one continuous world rather
+ * than stacking as separate black blocks. CSS-only: buttery and free.
+ */
+export function AmbientBackdrop() {
+  return (
+    <div
+      aria-hidden
+      className="pointer-events-none fixed inset-0 -z-10 overflow-hidden bg-void"
+    >
+      <div className="absolute left-[12%] top-[6%] h-[62vmax] w-[62vmax] -translate-x-1/2 -translate-y-1/2 rounded-full blur-3xl [animation:aurora1_36s_ease-in-out_infinite] [background:radial-gradient(closest-side,rgba(91,140,255,0.12),transparent_70%)]" />
+      <div className="absolute right-[6%] top-[58%] h-[58vmax] w-[58vmax] translate-x-1/4 rounded-full blur-3xl [animation:aurora2_46s_ease-in-out_infinite] [background:radial-gradient(closest-side,rgba(122,242,224,0.09),transparent_70%)]" />
+      <div className="absolute left-[44%] top-[42%] h-[52vmax] w-[52vmax] -translate-x-1/2 rounded-full blur-3xl [animation:aurora3_54s_ease-in-out_infinite] [background:radial-gradient(closest-side,rgba(185,140,255,0.08),transparent_70%)]" />
+      {/* settle the edges into pure void so content stays legible */}
+      <div className="absolute inset-0 [background:radial-gradient(130%_90%_at_50%_30%,transparent_45%,rgba(5,5,5,0.65))]" />
+    </div>
+  );
+}

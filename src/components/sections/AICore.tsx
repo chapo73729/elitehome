@@ -18,7 +18,7 @@ export function AICore() {
   return (
     <section
       id="core"
-      className="relative z-10 min-h-[100svh] overflow-hidden bg-void py-28 md:py-36"
+      className="relative z-10 min-h-[100svh] overflow-hidden py-28 md:py-36"
     >
       {/* full-bleed neural field */}
       <div ref={scene.ref} className="absolute inset-0">
@@ -31,7 +31,7 @@ export function AICore() {
       <div className="container-x relative z-10 flex min-h-[80svh] flex-col justify-center">
         <Reveal>
           <div className="flex items-center gap-4">
-            <span className="font-mono text-xs text-accent">02</span>
+            <span className="font-mono text-xs text-accent">01</span>
             <span className="eyebrow">{c.eyebrow}</span>
           </div>
         </Reveal>

@@ -51,7 +51,7 @@ export function Contact() {
   };
 
   return (
-    <section id="contact" className="relative z-10 scroll-mt-24 overflow-hidden bg-void py-28 md:py-40">
+    <section id="contact" className="relative z-10 scroll-mt-24 overflow-hidden py-28 md:py-40">
       {/* aurora background */}
       <div aria-hidden className="pointer-events-none absolute inset-0">
         <div className="absolute left-1/2 top-1/3 h-[60vh] w-[60vh] -translate-x-1/2 rounded-full bg-accent/20 blur-[120px]" />
