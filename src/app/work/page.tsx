@@ -33,6 +33,10 @@ export default function WorkIndex() {
             A selection of what we build — software, platforms, data and cloud,
             each held to a shared standard of engineering.
           </p>
+          <p className="mt-4 max-w-xl text-balance text-sm text-fog">
+            Representative projects, shown to illustrate how we work. Client
+            names are withheld where engagements are under NDA.
+          </p>
         </div>
       </section>
 
@@ -43,12 +47,16 @@ export default function WorkIndex() {
               <li key={w.slug}>
                 <Link
                   href={`/work/${w.slug}`}
+                  aria-label={`${w.name} — ${w.field} case study`}
                   className="group flex h-full flex-col bg-ink p-8 transition-colors hover:bg-white/[0.03] md:p-10"
                 >
                   <div className="flex items-center justify-between font-mono text-xs tracking-widest text-fog">
                     <span style={{ color: w.accent }}>{w.code}</span>
                     <span>{w.stage}</span>
                   </div>
+                  <span className="mt-4 inline-flex w-fit items-center gap-2 rounded-full border border-white/10 px-3 py-1 font-mono text-[0.6rem] uppercase tracking-widest text-fog">
+                    Representative project
+                  </span>
                   <h2 className="mt-5 font-display text-2xl font-semibold text-chalk transition-colors group-hover:text-gradient md:text-3xl">
                     {w.name}
                   </h2>
@@ -64,6 +72,27 @@ export default function WorkIndex() {
               </li>
             ))}
           </ul>
+
+          <div className="mt-px grid gap-px overflow-hidden rounded-3xl hairline sm:grid-cols-2">
+            <Link
+              href="/services"
+              className="group bg-ink p-8 transition-colors hover:bg-white/[0.03]"
+            >
+              <div className="font-mono text-xs tracking-widest text-fog">Services</div>
+              <div className="mt-3 font-display text-xl text-mist transition-colors group-hover:text-chalk">
+                Explore the four poles →
+              </div>
+            </Link>
+            <Link
+              href="/contact"
+              className="group bg-ink p-8 text-right transition-colors hover:bg-white/[0.03]"
+            >
+              <div className="font-mono text-xs tracking-widest text-fog">Contact</div>
+              <div className="mt-3 font-display text-xl text-mist transition-colors group-hover:text-chalk">
+                Start a project →
+              </div>
+            </Link>
+          </div>
         </div>
       </section>
     </main>

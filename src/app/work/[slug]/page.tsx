@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { WORK, getCase } from "@/lib/work";
-import { SITE } from "@/lib/site";
+import { SITE, INDUSTRIES } from "@/lib/site";
 import { PageHeaderFX } from "@/components/ui/PageHeaderFX";
 
 export function generateStaticParams() {
@@ -39,6 +39,7 @@ export default async function CaseStudyPage({
   if (!w) notFound();
 
   const more = WORK.filter((x) => x.slug !== w.slug).slice(0, 2);
+  const pole = INDUSTRIES.find((i) => i.id === w.pole);
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "CreativeWork",
@@ -71,8 +72,40 @@ export default async function CaseStudyPage({
             <span>{w.field}</span>
             <span>{w.stage}</span>
           </div>
+          <span className="mt-5 inline-flex w-fit items-center rounded-full border border-white/10 px-3 py-1 font-mono text-[0.6rem] uppercase tracking-widest text-fog">
+            Representative project
+          </span>
           <h1 className="text-giant text-gradient mt-4 text-balance">{w.name}</h1>
           <p className="mt-6 text-balance text-lg text-mist">{w.summary}</p>
+
+          <dl className="mt-8 grid gap-6 sm:grid-cols-2">
+            <div>
+              <dt className="font-mono text-[0.7rem] uppercase tracking-widest text-fog">Our role</dt>
+              <dd className="mt-3 flex flex-wrap gap-2">
+                {w.roles.map((r) => (
+                  <span
+                    key={r}
+                    className="rounded-full border border-white/12 px-3 py-1.5 font-mono text-[0.7rem] tracking-widest text-mist"
+                  >
+                    {r}
+                  </span>
+                ))}
+              </dd>
+            </div>
+            <div>
+              <dt className="font-mono text-[0.7rem] uppercase tracking-widest text-fog">Stack</dt>
+              <dd className="mt-3 flex flex-wrap gap-2">
+                {w.tech.map((t) => (
+                  <span
+                    key={t}
+                    className="rounded-full border border-white/12 px-3 py-1.5 font-mono text-[0.7rem] tracking-widest text-mist"
+                  >
+                    {t}
+                  </span>
+                ))}
+              </dd>
+            </div>
+          </dl>
         </div>
       </section>
 
@@ -126,6 +159,38 @@ export default async function CaseStudyPage({
           </section>
         </div>
       </article>
+
+      <section className="relative z-10 bg-void pb-20">
+        <div className="container-x max-w-3xl">
+          <div
+            className="overflow-hidden rounded-3xl hairline p-8 md:p-10"
+            style={{ background: `linear-gradient(135deg, ${w.accent}14, transparent 70%)` }}
+          >
+            <h2 className="font-display text-2xl font-semibold text-chalk md:text-3xl">
+              Have a project like this?
+            </h2>
+            <p className="mt-3 max-w-xl text-balance text-mist">
+              Tell us what you&apos;re trying to build — we&apos;ll tell you how we&apos;d approach it.
+            </p>
+            <div className="mt-7 flex flex-wrap gap-4 font-mono text-xs tracking-widest">
+              <Link
+                href="/contact"
+                className="inline-flex items-center gap-2 rounded-full bg-chalk px-6 py-3 text-void transition-opacity hover:opacity-90"
+              >
+                Start a project <span aria-hidden>→</span>
+              </Link>
+              {pole && (
+                <Link
+                  href={`/services/${pole.id}`}
+                  className="inline-flex items-center gap-2 rounded-full border border-white/15 px-6 py-3 text-chalk transition-colors hover:border-white/30"
+                >
+                  {pole.title} <span aria-hidden>→</span>
+                </Link>
+              )}
+            </div>
+          </div>
+        </div>
+      </section>
 
       <section className="relative z-10 bg-void pb-32">
         <div className="container-x max-w-3xl">
