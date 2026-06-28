@@ -9,7 +9,7 @@ export function TabTitle() {
     const onVis = () => {
       if (document.hidden) {
         original = document.title;
-        document.title = "← Return to the lab · ARDLABS®";
+        document.title = "← Come back · ARDLABS®";
       } else {
         document.title = original;
       }

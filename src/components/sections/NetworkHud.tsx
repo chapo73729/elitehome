@@ -52,8 +52,8 @@ export function NetworkHud() {
     <div className="glass pointer-events-none w-[15rem] rounded-2xl p-4 font-mono text-[0.7rem] backdrop-blur-xl">
       <div className="flex items-center justify-between">
         <span className="flex items-center gap-2 text-chalk">
-          <span className="inline-block h-1.5 w-1.5 animate-pulse rounded-full bg-accent-2 shadow-[0_0_8px_2px_rgba(122,242,224,0.6)]" />
-          LIVE · GLOBAL FABRIC
+          <span className="inline-block h-1.5 w-1.5 animate-pulse rounded-full bg-accent shadow-[0_0_8px_2px_rgba(79,140,255,0.6)]" />
+          LIVE · GLOBAL NETWORK
         </span>
       </div>
 

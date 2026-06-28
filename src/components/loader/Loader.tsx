@@ -71,7 +71,7 @@ export function Loader({ onComplete }: { onComplete: () => void }) {
       off.height = H;
       const fontSize = Math.min(W * 0.16, 220);
       octx.fillStyle = "#fff";
-      octx.font = `700 ${fontSize}px "Space Grotesk", system-ui, sans-serif`;
+      octx.font = `700 ${fontSize}px "Geist", system-ui, sans-serif`;
       octx.textAlign = "center";
       octx.textBaseline = "middle";
       octx.fillText("ARDLABS", W / 2, H / 2);
@@ -142,9 +142,9 @@ export function Loader({ onComplete }: { onComplete: () => void }) {
         const p = easeOutExpo(elapsed / T_IGNITE);
         const radius = p * 90;
         const g = ctx.createRadialGradient(cx, cy, 0, cx, cy, Math.max(1, radius));
-        g.addColorStop(0, `rgba(180,210,255,${0.9 * p})`);
-        g.addColorStop(0.4, `rgba(91,140,255,${0.5 * p})`);
-        g.addColorStop(1, "rgba(91,140,255,0)");
+        g.addColorStop(0, `rgba(150,185,255,${0.9 * p})`);
+        g.addColorStop(0.4, `rgba(79,140,255,${0.5 * p})`);
+        g.addColorStop(1, "rgba(79,140,255,0)");
         ctx.fillStyle = g;
         ctx.fillRect(0, 0, W, H);
         ctx.fillStyle = `rgba(255,255,255,${p})`;

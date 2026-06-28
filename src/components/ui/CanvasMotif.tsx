@@ -65,11 +65,11 @@ export function CanvasMotif({
         const fs = 14;
         const count = Math.floor(W / fs);
         while (cols.length < count) cols.push(Math.random() * -H);
-        ctx.font = `${fs}px "Space Mono", monospace`;
+        ctx.font = `${fs}px "Geist Mono", monospace`;
         for (let i = 0; i < count; i++) {
           const x = i * fs;
           const y = cols[i];
-          ctx.fillStyle = "rgba(140,250,232,0.95)";
+          ctx.fillStyle = "rgba(150,185,255,0.95)";
           ctx.fillText(glyphs[(Math.random() * glyphs.length) | 0], x, y);
           ctx.fillStyle = "rgba(120,165,255,0.45)";
           ctx.fillText(glyphs[(Math.random() * glyphs.length) | 0], x, y - fs * 4);

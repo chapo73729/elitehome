@@ -91,7 +91,7 @@ export function HeroHud({ ready }: { ready: boolean }) {
         {...fade}
         className="absolute right-12 top-1/2 -translate-y-1/2 [writing-mode:vertical-rl] text-[0.58rem] tracking-[0.45em]"
       >
-        ARDLABS // PRIVATE VENTURES
+        ARDLABS // ENGINEERING STUDIO
       </motion.div>
 
       {/* sweeping scan line */}
