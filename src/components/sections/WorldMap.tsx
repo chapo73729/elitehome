@@ -39,6 +39,16 @@ const LABEL: Record<string, { dx: number; dy: number; anchor: "start" | "end" }>
   "New York": { dx: -9, dy: -7, anchor: "end" },
 };
 
+// Country · timezone sub-label for each hub.
+const META: Record<string, string> = {
+  Prague: "CZ · HQ",
+  Geneva: "CH · GMT+1",
+  Singapore: "SG · GMT+8",
+  Dubai: "AE · GMT+4",
+  Tokyo: "JP · GMT+9",
+  "New York": "US · GMT−5",
+};
+
 const byName = (n: string) => cityPts.find((c) => c.name === n)!;
 
 // Routes between hubs (great-circle look via a lifted quadratic control point).
@@ -152,50 +162,76 @@ export function WorldMap() {
         </g>
 
         {/* city pins */}
-        {cityPts.map((c) => {
+        {cityPts.map((c, i) => {
           const lab = LABEL[c.name] ?? { dx: 9, dy: -7, anchor: "start" as const };
+          const meta = META[c.name] ?? "";
           const on = active === c.name;
+          // short leader line from the dot toward the label
+          const lx = lab.anchor === "end" ? lab.dx + 2 : lab.dx - 2;
           return (
             <g
               key={c.name}
               transform={`translate(${c.x} ${c.y})`}
               onMouseEnter={() => setActive(c.name)}
               onMouseLeave={() => setActive(null)}
-              style={{ cursor: "pointer" }}
+              style={{ cursor: "pointer", animation: `markerIn 0.6s ease ${0.25 + i * 0.12}s both` }}
             >
               {/* generous invisible hit area */}
-              <circle r={14} fill="transparent" />
-              <circle r={on ? 7 : 5} fill="var(--color-accent-2)" opacity={0.18}>
-                <animate
-                  attributeName="r"
-                  values="5;9;5"
-                  dur="2.4s"
-                  repeatCount="indefinite"
-                />
-                <animate
-                  attributeName="opacity"
-                  values="0.25;0;0.25"
-                  dur="2.4s"
-                  repeatCount="indefinite"
-                />
+              <circle r={16} fill="transparent" />
+              {/* leader line */}
+              <line
+                x1={0}
+                y1={0}
+                x2={lx}
+                y2={lab.dy + 1}
+                stroke="var(--color-accent-2)"
+                strokeWidth={0.6}
+                strokeOpacity={on ? 0.7 : 0.3}
+                vectorEffect="non-scaling-stroke"
+              />
+              {/* pulse halo */}
+              <circle r={5} fill="var(--color-accent-2)" opacity={0.16}>
+                <animate attributeName="r" values="4;9;4" dur="2.6s" repeatCount="indefinite" begin={`${i * 0.3}s`} />
+                <animate attributeName="opacity" values="0.22;0;0.22" dur="2.6s" repeatCount="indefinite" begin={`${i * 0.3}s`} />
               </circle>
-              <circle r={2.4} fill="var(--color-accent-2)" />
+              {/* dot: ring + core */}
+              <circle r={on ? 4 : 3.2} fill="none" stroke="var(--color-accent-2)" strokeWidth={0.8} strokeOpacity={0.6} vectorEffect="non-scaling-stroke" />
+              <circle r={1.7} fill={on ? "#ffffff" : "var(--color-accent-2)"} />
+              {/* label: name (display) + sub (mono) */}
               <text
                 x={lab.dx}
                 y={lab.dy}
                 textAnchor={lab.anchor}
-                className="font-mono"
+                className="font-display"
                 style={{
-                  fontSize: 11,
-                  letterSpacing: 0.5,
-                  fill: on ? "#fff" : "#c8cad4",
+                  fontSize: 12.5,
+                  fontWeight: 600,
+                  letterSpacing: -0.2,
+                  fill: on ? "#ffffff" : "#e8e8ec",
                   paintOrder: "stroke",
                   stroke: "#050505",
-                  strokeWidth: 3,
+                  strokeWidth: 2.6,
                   strokeLinejoin: "round",
                 }}
               >
-                {c.name.toUpperCase()}
+                {c.name}
+              </text>
+              <text
+                x={lab.dx}
+                y={lab.dy + 8.5}
+                textAnchor={lab.anchor}
+                className="font-mono"
+                style={{
+                  fontSize: 5.6,
+                  letterSpacing: 1.4,
+                  fill: on ? "var(--color-accent-2)" : "#8a8a93",
+                  paintOrder: "stroke",
+                  stroke: "#050505",
+                  strokeWidth: 1.8,
+                  strokeLinejoin: "round",
+                }}
+              >
+                {meta}
               </text>
             </g>
           );

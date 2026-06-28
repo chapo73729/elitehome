@@ -290,6 +290,12 @@ html.hide-cursor * {
   50% { opacity: 0.6; }
 }
 
+/* Staggered reveal for world-map city markers */
+@keyframes markerIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
 /* Slow-drifting aurora blobs for the persistent ambient backdrop */
 @keyframes aurora1 {
   0%, 100% { transform: translate(-50%, -50%) scale(1); }

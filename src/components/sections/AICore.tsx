@@ -26,7 +26,11 @@ export function AICore() {
           {scene.mounted && <NeuralFlow frameloop={scene.frameloop} />}
         </SceneBoundary>
       </div>
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(70%_60%_at_50%_50%,transparent_30%,#050505_85%)]" />
+      {/* legibility scrims: text reads on near-solid void at the left,
+          the living field glows to the right */}
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-[#050505] from-15% via-[#050505]/85 via-45% to-transparent to-80%" />
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-[#050505] via-[#050505]/70 to-transparent" />
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(120%_80%_at_50%_50%,transparent_55%,#050505)]" />
 
       <div className="container-x relative z-10 flex min-h-[80svh] flex-col justify-center">
         <Reveal>
