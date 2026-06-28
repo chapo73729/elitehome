@@ -4,22 +4,87 @@ import { useMemo, useRef } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { EffectComposer, Bloom } from "@react-three/postprocessing";
 import * as THREE from "three";
+import { useDeviceTier } from "@/hooks/useDeviceTier";
 
-function Neurons({ nodeCount = 90 }: { nodeCount?: number }) {
+/* ============================================================
+   AI Core — a living neural lattice. Round glowing nodes and
+   connections that *fire*: a bright signal travels along each
+   synapse (custom line shader), not a static web of dots.
+   ============================================================ */
+
+const nodeVert = /* glsl */ `
+  attribute float aSize;
+  attribute float aSeed;
+  uniform float uTime;
+  varying float vSeed;
+  void main() {
+    vSeed = aSeed;
+    vec4 mv = modelViewMatrix * vec4(position, 1.0);
+    float tw = 0.65 + 0.35 * sin(uTime * 2.0 + aSeed * 6.2831);
+    gl_PointSize = aSize * tw * (300.0 / -mv.z);
+    gl_Position = projectionMatrix * mv;
+  }
+`;
+const nodeFrag = /* glsl */ `
+  precision mediump float;
+  varying float vSeed;
+  void main() {
+    vec2 uv = gl_PointCoord - 0.5;
+    float d = length(uv);
+    if (d > 0.5) discard;
+    float core = smoothstep(0.5, 0.0, d);
+    vec3 col = mix(vec3(0.32, 0.66, 1.0), vec3(0.85, 0.97, 1.0), vSeed);
+    gl_FragColor = vec4(col, pow(core, 1.6));
+  }
+`;
+
+const edgeVert = /* glsl */ `
+  attribute float aLinePos;
+  attribute float aSeed;
+  attribute float aSpeed;
+  varying float vLinePos;
+  varying float vSeed;
+  varying float vSpeed;
+  void main() {
+    vLinePos = aLinePos;
+    vSeed = aSeed;
+    vSpeed = aSpeed;
+    gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+  }
+`;
+const edgeFrag = /* glsl */ `
+  precision mediump float;
+  uniform float uTime;
+  varying float vLinePos;
+  varying float vSeed;
+  varying float vSpeed;
+  void main() {
+    float head = fract(uTime * vSpeed + vSeed);
+    float d = abs(vLinePos - head);
+    d = min(d, 1.0 - d);
+    float pulse = smoothstep(0.14, 0.0, d);
+    vec3 col = mix(vec3(0.16, 0.33, 0.85), vec3(0.7, 0.97, 1.0), pulse);
+    float a = 0.08 + pulse * 0.92;
+    gl_FragColor = vec4(col, a);
+  }
+`;
+
+function Lattice({ nodeCount }: { nodeCount: number }) {
   const group = useRef<THREE.Group>(null);
-  const nodesRef = useRef<THREE.Points>(null);
-  const linesRef = useRef<THREE.LineSegments>(null);
-  const pulseRef = useRef<THREE.Points>(null);
+  const nodeMat = useRef<THREE.ShaderMaterial>(null);
+  const edgeMat = useRef<THREE.ShaderMaterial>(null);
 
-  const { nodePositions, linePositions, pulseData, basePositions } = useMemo(() => {
+  const data = useMemo(() => {
     const pts: THREE.Vector3[] = [];
     const golden = Math.PI * (3 - Math.sqrt(5));
     for (let i = 0; i < nodeCount; i++) {
       const t = i / nodeCount;
       const y = 1 - t * 2;
-      const r = Math.sqrt(1 - y * y);
+      const r = Math.sqrt(Math.max(0, 1 - y * y));
       const theta = golden * i;
-      const radius = 1.6 + (Math.random() - 0.5) * 0.5;
+      // two shells + jitter for depth
+      const shell = i % 3 === 0 ? 1.05 : 1.7;
+      const radius = shell + (Math.random() - 0.5) * 0.45;
       pts.push(
         new THREE.Vector3(
           Math.cos(theta) * r * radius,
@@ -29,16 +94,22 @@ function Neurons({ nodeCount = 90 }: { nodeCount?: number }) {
       );
     }
 
-    const nodePositions = new Float32Array(nodeCount * 3);
+    const nodePos = new Float32Array(nodeCount * 3);
+    const nodeSize = new Float32Array(nodeCount);
+    const nodeSeed = new Float32Array(nodeCount);
     pts.forEach((p, i) => {
-      nodePositions[i * 3] = p.x;
-      nodePositions[i * 3 + 1] = p.y;
-      nodePositions[i * 3 + 2] = p.z;
+      nodePos[i * 3] = p.x;
+      nodePos[i * 3 + 1] = p.y;
+      nodePos[i * 3 + 2] = p.z;
+      nodeSize[i] = 0.05 + Math.random() * 0.07;
+      nodeSeed[i] = Math.random();
     });
 
-    // connect each node to its nearest neighbours
-    const segs: number[] = [];
-    const pulses: { a: number; b: number; speed: number; off: number }[] = [];
+    // connect nearest neighbours
+    const ePos: number[] = [];
+    const eLine: number[] = [];
+    const eSeed: number[] = [];
+    const eSpeed: number[] = [];
     for (let i = 0; i < nodeCount; i++) {
       const dists: { j: number; d: number }[] = [];
       for (let j = 0; j < nodeCount; j++) {
@@ -50,106 +121,89 @@ function Neurons({ nodeCount = 90 }: { nodeCount?: number }) {
       for (let k = 0; k < links; k++) {
         const j = dists[k].j;
         if (j > i) {
-          segs.push(pts[i].x, pts[i].y, pts[i].z, pts[j].x, pts[j].y, pts[j].z);
-          pulses.push({ a: i, b: j, speed: 0.3 + Math.random() * 0.7, off: Math.random() });
+          const a = pts[i];
+          const b = pts[j];
+          ePos.push(a.x, a.y, a.z, b.x, b.y, b.z);
+          eLine.push(0, 1);
+          const s = Math.random();
+          const sp = 0.25 + Math.random() * 0.7;
+          eSeed.push(s, s);
+          eSpeed.push(sp, sp);
         }
       }
     }
 
-    const pulseData = new Float32Array(pulses.length * 3);
     return {
-      nodePositions,
-      basePositions: nodePositions.slice(),
-      linePositions: new Float32Array(segs),
-      pulseData: { array: pulseData, pulses, pts },
+      nodePos,
+      nodeSize,
+      nodeSeed,
+      ePos: new Float32Array(ePos),
+      eLine: new Float32Array(eLine),
+      eSeed: new Float32Array(eSeed),
+      eSpeed: new Float32Array(eSpeed),
     };
   }, [nodeCount]);
 
+  const nodeUniforms = useMemo(() => ({ uTime: { value: 0 } }), []);
+  const edgeUniforms = useMemo(() => ({ uTime: { value: 0 } }), []);
+
   useFrame((state) => {
     const t = state.clock.elapsedTime;
+    nodeUniforms.uTime.value = t;
+    edgeUniforms.uTime.value = t;
     if (group.current) {
       group.current.rotation.y = t * 0.12;
-      group.current.rotation.x =
-        Math.sin(t * 0.2) * 0.15 + state.pointer.y * 0.25;
+      group.current.rotation.x = Math.sin(t * 0.2) * 0.12 + state.pointer.y * 0.25;
       group.current.rotation.z = state.pointer.x * 0.12;
-    }
-
-    // node breathing
-    if (nodesRef.current) {
-      const arr = (nodesRef.current.geometry.attributes.position as THREE.BufferAttribute)
-        .array as Float32Array;
-      for (let i = 0; i < arr.length; i += 3) {
-        const pulse = 1 + Math.sin(t * 1.5 + i) * 0.012;
-        arr[i] = basePositions[i] * pulse;
-        arr[i + 1] = basePositions[i + 1] * pulse;
-        arr[i + 2] = basePositions[i + 2] * pulse;
-      }
-      nodesRef.current.geometry.attributes.position.needsUpdate = true;
-    }
-
-    // signal pulses travelling along edges
-    if (pulseRef.current) {
-      const { array, pulses, pts } = pulseData;
-      for (let i = 0; i < pulses.length; i++) {
-        const p = pulses[i];
-        const tt = (t * p.speed + p.off) % 1;
-        const a = pts[p.a];
-        const b = pts[p.b];
-        array[i * 3] = a.x + (b.x - a.x) * tt;
-        array[i * 3 + 1] = a.y + (b.y - a.y) * tt;
-        array[i * 3 + 2] = a.z + (b.z - a.z) * tt;
-      }
-      pulseRef.current.geometry.attributes.position.needsUpdate = true;
     }
   });
 
   return (
     <group ref={group}>
-      <points ref={nodesRef}>
+      <lineSegments>
         <bufferGeometry>
-          <bufferAttribute attach="attributes-position" args={[nodePositions, 3]} />
+          <bufferAttribute attach="attributes-position" args={[data.ePos, 3]} />
+          <bufferAttribute attach="attributes-aLinePos" args={[data.eLine, 1]} />
+          <bufferAttribute attach="attributes-aSeed" args={[data.eSeed, 1]} />
+          <bufferAttribute attach="attributes-aSpeed" args={[data.eSpeed, 1]} />
         </bufferGeometry>
-        <pointsMaterial
-          size={0.07}
-          color="#9fe8ff"
+        <shaderMaterial
+          ref={edgeMat}
+          vertexShader={edgeVert}
+          fragmentShader={edgeFrag}
+          uniforms={edgeUniforms}
           transparent
-          opacity={0.95}
-          sizeAttenuation
           depthWrite={false}
           blending={THREE.AdditiveBlending}
-        />
-      </points>
-
-      <lineSegments ref={linesRef}>
-        <bufferGeometry>
-          <bufferAttribute attach="attributes-position" args={[linePositions, 3]} />
-        </bufferGeometry>
-        <lineBasicMaterial
-          color="#3a6bd6"
-          transparent
-          opacity={0.22}
-          blending={THREE.AdditiveBlending}
-          depthWrite={false}
         />
       </lineSegments>
 
-      <points ref={pulseRef}>
+      <points>
         <bufferGeometry>
-          <bufferAttribute
-            attach="attributes-position"
-            args={[pulseData.array, 3]}
-          />
+          <bufferAttribute attach="attributes-position" args={[data.nodePos, 3]} />
+          <bufferAttribute attach="attributes-aSize" args={[data.nodeSize, 1]} />
+          <bufferAttribute attach="attributes-aSeed" args={[data.nodeSeed, 1]} />
         </bufferGeometry>
-        <pointsMaterial
-          size={0.11}
-          color="#ffffff"
+        <shaderMaterial
+          ref={nodeMat}
+          vertexShader={nodeVert}
+          fragmentShader={nodeFrag}
+          uniforms={nodeUniforms}
           transparent
-          opacity={0.9}
-          sizeAttenuation
           depthWrite={false}
           blending={THREE.AdditiveBlending}
         />
       </points>
+
+      {/* layered soft core glow */}
+      <mesh>
+        <sphereGeometry args={[0.34, 24, 24]} />
+        <meshBasicMaterial color="#9fe0ff" transparent opacity={0.5} blending={THREE.AdditiveBlending} depthWrite={false} />
+      </mesh>
+      <mesh>
+        <sphereGeometry args={[0.62, 24, 24]} />
+        <meshBasicMaterial color="#1b3a7a" transparent opacity={0.22} blending={THREE.AdditiveBlending} depthWrite={false} />
+      </mesh>
     </group>
   );
 }
@@ -159,18 +213,20 @@ export default function NeuralCore({
 }: {
   frameloop?: "always" | "never";
 }) {
+  const tier = useDeviceTier();
+  const nodeCount = tier === "low" ? 70 : tier === "mid" ? 110 : 150;
+
   return (
     <Canvas
       className="!absolute inset-0"
       frameloop={frameloop}
-      dpr={[1, 1.75]}
+      dpr={tier === "low" ? [1, 1.25] : [1, 1.75]}
       gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
       camera={{ position: [0, 0, 5.2], fov: 50 }}
     >
-      <ambientLight intensity={0.6} />
-      <Neurons nodeCount={92} />
+      <Lattice nodeCount={nodeCount} />
       <EffectComposer>
-        <Bloom intensity={1.1} luminanceThreshold={0.1} luminanceSmoothing={0.9} mipmapBlur />
+        <Bloom intensity={1.25} luminanceThreshold={0.08} luminanceSmoothing={0.9} mipmapBlur />
       </EffectComposer>
     </Canvas>
   );
