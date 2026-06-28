@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef, type RefObject } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
+import { Html } from "@react-three/drei";
 import { EffectComposer, Bloom } from "@react-three/postprocessing";
 import * as THREE from "three";
 import { CITIES } from "@/lib/site";
@@ -140,7 +141,7 @@ function CityMarkers({ points }: { points: THREE.Vector3[] }) {
   }, [points]);
   const ref = useRef<THREE.PointsMaterial>(null);
   useFrame((s) => {
-    if (ref.current) ref.current.size = 0.13 + Math.sin(s.clock.elapsedTime * 2) * 0.03;
+    if (ref.current) ref.current.size = 0.11 + Math.sin(s.clock.elapsedTime * 2) * 0.025;
   });
   return (
     <points>
@@ -149,7 +150,7 @@ function CityMarkers({ points }: { points: THREE.Vector3[] }) {
       </bufferGeometry>
       <pointsMaterial
         ref={ref}
-        size={0.13}
+        size={0.11}
         color="#ffffff"
         transparent
         sizeAttenuation
@@ -157,6 +158,49 @@ function CityMarkers({ points }: { points: THREE.Vector3[] }) {
         blending={THREE.AdditiveBlending}
       />
     </points>
+  );
+}
+
+/**
+ * Named pins anchored to each city. The dot sits exactly on the surface point;
+ * `occlude` hides a pin (via the solid inner sphere) once the city rotates to
+ * the far hemisphere — so it's always clear which marker is which.
+ */
+function CityLabels({
+  points,
+  occluder,
+}: {
+  points: THREE.Vector3[];
+  occluder: RefObject<THREE.Object3D | null>;
+}) {
+  return (
+    <>
+      {CITIES.map((c, i) => {
+        const p = points[i];
+        // tiny outward nudge so the pin reads above the surface, not buried in it
+        const anchor = p.clone().multiplyScalar(1.012);
+        return (
+          <Html
+            key={c.name}
+            position={[anchor.x, anchor.y, anchor.z]}
+            center
+            occlude={[occluder] as unknown as RefObject<THREE.Object3D>[]}
+            zIndexRange={[30, 0]}
+            className="pointer-events-none select-none"
+          >
+            <div className="relative">
+              <span className="flex h-2 w-2">
+                <span className="absolute inline-flex h-2 w-2 animate-ping rounded-full bg-accent-2 opacity-60" />
+                <span className="relative inline-flex h-2 w-2 rounded-full bg-accent-2 shadow-[0_0_8px_2px_rgba(122,242,224,0.6)]" />
+              </span>
+              <span className="absolute left-3.5 top-1/2 -translate-y-1/2 whitespace-nowrap font-mono text-[0.6rem] uppercase tracking-[0.18em] text-chalk [text-shadow:0_1px_5px_rgba(0,0,0,0.9)]">
+                {c.name}
+              </span>
+            </div>
+          </Html>
+        );
+      })}
+    </>
   );
 }
 
@@ -182,6 +226,7 @@ function Satellite({ radius, speed, incl, phase }: { radius: number; speed: numb
 
 function Scene() {
   const group = useRef<THREE.Group>(null);
+  const innerRef = useRef<THREE.Mesh>(null);
   const { gl } = useThree();
   const drag = useRef(false);
   const vel = useRef({ x: 0, y: 0 });
@@ -244,12 +289,13 @@ function Scene() {
 
   return (
     <group ref={group}>
-      <mesh>
+      <mesh ref={innerRef}>
         <sphereGeometry args={[R * 0.985, 48, 48]} />
         <meshBasicMaterial color="#070a14" />
       </mesh>
       <DotSphere />
       <CityMarkers points={cityVecs} />
+      <CityLabels points={cityVecs} occluder={innerRef} />
       {arcs.map((a, i) => (
         <Arc key={i} from={a.from} to={a.to} delay={a.delay} />
       ))}
