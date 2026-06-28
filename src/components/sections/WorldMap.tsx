@@ -74,6 +74,15 @@ export function WorldMap() {
   const wrapRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [active, setActive] = useState<string | null>(null);
+  const [vw, setVw] = useState(VB_W);
+
+  // Because the SVG uses preserveAspectRatio="none", label font sizes (in
+  // viewBox units) shrink with the rendered width. On a ~360px phone the map
+  // is short and labels would render ~4px. Scale font sizes up as the wrapper
+  // gets narrower so hub labels stay legible. Desktop is unaffected.
+  const scale = Math.max(1, VB_W / Math.max(1, vw));
+  const nameFont = Math.min(26, 12.5 * scale);
+  const subFont = Math.min(11, 5.6 * scale);
 
   // Draw the dot-matrix landmass on a canvas (cheaper than ~3.9k SVG nodes).
   useEffect(() => {
@@ -88,6 +97,7 @@ export function WorldMap() {
       const dpr = Math.min(2, window.devicePixelRatio || 1);
       const w = rect.width;
       const h = rect.height;
+      setVw(w);
       canvas.width = Math.round(w * dpr);
       canvas.height = Math.round(h * dpr);
       canvas.style.width = `${w}px`;
@@ -117,7 +127,7 @@ export function WorldMap() {
   return (
     <div
       ref={wrapRef}
-      className="relative w-full"
+      className="relative w-full min-h-[280px] sm:min-h-0"
       style={{ aspectRatio: `${VB_W} / ${VB_CROP_H}` }}
     >
       <canvas ref={canvasRef} className="absolute inset-0 h-full w-full" />
@@ -204,7 +214,7 @@ export function WorldMap() {
                 textAnchor={lab.anchor}
                 className="font-display"
                 style={{
-                  fontSize: 12.5,
+                  fontSize: nameFont,
                   fontWeight: 600,
                   letterSpacing: -0.2,
                   fill: on ? "#ffffff" : "#e8e8ec",
@@ -218,11 +228,11 @@ export function WorldMap() {
               </text>
               <text
                 x={lab.dx}
-                y={lab.dy + 8.5}
+                y={lab.dy + nameFont * 0.68}
                 textAnchor={lab.anchor}
                 className="font-mono"
                 style={{
-                  fontSize: 5.6,
+                  fontSize: subFont,
                   letterSpacing: 1.4,
                   fill: on ? "var(--color-accent-2)" : "#8a8a93",
                   paintOrder: "stroke",

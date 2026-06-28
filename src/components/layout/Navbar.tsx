@@ -162,20 +162,22 @@ export function Navbar({ ready = true }: { ready?: boolean }) {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[115] flex flex-col items-center justify-center gap-2 bg-void/95 backdrop-blur-xl md:hidden"
+            className="fixed inset-0 z-[115] flex flex-col items-center justify-center gap-2 overflow-y-auto bg-void/95 py-24 backdrop-blur-xl md:hidden"
           >
-            {NAV.map((item, i) => (
-              <motion.button
-                key={item.href}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.05 * i }}
-                onClick={() => go(item.href)}
-                className="text-giant text-gradient"
-              >
-                {item.label}
-              </motion.button>
-            ))}
+            <div className="flex max-h-[80vh] w-full flex-col items-center gap-2 overflow-y-auto">
+              {NAV.map((item, i) => (
+                <motion.button
+                  key={item.href}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.05 * i }}
+                  onClick={() => go(item.href)}
+                  className="text-section-title text-gradient"
+                >
+                  {item.label}
+                </motion.button>
+              ))}
+            </div>
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}

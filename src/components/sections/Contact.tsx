@@ -167,7 +167,7 @@ export function Contact() {
                         rows={4}
                         required
                         placeholder={t.messagePlaceholder}
-                        className="w-full resize-none bg-transparent py-2.5 text-base text-chalk outline-none placeholder:text-fog/50"
+                        className="w-full resize-y bg-transparent py-2.5 text-base text-chalk outline-none placeholder:text-fog/50 md:resize-none"
                       />
                     </Field>
 

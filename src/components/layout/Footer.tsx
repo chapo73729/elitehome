@@ -16,7 +16,7 @@ export function Footer() {
       <div className="container-x py-20">
         <div className="grid gap-12 md:grid-cols-12">
           <div className="md:col-span-5">
-            <div className="font-display text-4xl font-bold tracking-tight">
+            <div className="font-display text-3xl font-bold tracking-tight md:text-4xl">
               {SITE.name}
               <span className="text-accent">®</span>
             </div>
@@ -39,7 +39,7 @@ export function Footer() {
             </ul>
           </div>
 
-          <div className="md:col-span-3">
+          <div className="md:col-span-3 md:col-start-10">
             <div className="eyebrow mb-5">{f.contact}</div>
             <button
               onClick={async () => {

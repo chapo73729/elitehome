@@ -21,7 +21,7 @@ export function Button({
   onClick,
 }: ButtonProps) {
   const base =
-    "group relative inline-flex items-center justify-center gap-2 overflow-hidden rounded-full px-7 py-3.5 text-sm font-medium tracking-wide transition-colors duration-500";
+    "group relative inline-flex items-center justify-center gap-2 overflow-hidden rounded-full px-5 py-2.5 text-sm font-medium tracking-wide transition-colors duration-500 md:px-7 md:py-3.5";
   const styles =
     variant === "primary"
       ? "bg-chalk text-void hover:text-void"

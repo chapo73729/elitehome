@@ -51,7 +51,7 @@ export function CookieConsent() {
           transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
           role="dialog"
           aria-label="Cookie notice"
-          className="fixed bottom-3 left-3 right-3 z-[170] rounded-2xl glass p-4 sm:right-auto sm:max-w-[340px]"
+          className="fixed bottom-[max(0.75rem,env(safe-area-inset-bottom))] left-3 right-3 z-[170] rounded-2xl glass p-4 sm:right-auto sm:max-w-[340px]"
         >
           <p className="text-xs leading-relaxed text-mist">
             {t.body}{" "}

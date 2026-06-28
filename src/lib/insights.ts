@@ -50,7 +50,7 @@ export const INSIGHTS: Insight[] = [
     ],
   },
   {
-    slug: "intelligence-as-load-bearing-infrastructure",
+    slug: "making-ai-dependable-in-production",
     category: "Data & AI",
     title: "Making AI dependable in production",
     excerpt:

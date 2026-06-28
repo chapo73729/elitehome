@@ -171,6 +171,12 @@ html.hide-cursor * {
   color: var(--color-fog);
 }
 
+@media (max-width: 480px) {
+  .eyebrow {
+    letter-spacing: 0.25em;
+  }
+}
+
 .text-balance {
   text-wrap: balance;
 }
