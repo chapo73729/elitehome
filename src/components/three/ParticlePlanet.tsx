@@ -42,8 +42,9 @@ const vertex = /* glsl */ `
     gl_Position = projectionMatrix * mv;
 
     float size = uSize * aScale * (1.0 + ripple * 2.0);
-    if (aType > 0.5) size *= 1.6; // data particles a touch brighter
-    gl_PointSize = size * (1.0 / -mv.z);
+    if (aType > 0.5) size *= 1.3; // data particles a touch brighter
+    // clamp so near particles stay crisp points, not giant blurry discs
+    gl_PointSize = clamp(size * (1.0 / -mv.z), 1.0, 13.0);
   }
 `;
 
@@ -59,14 +60,15 @@ const fragment = /* glsl */ `
     vec2 uv = gl_PointCoord - 0.5;
     float d = length(uv);
     if (d > 0.5) discard;
-    float alpha = smoothstep(0.5, 0.0, d);
+    // tighter core for a crisp particle rather than a soft bokeh disc
+    float alpha = smoothstep(0.5, 0.12, d);
 
     vec3 col = mix(uColorA, uColorB, smoothstep(-0.1, 0.25, vNoise));
     col = mix(col, uColorC, smoothstep(0.15, 0.4, vNoise));
     if (vType > 0.5) col = uColorC;
 
     // soft core glow
-    alpha *= 0.55 + vNoise * 1.4;
+    alpha *= 0.5 + vNoise * 1.2;
     gl_FragColor = vec4(col, alpha);
   }
 `;
