@@ -32,6 +32,7 @@ const en = {
     explore: "See our work",
     engage: "Start a project",
     scroll: "SCROLL",
+    scrollHint: "The studio, in five moves.",
   },
   vision: {
     tag: "ARDLABS.AI · COMPOSING VISION",
@@ -474,6 +475,7 @@ const fr: DeepPartial<Content> = {
     explore: "Voir nos projets",
     engage: "Démarrer un projet",
     scroll: "DÉFILER",
+    scrollHint: "Le studio, en cinq temps.",
   },
   vision: {
     tag: "ARDLABS.AI · COMPOSITION DE LA VISION",

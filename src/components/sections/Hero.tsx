@@ -95,6 +95,7 @@ export function Hero({ ready }: { ready: boolean }) {
         transition={{ duration: 1, delay: 1.6 }}
         className="absolute bottom-8 left-1/2 z-10 flex -translate-x-1/2 flex-col items-center gap-3 [@media(max-height:680px)]:hidden"
       >
+        <span className="font-display text-xs text-mist">{c.scrollHint}</span>
         <span className="font-mono text-[0.62rem] tracking-[0.34em] text-fog">
           {c.scroll}
         </span>

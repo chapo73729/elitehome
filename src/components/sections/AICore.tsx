@@ -1,6 +1,8 @@
 "use client";
 
+import { useRef } from "react";
 import dynamic from "next/dynamic";
+import { motion, useInView } from "framer-motion";
 import { Reveal } from "@/components/ui/Reveal";
 import { SceneBoundary } from "@/components/three/SceneBoundary";
 import { useSceneVisibility } from "@/hooks/useSceneVisibility";
@@ -15,6 +17,10 @@ export function AICore() {
   const scene = useSceneVisibility<HTMLDivElement>();
   const c = useContent().core;
   const POINTS = c.points;
+  const igniteRef = useRef<HTMLDivElement>(null);
+  // signature "peak": fire a single bright ignition the first time the core
+  // enters view — the memorable moment (peak-end rule).
+  const ignited = useInView(igniteRef, { once: true, amount: 0.45 });
   return (
     <section
       id="core"
@@ -25,6 +31,17 @@ export function AICore() {
         <SceneBoundary>
           {scene.mounted && <NeuralFlow frameloop={scene.frameloop} />}
         </SceneBoundary>
+      </div>
+
+      {/* one-shot ignition burst */}
+      <div ref={igniteRef} className="pointer-events-none absolute inset-0">
+        <motion.div
+          aria-hidden
+          className="absolute inset-0 bg-[radial-gradient(circle_at_60%_50%,rgba(79,140,255,0.55),transparent_55%)]"
+          initial={{ opacity: 0, scale: 0.7 }}
+          animate={ignited ? { opacity: [0, 0.85, 0], scale: [0.7, 1.15, 1.35] } : {}}
+          transition={{ duration: 1.7, ease: [0.16, 1, 0.3, 1] }}
+        />
       </div>
       {/* legibility scrims: text reads on near-solid void at the left,
           the living field glows to the right */}
