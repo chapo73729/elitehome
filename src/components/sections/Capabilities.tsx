@@ -20,7 +20,7 @@ export function Capabilities() {
             }`}
           >
             <CanvasMotif variant={c.variant} className="absolute inset-0 h-full w-full" />
-            <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(80%_80%_at_50%_50%,transparent_40%,#050505_95%)]" />
+            <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(95%_95%_at_50%_45%,transparent_55%,rgba(5,5,5,0.65)_100%)]" />
             <span className="absolute bottom-5 left-6 font-mono text-[0.65rem] tracking-[0.3em] text-fog">
               {c.tag.toUpperCase()}
             </span>

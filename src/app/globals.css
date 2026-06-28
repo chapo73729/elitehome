@@ -284,6 +284,12 @@ html.hide-cursor * {
   to { transform: rotate(360deg); }
 }
 
+/* Continuous staggered glow for the tech-stack grid (alive at rest) */
+@keyframes cell-pulse {
+  0%, 100% { opacity: 0; }
+  50% { opacity: 0.6; }
+}
+
 /* ---------- Short viewports (landscape phones) ---------- */
 @media (max-height: 640px) {
   .text-mega {

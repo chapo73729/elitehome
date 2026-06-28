@@ -20,11 +20,16 @@ export function TechStack() {
                 data-cursor
                 className="group relative flex h-28 items-center justify-center overflow-hidden bg-ink transition-colors duration-500 hover:bg-smoke"
               >
-                <span className="absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100 bg-[radial-gradient(120%_120%_at_50%_120%,rgba(91,140,255,0.18),transparent_60%)]" />
-                <span className="relative font-display text-xl font-medium text-mist transition-all duration-500 group-hover:-translate-y-1 group-hover:text-chalk">
+                {/* continuous staggered glow — the grid breathes at rest */}
+                <span
+                  className="pointer-events-none absolute inset-0 bg-[radial-gradient(120%_120%_at_50%_120%,rgba(91,140,255,0.16),transparent_60%)]"
+                  style={{ animation: `cell-pulse 6s ease-in-out ${(i % 8) * 0.55}s infinite` }}
+                />
+                <span className="absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100 bg-[radial-gradient(120%_120%_at_50%_120%,rgba(122,242,224,0.22),transparent_60%)]" />
+                <span className="relative font-display text-xl font-medium text-chalk/90 transition-all duration-500 group-hover:-translate-y-1 group-hover:text-chalk">
                   {t}
                 </span>
-                <span className="absolute bottom-3 left-1/2 h-px w-0 -translate-x-1/2 bg-accent transition-all duration-500 group-hover:w-10" />
+                <span className="absolute bottom-3 left-1/2 h-px w-0 -translate-x-1/2 bg-accent-2 transition-all duration-500 group-hover:w-10" />
               </div>
             </Reveal>
           ))}

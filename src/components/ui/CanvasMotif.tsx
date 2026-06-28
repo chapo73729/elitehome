@@ -69,36 +69,43 @@ export function CanvasMotif({
         for (let i = 0; i < count; i++) {
           const x = i * fs;
           const y = cols[i];
-          ctx.fillStyle = "rgba(122,242,224,0.85)";
+          ctx.fillStyle = "rgba(140,250,232,0.95)";
           ctx.fillText(glyphs[(Math.random() * glyphs.length) | 0], x, y);
-          ctx.fillStyle = "rgba(91,140,255,0.25)";
+          ctx.fillStyle = "rgba(120,165,255,0.45)";
           ctx.fillText(glyphs[(Math.random() * glyphs.length) | 0], x, y - fs * 4);
           cols[i] = y > H + Math.random() * 200 ? Math.random() * -60 : y + fs;
         }
       } else if (variant === "ai") {
-        // pulsing radial node web
+        // pulsing radial node web with travelling signals
         const cx = W / 2;
         const cy = H / 2;
-        const nodes = 26;
+        const nodes = 38;
         ctx.globalCompositeOperation = "lighter";
         for (let i = 0; i < nodes; i++) {
           const a = (i / nodes) * Math.PI * 2 + t * 0.15;
-          const r = (Math.min(W, H) / 2) * (0.35 + 0.5 * (0.5 + 0.5 * Math.sin(t + i)));
+          const r = (Math.min(W, H) / 2) * (0.32 + 0.55 * (0.5 + 0.5 * Math.sin(t + i)));
           const x = cx + Math.cos(a) * r;
-          const y = cy + Math.sin(a) * r * 0.7;
-          ctx.strokeStyle = "rgba(91,140,255,0.12)";
+          const y = cy + Math.sin(a) * r * 0.72;
+          ctx.strokeStyle = "rgba(120,170,255,0.3)";
+          ctx.lineWidth = 1;
           ctx.beginPath();
           ctx.moveTo(cx, cy);
           ctx.lineTo(x, y);
           ctx.stroke();
-          ctx.fillStyle = "rgba(159,232,255,0.9)";
+          // travelling signal along the spoke
+          const sp = (t * 0.6 + i * 0.13) % 1;
+          ctx.fillStyle = "rgba(180,240,255,0.9)";
           ctx.beginPath();
-          ctx.arc(x, y, 1.6 + Math.sin(t * 2 + i) * 0.8, 0, Math.PI * 2);
+          ctx.arc(cx + (x - cx) * sp, cy + (y - cy) * sp, 1.4, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.fillStyle = "rgba(180,238,255,0.95)";
+          ctx.beginPath();
+          ctx.arc(x, y, 2.0 + Math.sin(t * 2 + i) * 1.0, 0, Math.PI * 2);
           ctx.fill();
         }
-        ctx.fillStyle = "rgba(255,255,255,0.95)";
+        ctx.fillStyle = "rgba(255,255,255,1.0)";
         ctx.beginPath();
-        ctx.arc(cx, cy, 3 + Math.sin(t * 3) * 1.5, 0, Math.PI * 2);
+        ctx.arc(cx, cy, 4 + Math.sin(t * 3) * 1.8, 0, Math.PI * 2);
         ctx.fill();
         ctx.globalCompositeOperation = "source-over";
       } else if (variant === "industrial") {
@@ -110,8 +117,8 @@ export function CanvasMotif({
         for (let ring = 0; ring < 3; ring++) {
           const rad = 40 + ring * 36;
           const teeth = 18 + ring * 6;
-          ctx.strokeStyle = `rgba(255,140,91,${0.5 - ring * 0.12})`;
-          ctx.lineWidth = 1.4;
+          ctx.strokeStyle = `rgba(255,150,95,${0.75 - ring * 0.14})`;
+          ctx.lineWidth = 1.6;
           ctx.beginPath();
           for (let i = 0; i <= teeth; i++) {
             const a = (i / teeth) * Math.PI * 2 + t * (ring % 2 ? -0.4 : 0.4);
@@ -145,15 +152,15 @@ export function CanvasMotif({
       } else if (variant === "ocean") {
         // layered sine waves + horizon glow
         const glow = ctx.createLinearGradient(0, 0, 0, H);
-        glow.addColorStop(0, "rgba(91,224,255,0.10)");
-        glow.addColorStop(0.5, "rgba(91,140,255,0.04)");
+        glow.addColorStop(0, "rgba(91,224,255,0.18)");
+        glow.addColorStop(0.5, "rgba(91,140,255,0.07)");
         glow.addColorStop(1, "rgba(5,5,5,0)");
         ctx.fillStyle = glow;
         ctx.fillRect(0, 0, W, H);
-        for (let layer = 0; layer < 5; layer++) {
+        for (let layer = 0; layer < 6; layer++) {
           ctx.beginPath();
-          ctx.strokeStyle = `rgba(91,224,255,${0.06 + layer * 0.04})`;
-          ctx.lineWidth = 1.2;
+          ctx.strokeStyle = `rgba(110,228,255,${0.12 + layer * 0.05})`;
+          ctx.lineWidth = 1.4;
           const yBase = H * (0.45 + layer * 0.1);
           for (let x = 0; x <= W; x += 6) {
             const y =
