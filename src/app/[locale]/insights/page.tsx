@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { i18nAlternates, isLocale, ogLocale, defaultLocale, type AppLocale } from "@/lib/i18n";
+import { pageMeta } from "@/lib/meta";
 import { InsightsIndexView } from "@/components/insights/InsightsIndexView";
 
 export async function generateMetadata({
@@ -9,15 +10,14 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale: raw } = await params;
   const locale: AppLocale = isLocale(raw) ? raw : defaultLocale;
+  const { title, description } = pageMeta("insights", locale);
   return {
-    title: "Insights",
-    description:
-      "Notes from ARDLABS® on digital engineering — shipping reliable software, applied AI, and infrastructure refined to the detail.",
+    title,
+    description,
     alternates: i18nAlternates(locale, "/insights"),
     openGraph: {
-      title: "Insights · ARDLABS®",
-      description:
-        "Notes from the studio on digital engineering — software, AI and infrastructure, done right.",
+      title: `${title} · ARDLABS®`,
+      description,
       url: `/${locale}/insights`,
       locale: ogLocale[locale],
     },

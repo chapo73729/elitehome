@@ -2,6 +2,12 @@
 
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
+import { useLang } from "@/lib/lang";
+
+const T = {
+  en: { online: "SYSTEM ONLINE", wordmark: "ARDLABS // ENGINEERING STUDIO" },
+  fr: { online: "SYSTÈME EN LIGNE", wordmark: "ARDLABS // STUDIO D'INGÉNIERIE" },
+} as const;
 
 /**
  * Diegetic HUD overlaid on the hero — corner brackets, live readouts and a
@@ -9,6 +15,7 @@ import { motion } from "framer-motion";
  * touching the 3D scene.
  */
 export function HeroHud({ ready }: { ready: boolean }) {
+  const t = T[useLang()];
   const [coords, setCoords] = useState({ x: 0, y: 0 });
   const [clock, setClock] = useState("00:00:00 UTC");
 
@@ -67,7 +74,7 @@ export function HeroHud({ ready }: { ready: boolean }) {
       <motion.div {...fade} className="absolute left-12 top-28 space-y-1.5">
         <div className="flex items-center gap-2 text-accent-2">
           <span className="inline-block h-1.5 w-1.5 animate-pulse rounded-full bg-accent-2" />
-          SYSTEM ONLINE
+          {t.online}
         </div>
         <div>LAT {(coords.y * 180 - 90).toFixed(4)}</div>
         <div>LON {(coords.x * 360 - 180).toFixed(4)}</div>
@@ -76,14 +83,6 @@ export function HeroHud({ ready }: { ready: boolean }) {
       {/* top-right readout */}
       <motion.div {...fade} className="absolute right-12 top-28 space-y-1.5 text-right">
         <div>{clock}</div>
-        <div>SECTOR Z− 09</div>
-        <div className="text-accent">RENDER · GPU</div>
-      </motion.div>
-
-      {/* bottom-left readout */}
-      <motion.div {...fade} className="absolute bottom-28 left-12 space-y-1.5">
-        <div>ENGINE / WEBGL · GLSL</div>
-        <div>PARTICLES / 15.0K</div>
       </motion.div>
 
       {/* vertical right label */}
@@ -91,7 +90,7 @@ export function HeroHud({ ready }: { ready: boolean }) {
         {...fade}
         className="absolute right-12 top-1/2 -translate-y-1/2 [writing-mode:vertical-rl] text-[0.58rem] tracking-[0.45em]"
       >
-        ARDLABS // ENGINEERING STUDIO
+        {t.wordmark}
       </motion.div>
 
       {/* sweeping scan line */}

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { i18nAlternates, isLocale, defaultLocale, type AppLocale } from "@/lib/i18n";
+import { pageMeta } from "@/lib/meta";
 import { ImprintView } from "./ImprintView";
 
 export async function generateMetadata({
@@ -9,9 +10,10 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale: raw } = await params;
   const locale: AppLocale = isLocale(raw) ? raw : defaultLocale;
+  const { title, description } = pageMeta("legal/imprint", locale);
   return {
-    title: "Legal Notice",
-    description: "Legal notice and company information for ARDLABS®.",
+    title,
+    description,
     alternates: i18nAlternates(locale, "/legal/imprint"),
     robots: { index: true, follow: true },
   };

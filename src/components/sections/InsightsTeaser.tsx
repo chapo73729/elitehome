@@ -4,9 +4,23 @@ import { LocaleLink } from "@/components/ui/LocaleLink";
 import { Reveal } from "@/components/ui/Reveal";
 import { INSIGHTS } from "@/lib/insights";
 import { useContent } from "@/lib/content";
+import { useLang } from "@/lib/lang";
 
-function fmt(date: string) {
-  return new Date(date).toLocaleDateString("en-US", {
+const T = {
+  en: {
+    heading: "Notes from the studio.",
+    viewAll: "VIEW ALL →",
+    read: "READ",
+  },
+  fr: {
+    heading: "Notes du studio.",
+    viewAll: "VOIR TOUT →",
+    read: "LIRE",
+  },
+} as const;
+
+function fmt(date: string, lang: "en" | "fr") {
+  return new Date(date).toLocaleDateString(lang === "fr" ? "fr-FR" : "en-US", {
     year: "numeric",
     month: "short",
     day: "numeric",
@@ -14,6 +28,8 @@ function fmt(date: string) {
 }
 
 export function InsightsTeaser() {
+  const lang = useLang();
+  const t = T[lang];
   const label = useContent().footer.insights ?? "Insights";
   const posts = INSIGHTS.slice(0, 3);
   return (
@@ -30,7 +46,7 @@ export function InsightsTeaser() {
         <div className="mt-10 flex flex-wrap items-end justify-between gap-6">
           <Reveal delay={0.08}>
             <h2 className="text-section-title text-gradient max-w-xl text-balance">
-              Notes from the studio.
+              {t.heading}
             </h2>
           </Reveal>
           <Reveal delay={0.16}>
@@ -38,7 +54,7 @@ export function InsightsTeaser() {
               href="/insights"
               className="link-underline font-mono text-xs tracking-widest text-mist transition-colors hover:text-chalk"
             >
-              VIEW ALL →
+              {t.viewAll}
             </LocaleLink>
           </Reveal>
         </div>
@@ -53,14 +69,14 @@ export function InsightsTeaser() {
                 >
                   <div className="flex items-center gap-3 font-mono text-[0.7rem] tracking-widest text-fog">
                     <span style={{ color: post.accent }}>{post.category}</span>
-                    <span>{fmt(post.date)}</span>
+                    <span>{fmt(post.date, lang)}</span>
                   </div>
                   <h3 className="mt-4 font-display text-xl font-semibold text-chalk transition-colors group-hover:text-gradient">
                     {post.title}
                   </h3>
                   <p className="mt-3 flex-1 text-sm text-mist">{post.excerpt}</p>
                   <span className="mt-5 inline-flex items-center gap-2 font-mono text-[0.7rem] tracking-widest text-accent">
-                    READ
+                    {t.read}
                     <span className="transition-transform duration-300 group-hover:translate-x-1">
                       →
                     </span>

@@ -6,7 +6,7 @@ import { useLocaleRouter } from "@/hooks/useLocaleRouter";
 import { INDUSTRIES } from "@/lib/site";
 import { scrollToTarget } from "@/components/layout/SmoothScroll";
 import { applyAccent, ACCENTS } from "@/lib/accent";
-import { setLang, useLang } from "@/lib/lang";
+import { getLang, setLang, useLang } from "@/lib/lang";
 import { togglePerf } from "@/lib/perf";
 import { audio } from "@/lib/audio";
 import { startShowreel } from "@/lib/showreel";
@@ -112,7 +112,8 @@ export function Terminal() {
   const lang = useLang();
   const t = T[lang];
   const [open, setOpen] = useState(false);
-  const [history, setHistory] = useState<Line[]>([{ t: "out", v: T.en.banner }]);
+  // Seed the banner from the language at mount so FR users see the FR banner.
+  const [history, setHistory] = useState<Line[]>(() => [{ t: "out", v: T[getLang()].banner }]);
   const [value, setValue] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
   const bodyRef = useRef<HTMLDivElement>(null);

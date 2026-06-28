@@ -8,6 +8,12 @@ import { scrollToTarget } from "@/components/layout/SmoothScroll";
 import { audio } from "@/lib/audio";
 import { startShowreel } from "@/lib/showreel";
 import { toast } from "@/lib/toast";
+import { getLang } from "@/lib/lang";
+
+const T = {
+  en: { help: "⌘K — command palette · T top · C contact · I industries · M sound · S showreel" },
+  fr: { help: "⌘K — palette de commandes · T accueil · C contact · I services · M son · S bande-démo" },
+} as const;
 
 /** Global single-key shortcuts (ignored while typing). */
 export function Shortcuts() {
@@ -40,7 +46,7 @@ export function Shortcuts() {
           if (isHome) startShowreel();
           break;
         case "?":
-          toast("⌘K — command palette · T top · C contact · I industries · M sound · S showreel", "⌨");
+          toast(T[getLang()].help, "⌨");
           break;
         default:
           return;

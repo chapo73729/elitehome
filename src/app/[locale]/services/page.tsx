@@ -1,18 +1,29 @@
 import type { Metadata } from "next";
 import { SITE } from "@/lib/site";
+import { i18nAlternates, isLocale, ogLocale, defaultLocale, type AppLocale } from "@/lib/i18n";
+import { pageMeta } from "@/lib/meta";
 import { IndustriesIndexView } from "@/components/industry/IndustriesIndexView";
 
-export const metadata: Metadata = {
-  title: "Services",
-  description:
-    "Four poles, one standard — Strategy & Consulting, Design & Development, Data & AI, and Cloud & Infrastructure, engineered by ARDLABS®.",
-  alternates: { canonical: "/services" },
-  openGraph: {
-    title: `Services — ${SITE.legal}`,
-    description: "Four poles. One standard.",
-    url: `${SITE.url}/services`,
-  },
-};
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale: raw } = await params;
+  const locale: AppLocale = isLocale(raw) ? raw : defaultLocale;
+  const { title, description } = pageMeta("services", locale);
+  return {
+    title,
+    description,
+    alternates: i18nAlternates(locale, "/services"),
+    openGraph: {
+      title: `${title} — ${SITE.legal}`,
+      description,
+      url: `${SITE.url}/${locale}/services`,
+      locale: ogLocale[locale],
+    },
+  };
+}
 
 export default function IndustriesIndex() {
   return <IndustriesIndexView />;

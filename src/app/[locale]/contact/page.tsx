@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { LocaleLink } from "@/components/ui/LocaleLink";
 import { Contact } from "@/components/sections/Contact";
 import { i18nAlternates, isLocale, ogLocale, defaultLocale, type AppLocale } from "@/lib/i18n";
+import { pageMeta } from "@/lib/meta";
 
 export async function generateMetadata({
   params,
@@ -10,14 +11,14 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale: raw } = await params;
   const locale: AppLocale = isLocale(raw) ? raw : defaultLocale;
+  const { title, description } = pageMeta("contact", locale);
   return {
-    title: "Contact",
-    description:
-      "Engage ARDLABS® — start a conversation about designing and building software, platforms, data & AI, and cloud.",
+    title,
+    description,
     alternates: i18nAlternates(locale, "/contact"),
     openGraph: {
-      title: "Contact · ARDLABS®",
-      description: "Start a conversation with ARDLABS®.",
+      title: `${title} · ARDLABS®`,
+      description,
       url: `/${locale}/contact`,
       locale: ogLocale[locale],
     },

@@ -969,7 +969,7 @@ const fr: DeepPartial<Content> = {
     privacy: "Confidentialité",
     terms: "Conditions",
     rights: "Tous droits réservés.",
-    press: "Appuyez",
+    press: "Raccourci",
     allSystems: "Tous les systèmes opérationnels",
   },
   industry: {

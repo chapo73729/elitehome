@@ -4,6 +4,12 @@ import { useEffect } from "react";
 import { audio } from "@/lib/audio";
 import { toast } from "@/lib/toast";
 import { unlock } from "@/lib/achievements";
+import { getLang } from "@/lib/lang";
+
+const T = {
+  en: { hyperdrive: "HYPERDRIVE ENGAGED" },
+  fr: { hyperdrive: "HYPERDRIVE ENGAGÉ" },
+} as const;
 
 const SEQ = [
   "ArrowUp", "ArrowUp", "ArrowDown", "ArrowDown",
@@ -36,7 +42,7 @@ export function Konami() {
 
 function fire() {
   unlock("konami");
-  toast("HYPERDRIVE ENGAGED", "⚡");
+  toast(T[getLang()].hyperdrive, "⚡");
   try {
     audio.enable();
   } catch {}

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { i18nAlternates, isLocale, defaultLocale, type AppLocale } from "@/lib/i18n";
+import { pageMeta } from "@/lib/meta";
 import { TermsView } from "./TermsView";
 
 export async function generateMetadata({
@@ -9,9 +10,10 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale: raw } = await params;
   const locale: AppLocale = isLocale(raw) ? raw : defaultLocale;
+  const { title, description } = pageMeta("legal/terms", locale);
   return {
-    title: "Terms of Use",
-    description: "Terms governing the use of the ARDLABS® website.",
+    title,
+    description,
     alternates: i18nAlternates(locale, "/legal/terms"),
   };
 }

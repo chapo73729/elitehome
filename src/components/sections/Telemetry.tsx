@@ -5,6 +5,36 @@ import { SectionHeading } from "@/components/ui/Section";
 import { Reveal } from "@/components/ui/Reveal";
 import { Counter } from "@/components/ui/Counter";
 import { useContent } from "@/lib/content";
+import { useLang } from "@/lib/lang";
+
+const T = {
+  en: {
+    systemLoad: "System Load",
+    neural: "Active neural processing",
+    sla: "SLA Response",
+    uptimeMonitoring: "Global uptime monitoring",
+    tokenUsage: "Token Usage",
+    monthlyVolume: "Monthly volume throughput",
+    cache: "Cache",
+    uptime: "Uptime",
+    coreSystems: "Core systems",
+    totalQueries: "Total queries",
+    activeNodes: "Active nodes",
+  },
+  fr: {
+    systemLoad: "Charge système",
+    neural: "Traitement neuronal actif",
+    sla: "Réponse SLA",
+    uptimeMonitoring: "Surveillance de disponibilité mondiale",
+    tokenUsage: "Utilisation de tokens",
+    monthlyVolume: "Débit mensuel",
+    cache: "Cache",
+    uptime: "Disponibilité",
+    coreSystems: "Systèmes centraux",
+    totalQueries: "Requêtes totales",
+    activeNodes: "Nœuds actifs",
+  },
+} as const;
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 const inView = { once: true, margin: "-15% 0px" };
@@ -41,16 +71,17 @@ function Card({
 
 /* ---- Card 1: radial load ring ---- */
 function LoadRing() {
+  const t = T[useLang()];
   return (
     <div className="flex w-full items-center gap-6">
       <div className="flex flex-col gap-4 font-mono">
         <div>
           <div className="text-lg text-chalk">99%</div>
-          <div className="text-[0.6rem] uppercase tracking-widest text-fog">Cache</div>
+          <div className="text-[0.6rem] uppercase tracking-widest text-fog">{t.cache}</div>
         </div>
         <div>
           <div className="text-lg text-chalk">6M</div>
-          <div className="text-[0.6rem] uppercase tracking-widest text-fog">Uptime</div>
+          <div className="text-[0.6rem] uppercase tracking-widest text-fog">{t.uptime}</div>
         </div>
       </div>
       <div className="relative mx-auto h-40 w-40">
@@ -75,7 +106,7 @@ function LoadRing() {
           <div className="font-display text-4xl font-bold text-chalk">
             <Counter value={15} />
           </div>
-          <div className="font-mono text-[0.6rem] uppercase tracking-widest text-fog">Core systems</div>
+          <div className="font-mono text-[0.6rem] uppercase tracking-widest text-fog">{t.coreSystems}</div>
         </div>
       </div>
     </div>
@@ -118,6 +149,7 @@ function SlaChart() {
 
 /* ---- Card 3: token speedometer ---- */
 function Speedometer() {
+  const t = T[useLang()];
   // semicircle arc, left(180°) to right(0°)
   const d = "M 12 70 A 58 58 0 0 1 128 70";
   return (
@@ -151,13 +183,13 @@ function Speedometer() {
           <div className="font-display text-lg text-chalk">
             <Counter value={152} />
           </div>
-          <div className="font-mono text-[0.55rem] uppercase tracking-widest text-fog">Total queries</div>
+          <div className="font-mono text-[0.55rem] uppercase tracking-widest text-fog">{t.totalQueries}</div>
         </div>
         <div className="bg-ink p-3">
           <div className="font-display text-lg text-chalk">
             <Counter value={115} />
           </div>
-          <div className="font-mono text-[0.55rem] uppercase tracking-widest text-fog">Active nodes</div>
+          <div className="font-mono text-[0.55rem] uppercase tracking-widest text-fog">{t.activeNodes}</div>
         </div>
       </div>
     </div>
@@ -166,23 +198,24 @@ function Speedometer() {
 
 export function Telemetry() {
   const c = useContent().telemetry;
+  const t = T[useLang()];
   return (
     <section className="relative z-10 bg-void py-28 md:py-36">
       <SectionHeading index="12" eyebrow={c.eyebrow} title={c.title} intro={c.intro} />
       <div className="container-x mt-14">
         <div className="grid gap-5 lg:grid-cols-3">
           <Reveal>
-            <Card icon="◇" title="System Load" sub="Active neural processing" badge="98.7%">
+            <Card icon="◇" title={t.systemLoad} sub={t.neural} badge="98.7%">
               <LoadRing />
             </Card>
           </Reveal>
           <Reveal delay={0.08}>
-            <Card icon="◆" title="SLA Response" sub="Global uptime monitoring" badge="99.99%">
+            <Card icon="◆" title={t.sla} sub={t.uptimeMonitoring} badge="99.99%">
               <SlaChart />
             </Card>
           </Reveal>
           <Reveal delay={0.16}>
-            <Card icon="◈" title="Token Usage" sub="Monthly volume throughput" badge="8.4M">
+            <Card icon="◈" title={t.tokenUsage} sub={t.monthlyVolume} badge="8.4M">
               <Speedometer />
             </Card>
           </Reveal>

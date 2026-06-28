@@ -2,6 +2,12 @@
 
 import { useEffect, useRef, useState } from "react";
 import { CITIES } from "@/lib/site";
+import { useLang } from "@/lib/lang";
+
+const T = {
+  en: { live: "LIVE · GLOBAL NETWORK", throughput: "THROUGHPUT", routed: "ROUTED" },
+  fr: { live: "EN DIRECT · RÉSEAU MONDIAL", throughput: "DÉBIT", routed: "ROUTÉ" },
+} as const;
 
 type Hub = { name: string; load: number; latency: number };
 
@@ -23,6 +29,7 @@ function clamp(v: number, lo: number, hi: number) {
  * it never blocks the globe's drag interaction.
  */
 export function NetworkHud() {
+  const t = T[useLang()];
   const [hubs, setHubs] = useState<Hub[]>(SEED);
   const [routed, setRouted] = useState(248_910);
   const throughput = useRef(312);
@@ -53,7 +60,7 @@ export function NetworkHud() {
       <div className="flex items-center justify-between">
         <span className="flex items-center gap-2 text-chalk">
           <span className="inline-block h-1.5 w-1.5 animate-pulse rounded-full bg-accent shadow-[0_0_8px_2px_rgba(79,140,255,0.6)]" />
-          LIVE · GLOBAL NETWORK
+          {t.live}
         </span>
       </div>
 
@@ -78,12 +85,12 @@ export function NetworkHud() {
 
       <div className="mt-3 flex items-center justify-between border-t border-white/10 pt-3 text-fog">
         <span>
-          THROUGHPUT{" "}
+          {t.throughput}{" "}
           <span className="text-accent-2 tabular-nums">{Math.round(tp)}</span> Gb/s
         </span>
       </div>
       <div className="mt-1 text-fog">
-        ROUTED{" "}
+        {t.routed}{" "}
         <span className="text-chalk tabular-nums">
           {routed.toLocaleString("en-US")}
         </span>

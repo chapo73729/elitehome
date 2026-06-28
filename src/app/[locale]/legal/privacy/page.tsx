@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { i18nAlternates, isLocale, defaultLocale, type AppLocale } from "@/lib/i18n";
+import { pageMeta } from "@/lib/meta";
 import { PrivacyView } from "./PrivacyView";
 
 export async function generateMetadata({
@@ -9,9 +10,10 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale: raw } = await params;
   const locale: AppLocale = isLocale(raw) ? raw : defaultLocale;
+  const { title, description } = pageMeta("legal/privacy", locale);
   return {
-    title: "Privacy Policy",
-    description: "How ARDLABS® collects, uses and protects personal data.",
+    title,
+    description,
     alternates: i18nAlternates(locale, "/legal/privacy"),
   };
 }

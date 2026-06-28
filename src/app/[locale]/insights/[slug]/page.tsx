@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { INSIGHTS, getInsight } from "@/lib/insights";
+import { INSIGHTS, getInsight, localizeInsight } from "@/lib/insights";
 import { SITE } from "@/lib/site";
 import { i18nAlternates, isLocale, ogLocale, defaultLocale, locales, type AppLocale } from "@/lib/i18n";
 import { InsightArticleView } from "@/components/insights/InsightArticleView";
@@ -16,8 +16,9 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale: raw, slug } = await params;
   const locale: AppLocale = isLocale(raw) ? raw : defaultLocale;
-  const post = getInsight(slug);
-  if (!post) return { title: "Insight not found" };
+  const base = getInsight(slug);
+  if (!base) return { title: locale === "fr" ? "Article introuvable" : "Insight not found" };
+  const post = localizeInsight(base, locale);
   return {
     title: post.title,
     description: post.excerpt,

@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { WORK, getCase } from "@/lib/work";
+import { WORK, getCase, localizeCase } from "@/lib/work";
 import { SITE } from "@/lib/site";
 import { i18nAlternates, isLocale, ogLocale, defaultLocale, locales, type AppLocale } from "@/lib/i18n";
 import { CaseStudyView } from "@/components/work/CaseStudyView";
@@ -16,8 +16,9 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale: raw, slug } = await params;
   const locale: AppLocale = isLocale(raw) ? raw : defaultLocale;
-  const w = getCase(slug);
-  if (!w) return { title: "Case study not found" };
+  const base = getCase(slug);
+  if (!base) return { title: locale === "fr" ? "Étude de cas introuvable" : "Case study not found" };
+  const w = localizeCase(base, locale);
   return {
     title: `${w.name} — ${w.field}`,
     description: w.summary,

@@ -2,6 +2,24 @@
 
 import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useLang } from "@/lib/lang";
+
+const T = {
+  en: {
+    wordmark: "ARDLABS® · Digital Engineering Studio",
+    initializing: "Initializing core",
+    assembling: "Assembling lattice",
+    calibrating: "Calibrating",
+    entering: "Entering",
+  },
+  fr: {
+    wordmark: "ARDLABS® · Studio d'ingénierie numérique",
+    initializing: "Initialisation du cœur",
+    assembling: "Assemblage de la trame",
+    calibrating: "Calibrage",
+    entering: "Entrée",
+  },
+} as const;
 
 type Phase = "ignite" | "form" | "hold" | "explode" | "done";
 
@@ -30,6 +48,7 @@ interface Particle {
  *   done    — overlay wipes away to reveal the hero
  */
 export function Loader({ onComplete }: { onComplete: () => void }) {
+  const t = T[useLang()];
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [phase, setPhase] = useState<Phase>("ignite");
   const [progress, setProgress] = useState(0);
@@ -279,15 +298,15 @@ export function Loader({ onComplete }: { onComplete: () => void }) {
             animate={{ opacity: phase === "explode" || phase === "done" ? 0 : 1 }}
             transition={{ duration: 0.4 }}
           >
-            <span className="uppercase">ARDLABS® · Digital Engineering Studio</span>
+            <span className="uppercase">{t.wordmark}</span>
             <span className="hidden text-accent-2/80 uppercase sm:inline">
               {phase === "ignite"
-                ? "Initializing core"
+                ? t.initializing
                 : phase === "form"
-                  ? "Assembling lattice"
+                  ? t.assembling
                   : phase === "hold"
-                    ? "Calibrating"
-                    : "Entering"}
+                    ? t.calibrating
+                    : t.entering}
             </span>
             <span className="text-chalk tabular-nums">
               {String(progress).padStart(3, "0")}

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { INDUSTRIES, SITE } from "@/lib/site";
+import { SERVICE_META } from "@/lib/meta";
 import { i18nAlternates, isLocale, ogLocale, defaultLocale, locales, type AppLocale } from "@/lib/i18n";
 import { IndustryDetail } from "@/components/industry/IndustryDetail";
 
@@ -21,8 +22,9 @@ export async function generateMetadata({
   const locale: AppLocale = isLocale(raw) ? raw : defaultLocale;
   const industry = INDUSTRIES.find((i) => i.id === slug);
   if (!industry) return {};
-  const title = industry.title;
-  const description = industry.overview;
+  const localized = SERVICE_META[slug]?.[locale];
+  const title = localized?.title ?? industry.title;
+  const description = localized?.description ?? industry.overview;
   return {
     title,
     description,
