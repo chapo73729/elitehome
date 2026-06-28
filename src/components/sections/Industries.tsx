@@ -60,7 +60,7 @@ function IndustryCard({
         className="group relative h-full"
       >
        <Link
-        href={`/industries/${industry.id}`}
+        href={`/services/${industry.id}`}
         data-cursor
         aria-label={`Explore ${industry.title}`}
         className="relative block h-full overflow-hidden rounded-3xl hairline bg-ink p-8 transition-colors duration-500 hover:border-white/15"
@@ -131,7 +131,7 @@ function IndustryCard({
 export function Industries() {
   const c = useContent().industries;
   return (
-    <section id="industries" className="relative z-10 scroll-mt-24 py-28 md:py-40">
+    <section id="services" className="relative z-10 scroll-mt-24 py-28 md:py-40">
       <SectionHeading index="03" eyebrow={c.eyebrow} title={c.title} intro={c.intro} />
 
       <div className="container-x mt-16">
@@ -144,7 +144,7 @@ export function Industries() {
         <Reveal delay={0.1}>
           <div className="mt-10 flex justify-center">
             <Link
-              href="/industries"
+              href="/services"
               data-cursor
               className="group inline-flex items-center gap-2 rounded-full hairline px-6 py-3 text-sm text-mist transition-colors duration-500 hover:border-white/25 hover:text-chalk"
             >

@@ -6,11 +6,11 @@ export const metadata: Metadata = {
   title: "Services",
   description:
     "Four poles, one standard — Strategy & Consulting, Design & Development, Data & AI, and Cloud & Infrastructure, engineered by ARDLABS®.",
-  alternates: { canonical: "/industries" },
+  alternates: { canonical: "/services" },
   openGraph: {
     title: `Services — ${SITE.legal}`,
     description: "Four poles. One standard.",
-    url: `${SITE.url}/industries`,
+    url: `${SITE.url}/services`,
   },
 };
 

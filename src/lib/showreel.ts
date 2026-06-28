@@ -6,7 +6,7 @@ const SECTIONS = [
   "manifesto",
   "core",
   "network",
-  "industries",
+  "services",
   "contact",
 ];
 

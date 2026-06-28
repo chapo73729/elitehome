@@ -66,7 +66,7 @@ export function IndustryDetail({
         <div className="container-x relative z-10">
           <Reveal>
             <Link
-              href="/industries"
+              href="/services"
               className="link-underline inline-flex items-center gap-2 font-mono text-xs tracking-widest text-mist"
             >
               {L.all}
@@ -244,7 +244,7 @@ export function IndustryDetail({
       <section className="relative z-10 bg-void">
         <div className="container-x grid gap-px overflow-hidden rounded-3xl hairline sm:grid-cols-2">
           <Link
-            href={`/industries/${prev.id}`}
+            href={`/services/${prev.id}`}
             className="group bg-ink p-8 transition-colors duration-500 hover:bg-smoke"
           >
             <div className="font-mono text-xs tracking-widest text-fog">{L.prev}</div>
@@ -253,7 +253,7 @@ export function IndustryDetail({
             </div>
           </Link>
           <Link
-            href={`/industries/${next.id}`}
+            href={`/services/${next.id}`}
             className="group bg-ink p-8 text-right transition-colors duration-500 hover:bg-smoke"
           >
             <div className="font-mono text-xs tracking-widest text-fog">{L.next}</div>

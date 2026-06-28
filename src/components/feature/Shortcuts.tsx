@@ -28,7 +28,7 @@ export function Shortcuts() {
           else scrollToTarget("#contact");
           break;
         case "i":
-          router.push("/industries");
+          router.push("/services");
           break;
         case "m":
           audio.toggle();

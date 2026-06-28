@@ -37,7 +37,7 @@ export function IndustriesIndexView() {
             {c.items.map((ind, i) => (
               <Reveal key={ind.id} delay={(i % 2) * 0.08}>
                 <Link
-                  href={`/industries/${ind.id}`}
+                  href={`/services/${ind.id}`}
                   className="group relative flex h-full flex-col justify-between bg-ink p-8 transition-colors duration-500 hover:bg-smoke md:p-12"
                 >
                   <span

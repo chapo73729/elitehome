@@ -12,6 +12,12 @@ const nextConfig: NextConfig = {
   images: {
     formats: ["image/avif", "image/webp"],
   },
+  async redirects() {
+    return [
+      { source: "/industries", destination: "/services", permanent: true },
+      { source: "/industries/:slug", destination: "/services/:slug", permanent: true },
+    ];
+  },
   async headers() {
     const csp = [
       "default-src 'self'",

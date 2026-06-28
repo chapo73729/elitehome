@@ -38,7 +38,7 @@ export function ContextMenu() {
   const items: { label: string; run: () => void }[] = [
     { label: "Copy email", run: async () => { if (await copyText(SITE.email)) toast("Email copied", "✓"); } },
     { label: "Contact", run: () => router.push("/#contact") },
-    { label: "Industries", run: () => router.push("/industries") },
+    { label: "Services", run: () => router.push("/services") },
     { label: "Play showreel", run: () => { router.push("/"); setTimeout(startShowreel, 400); } },
     { label: "Toggle sound", run: () => audio.toggle() },
   ];

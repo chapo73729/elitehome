@@ -78,7 +78,7 @@ export function Hero({ ready }: { ready: boolean }) {
           transition={{ duration: 1, ease: EASE, delay: 1.4 }}
           className="mt-11 flex flex-wrap items-center justify-center gap-4 [@media(max-height:680px)]:mt-5"
         >
-          <Button href="#industries" variant="primary">
+          <Button href="#services" variant="primary">
             {c.explore}
             <span aria-hidden>→</span>
           </Button>

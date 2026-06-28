@@ -14,7 +14,7 @@ const en = {
     { label: "Manifesto", href: "#manifesto" },
     { label: "AI Core", href: "#core" },
     { label: "Network", href: "#network" },
-    { label: "Industries", href: "#industries" },
+    { label: "Services", href: "#services" },
     { label: "Contact", href: "#contact" },
   ],
   common: {
@@ -454,7 +454,7 @@ const fr: DeepPartial<Content> = {
     { label: "Manifeste" },
     { label: "Cœur IA" },
     { label: "Réseau" },
-    { label: "Industries" },
+    { label: "Services" },
     { label: "Contact" },
   ],
   common: {

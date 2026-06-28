@@ -8,7 +8,7 @@ const SECTIONS = [
   { id: "manifesto", label: "Manifesto" },
   { id: "core", label: "AI Core" },
   { id: "network", label: "Network" },
-  { id: "industries", label: "Industries" },
+  { id: "services", label: "Services" },
   { id: "contact", label: "Contact" },
 ] as const;
 

@@ -39,9 +39,9 @@ export function CommandPalette() {
     );
     list.push({ id: "top", label: "Back to top", group: "Navigate", run: () => (pathname !== "/" ? router.push("/") : scrollToTarget(0)) });
     INDUSTRIES.forEach((i) =>
-      list.push({ id: "ind" + i.id, label: i.title, group: "Industries", run: () => router.push(`/industries/${i.id}`) })
+      list.push({ id: "ind" + i.id, label: i.title, group: "Services", run: () => router.push(`/services/${i.id}`) })
     );
-    list.push({ id: "ind-all", label: "All industries", group: "Industries", run: () => router.push("/industries") });
+    list.push({ id: "ind-all", label: "All services", group: "Services", run: () => router.push("/services") });
     list.push({ id: "showreel", label: "Play showreel", group: "Actions", hint: "auto-tour", run: () => { unlock("spectator"); router.push("/"); setTimeout(startShowreel, 400); } });
     list.push({ id: "terminal", label: "Open console", group: "Actions", hint: "~", run: () => openTerminal() });
     list.push({ id: "perf", label: "Toggle performance mode", group: "Actions", run: () => { togglePerf(); unlock("minimalist"); toast("Performance mode toggled", "⚡"); } });

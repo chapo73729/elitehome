@@ -22,11 +22,11 @@ export async function generateMetadata({
   return {
     title,
     description,
-    alternates: { canonical: `/industries/${industry.id}` },
+    alternates: { canonical: `/services/${industry.id}` },
     openGraph: {
       title: `${title} — ${SITE.legal}`,
       description,
-      url: `${SITE.url}/industries/${industry.id}`,
+      url: `${SITE.url}/services/${industry.id}`,
       type: "article",
     },
     twitter: { card: "summary_large_image", title, description },
@@ -55,18 +55,18 @@ export default async function IndustryPage({
         description: industry.overview,
         provider: { "@type": "Organization", name: SITE.legal, url: SITE.url },
         areaServed: "Worldwide",
-        url: `${SITE.url}/industries/${industry.id}`,
+        url: `${SITE.url}/services/${industry.id}`,
       },
       {
         "@type": "BreadcrumbList",
         itemListElement: [
           { "@type": "ListItem", position: 1, name: "Home", item: SITE.url },
-          { "@type": "ListItem", position: 2, name: "Industries", item: `${SITE.url}/industries` },
+          { "@type": "ListItem", position: 2, name: "Services", item: `${SITE.url}/services` },
           {
             "@type": "ListItem",
             position: 3,
             name: industry.title,
-            item: `${SITE.url}/industries/${industry.id}`,
+            item: `${SITE.url}/services/${industry.id}`,
           },
         ],
       },

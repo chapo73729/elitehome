@@ -107,9 +107,9 @@ export function Terminal() {
       case "open": {
         const id = (args[0] || "").toLowerCase();
         if (INDUSTRIES.some((i) => i.id === id)) {
-          out([`opening /industries/${id} …`]);
+          out([`opening /services/${id} …`]);
           unlock("explorer");
-          router.push(`/industries/${id}`);
+          router.push(`/services/${id}`);
           setOpen(false);
         } else out([`unknown service: ${args[0] || "(none)"}`]);
         break;
