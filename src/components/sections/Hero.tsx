@@ -26,7 +26,7 @@ export function Hero({ ready }: { ready: boolean }) {
       {/* 3D field */}
       <div ref={scene.ref} className="absolute inset-0">
         <SceneBoundary>
-          {scene.mounted && <HeroScene frameloop={scene.frameloop} />}
+          {scene.mounted && <HeroScene frameloop={scene.frameloop} ready={ready} />}
         </SceneBoundary>
       </div>
 
@@ -39,9 +39,9 @@ export function Hero({ ready }: { ready: boolean }) {
       {/* content */}
       <div className="container-x relative z-10 flex flex-col items-center text-center">
         <motion.span
-          initial={{ opacity: 0, y: 16 }}
-          animate={ready ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 1, ease: EASE, delay: 0.3 }}
+          initial={{ opacity: 0, y: 16, filter: "blur(8px)" }}
+          animate={ready ? { opacity: 1, y: 0, filter: "blur(0px)" } : {}}
+          transition={{ duration: 1.1, ease: EASE, delay: 0.45 }}
           className="eyebrow mb-8 [@media(max-height:680px)]:mb-3"
         >
           {c.eyebrow}
@@ -55,18 +55,18 @@ export function Hero({ ready }: { ready: boolean }) {
         </h1>
 
         <motion.p
-          initial={{ opacity: 0, y: 20 }}
-          animate={ready ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 1, ease: EASE, delay: 0.9 }}
+          initial={{ opacity: 0, y: 20, filter: "blur(6px)" }}
+          animate={ready ? { opacity: 1, y: 0, filter: "blur(0px)" } : {}}
+          transition={{ duration: 1.1, ease: EASE, delay: 1.15 }}
           className="mt-7 max-w-xl text-balance text-base text-mist md:text-lg [@media(max-height:680px)]:mt-3 [@media(max-height:680px)]:text-sm"
         >
           {c.subtitle}
         </motion.p>
 
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={ready ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 1, ease: EASE, delay: 1.1 }}
+          initial={{ opacity: 0, y: 20, filter: "blur(6px)" }}
+          animate={ready ? { opacity: 1, y: 0, filter: "blur(0px)" } : {}}
+          transition={{ duration: 1, ease: EASE, delay: 1.4 }}
           className="mt-11 flex flex-wrap items-center justify-center gap-4 [@media(max-height:680px)]:mt-5"
         >
           <Button href="#industries" variant="primary">
@@ -111,12 +111,12 @@ function Line({
   delay: number;
 }) {
   return (
-    <span className="block overflow-hidden">
+    <span className="block overflow-hidden pb-[0.08em]">
       <motion.span
         className="block"
-        initial={{ y: "115%" }}
-        animate={ready ? { y: "0%" } : {}}
-        transition={{ duration: 1.2, ease: EASE, delay }}
+        initial={{ y: "118%", scale: 1.06, filter: "blur(10px)" }}
+        animate={ready ? { y: "0%", scale: 1, filter: "blur(0px)" } : {}}
+        transition={{ duration: 1.35, ease: EASE, delay }}
       >
         {children}
       </motion.span>

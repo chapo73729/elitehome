@@ -1,5 +1,5 @@
-import { StudioHome } from "@/components/studio/StudioHome";
+import { Experience } from "@/components/layout/Experience";
 
 export default function Home() {
-  return <StudioHome />;
+  return <Experience />;
 }

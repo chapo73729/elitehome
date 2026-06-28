@@ -15,17 +15,30 @@ import { ParticlePlanet } from "./ParticlePlanet";
 import { Starfield } from "./Starfield";
 import { useDeviceTier, type Tier } from "@/hooks/useDeviceTier";
 
-/** Scroll-driven camera dolly: the camera pushes toward (and into) the planet. */
-function CameraRig() {
+/** Scroll-driven camera dolly + a cinematic fly-in synced to the loader clear. */
+function CameraRig({ ready }: { ready: boolean }) {
   const { camera } = useThree();
-  const target = useRef(new THREE.Vector3(0, 0, 6));
+  const target = useRef(new THREE.Vector3(0, 0, 15));
+  // intro starts far (1) and eases to 0 once `ready` → a dramatic push-in
+  const intro = useRef(1);
 
-  useFrame((state) => {
+  useFrame((state, delta) => {
+    const dt = Math.min(delta, 0.05);
+    // hold the camera far until the loader clears, then fly in
+    const goal = ready ? 0 : 1;
+    intro.current = THREE.MathUtils.damp(intro.current, goal, ready ? 2.4 : 8, dt);
+
     const max = window.innerHeight;
     const p = Math.min(1, Math.max(0, window.scrollY / max)); // 0..1 over first screen
-    const z = 6 - p * 3.4; // 6 -> 2.6 (travel into the field)
-    target.current.set(state.pointer.x * 0.4, state.pointer.y * 0.3, z);
-    camera.position.lerp(target.current, 0.05);
+    const baseZ = 6 - p * 3.4; // 6 -> 2.6 (travel into the field)
+    const z = baseZ + intro.current * 9; // +9 farther at arrival, then dollies in
+
+    target.current.set(
+      state.pointer.x * 0.4 * (1 - intro.current),
+      state.pointer.y * 0.3 * (1 - intro.current),
+      z
+    );
+    camera.position.lerp(target.current, ready ? 0.08 : 0.2);
     camera.lookAt(0, 0, 0);
   });
 
@@ -59,8 +72,10 @@ function Effects({ tier }: { tier: Tier }) {
 
 export default function HeroScene({
   frameloop = "always",
+  ready = true,
 }: {
   frameloop?: "always" | "never";
+  ready?: boolean;
 }) {
   const tier = useDeviceTier();
   const planetCount = tier === "low" ? 5500 : tier === "mid" ? 9000 : 15000;
@@ -84,7 +99,7 @@ export default function HeroScene({
       <fog attach="fog" args={["#050505", 7, 22]} />
       <ambientLight intensity={0.4} />
 
-      <CameraRig />
+      <CameraRig ready={ready} />
       <Starfield count={starCount} />
       <ParticlePlanet count={planetCount} radius={2.05} />
 
