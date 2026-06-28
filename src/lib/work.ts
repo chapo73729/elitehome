@@ -12,6 +12,12 @@ export type CaseStudy = {
   accent: string;
   summary: string;
   stage: string;
+  /** Services pole this project best represents (matches INDUSTRIES id). */
+  pole: string;
+  /** Disciplines we owned on the engagement. */
+  roles: string[];
+  /** Representative tech used. */
+  tech: string[];
   challenge: string[];
   approach: { title: string; body: string }[];
   outcome: string[];
@@ -28,6 +34,9 @@ export const WORK: CaseStudy[] = [
     summary:
       "An AI decision-support engine for operations teams who can't afford a wrong call.",
     stage: "Shipped · In production",
+    pole: "ai",
+    roles: ["Applied AI", "Backend engineering", "Evaluation & guardrails"],
+    tech: ["Python", "OpenAI", "Postgres", "FastAPI"],
     challenge: [
       "High-stakes operational decisions can't be handed to a model that is merely accurate on average. The team needed a system that is dependable at its worst — and that knows when it is uncertain.",
       "The hard problem was never raw capability. It was trust: an assistant that escalates to a human at exactly the right moment, with a reasoning trail a person can audit.",
@@ -61,6 +70,9 @@ export const WORK: CaseStudy[] = [
     summary:
       "A logistics SaaS dashboard that turns scattered operational data into live, routable decisions.",
     stage: "Shipped · Scaling",
+    pole: "software",
+    roles: ["Product design", "Full-stack engineering", "Data integration"],
+    tech: ["React", "Next.js", "TypeScript", "Postgres"],
     challenge: [
       "The client's logistics operation ran on thin margins and stale information, spread across a patchwork of disconnected tools. Decisions were often made against data that was hours old.",
       "The opportunity was to give operators a single, live picture of their network — and to plan against it continuously rather than once a day.",
@@ -94,6 +106,9 @@ export const WORK: CaseStudy[] = [
     summary:
       "A manufacturing operations dashboard and internal tooling suite that makes a plant floor legible.",
     stage: "Shipped · In production",
+    pole: "ai",
+    roles: ["Data engineering", "Internal tooling", "Dashboards & BI"],
+    tech: ["Python", "dbt", "Postgres", "React"],
     challenge: [
       "The client's plant ran on tribal knowledge and end-of-shift paperwork. When something slipped, no one could see it until it was already a problem.",
       "The question was whether the day-to-day state of operations could be made visible in real time — and whether the manual reporting grind could be removed entirely.",
@@ -127,6 +142,9 @@ export const WORK: CaseStudy[] = [
     summary:
       "A distributed runtime that places computation microseconds from the user.",
     stage: "Shipped · In production",
+    pole: "cloud",
+    roles: ["Systems engineering", "Cloud architecture", "Developer experience"],
+    tech: ["Rust", "Kubernetes", "AWS", "Terraform"],
     challenge: [
       "Modern applications are expected to feel instantaneous everywhere — but the infrastructure to achieve that has historically been complex, costly and reserved for the largest engineering teams.",
       "The goal was edge performance with the developer experience of deploying to a single machine.",
@@ -155,4 +173,9 @@ export const WORK: CaseStudy[] = [
 
 export function getCase(slug: string) {
   return WORK.find((w) => w.slug === slug);
+}
+
+/** Cases that best represent a given services pole (INDUSTRIES id). */
+export function getCasesByPole(pole: string) {
+  return WORK.filter((w) => w.pole === pole);
 }

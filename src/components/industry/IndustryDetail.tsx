@@ -9,6 +9,7 @@ import { CanvasMotif } from "@/components/ui/CanvasMotif";
 import { SceneBoundary } from "@/components/three/SceneBoundary";
 import { useSceneVisibility } from "@/hooks/useSceneVisibility";
 import { useContent } from "@/lib/content";
+import { WORK } from "@/lib/work";
 
 const NeuralFlow = dynamic(() => import("@/components/three/NeuralFlow"), { ssr: false });
 const DataStream3D = dynamic(() => import("@/components/three/DataStream3D"), { ssr: false });
@@ -41,6 +42,11 @@ export function IndustryDetail({
   const accent = industry.accent;
   const scene = useSceneVisibility<HTMLDivElement>({ mountMargin: "600px 0px" });
   const Scene3D = SCENE_BY_ID[industry.id] ?? null;
+
+  const relatedSlugs: readonly string[] = industry.relatedWork ?? [];
+  const relatedWork = relatedSlugs
+    .map((slug) => WORK.find((w) => w.slug === slug))
+    .filter((w): w is (typeof WORK)[number] => Boolean(w));
 
   return (
     <main className="relative">
@@ -218,6 +224,131 @@ export function IndustryDetail({
         </div>
       </section>
 
+      {/* ---------- WHAT YOU GET (DELIVERABLES) ---------- */}
+      <section className="relative z-10 bg-void py-24 md:py-32">
+        <div className="container-x grid gap-12 lg:grid-cols-12">
+          <div className="lg:col-span-4">
+            <Reveal>
+              <div className="flex items-center gap-3">
+                <span className="inline-block h-2 w-2 rounded-full" style={{ background: accent }} />
+                <span className="eyebrow">{L.deliverables}</span>
+              </div>
+              <p className="mt-5 max-w-xs text-balance text-mist">{L.deliverablesIntro}</p>
+            </Reveal>
+          </div>
+          <div className="lg:col-span-8">
+            <ul className="grid gap-px overflow-hidden rounded-3xl hairline sm:grid-cols-2">
+              {industry.deliverables.map((d, i) => (
+                <Reveal key={d} delay={(i % 2) * 0.06}>
+                  <li className="flex h-full items-start gap-4 bg-ink p-6">
+                    <span className="mt-1 font-mono text-xs" style={{ color: accent }} aria-hidden>
+                      ✓
+                    </span>
+                    <span className="text-chalk">{d}</span>
+                  </li>
+                </Reveal>
+              ))}
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      {/* ---------- HOW WE ENGAGE ---------- */}
+      <section className="relative z-10 bg-void py-24 md:py-32">
+        <div className="container-x">
+          <Reveal>
+            <div className="flex items-center gap-4">
+              <span className="eyebrow">{L.engagement}</span>
+              <span className="h-px flex-1 bg-gradient-to-r from-white/15 to-transparent" />
+            </div>
+            <p className="mt-5 max-w-xl text-balance text-mist">{L.engagementIntro}</p>
+          </Reveal>
+          <ol className="mt-12 grid gap-px overflow-hidden rounded-3xl hairline md:grid-cols-3">
+            {industry.engagement.map((step, i) => (
+              <Reveal key={step.t} delay={i * 0.08}>
+                <li className="flex h-full flex-col bg-ink p-7">
+                  <div className="flex items-center gap-3">
+                    <span className="font-mono text-xs" style={{ color: accent }}>
+                      {String(i + 1).padStart(2, "0")}
+                    </span>
+                    <span className="font-display text-lg font-semibold text-chalk">{step.t}</span>
+                  </div>
+                  <p className="mt-3 text-sm text-mist">{step.d}</p>
+                </li>
+              </Reveal>
+            ))}
+          </ol>
+        </div>
+      </section>
+
+      {/* ---------- TYPICAL STACK ---------- */}
+      <section className="relative z-10 bg-void pb-24 md:pb-32">
+        <div className="container-x grid gap-12 lg:grid-cols-12">
+          <div className="lg:col-span-4">
+            <Reveal>
+              <div className="flex items-center gap-3">
+                <span className="inline-block h-2 w-2 rounded-full" style={{ background: accent }} />
+                <span className="eyebrow">{L.stack}</span>
+              </div>
+              <p className="mt-5 max-w-xs text-balance text-mist">{L.stackIntro}</p>
+            </Reveal>
+          </div>
+          <div className="lg:col-span-8">
+            <Reveal>
+              <ul className="flex flex-wrap gap-3">
+                {industry.stack.map((t) => (
+                  <li
+                    key={t}
+                    className="rounded-full border border-white/12 px-4 py-2 font-mono text-xs tracking-widest text-mist"
+                  >
+                    {t}
+                  </li>
+                ))}
+              </ul>
+            </Reveal>
+          </div>
+        </div>
+      </section>
+
+      {/* ---------- RELATED WORK ---------- */}
+      {relatedWork.length > 0 && (
+        <section className="relative z-10 bg-void pb-24 md:pb-32">
+          <div className="container-x">
+            <Reveal>
+              <div className="flex items-center gap-4">
+                <span className="eyebrow">{L.relatedWork}</span>
+                <span className="h-px flex-1 bg-gradient-to-r from-white/15 to-transparent" />
+              </div>
+              <p className="mt-5 max-w-xl text-balance text-mist">{L.relatedWorkIntro}</p>
+            </Reveal>
+            <ul className="mt-12 grid gap-px overflow-hidden rounded-3xl hairline sm:grid-cols-2">
+              {relatedWork.map((w, i) => (
+                <Reveal key={w.slug} delay={(i % 2) * 0.06}>
+                  <li>
+                    <Link
+                      href={`/work/${w.slug}`}
+                      className="group flex h-full flex-col bg-ink p-7 transition-colors duration-500 hover:bg-smoke"
+                    >
+                      <span className="font-mono text-[0.7rem] uppercase tracking-widest" style={{ color: w.accent }}>
+                        {w.field}
+                      </span>
+                      <span className="mt-3 font-display text-xl font-semibold text-chalk transition-colors group-hover:text-gradient">
+                        {w.name}
+                      </span>
+                      <span className="mt-2 flex-1 text-sm text-mist">{w.summary}</span>
+                      <span className="mt-5 inline-flex items-center gap-2 font-mono text-xs tracking-widest" style={{ color: accent }}>
+                        {L.viewCase}
+                        <span className="transition-transform duration-300 group-hover:translate-x-1" aria-hidden>→</span>
+                      </span>
+                    </Link>
+                  </li>
+                </Reveal>
+              ))}
+            </ul>
+          </div>
+        </section>
+      )}
+
       {/* ---------- CTA ---------- */}
       <section className="relative z-10 overflow-hidden bg-void py-28 md:py-36">
         <div
@@ -230,10 +361,16 @@ export function IndustryDetail({
               {L.ctaPrefix} {industry.title.toLowerCase()} {L.ctaSuffix}
             </h2>
           </Reveal>
+          <Reveal delay={0.05}>
+            <p className="mx-auto mt-6 max-w-xl text-balance text-mist">{L.ctaBody}</p>
+          </Reveal>
           <Reveal delay={0.1}>
-            <div className="mt-10 flex justify-center">
-              <Button href="/#contact" variant="primary">
-                {L.startConversation} <span aria-hidden>→</span>
+            <div className="mt-10 flex flex-wrap justify-center gap-4">
+              <Button href="/contact" variant="primary">
+                {L.startProject} <span aria-hidden>→</span>
+              </Button>
+              <Button href="/work" variant="ghost">
+                {L.relatedWork}
               </Button>
             </div>
           </Reveal>
