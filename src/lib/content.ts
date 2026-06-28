@@ -394,6 +394,18 @@ const en = {
       },
     ],
   },
+  workflow: {
+    eyebrow: "The system",
+    title: "Build logic at scale.",
+    intro:
+      "Design, deploy and orchestrate sophisticated AI workflows through one visual fabric — agents, tools and code, composed without friction.",
+  },
+  telemetry: {
+    eyebrow: "Telemetry",
+    title: "Optimised for performance.",
+    intro:
+      "Every signal, monitored in real time — agent accuracy, server latency and token efficiency, read like instruments.",
+  },
   bento: {
     eyebrow: "Why ARDLABS",
     title: "Built differently, on purpose.",
@@ -843,6 +855,18 @@ const fr: DeepPartial<Content> = {
         stage: "Concept",
       },
     ],
+  },
+  workflow: {
+    eyebrow: "Le système",
+    title: "Concevez la logique à grande échelle.",
+    intro:
+      "Concevez, déployez et orchestrez des workflows d'IA sophistiqués depuis un seul tissu visuel — agents, outils et code, composés sans friction.",
+  },
+  telemetry: {
+    eyebrow: "Télémétrie",
+    title: "Optimisé pour la performance.",
+    intro:
+      "Chaque signal, surveillé en temps réel — précision des agents, latence serveur et efficacité des tokens, lus comme des instruments.",
   },
   bento: {
     eyebrow: "Pourquoi ARDLABS",
