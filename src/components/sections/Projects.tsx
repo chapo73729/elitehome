@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import Link from "next/link";
 import { createPortal } from "react-dom";
 import {
   motion,
@@ -15,6 +16,8 @@ import { Button } from "@/components/ui/Button";
 import { useContent } from "@/lib/content";
 
 type Project = any;
+
+const slugify = (s: string) => s.toLowerCase().replace(/\s+/g, "-");
 
 function HoloCard({
   p,
@@ -197,7 +200,14 @@ function ProjectModal({ p, onClose }: { p: Project; onClose: () => void }) {
             ))}
           </div>
 
-          <div className="mt-8">
+          <div className="mt-8 flex flex-wrap items-center gap-3">
+            <Link
+              href={`/work/${slugify(p.name)}`}
+              onClick={onClose}
+              className="rounded-full bg-chalk px-7 py-3.5 text-sm font-medium text-void transition-opacity hover:opacity-90"
+            >
+              Read the case study <span aria-hidden>→</span>
+            </Link>
             <Button href="/#contact" variant="ghost" onClick={onClose}>
               {reqLabel} <span aria-hidden>→</span>
             </Button>
@@ -221,6 +231,14 @@ export function Projects() {
           {c.items.map((p, i) => (
             <HoloCard key={p.code} p={p} i={i} onOpen={() => setOpen(p)} openLabel={c.open} />
           ))}
+        </div>
+        <div className="mt-12 text-center">
+          <Link
+            href="/work"
+            className="link-underline font-mono text-xs tracking-widest text-mist transition-colors hover:text-chalk"
+          >
+            VIEW ALL CASE STUDIES →
+          </Link>
         </div>
       </div>
 
