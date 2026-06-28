@@ -5,7 +5,17 @@ import Link from "next/link";
 import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 import { SectionHeading } from "@/components/ui/Section";
 import { Reveal } from "@/components/ui/Reveal";
+import { CanvasMotif } from "@/components/ui/CanvasMotif";
 import { useContent } from "@/lib/content";
+
+const MOTIF: Record<string, "code" | "ai" | "industrial" | "ocean"> = {
+  ai: "ai",
+  strategy: "ai",
+  software: "code",
+  automation: "code",
+  industrial: "industrial",
+  maritime: "ocean",
+};
 
 function IndustryCard({
   industry,
@@ -64,10 +74,25 @@ function IndustryCard({
             background: `radial-gradient(420px circle at var(--x,50%) var(--y,50%), ${industry.accent}22, transparent 60%)`,
           }}
         />
-        {/* animated motif */}
+        {/* living per-domain motif — faded into the card, intensifies on hover */}
         <div
           aria-hidden
-          className="pointer-events-none absolute -right-10 -top-10 h-40 w-40 rounded-full opacity-30 blur-2xl transition-all duration-700 group-hover:scale-150 group-hover:opacity-60"
+          className="pointer-events-none absolute inset-0 opacity-40 transition-opacity duration-700 group-hover:opacity-80"
+          style={{
+            maskImage:
+              "radial-gradient(120% 90% at 80% 0%, #000 0%, rgba(0,0,0,0.5) 45%, transparent 75%)",
+            WebkitMaskImage:
+              "radial-gradient(120% 90% at 80% 0%, #000 0%, rgba(0,0,0,0.5) 45%, transparent 75%)",
+          }}
+        >
+          <CanvasMotif
+            variant={MOTIF[industry.id] ?? "ai"}
+            className="h-full w-full"
+          />
+        </div>
+        <div
+          aria-hidden
+          className="pointer-events-none absolute -right-12 -top-12 h-40 w-40 rounded-full opacity-20 blur-3xl transition-all duration-700 group-hover:scale-150 group-hover:opacity-40"
           style={{ background: industry.accent }}
         />
 

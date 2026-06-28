@@ -14,7 +14,8 @@ const vertex = /* glsl */ `
     vSeed = aSeed;
     vec4 mv = modelViewMatrix * vec4(position, 1.0);
     gl_Position = projectionMatrix * mv;
-    gl_PointSize = (2.2 + 1.4 * sin(uTime * 0.8 + aSeed * 6.2831)) * (300.0 / -mv.z);
+    // clamp so the morphing forms stay crisp and defined, not a bloom blob
+    gl_PointSize = clamp((1.3 + 0.7 * sin(uTime * 0.8 + aSeed * 6.2831)) * (220.0 / -mv.z), 1.0, 6.5);
   }
 `;
 
@@ -27,9 +28,9 @@ const fragment = /* glsl */ `
     vec2 uv = gl_PointCoord - 0.5;
     float d = length(uv);
     if (d > 0.5) discard;
-    float a = smoothstep(0.5, 0.0, d);
+    float a = smoothstep(0.5, 0.18, d);
     vec3 col = mix(uColorA, uColorB, vSeed);
-    gl_FragColor = vec4(col, a * 0.9);
+    gl_FragColor = vec4(col, a * 0.95);
   }
 `;
 
@@ -178,8 +179,8 @@ function Effects({ tier }: { tier: Tier }) {
   return (
     <EffectComposer multisampling={0}>
       <Bloom
-        intensity={tier === "low" ? 0.7 : 1.1}
-        luminanceThreshold={0.12}
+        intensity={tier === "low" ? 0.4 : 0.55}
+        luminanceThreshold={0.35}
         luminanceSmoothing={0.9}
         mipmapBlur
       />

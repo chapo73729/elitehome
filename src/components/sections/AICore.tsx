@@ -6,7 +6,7 @@ import { SceneBoundary } from "@/components/three/SceneBoundary";
 import { useSceneVisibility } from "@/hooks/useSceneVisibility";
 import { useContent } from "@/lib/content";
 
-const NeuralCore = dynamic(() => import("@/components/three/NeuralCore"), {
+const NeuralFlow = dynamic(() => import("@/components/three/NeuralFlow"), {
   ssr: false,
   loading: () => null,
 });
@@ -23,7 +23,7 @@ export function AICore() {
       {/* full-bleed neural field */}
       <div ref={scene.ref} className="absolute inset-0">
         <SceneBoundary>
-          {scene.mounted && <NeuralCore frameloop={scene.frameloop} />}
+          {scene.mounted && <NeuralFlow frameloop={scene.frameloop} />}
         </SceneBoundary>
       </div>
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(70%_60%_at_50%_50%,transparent_30%,#050505_85%)]" />

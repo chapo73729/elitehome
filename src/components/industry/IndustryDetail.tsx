@@ -11,13 +11,13 @@ import { useSceneVisibility } from "@/hooks/useSceneVisibility";
 import { useContent } from "@/lib/content";
 
 const Ocean3D = dynamic(() => import("@/components/three/Ocean3D"), { ssr: false });
-const NeuralCore = dynamic(() => import("@/components/three/NeuralCore"), { ssr: false });
+const NeuralFlow = dynamic(() => import("@/components/three/NeuralFlow"), { ssr: false });
 const DataStream3D = dynamic(() => import("@/components/three/DataStream3D"), { ssr: false });
 const CogMachine3D = dynamic(() => import("@/components/three/CogMachine3D"), { ssr: false });
 
 const SCENE_BY_ID: Record<string, any> = {
-  ai: NeuralCore,
-  strategy: NeuralCore,
+  ai: NeuralFlow,
+  strategy: NeuralFlow,
   software: DataStream3D,
   automation: DataStream3D,
   industrial: CogMachine3D,
