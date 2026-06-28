@@ -5,7 +5,7 @@ import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { EffectComposer, Bloom } from "@react-three/postprocessing";
 import * as THREE from "three";
 import { simplexNoise } from "./noise.glsl";
-import { useDeviceTier } from "@/hooks/useDeviceTier";
+import { useDeviceTier, useLite, LITE_FACTOR } from "@/hooks/useDeviceTier";
 
 /* ============================================================
    AI Core — a curl-noise flow field. Thousands of particles
@@ -175,19 +175,29 @@ export default function NeuralFlow({
   frameloop?: "always" | "never";
 }) {
   const tier = useDeviceTier();
-  const count = tier === "low" ? 4000 : tier === "mid" ? 9000 : 16000;
+  const lite = useLite();
+  const mult = lite ? LITE_FACTOR : 1;
+  // keep the AI core recognizable — fewer particles, same shape
+  const count = Math.round(
+    (tier === "low" ? 4000 : tier === "mid" ? 9000 : 16000) * mult
+  );
 
   return (
     <Canvas
       className="!absolute inset-0"
       frameloop={frameloop}
-      dpr={tier === "low" ? [1, 1.25] : [1, 1.75]}
+      dpr={lite ? [1, 1] : tier === "low" ? [1, 1.25] : [1, 1.75]}
       gl={{ antialias: false, alpha: true, powerPreference: "high-performance" }}
       camera={{ position: [0, 0, 5.4], fov: 50 }}
     >
       <Flow count={count} />
       <EffectComposer>
-        <Bloom intensity={1.05} luminanceThreshold={0.12} luminanceSmoothing={0.9} mipmapBlur />
+        <Bloom
+          intensity={lite ? 0.7 : 1.05}
+          luminanceThreshold={0.12}
+          luminanceSmoothing={0.9}
+          mipmapBlur
+        />
       </EffectComposer>
     </Canvas>
   );

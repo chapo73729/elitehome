@@ -13,7 +13,7 @@ import { BlendFunction } from "postprocessing";
 import * as THREE from "three";
 import { ParticlePlanet } from "./ParticlePlanet";
 import { Starfield } from "./Starfield";
-import { useDeviceTier, type Tier } from "@/hooks/useDeviceTier";
+import { useDeviceTier, useLite, LITE_FACTOR, type Tier } from "@/hooks/useDeviceTier";
 
 /** Scroll-driven camera dolly + a cinematic fly-in synced to the loader clear. */
 function CameraRig({ ready }: { ready: boolean }) {
@@ -45,27 +45,34 @@ function CameraRig({ ready }: { ready: boolean }) {
   return null;
 }
 
-function Effects({ tier }: { tier: Tier }) {
+function Effects({ tier, lite }: { tier: Tier; lite: boolean }) {
   return (
-    <EffectComposer multisampling={tier === "high" ? 4 : 0}>
+    <EffectComposer multisampling={tier === "high" && !lite ? 4 : 0}>
       <Bloom
-        intensity={tier === "low" ? 0.6 : 1.0}
+        intensity={lite ? 0.55 : tier === "low" ? 0.6 : 1.0}
         luminanceThreshold={0.15}
         luminanceSmoothing={0.9}
         mipmapBlur
       />
-      <ChromaticAberration
-        offset={[0.0006, 0.0009]}
-        radialModulation={false}
-        modulationOffset={0}
-        blendFunction={BlendFunction.NORMAL}
-      />
       <Vignette eskil={false} offset={0.25} darkness={0.85} />
-      <Noise
-        premultiply
-        blendFunction={BlendFunction.SOFT_LIGHT}
-        opacity={tier === "low" ? 0 : 0.18}
-      />
+      {/* drop the most expensive grain + chromatic passes on lite devices */}
+      {lite ? (
+        <></>
+      ) : (
+        <>
+          <ChromaticAberration
+            offset={[0.0006, 0.0009]}
+            radialModulation={false}
+            modulationOffset={0}
+            blendFunction={BlendFunction.NORMAL}
+          />
+          <Noise
+            premultiply
+            blendFunction={BlendFunction.SOFT_LIGHT}
+            opacity={tier === "low" ? 0 : 0.18}
+          />
+        </>
+      )}
     </EffectComposer>
   );
 }
@@ -78,14 +85,21 @@ export default function HeroScene({
   ready?: boolean;
 }) {
   const tier = useDeviceTier();
-  const planetCount = tier === "low" ? 5500 : tier === "mid" ? 9000 : 15000;
-  const starCount = tier === "low" ? 700 : tier === "mid" ? 1300 : 2000;
+  const lite = useLite();
+  const mult = lite ? LITE_FACTOR : 1;
+  // keep the planet recognizable — just fewer points and a tighter DPR cap
+  const planetCount = Math.round(
+    (tier === "low" ? 5500 : tier === "mid" ? 9000 : 15000) * mult
+  );
+  const starCount = Math.round(
+    (tier === "low" ? 700 : tier === "mid" ? 1300 : 2000) * mult
+  );
 
   return (
     <Canvas
       className="!absolute inset-0"
       frameloop={frameloop}
-      dpr={tier === "low" ? [1, 1.25] : [1, 1.8]}
+      dpr={lite ? [1, 1] : tier === "low" ? [1, 1.25] : [1, 1.8]}
       gl={{
         antialias: false,
         alpha: true,
@@ -103,7 +117,7 @@ export default function HeroScene({
       <Starfield count={starCount} />
       <ParticlePlanet count={planetCount} radius={2.05} />
 
-      <Effects tier={tier} />
+      <Effects tier={tier} lite={lite} />
     </Canvas>
   );
 }

@@ -10,6 +10,7 @@ import { Navbar } from "./Navbar";
 import { Footer } from "./Footer";
 import { SectionNav } from "./SectionNav";
 import { BackToTop } from "./BackToTop";
+import { MobileCTA } from "./MobileCTA";
 import { SoundSystem } from "./SoundSystem";
 import { CookieConsent } from "./CookieConsent";
 import { ScrollProgress } from "@/components/ui/ScrollProgress";
@@ -67,6 +68,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
       <CookieConsent />
       {isHome && <SectionNav />}
       <BackToTop />
+      <MobileCTA />
       <SmoothScroll>
         <Navbar />
         {children}

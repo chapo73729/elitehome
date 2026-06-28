@@ -4,7 +4,7 @@ import { useMemo, useRef, type MutableRefObject } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { EffectComposer, Bloom, Vignette } from "@react-three/postprocessing";
 import * as THREE from "three";
-import { useDeviceTier, type Tier } from "@/hooks/useDeviceTier";
+import { useDeviceTier, useLite, LITE_FACTOR, type Tier } from "@/hooks/useDeviceTier";
 
 const vertex = /* glsl */ `
   uniform float uTime;
@@ -127,11 +127,11 @@ function Stream({
   );
 }
 
-function Effects({ tier }: { tier: Tier }) {
+function Effects({ tier, lite }: { tier: Tier; lite: boolean }) {
   return (
     <EffectComposer multisampling={0}>
       <Bloom
-        intensity={tier === "low" ? 0.7 : 1.15}
+        intensity={lite ? 0.65 : tier === "low" ? 0.7 : 1.15}
         luminanceThreshold={0.1}
         luminanceSmoothing={0.9}
         mipmapBlur
@@ -149,13 +149,17 @@ export default function WarpField({
   frameloop?: "always" | "never";
 }) {
   const tier = useDeviceTier();
-  const count = tier === "low" ? 2200 : tier === "mid" ? 4500 : 7000;
+  const lite = useLite();
+  const mult = lite ? LITE_FACTOR : 1;
+  const count = Math.round(
+    (tier === "low" ? 2200 : tier === "mid" ? 4500 : 7000) * mult
+  );
 
   return (
     <Canvas
       className="!absolute inset-0"
       frameloop={frameloop}
-      dpr={tier === "low" ? [1, 1.25] : [1, 1.8]}
+      dpr={lite ? [1, 1] : tier === "low" ? [1, 1.25] : [1, 1.8]}
       gl={{
         antialias: false,
         alpha: true,
@@ -168,7 +172,7 @@ export default function WarpField({
       <color attach="background" args={["#050505"]} />
       <fog attach="fog" args={["#050505", 18, 58]} />
       <Stream progress={progress} count={count} />
-      <Effects tier={tier} />
+      <Effects tier={tier} lite={lite} />
     </Canvas>
   );
 }
