@@ -13,6 +13,52 @@ import { toast, copyText } from "@/lib/toast";
 import { togglePerf } from "@/lib/perf";
 import { openTerminal } from "@/components/feature/Terminal";
 import { unlock } from "@/lib/achievements";
+import { useLang } from "@/lib/lang";
+
+const T = {
+  en: {
+    groupNavigate: "Navigate",
+    groupServices: "Services",
+    groupActions: "Actions",
+    groupTheme: "Theme",
+    backToTop: "Back to top",
+    allServices: "All services",
+    playShowreel: "Play showreel",
+    autoTour: "auto-tour",
+    openConsole: "Open console",
+    togglePerf: "Toggle performance mode",
+    toggleSound: "Toggle sound",
+    copyEmail: "Copy contact email",
+    accentPrefix: "Accent · ",
+    perfToast: "Performance mode toggled",
+    emailCopied: "Email copied",
+    accentToast: (name: string) => `${name} accent`,
+    placeholder: "Search sections, industries, actions…",
+    searchAria: "Search sections, industries and actions",
+    noResults: "No results.",
+  },
+  fr: {
+    groupNavigate: "Naviguer",
+    groupServices: "Services",
+    groupActions: "Actions",
+    groupTheme: "Thème",
+    backToTop: "Retour en haut",
+    allServices: "Tous les services",
+    playShowreel: "Lancer la bande-démo",
+    autoTour: "visite auto",
+    openConsole: "Ouvrir la console",
+    togglePerf: "Activer le mode performance",
+    toggleSound: "Activer/couper le son",
+    copyEmail: "Copier l’e-mail de contact",
+    accentPrefix: "Accent · ",
+    perfToast: "Mode performance activé",
+    emailCopied: "E-mail copié",
+    accentToast: (name: string) => `Accent ${name}`,
+    placeholder: "Rechercher sections, secteurs, actions…",
+    searchAria: "Rechercher sections, secteurs et actions",
+    noResults: "Aucun résultat.",
+  },
+} as const;
 
 type Cmd = { id: string; label: string; group: string; hint?: string; run: () => void };
 
@@ -24,6 +70,8 @@ export function CommandPalette() {
   const router = useRouter();
   const pathname = usePathname();
   const content = useContent();
+  const lang = useLang();
+  const t = T[lang];
   const NAV = content.nav;
   const INDUSTRIES = content.industries.items;
 
@@ -35,31 +83,31 @@ export function CommandPalette() {
   const commands: Cmd[] = useMemo(() => {
     const list: Cmd[] = [];
     NAV.forEach((n) =>
-      list.push({ id: "nav" + n.href, label: n.label, group: "Navigate", run: () => goSection(n.href) })
+      list.push({ id: "nav" + n.href, label: n.label, group: t.groupNavigate, run: () => goSection(n.href) })
     );
-    list.push({ id: "top", label: "Back to top", group: "Navigate", run: () => (pathname !== "/" ? router.push("/") : scrollToTarget(0)) });
+    list.push({ id: "top", label: t.backToTop, group: t.groupNavigate, run: () => (pathname !== "/" ? router.push("/") : scrollToTarget(0)) });
     INDUSTRIES.forEach((i) =>
-      list.push({ id: "ind" + i.id, label: i.title, group: "Services", run: () => router.push(`/services/${i.id}`) })
+      list.push({ id: "ind" + i.id, label: i.title, group: t.groupServices, run: () => router.push(`/services/${i.id}`) })
     );
-    list.push({ id: "ind-all", label: "All services", group: "Services", run: () => router.push("/services") });
-    list.push({ id: "showreel", label: "Play showreel", group: "Actions", hint: "auto-tour", run: () => { unlock("spectator"); router.push("/"); setTimeout(startShowreel, 400); } });
-    list.push({ id: "terminal", label: "Open console", group: "Actions", hint: "~", run: () => openTerminal() });
-    list.push({ id: "perf", label: "Toggle performance mode", group: "Actions", run: () => { togglePerf(); unlock("minimalist"); toast("Performance mode toggled", "⚡"); } });
-    list.push({ id: "sound", label: "Toggle sound", group: "Actions", run: () => audio.toggle() });
+    list.push({ id: "ind-all", label: t.allServices, group: t.groupServices, run: () => router.push("/services") });
+    list.push({ id: "showreel", label: t.playShowreel, group: t.groupActions, hint: t.autoTour, run: () => { unlock("spectator"); router.push("/"); setTimeout(startShowreel, 400); } });
+    list.push({ id: "terminal", label: t.openConsole, group: t.groupActions, hint: "~", run: () => openTerminal() });
+    list.push({ id: "perf", label: t.togglePerf, group: t.groupActions, run: () => { togglePerf(); unlock("minimalist"); toast(t.perfToast, "⚡"); } });
+    list.push({ id: "sound", label: t.toggleSound, group: t.groupActions, run: () => audio.toggle() });
     list.push({
       id: "copy",
-      label: "Copy contact email",
-      group: "Actions",
+      label: t.copyEmail,
+      group: t.groupActions,
       run: async () => {
-        if (await copyText(SITE.email)) toast("Email copied", "✓");
+        if (await copyText(SITE.email)) toast(t.emailCopied, "✓");
       },
     });
     ACCENTS.forEach((a) =>
-      list.push({ id: "acc" + a.id, label: `Accent · ${a.name}`, group: "Theme", run: () => { applyAccent(a.id); unlock("chameleon"); toast(`${a.name} accent`, "◆"); } })
+      list.push({ id: "acc" + a.id, label: `${t.accentPrefix}${a.name}`, group: t.groupTheme, run: () => { applyAccent(a.id); unlock("chameleon"); toast(t.accentToast(a.name), "◆"); } })
     );
     return list;
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pathname, content]);
+  }, [pathname, content, lang]);
 
   const filtered = useMemo(() => {
     const s = q.trim().toLowerCase();
@@ -141,14 +189,14 @@ export function CommandPalette() {
                 ref={inputRef}
                 value={q}
                 onChange={(e) => setQ(e.target.value)}
-                placeholder="Search sections, industries, actions…"
-                aria-label="Search sections, industries and actions"
+                placeholder={t.placeholder}
+                aria-label={t.searchAria}
                 className="w-full bg-transparent text-chalk outline-none placeholder:text-fog"
               />
             </div>
             <div className="max-h-[50vh] overflow-y-auto p-2">
               {filtered.length === 0 && (
-                <div className="px-4 py-6 text-center text-sm text-fog">No results.</div>
+                <div className="px-4 py-6 text-center text-sm text-fog">{t.noResults}</div>
               )}
               {filtered.map((c, i) => {
                 const showGroup = c.group !== lastGroup;

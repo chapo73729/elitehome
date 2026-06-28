@@ -2,19 +2,21 @@
 
 import { useEffect, useState } from "react";
 import { scrollToTarget } from "./SmoothScroll";
+import { useLang } from "@/lib/lang";
 
 const SECTIONS = [
-  { id: "hero", label: "Top" },
-  { id: "manifesto", label: "Manifesto" },
-  { id: "core", label: "AI Core" },
-  { id: "network", label: "Network" },
-  { id: "services", label: "Services" },
-  { id: "contact", label: "Contact" },
+  { id: "hero", label: { en: "Top", fr: "Haut" } },
+  { id: "manifesto", label: { en: "Manifesto", fr: "Manifeste" } },
+  { id: "core", label: { en: "AI Core", fr: "Cœur IA" } },
+  { id: "network", label: { en: "Network", fr: "Réseau" } },
+  { id: "services", label: { en: "Services", fr: "Services" } },
+  { id: "contact", label: { en: "Contact", fr: "Contact" } },
 ] as const;
 
 /** Vertical progress rail on the right — Awwwards-style section indicator. */
 export function SectionNav() {
   const [active, setActive] = useState("hero");
+  const lang = useLang();
 
   useEffect(() => {
     const els = SECTIONS.map((s) => document.getElementById(s.id)).filter(
@@ -35,7 +37,7 @@ export function SectionNav() {
 
   return (
     <nav
-      aria-label="Section navigation"
+      aria-label={lang === "fr" ? "Navigation des sections" : "Section navigation"}
       className="fixed right-6 top-1/2 z-[110] hidden -translate-y-1/2 flex-col items-end gap-3.5 lg:flex"
     >
       {SECTIONS.map((s) => {
@@ -44,7 +46,7 @@ export function SectionNav() {
           <button
             key={s.id}
             onClick={() => scrollToTarget("#" + s.id)}
-            aria-label={s.label}
+            aria-label={s.label[lang]}
             aria-current={on ? "true" : undefined}
             className="group flex items-center gap-3"
           >
@@ -55,7 +57,7 @@ export function SectionNav() {
                   : "text-fog opacity-0 group-hover:opacity-100"
               }`}
             >
-              {s.label}
+              {s.label[lang]}
             </span>
             <span
               className={`block rounded-full transition-all duration-300 ${

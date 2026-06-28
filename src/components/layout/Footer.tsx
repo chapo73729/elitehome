@@ -6,11 +6,34 @@ import { useContent } from "@/lib/content";
 import { scrollToTarget } from "./SmoothScroll";
 import { AccentSwitcher } from "@/components/feature/AccentSwitcher";
 import { copyText, toast } from "@/lib/toast";
+import { useLang } from "@/lib/lang";
+
+const T = {
+  en: {
+    cities: "Prague · Geneva · Singapore",
+    cities2: "Dubai · Tokyo · New York",
+    about: "About",
+    work: "Work",
+    approach: "Approach",
+    careers: "Careers",
+    contact: "Contact",
+  },
+  fr: {
+    cities: "Prague · Genève · Singapour",
+    cities2: "Dubaï · Tokyo · New York",
+    about: "À propos",
+    work: "Réalisations",
+    approach: "Approche",
+    careers: "Carrières",
+    contact: "Contact",
+  },
+} as const;
 
 export function Footer() {
   const year = 2026;
   const c = useContent();
   const f = c.footer;
+  const t = T[useLang()];
   return (
     <footer className="relative z-10 hairline-t bg-void">
       <div className="container-x py-20">
@@ -52,9 +75,9 @@ export function Footer() {
               {SITE.email}
             </button>
             <p className="mt-6 text-sm text-fog">
-              Prague · Geneva · Singapore
+              {t.cities}
               <br />
-              Dubai · Tokyo · New York
+              {t.cities2}
             </p>
             <div className="mt-8">
               <AccentSwitcher />
@@ -64,19 +87,19 @@ export function Footer() {
 
         <div className="mt-16 flex flex-wrap items-center gap-x-6 gap-y-2 hairline-t pt-8 font-mono text-xs tracking-wider text-fog">
           <Link href="/about" className="transition-colors hover:text-chalk">
-            About
+            {t.about}
           </Link>
           <Link href="/work" className="transition-colors hover:text-chalk">
-            Work
+            {t.work}
           </Link>
           <Link href="/approach" className="transition-colors hover:text-chalk">
-            Approach
+            {t.approach}
           </Link>
           <Link href="/careers" className="transition-colors hover:text-chalk">
-            Careers
+            {t.careers}
           </Link>
           <Link href="/contact" className="transition-colors hover:text-chalk">
-            Contact
+            {t.contact}
           </Link>
           <Link href="/insights" className="transition-colors hover:text-chalk">
             {f.insights ?? "Insights"}

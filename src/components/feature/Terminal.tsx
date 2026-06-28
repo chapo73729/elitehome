@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { INDUSTRIES } from "@/lib/site";
 import { scrollToTarget } from "@/components/layout/SmoothScroll";
 import { applyAccent, ACCENTS } from "@/lib/accent";
-import { setLang } from "@/lib/lang";
+import { setLang, useLang } from "@/lib/lang";
 import { togglePerf } from "@/lib/perf";
 import { audio } from "@/lib/audio";
 import { startShowreel } from "@/lib/showreel";
@@ -19,13 +19,100 @@ export function openTerminal() {
 
 type Line = { t: "in" | "out"; v: string };
 
-const BANNER = [
-  "ARDLABS® CONSOLE v1.0 — type 'help'",
-];
+const T = {
+  en: {
+    banner: "ARDLABS® CONSOLE v1.0 — type 'help'",
+    help: [
+      "available commands:",
+      "  help            this list",
+      "  about           what is ARDLABS",
+      "  whoami          current session",
+      "  services        list service poles",
+      "  open <id>       open a service",
+      "  contact         jump to contact",
+      "  theme <name>    {accents}",
+      "  lang <en|fr>    switch language",
+      "  sound           toggle sound",
+      "  perf            toggle performance mode",
+      "  showreel        play the auto-tour",
+      "  achievements    show unlocked",
+      "  clear / exit",
+    ],
+    about: [
+      "ARDLABS® — Digital Engineering Studio.",
+      "We design and build software, platforms and AI",
+      "systems, refined to the detail. Four poles:",
+      "strategy, software, data & AI, cloud.",
+    ],
+    whoami: "visitor@ardlabs — access: guest",
+    opening: (id: string) => `opening /services/${id} …`,
+    unknownService: (id: string) => `unknown service: ${id}`,
+    none: "(none)",
+    routing: "routing to contact …",
+    accent: (id: string) => `accent → ${id}`,
+    themes: (list: string) => `themes: ${list}`,
+    language: (l: string) => `language → ${l}`,
+    langUsage: "usage: lang en|fr",
+    sound: (on: boolean) => `sound → ${on ? "on" : "off"}`,
+    perf: "performance mode toggled",
+    showreel: "engaging showreel …",
+    unlocked: (count: number, total: number) => `unlocked ${count}/${total}`,
+    sudo: "nice try.",
+    notFound: (cmd: string) => `command not found: ${cmd}`,
+    header: "ARDLABS://console",
+    close: "Close console",
+    placeholder: "type a command…",
+  },
+  fr: {
+    banner: "CONSOLE ARDLABS® v1.0 — tapez « help »",
+    help: [
+      "commandes disponibles :",
+      "  help            cette liste",
+      "  about           qu’est-ce qu’ARDLABS",
+      "  whoami          session courante",
+      "  services        liste des pôles de services",
+      "  open <id>       ouvrir un service",
+      "  contact         aller au contact",
+      "  theme <name>    {accents}",
+      "  lang <en|fr>    changer de langue",
+      "  sound           activer/couper le son",
+      "  perf            activer le mode performance",
+      "  showreel        lancer la visite auto",
+      "  achievements    afficher les succès",
+      "  clear / exit",
+    ],
+    about: [
+      "ARDLABS® — Studio d’ingénierie numérique.",
+      "Nous concevons et développons logiciels, plateformes",
+      "et systèmes d’IA, soignés dans le détail. Quatre pôles :",
+      "stratégie, logiciel, data & IA, cloud.",
+    ],
+    whoami: "visitor@ardlabs — accès : invité",
+    opening: (id: string) => `ouverture de /services/${id} …`,
+    unknownService: (id: string) => `service inconnu : ${id}`,
+    none: "(aucun)",
+    routing: "redirection vers le contact …",
+    accent: (id: string) => `accent → ${id}`,
+    themes: (list: string) => `thèmes : ${list}`,
+    language: (l: string) => `langue → ${l}`,
+    langUsage: "usage : lang en|fr",
+    sound: (on: boolean) => `son → ${on ? "activé" : "coupé"}`,
+    perf: "mode performance basculé",
+    showreel: "lancement de la bande-démo …",
+    unlocked: (count: number, total: number) => `débloqués ${count}/${total}`,
+    sudo: "bien essayé.",
+    notFound: (cmd: string) => `commande introuvable : ${cmd}`,
+    header: "ARDLABS://console",
+    close: "Fermer la console",
+    placeholder: "tapez une commande…",
+  },
+} as const;
 
 export function Terminal() {
+  const lang = useLang();
+  const t = T[lang];
   const [open, setOpen] = useState(false);
-  const [history, setHistory] = useState<Line[]>(BANNER.map((v) => ({ t: "out", v })));
+  const [history, setHistory] = useState<Line[]>([{ t: "out", v: T.en.banner }]);
   const [value, setValue] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
   const bodyRef = useRef<HTMLDivElement>(null);
@@ -56,6 +143,15 @@ export function Terminal() {
     }
   }, [open]);
 
+  // keep the banner in the active language while it's the only line
+  useEffect(() => {
+    setHistory((h) =>
+      h.length === 1 && h[0].t === "out" && (h[0].v === T.en.banner || h[0].v === T.fr.banner)
+        ? [{ t: "out", v: t.banner }]
+        : h
+    );
+  }, [t]);
+
   useEffect(() => {
     bodyRef.current?.scrollTo(0, bodyRef.current.scrollHeight);
   }, [history]);
@@ -71,33 +167,17 @@ export function Terminal() {
       case "":
         break;
       case "help":
-        out([
-          "available commands:",
-          "  help            this list",
-          "  about           what is ARDLABS",
-          "  whoami          current session",
-          "  services        list service poles",
-          "  open <id>       open a service",
-          "  contact         jump to contact",
-          "  theme <name>    " + ACCENTS.map((a) => a.id).join(" | "),
-          "  lang <en|fr>    switch language",
-          "  sound           toggle sound",
-          "  perf            toggle performance mode",
-          "  showreel        play the auto-tour",
-          "  achievements    show unlocked",
-          "  clear / exit",
-        ]);
+        out(
+          t.help.map((l) =>
+            l.replace("{accents}", ACCENTS.map((a) => a.id).join(" | "))
+          )
+        );
         break;
       case "about":
-        out([
-          "ARDLABS® — Digital Engineering Studio.",
-          "We design and build software, platforms and AI",
-          "systems, refined to the detail. Four poles:",
-          "strategy, software, data & AI, cloud.",
-        ]);
+        out([...t.about]);
         break;
       case "whoami":
-        out(["visitor@ardlabs — access: guest"]);
+        out([t.whoami]);
         break;
       case "services":
       case "industries":
@@ -107,15 +187,15 @@ export function Terminal() {
       case "open": {
         const id = (args[0] || "").toLowerCase();
         if (INDUSTRIES.some((i) => i.id === id)) {
-          out([`opening /services/${id} …`]);
+          out([t.opening(id)]);
           unlock("explorer");
           router.push(`/services/${id}`);
           setOpen(false);
-        } else out([`unknown service: ${args[0] || "(none)"}`]);
+        } else out([t.unknownService(args[0] || t.none)]);
         break;
       }
       case "contact":
-        out(["routing to contact …"]);
+        out([t.routing]);
         router.push("/#contact");
         setTimeout(() => scrollToTarget("#contact"), 60);
         setOpen(false);
@@ -124,39 +204,39 @@ export function Terminal() {
         const id = (args[0] || "").toLowerCase();
         if (ACCENTS.some((a) => a.id === id)) {
           applyAccent(id);
-          out([`accent → ${id}`]);
-        } else out([`themes: ${ACCENTS.map((a) => a.id).join(", ")}`]);
+          out([t.accent(id)]);
+        } else out([t.themes(ACCENTS.map((a) => a.id).join(", "))]);
         break;
       }
       case "lang": {
         const l = (args[0] || "").toLowerCase();
         if (l === "en" || l === "fr") {
           setLang(l);
-          out([`language → ${l}`]);
-        } else out(["usage: lang en|fr"]);
+          out([t.language(l)]);
+        } else out([t.langUsage]);
         break;
       }
       case "sound":
         audio.toggle();
-        out([`sound → ${audio.enabled ? "on" : "off"}`]);
+        out([t.sound(audio.enabled)]);
         break;
       case "perf":
         togglePerf();
-        out(["performance mode toggled"]);
+        out([t.perf]);
         break;
       case "showreel":
-        out(["engaging showreel …"]);
+        out([t.showreel]);
         router.push("/");
         setTimeout(startShowreel, 400);
         setOpen(false);
         break;
       case "achievements": {
         const s = achievementState();
-        out([`unlocked ${s.count}/${s.total}`, ...s.unlocked.map((u) => `  ★ ${u}`)]);
+        out([t.unlocked(s.count, s.total), ...s.unlocked.map((u) => `  ★ ${u}`)]);
         break;
       }
       case "sudo":
-        out(["nice try."]);
+        out([t.sudo]);
         break;
       case "clear":
         setHistory([]);
@@ -165,7 +245,7 @@ export function Terminal() {
         setOpen(false);
         break;
       default:
-        out([`command not found: ${cmd}`]);
+        out([t.notFound(cmd)]);
     }
   };
 
@@ -182,12 +262,12 @@ export function Terminal() {
           <div className="flex items-center justify-between border-b border-white/10 px-4 py-2.5">
             <span className="flex items-center gap-2 text-accent-2">
               <span className="inline-block h-1.5 w-1.5 rounded-full bg-accent-2" />
-              ARDLABS://console
+              {t.header}
             </span>
             <button
               onClick={() => setOpen(false)}
               className="text-fog transition-colors hover:text-chalk"
-              aria-label="Close console"
+              aria-label={t.close}
             >
               ✕
             </button>
@@ -216,7 +296,7 @@ export function Terminal() {
               spellCheck={false}
               autoComplete="off"
               className="w-full bg-transparent text-chalk outline-none"
-              placeholder="type a command…"
+              placeholder={t.placeholder}
             />
           </form>
         </motion.div>

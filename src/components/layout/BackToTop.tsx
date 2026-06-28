@@ -3,9 +3,11 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { scrollToTarget } from "./SmoothScroll";
+import { useLang } from "@/lib/lang";
 
 export function BackToTop() {
   const [show, setShow] = useState(false);
+  const lang = useLang();
 
   useEffect(() => {
     const onScroll = () =>
@@ -23,7 +25,7 @@ export function BackToTop() {
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.8, y: 10 }}
           onClick={() => scrollToTarget(0)}
-          aria-label="Back to top"
+          aria-label={lang === "fr" ? "Retour en haut" : "Back to top"}
           data-cursor
           className="fixed bottom-6 right-6 z-[110] flex h-12 w-12 items-center justify-center rounded-full glass text-chalk transition-colors duration-300 hover:border-white/25"
         >

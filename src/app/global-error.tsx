@@ -1,8 +1,25 @@
 "use client";
 
+import { useLang } from "@/lib/lang";
+
+const T = {
+  en: {
+    h1: "Signal interrupted.",
+    body: "A critical error occurred. Please reload to continue.",
+    reload: "Reload",
+  },
+  fr: {
+    h1: "Signal interrompu.",
+    body: "Une erreur critique est survenue. Veuillez recharger pour continuer.",
+    reload: "Recharger",
+  },
+};
+
 export default function GlobalError({ reset }: { reset: () => void }) {
+  const lang = useLang();
+  const t = T[lang];
   return (
-    <html lang="en">
+    <html lang={lang}>
       <body
         style={{
           margin: 0,
@@ -19,10 +36,10 @@ export default function GlobalError({ reset }: { reset: () => void }) {
         }}
       >
         <h1 style={{ fontSize: "clamp(2.5rem,8vw,5rem)", fontWeight: 700, letterSpacing: "-0.03em" }}>
-          Signal interrupted.
+          {t.h1}
         </h1>
         <p style={{ color: "#9a9aa3", maxWidth: 420, marginTop: "1rem" }}>
-          A critical error occurred. Please reload to continue.
+          {t.body}
         </p>
         <button
           onClick={reset}
@@ -38,7 +55,7 @@ export default function GlobalError({ reset }: { reset: () => void }) {
             cursor: "pointer",
           }}
         >
-          Reload
+          {t.reload}
         </button>
       </body>
     </html>

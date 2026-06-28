@@ -1,8 +1,12 @@
 /**
- * Editorial "Insights" content. Language-neutral English long-form — kept here
- * (rather than in the bilingual UI content) because articles are standalone
- * documents. Figures are deliberately qualitative, not fabricated metrics.
+ * Editorial "Insights" content. The English long-form lives on each Insight
+ * (unchanged). French translations live in a parallel `INSIGHTS_FR` map keyed
+ * by slug; language-neutral fields (slug, date, readingMinutes, accent) are not
+ * duplicated. Use `localizeInsight(post, lang)` to resolve to a locale.
+ * Figures are deliberately qualitative, not fabricated metrics.
  */
+
+import type { Lang } from "@/lib/lang";
 
 export type Insight = {
   slug: string;
@@ -14,6 +18,12 @@ export type Insight = {
   accent: string;
   body: { heading: string; paragraphs: string[] }[];
 };
+
+/** Translatable subset of an Insight. Language-neutral fields are omitted. */
+export type InsightL10n = Pick<
+  Insight,
+  "category" | "title" | "excerpt" | "body"
+>;
 
 export const INSIGHTS: Insight[] = [
   {
@@ -109,6 +119,105 @@ export const INSIGHTS: Insight[] = [
     ],
   },
 ];
+
+/**
+ * French translations keyed by slug. Mirrors the translatable fields of the
+ * English entries above (same block count, ordering and paragraph counts).
+ * Slugs, dates, reading times and accents are language-neutral.
+ */
+export const INSIGHTS_FR: Record<string, InsightL10n> = {
+  "engineering-for-the-long-horizon": {
+    category: "Ingénierie",
+    title: "Concevoir un logiciel qui dure",
+    excerpt:
+      "Pourquoi nous optimisons pour un logiciel toujours rapide, sûr et lisible des années après son lancement — et pas seulement impressionnant le premier jour.",
+    body: [
+      {
+        heading: "La démo est la mauvaise cible",
+        paragraphs: [
+          "Beaucoup de logiciels sont conçus pour faire bonne impression lors d'une première démonstration. C'est une réponse rationnelle à la manière dont les projets sont présentés et validés — mais cela plafonne discrètement la qualité de ce qui est livré. Tout ce dont le bénéfice arrive après le lancement tend à être sacrifié.",
+          "Nous visons une autre cible. Lorsque l'objectif est un logiciel encore maintenable quelques années plus tard, une autre catégorie de travail mérite d'être entreprise : une architecture claire, une vraie couverture de tests et des interfaces qui restent évidentes à mesure que l'équipe se renouvelle.",
+        ],
+      },
+      {
+        heading: "La maintenabilité est une fonctionnalité",
+        paragraphs: [
+          "La maintenabilité est généralement traitée comme une réflexion après coup. Nous la traitons comme une fonctionnalité que l'on construit délibérément — un code lisible, des frontières sensées et une observabilité qui permet à l'ingénieur suivant de comprendre le système sans visite guidée.",
+          "La discipline ne consiste pas à livrer une fois. Elle consiste à continuer de livrer, de mesurer et d'affiner pendant que le système supporte une charge réelle.",
+        ],
+      },
+      {
+        heading: "Fiable, pas seulement impressionnant",
+        paragraphs: [
+          "Un prototype est conçu pour impressionner. Un logiciel de production est conçu pour qu'on puisse s'y fier. Les deux exigent des cultures d'ingénierie presque opposées, et les confondre est la manière la plus courante dont des projets ambitieux échouent.",
+          "Tout ce que nous livrons est construit selon le second standard. La question que nous posons n'est pas de savoir si quelque chose paraît remarquable dans un cadre contrôlé, mais si d'autres peuvent bâtir leur propre travail dessus sans avoir à y penser.",
+        ],
+      },
+    ],
+  },
+  "making-ai-dependable-in-production": {
+    category: "Données & IA",
+    title: "Rendre l'IA fiable en production",
+    excerpt:
+      "La capacité de pointe est nécessaire mais pas suffisante. Le problème le plus difficile est de rendre les systèmes intelligents assez fiables pour porter du poids en production.",
+    body: [
+      {
+        heading: "De la capacité à la fiabilité",
+        paragraphs: [
+          "Le débat public sur l'IA se focalise sur la capacité — ce qu'un modèle peut faire au mieux de sa forme. En production, la contrainte déterminante est presque toujours la fiabilité : ce qu'un système fait de manière constante, dans le pire des cas, à son cent-millième appel de la journée.",
+          "Combler cet écart est un problème d'ingénierie, pas de recherche. Il se loge dans les bancs d'évaluation, les solutions de repli, les garde-fous, l'observabilité et la discipline ingrate qui consiste à traiter le comportement du modèle comme quelque chose à mesurer plutôt qu'à admirer.",
+        ],
+      },
+      {
+        heading: "Des agents qui planifient, agissent et se corrigent",
+        paragraphs: [
+          "Les agents automatisés sont les plus utiles là où le flux de travail est trop complexe pour être scripté à l'avance. Cette même propriété les rend difficiles à fiabiliser : le système décide, au lieu de suivre un chemin figé.",
+          "Nous concevons les agents autour d'une boucle serrée — planifier, agir, observer, corriger — et autour de l'hypothèse que chaque étape individuelle peut être erronée. La robustesse vient de la boucle, et non de la perfection d'une décision isolée.",
+        ],
+      },
+      {
+        heading: "Conçu pour la production, pas pour les démos",
+        paragraphs: [
+          "Un modèle qui se comporte brillamment dans un notebook et de façon imprévisible sous charge n'a pas été déployé ; il a été présenté en avant-première. Le travail de déploiement, c'est tout ce qui se passe après le résultat impressionnant.",
+          "C'est là que nous concentrons nos efforts : budgets de latence, dégradation maîtrisée, contrôle des coûts et l'outillage opérationnel qui permet à une équipe d'exploiter un système intelligent comme elle exploiterait tout autre service critique.",
+        ],
+      },
+    ],
+  },
+  "one-team-four-poles": {
+    category: "Studio",
+    title: "Une équipe, quatre pôles.",
+    excerpt:
+      "Comment la stratégie, le design & développement, les données & l'IA et le cloud fonctionnent comme une seule équipe plutôt que comme quatre passations.",
+    body: [
+      {
+        heading: "Une équipe, pas une course de relais",
+        paragraphs: [
+          "La plupart des projets numériques sont fragmentés en passations : la stratégie envoie une présentation par-dessus le mur au design, le design à l'ingénierie, l'ingénierie à l'exploitation. Chaque passation perd du contexte, et le produit en paie le prix.",
+          "Nous fonctionnons comme une seule équipe répartie sur quatre pôles — Stratégie & Conseil, Design & Développement, Données & IA, et Cloud & Infrastructure. Ceux qui cadrent le problème sont proches de ceux qui le construisent et de ceux qui le maintiennent en marche.",
+        ],
+      },
+      {
+        heading: "Une idée, prise en charge de bout en bout",
+        paragraphs: [
+          "Chaque pôle est une discipline à part entière, mais tous partagent un même standard d'ingénierie. La stratégie dérisque l'idée, le design et le développement la construisent, les données et l'IA rendent l'exploitation lisible, et le cloud la maintient rapide et fiable.",
+          "Traiter ces quatre pôles comme une seule pratique — plutôt que comme quatre prestataires — est ce qui permet à une idée de voyager d'une question précise jusqu'à un produit qui tient la route, sans rien perdre en chemin.",
+        ],
+      },
+    ],
+  },
+};
+
+/**
+ * Return an Insight with its translatable fields resolved to `lang`.
+ * Language-neutral fields are preserved; English is the fallback.
+ */
+export function localizeInsight(post: Insight, lang: Lang): Insight {
+  if (lang === "en") return post;
+  const fr = INSIGHTS_FR[post.slug];
+  if (!fr) return post;
+  return { ...post, ...fr };
+}
 
 export function getInsight(slug: string) {
   return INSIGHTS.find((i) => i.slug === slug);

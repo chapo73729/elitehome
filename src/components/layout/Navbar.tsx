@@ -9,6 +9,12 @@ import { scrollToTarget } from "./SmoothScroll";
 import { Magnetic } from "@/components/ui/Magnetic";
 import { SoundToggle } from "./SoundToggle";
 import { LanguageToggle } from "@/components/feature/LanguageToggle";
+import { useLang } from "@/lib/lang";
+
+const T = {
+  en: { openMenu: "Open menu", closeMenu: "Close menu", sound: "SOUND" },
+  fr: { openMenu: "Ouvrir le menu", closeMenu: "Fermer le menu", sound: "SON" },
+} as const;
 
 export function Navbar({ ready = true }: { ready?: boolean }) {
   const [scrolled, setScrolled] = useState(false);
@@ -18,6 +24,7 @@ export function Navbar({ ready = true }: { ready?: boolean }) {
   const router = useRouter();
   const c = useContent();
   const NAV = c.nav;
+  const t = T[useLang()];
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40);
@@ -138,7 +145,7 @@ export function Navbar({ ready = true }: { ready?: boolean }) {
           <button
             onClick={() => setOpen((o) => !o)}
             className="relative z-[130] flex h-10 w-10 flex-col items-center justify-center gap-1.5 md:hidden"
-            aria-label={open ? "Close menu" : "Open menu"}
+            aria-label={open ? t.closeMenu : t.openMenu}
             aria-expanded={open}
           >
             <span
@@ -185,7 +192,7 @@ export function Navbar({ ready = true }: { ready?: boolean }) {
               className="mt-8 flex items-center gap-6 font-mono text-xs tracking-widest text-fog"
             >
               <span className="flex items-center gap-3">
-                <span>SOUND</span>
+                <span>{t.sound}</span>
                 <SoundToggle />
               </span>
               <LanguageToggle />

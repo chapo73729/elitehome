@@ -7,12 +7,35 @@ import { SITE } from "@/lib/site";
 import { audio } from "@/lib/audio";
 import { toast, copyText } from "@/lib/toast";
 import { startShowreel } from "@/lib/showreel";
+import { useLang } from "@/lib/lang";
 
 type Pt = { x: number; y: number } | null;
+
+const T = {
+  en: {
+    header: "ARDLABS®",
+    copyEmail: "Copy email",
+    contact: "Contact",
+    services: "Services",
+    showreel: "Play showreel",
+    sound: "Toggle sound",
+    emailCopied: "Email copied",
+  },
+  fr: {
+    header: "ARDLABS®",
+    copyEmail: "Copier l’e-mail",
+    contact: "Contact",
+    services: "Services",
+    showreel: "Lancer la bande-démo",
+    sound: "Activer/couper le son",
+    emailCopied: "E-mail copié",
+  },
+} as const;
 
 export function ContextMenu() {
   const [pt, setPt] = useState<Pt>(null);
   const router = useRouter();
+  const t = T[useLang()];
 
   useEffect(() => {
     const onCtx = (e: MouseEvent) => {
@@ -36,11 +59,11 @@ export function ContextMenu() {
   }, []);
 
   const items: { label: string; run: () => void }[] = [
-    { label: "Copy email", run: async () => { if (await copyText(SITE.email)) toast("Email copied", "✓"); } },
-    { label: "Contact", run: () => router.push("/#contact") },
-    { label: "Services", run: () => router.push("/services") },
-    { label: "Play showreel", run: () => { router.push("/"); setTimeout(startShowreel, 400); } },
-    { label: "Toggle sound", run: () => audio.toggle() },
+    { label: t.copyEmail, run: async () => { if (await copyText(SITE.email)) toast(t.emailCopied, "✓"); } },
+    { label: t.contact, run: () => router.push("/#contact") },
+    { label: t.services, run: () => router.push("/services") },
+    { label: t.showreel, run: () => { router.push("/"); setTimeout(startShowreel, 400); } },
+    { label: t.sound, run: () => audio.toggle() },
   ];
 
   return (
@@ -56,7 +79,7 @@ export function ContextMenu() {
           onClick={(e) => e.stopPropagation()}
         >
           <div className="px-3 py-2 font-mono text-[0.6rem] uppercase tracking-[0.25em] text-fog">
-            ARDLABS®
+            {t.header}
           </div>
           {items.map((it) => (
             <button

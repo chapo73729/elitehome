@@ -5,10 +5,14 @@ export function LegalPage({
   title,
   updated,
   children,
+  homeLabel = "← Home",
+  updatedLabel = "Last updated",
 }: {
   title: string;
   updated: string;
   children: ReactNode;
+  homeLabel?: string;
+  updatedLabel?: string;
 }) {
   return (
     <main className="relative">
@@ -16,11 +20,11 @@ export function LegalPage({
         <div className="pointer-events-none absolute -top-40 left-1/2 h-[45vh] w-[45vh] -translate-x-1/2 rounded-full bg-accent/12 blur-[140px]" />
         <div className="container-x relative max-w-3xl">
           <Link href="/" className="link-underline font-mono text-xs tracking-widest text-mist">
-            ← Home
+            {homeLabel}
           </Link>
           <h1 className="text-giant text-gradient mt-8 text-balance">{title}</h1>
           <p className="mt-4 font-mono text-xs tracking-widest text-fog">
-            Last updated · {updated}
+            {updatedLabel} · {updated}
           </p>
         </div>
       </section>
