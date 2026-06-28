@@ -132,7 +132,7 @@ function Flow({ count }: { count: number }) {
       uMouse: { value: new THREE.Vector3(0, 0, 0) },
       uMouseForce: { value: 0.7 },
       uColorA: { value: new THREE.Color("#2f6bff") },
-      uColorB: { value: new THREE.Color("#aef0ff") },
+      uColorB: { value: new THREE.Color("#bcd6ff") },
     }),
     []
   );

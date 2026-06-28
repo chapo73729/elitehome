@@ -14,8 +14,8 @@ export function CtaBanner() {
           <div className="relative overflow-hidden rounded-[2rem] hairline bg-void-2 px-8 py-20 text-center md:px-16 md:py-28">
             {/* animated aurora background — layered, full-strength */}
             <div className="pointer-events-none absolute inset-0">
-              <div className="absolute left-1/2 top-1/2 h-[170%] w-[95%] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[conic-gradient(from_0deg,rgba(91,140,255,0.55),rgba(122,242,224,0.42),rgba(180,140,255,0.5),rgba(91,140,255,0.55))] blur-[90px] [animation:spin-slow_22s_linear_infinite]" />
-              <div className="absolute left-1/2 top-1/2 h-[120%] w-[60%] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[conic-gradient(from_180deg,rgba(122,242,224,0.35),transparent_40%,rgba(180,140,255,0.4),transparent_80%)] blur-[70px] [animation:spin-slow_34s_linear_infinite_reverse]" />
+              <div className="absolute left-1/2 top-1/2 h-[170%] w-[95%] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[conic-gradient(from_0deg,rgba(79,140,255,0.55),rgba(107,157,255,0.4),rgba(61,111,224,0.5),rgba(79,140,255,0.55))] blur-[90px] [animation:spin-slow_22s_linear_infinite]" />
+              <div className="absolute left-1/2 top-1/2 h-[120%] w-[60%] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[conic-gradient(from_180deg,rgba(107,157,255,0.35),transparent_40%,rgba(61,111,224,0.42),transparent_80%)] blur-[70px] [animation:spin-slow_34s_linear_infinite_reverse]" />
             </div>
             {/* keep the centre readable without dimming the edges */}
             <div className="pointer-events-none absolute inset-0 [background:radial-gradient(60%_90%_at_50%_50%,rgba(5,5,5,0.65),transparent_75%)]" />

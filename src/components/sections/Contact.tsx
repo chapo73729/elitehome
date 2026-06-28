@@ -150,7 +150,7 @@ export function Contact() {
                             onClick={() => setField(f)}
                             className={`rounded-full px-4 py-1.5 font-mono text-xs transition-all duration-300 ${
                               field === f
-                                ? "bg-accent-2 text-void shadow-[0_0_18px_rgba(122,242,224,0.35)]"
+                                ? "bg-accent text-void shadow-[0_0_18px_rgba(79,140,255,0.4)]"
                                 : "hairline text-mist hover:border-white/30 hover:text-chalk"
                             }`}
                           >

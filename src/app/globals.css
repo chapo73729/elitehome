@@ -6,23 +6,30 @@
    ============================================================ */
 
 @theme {
-  --color-void: #050505;
-  --color-void-2: #0a0a0c;
-  --color-ink: #0e0e11;
-  --color-smoke: #16161a;
-  --color-fog: #8a8a93;
-  --color-mist: #b4b4bd;
-  --color-chalk: #e8e8ec;
+  /* Surfaces — spec Ch.05 §5.2 (depth by lightening on a near-black base) */
+  --color-void: #050505;        /* near-black canvas */
+  --color-void-2: #0a0b0d;      /* bg/base */
+  --color-ink: #101216;         /* bg/elev-1 — cards, panels */
+  --color-smoke: #16181e;       /* bg/elev-2 — menus, fields */
+  --color-elev-3: #1c1f27;      /* bg/elev-3 — hover, tooltips */
+
+  /* Text — spec Ch.05 §5.2 */
+  --color-fog: #6a7280;         /* text/muted */
+  --color-mist: #9ba3af;        /* text/secondary */
+  --color-chalk: #f4f6f8;       /* text/primary */
   --color-white-pure: #ffffff;
 
-  --color-accent: #5b8cff;
-  --color-accent-2: #7af2e0;
-  --color-accent-3: #b98cff;
-  --color-glow: #4f7bff;
+  /* Accent — spec acté: ONE azure, ≤10% of any screen. The -2/-3 tokens
+     stay in the azure family so the system reads as a single signal,
+     never a rainbow. */
+  --color-accent: #4f8cff;      /* accent/base */
+  --color-accent-2: #6b9dff;    /* accent/hover (light azure) */
+  --color-accent-3: #3d6fe0;    /* deep azure */
+  --color-glow: #4f8cff;
 
-  --font-display: var(--font-display), "Space Grotesk", system-ui, sans-serif;
-  --font-sans: var(--font-sans), system-ui, sans-serif;
-  --font-mono: var(--font-mono), "Space Mono", ui-monospace, monospace;
+  --font-display: var(--font-display), "Geist", system-ui, sans-serif;
+  --font-sans: var(--font-sans), "Geist", system-ui, sans-serif;
+  --font-mono: var(--font-mono), "Geist Mono", ui-monospace, monospace;
 
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-in-out-quint: cubic-bezier(0.83, 0, 0.17, 1);

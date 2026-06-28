@@ -8,15 +8,17 @@ export type Accent = {
   a3: string;
 };
 
+/* Spec acté: ONE azure accent. Presets stay strictly in the azure family —
+   subtle temperature shifts only, never a rainbow. */
 export const ACCENTS: Accent[] = [
-  { id: "quantum", name: "Quantum", a: "#5b8cff", a2: "#7af2e0", a3: "#b98cff" },
-  { id: "aurora", name: "Aurora", a: "#2fd6b6", a2: "#7af2e0", a3: "#5b8cff" },
-  { id: "plasma", name: "Plasma", a: "#a06bff", a2: "#ff8cf0", a3: "#5b8cff" },
-  { id: "solar", name: "Solar", a: "#ff9d4a", a2: "#ffd15b", a3: "#ff6b6b" },
+  { id: "azure", name: "Azure", a: "#4f8cff", a2: "#6b9dff", a3: "#3d6fe0" },
+  { id: "ice", name: "Ice", a: "#5ea2ff", a2: "#8fbdff", a3: "#3f86e6" },
+  { id: "steel", name: "Steel", a: "#5c86d8", a2: "#7ea3e6", a3: "#3a62b0" },
+  { id: "deep", name: "Deep", a: "#3f6fe0", a2: "#5d8bff", a3: "#2c52b8" },
 ];
 
 const subs = new Set<(id: string) => void>();
-let current = "quantum";
+let current = "azure";
 
 export function getAccent() {
   return current;

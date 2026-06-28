@@ -127,8 +127,8 @@ export function ParticlePlanet({
       uScroll: { value: 0 },
       uMouse: { value: new THREE.Vector3(0, 0, 1) },
       uColorA: { value: new THREE.Color("#2a4a8f") },
-      uColorB: { value: new THREE.Color("#5b8cff") },
-      uColorC: { value: new THREE.Color("#9fe8ff") },
+      uColorB: { value: new THREE.Color("#4f8cff") },
+      uColorC: { value: new THREE.Color("#bcd6ff") },
     }),
     []
   );
