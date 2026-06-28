@@ -95,7 +95,18 @@ export function Contact() {
                     className="flex min-h-[360px] flex-col items-center justify-center text-center"
                   >
                     <div className="flex h-16 w-16 items-center justify-center rounded-full glow-accent">
-                      <span className="text-2xl text-accent-2">✓</span>
+                      <svg width="30" height="30" viewBox="0 0 24 24" fill="none">
+                        <motion.path
+                          d="M4 12.5l5 5L20 6.5"
+                          stroke="var(--color-accent-2)"
+                          strokeWidth={2.4}
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          initial={{ pathLength: 0 }}
+                          animate={{ pathLength: 1 }}
+                          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1], delay: 0.15 }}
+                        />
+                      </svg>
                     </div>
                     <h3 className="mt-6 font-display text-2xl text-chalk">
                       {t.sentTitle}
@@ -117,26 +128,30 @@ export function Contact() {
                     exit={{ opacity: 0 }}
                     className="space-y-6"
                   >
-                    <Input name="name" label={t.name} placeholder={t.namePlaceholder} required />
+                    <Input name="name" num="01" label={t.name} placeholder={t.namePlaceholder} required />
                     <Input
                       name="email"
                       type="email"
+                      num="02"
                       label={t.email}
                       placeholder={t.emailPlaceholder}
                       required
                     />
                     <div>
-                      <label className="eyebrow mb-3 block">{t.domain}</label>
-                      <div className="flex flex-wrap gap-2">
+                      <div className="flex items-baseline justify-between">
+                        <label className="eyebrow">{t.domain}</label>
+                        <span className="font-mono text-[0.6rem] tracking-widest text-fog">03</span>
+                      </div>
+                      <div className="mt-3 flex flex-wrap gap-2">
                         {FIELDS.map((f) => (
                           <button
                             type="button"
                             key={f}
                             onClick={() => setField(f)}
-                            className={`rounded-full px-4 py-1.5 font-mono text-xs transition-colors duration-300 ${
+                            className={`rounded-full px-4 py-1.5 font-mono text-xs transition-all duration-300 ${
                               field === f
-                                ? "bg-chalk text-void"
-                                : "hairline text-mist hover:text-chalk"
+                                ? "bg-accent-2 text-void shadow-[0_0_18px_rgba(122,242,224,0.35)]"
+                                : "hairline text-mist hover:border-white/30 hover:text-chalk"
                             }`}
                           >
                             {f}
@@ -144,16 +159,15 @@ export function Contact() {
                         ))}
                       </div>
                     </div>
-                    <div>
-                      <label className="eyebrow mb-3 block">{t.message}</label>
+                    <Field label={t.message} num="04">
                       <textarea
                         name="message"
                         rows={4}
                         required
                         placeholder={t.messagePlaceholder}
-                        className="w-full resize-none rounded-2xl border border-white/10 bg-void/60 px-4 py-3 text-sm text-chalk outline-none transition-colors placeholder:text-fog focus:border-accent/50"
+                        className="w-full resize-none bg-transparent py-2.5 text-base text-chalk outline-none placeholder:text-fog/50"
                       />
-                    </div>
+                    </Field>
 
                     {/* honeypot — hidden from humans, catches bots */}
                     <input
@@ -204,17 +218,41 @@ export function Contact() {
   );
 }
 
+function Field({
+  label,
+  num,
+  children,
+}: {
+  label: string;
+  num: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <div className="group">
+      <div className="flex items-baseline justify-between">
+        <label className="eyebrow">{label}</label>
+        <span className="font-mono text-[0.6rem] tracking-widest text-fog">{num}</span>
+      </div>
+      <div className="relative mt-2">
+        {children}
+        <span className="absolute bottom-0 left-0 h-px w-full bg-white/12" />
+        <span className="absolute bottom-0 left-0 h-px w-full origin-left scale-x-0 bg-accent-2 transition-transform duration-500 ease-out group-focus-within:scale-x-100" />
+      </div>
+    </div>
+  );
+}
+
 function Input({
   label,
+  num,
   ...props
-}: { label: string } & React.InputHTMLAttributes<HTMLInputElement>) {
+}: { label: string; num: string } & React.InputHTMLAttributes<HTMLInputElement>) {
   return (
-    <div>
-      <label className="eyebrow mb-3 block">{label}</label>
+    <Field label={label} num={num}>
       <input
         {...props}
-        className="w-full rounded-2xl border border-white/10 bg-void/60 px-4 py-3 text-sm text-chalk outline-none transition-colors placeholder:text-fog focus:border-accent/50"
+        className="w-full bg-transparent py-2.5 text-base text-chalk outline-none placeholder:text-fog/50"
       />
-    </div>
+    </Field>
   );
 }
