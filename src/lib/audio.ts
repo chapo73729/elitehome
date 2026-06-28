@@ -76,7 +76,9 @@ class AudioManager {
     this.master.gain.setValueAtTime(this.master.gain.value, t);
     this.master.gain.linearRampToValueAtTime(1, t + 0.6);
     this.startAmbient();
-    this.blip(523.25, 0.12, "sine", 0.06); // soft confirm
+    // clear rising two-note confirm so enabling is unmistakable
+    this.blip(523.25, 0.14, "sine", 0.12);
+    setTimeout(() => this.blip(783.99, 0.16, "sine", 0.1), 90);
     this.emit();
   }
 
@@ -101,13 +103,13 @@ class AudioManager {
     if (!this.ctx || !this.master || this.ambient) return;
     const ctx = this.ctx;
     const pad = ctx.createGain();
-    pad.gain.value = 0.05;
+    pad.gain.value = 0.09;
     pad.connect(this.master);
 
     const filter = ctx.createBiquadFilter();
     filter.type = "lowpass";
-    filter.frequency.value = 420;
-    filter.Q.value = 6;
+    filter.frequency.value = 620;
+    filter.Q.value = 5;
     filter.connect(pad);
 
     // slow filter sweep
@@ -119,7 +121,7 @@ class AudioManager {
     lfoGain.connect(filter.frequency);
     lfo.start();
 
-    const freqs = [55, 82.5, 110, 164.81]; // A1, E2-ish, A2, E3
+    const freqs = [110, 164.81, 220, 329.63]; // A2, E3, A3, E4 — audible on laptops
     const oscs = freqs.map((f, i) => {
       const o = ctx.createOscillator();
       o.type = i % 2 ? "sine" : "triangle";
@@ -172,13 +174,13 @@ class AudioManager {
     const now = performance.now();
     if (now - this.lastHover < 55) return; // throttle
     this.lastHover = now;
-    this.blip(1320 + Math.random() * 120, 0.06, "triangle", 0.025);
+    this.blip(1320 + Math.random() * 120, 0.06, "triangle", 0.05);
   }
 
   click() {
     if (!this._enabled) return;
-    this.blip(660, 0.09, "square", 0.04);
-    this.blip(990, 0.12, "sine", 0.03);
+    this.blip(660, 0.09, "square", 0.07);
+    this.blip(990, 0.12, "sine", 0.05);
   }
 }
 
