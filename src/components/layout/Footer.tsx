@@ -63,6 +63,21 @@ export function Footer() {
         </div>
 
         <div className="mt-16 flex flex-wrap items-center gap-x-6 gap-y-2 hairline-t pt-8 font-mono text-xs tracking-wider text-fog">
+          <Link href="/about" className="transition-colors hover:text-chalk">
+            About
+          </Link>
+          <Link href="/work" className="transition-colors hover:text-chalk">
+            Work
+          </Link>
+          <Link href="/approach" className="transition-colors hover:text-chalk">
+            Approach
+          </Link>
+          <Link href="/careers" className="transition-colors hover:text-chalk">
+            Careers
+          </Link>
+          <Link href="/contact" className="transition-colors hover:text-chalk">
+            Contact
+          </Link>
           <Link href="/insights" className="transition-colors hover:text-chalk">
             {f.insights ?? "Insights"}
           </Link>
