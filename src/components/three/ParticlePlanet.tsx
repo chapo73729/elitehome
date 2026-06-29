@@ -10,6 +10,7 @@ const vertex = /* glsl */ `
   uniform float uSize;
   uniform vec3 uMouse;
   uniform float uScroll;
+  uniform float uVel;   // eased scroll velocity, 0..1 — energizes the core
   attribute float aScale;
   attribute float aType; // 0 = surface, 1 = data ring
   varying float vNoise;
@@ -36,12 +37,17 @@ const vertex = /* glsl */ `
     float ripple = smoothstep(1.1, 0.0, md) * 0.28;
     p += dir * ripple;
 
-    vNoise = disp + ripple;
+    // scroll velocity energizes the whole core: it breathes outward and the
+    // surface ripples with a travelling wave, so scrolling feels tactile
+    float vwave = sin(dir.y * 6.0 - uTime * 3.0) * 0.5 + 0.5;
+    p += dir * uVel * (0.18 + vwave * 0.16);
+
+    vNoise = disp + ripple + uVel * 0.5;
 
     vec4 mv = modelViewMatrix * vec4(p, 1.0);
     gl_Position = projectionMatrix * mv;
 
-    float size = uSize * aScale * (1.0 + ripple * 2.0);
+    float size = uSize * aScale * (1.0 + ripple * 2.0 + uVel * 0.7);
     if (aType > 0.5) size *= 1.3; // data particles a touch brighter
     // clamp so near particles stay crisp points, not giant blurry discs
     gl_PointSize = clamp(size * (1.0 / -mv.z), 1.0, 13.0);
@@ -84,6 +90,7 @@ export function ParticlePlanet({
   const matRef = useRef<THREE.ShaderMaterial>(null);
   const { viewport } = useThree();
   const mouse = useRef(new THREE.Vector3(0, 0, 1));
+  const vel = useRef(0);
 
   const { positions, scales, types } = useMemo(() => {
     const positions = new Float32Array(count * 3);
@@ -125,6 +132,7 @@ export function ParticlePlanet({
       uTime: { value: 0 },
       uSize: { value: 22 },
       uScroll: { value: 0 },
+      uVel: { value: 0 },
       uMouse: { value: new THREE.Vector3(0, 0, 1) },
       uColorA: { value: new THREE.Color("#2a4a8f") },
       uColorB: { value: new THREE.Color("#4f8cff") },
@@ -142,6 +150,13 @@ export function ParticlePlanet({
       const py = (state.pointer.y * viewport.height) / 2;
       mouse.current.set(px, py, 1.5).normalize();
       matRef.current.uniforms.uMouse.value.lerp(mouse.current, 0.08);
+
+      // scroll velocity (via Lenis, smoothed) energizes the core as you scroll
+      const lenis = (window as unknown as { __lenis?: { velocity: number } }).__lenis;
+      const raw = lenis ? Math.abs(lenis.velocity) : 0;
+      const targetVel = Math.min(1, raw * 0.025);
+      vel.current += (targetVel - vel.current) * 0.08;
+      matRef.current.uniforms.uVel.value = vel.current;
     }
     if (pointsRef.current) {
       pointsRef.current.rotation.y += delta * 0.045;
