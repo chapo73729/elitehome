@@ -24,7 +24,7 @@ export function Hero({ ready }: { ready: boolean }) {
       className="relative flex min-h-[100svh] items-center justify-center overflow-hidden"
     >
       {/* 3D field */}
-      <div ref={scene.ref} className="absolute inset-0">
+      <div ref={scene.ref} aria-hidden className="absolute inset-0">
         <SceneBoundary>
           {scene.mounted && <HeroScene frameloop={scene.frameloop} ready={ready} />}
         </SceneBoundary>

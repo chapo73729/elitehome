@@ -34,7 +34,6 @@ export function JsonLd() {
         url: SITE.url,
         name: SITE.legal,
         publisher: { "@id": `${SITE.url}/#organization` },
-        inLanguage: "en",
       },
     ],
   };

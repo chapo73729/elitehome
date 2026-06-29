@@ -73,7 +73,7 @@ const vertex = /* glsl */ `
 
     vec4 mv = modelViewMatrix * vec4(pos, 1.0);
     gl_Position = projectionMatrix * mv;
-    gl_PointSize = aScale * (300.0 / -mv.z);
+    gl_PointSize = clamp(aScale * (300.0 / -mv.z), 1.0, 14.0);
   }
 `;
 

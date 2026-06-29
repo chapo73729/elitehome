@@ -97,7 +97,7 @@ export function AICore() {
   return (
     <section id="core" className="relative z-10 overflow-hidden py-28 md:py-36">
       {/* full-bleed neural field — reactive to the active capability row */}
-      <div ref={scene.ref} className="absolute inset-0">
+      <div ref={scene.ref} aria-hidden className="absolute inset-0">
         <SceneBoundary>
           {scene.mounted && (
             <NeuralFlow

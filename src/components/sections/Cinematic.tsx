@@ -164,7 +164,7 @@ export function Cinematic() {
         className="sticky top-0 flex h-screen items-center overflow-hidden"
       >
         {/* warp backdrop */}
-        <div className="pointer-events-none absolute inset-0">
+        <div aria-hidden className="pointer-events-none absolute inset-0">
           <SceneBoundary>
             {scene.mounted && (
               <WarpField progress={progressRef} frameloop={scene.frameloop} />

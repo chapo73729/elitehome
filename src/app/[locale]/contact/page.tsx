@@ -25,12 +25,23 @@ export async function generateMetadata({
   };
 }
 
-export default function ContactPage() {
+export default async function ContactPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale: raw } = await params;
+  const locale: AppLocale = isLocale(raw) ? raw : defaultLocale;
+  const h1 = locale === "fr" ? "Contacter ARDLABS®" : "Contact ARDLABS®";
+  const back = locale === "fr" ? "← Accueil" : "← Home";
   return (
     <main className="relative">
+      {/* page-level heading for structure/SEO; the section below carries the
+          visible display headline as an h2 */}
+      <h1 className="sr-only">{h1}</h1>
       <div className="container-x pt-32">
         <LocaleLink href="/" className="link-underline font-mono text-xs tracking-widest text-mist">
-          ← Home
+          {back}
         </LocaleLink>
       </div>
       <Contact />
