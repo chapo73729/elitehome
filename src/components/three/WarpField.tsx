@@ -17,7 +17,10 @@ const vertex = /* glsl */ `
     float depth = -mv.z;
     vFade = smoothstep(0.0, 6.0, depth) * smoothstep(60.0, 30.0, depth);
     gl_Position = projectionMatrix * mv;
-    gl_PointSize = aScale * (260.0 / depth) * (0.6 + 0.4 * sin(uTime + aSeed * 6.2831));
+    // Crisp sparks, not bokeh: cap the near-size hard so close particles never
+    // bloom into big soft discs; a gentle twinkle keeps the field alive.
+    float twinkle = 0.7 + 0.3 * sin(uTime * 1.4 + aSeed * 6.2831);
+    gl_PointSize = min(aScale * (120.0 / depth), 6.5) * twinkle;
   }
 `;
 
@@ -30,8 +33,10 @@ const fragment = /* glsl */ `
     vec2 uv = gl_PointCoord - 0.5;
     float d = length(uv);
     if (d > 0.5) discard;
-    float a = smoothstep(0.5, 0.0, d) * vFade;
-    vec3 col = mix(uColorA, uColorB, smoothstep(0.0, 0.5, d));
+    // tight core → a sharp spark with a hot white-blue centre, not a soft disc
+    float core = smoothstep(0.5, 0.0, d);
+    float a = pow(core, 1.9) * vFade;
+    vec3 col = mix(uColorB, vec3(0.88, 0.94, 1.0), pow(core, 3.0));
     gl_FragColor = vec4(col, a);
   }
 `;
@@ -140,8 +145,8 @@ function Effects({ tier, lite }: { tier: Tier; lite: boolean }) {
   return (
     <EffectComposer multisampling={0}>
       <Bloom
-        intensity={lite ? 0.65 : tier === "low" ? 0.7 : 1.15}
-        luminanceThreshold={0.1}
+        intensity={lite ? 0.5 : tier === "low" ? 0.55 : 0.8}
+        luminanceThreshold={0.22}
         luminanceSmoothing={0.9}
         mipmapBlur
       />
