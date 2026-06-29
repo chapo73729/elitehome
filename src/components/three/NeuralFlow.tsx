@@ -98,7 +98,19 @@ const fragment = /* glsl */ `
   }
 `;
 
-function Flow({ count }: { count: number }) {
+/* Per-capability "modes" the field can settle into. Each row in the reading
+   column drives the field toward one of these — freq/speed/drift are lerped so
+   the transition reads as the field re-organizing, not snapping. */
+export const MODES: { uFreq: number; uSpeed: number; uDrift: number }[] = [
+  // 0 — Applied AI: the default dense, turbulent core
+  { uFreq: 0.6, uSpeed: 0.07, uDrift: 0.05 },
+  // 1 — Automation: faster, higher-frequency churn (more "active")
+  { uFreq: 0.92, uSpeed: 0.13, uDrift: 0.05 },
+  // 2 — Data: low drift, laminar / streamed flow
+  { uFreq: 0.42, uSpeed: 0.06, uDrift: 0.012 },
+];
+
+function Flow({ count, activeMode = 0 }: { count: number; activeMode?: number }) {
   const ref = useRef<THREE.Points>(null);
   const mat = useRef<THREE.ShaderMaterial>(null);
   const { viewport } = useThree();
@@ -140,11 +152,19 @@ function Flow({ count }: { count: number }) {
   useFrame((state, delta) => {
     const t = state.clock.elapsedTime;
     if (mat.current) {
-      mat.current.uniforms.uTime.value = t;
+      const u = mat.current.uniforms;
+      u.uTime.value = t;
       const px = (state.pointer.x * viewport.width) / 2;
       const py = (state.pointer.y * viewport.height) / 2;
       mouse.current.set(px * 0.9, py * 0.9, 0);
-      mat.current.uniforms.uMouse.value.lerp(mouse.current, 0.1);
+      u.uMouse.value.lerp(mouse.current, 0.1);
+
+      // ease freq/speed/drift toward the active capability's targets, same
+      // lerp idiom as uMouse so the field re-organizes as you read the column
+      const m = MODES[activeMode] ?? MODES[0];
+      u.uFreq.value += (m.uFreq - u.uFreq.value) * 0.05;
+      u.uSpeed.value += (m.uSpeed - u.uSpeed.value) * 0.05;
+      u.uDrift.value += (m.uDrift - u.uDrift.value) * 0.05;
     }
     if (ref.current) ref.current.rotation.y += delta * 0.05;
   });
@@ -171,8 +191,10 @@ function Flow({ count }: { count: number }) {
 
 export default function NeuralFlow({
   frameloop = "always",
+  activeMode = 0,
 }: {
   frameloop?: "always" | "never";
+  activeMode?: number;
 }) {
   const tier = useDeviceTier();
   const lite = useLite();
@@ -190,7 +212,7 @@ export default function NeuralFlow({
       gl={{ antialias: false, alpha: true, powerPreference: "high-performance" }}
       camera={{ position: [0, 0, 5.4], fov: 50 }}
     >
-      <Flow count={count} />
+      <Flow count={count} activeMode={activeMode} />
       <EffectComposer>
         <Bloom
           intensity={lite ? 0.7 : 1.05}
