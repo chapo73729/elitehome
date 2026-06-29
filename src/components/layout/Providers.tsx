@@ -5,6 +5,7 @@ import { MotionConfig } from "framer-motion";
 import { usePathname } from "next/navigation";
 import { SmoothScroll } from "./SmoothScroll";
 import { AmbientBackdrop } from "./AmbientBackdrop";
+import { Atmosphere } from "./Atmosphere";
 import { Cursor } from "./Cursor";
 import { Navbar } from "./Navbar";
 import { Footer } from "./Footer";
@@ -52,6 +53,8 @@ export function Providers({ children }: { children: React.ReactNode }) {
         Skip to content
       </a>
       <AmbientBackdrop />
+      <Atmosphere />
+      <div className="scanlines" aria-hidden />
       <Cursor />
       <ScrollProgress />
       <SoundSystem />
