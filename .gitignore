@@ -29,3 +29,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# transient QA/audit/dev scratch files at repo root (never committed)
+/_*
