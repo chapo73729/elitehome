@@ -1,12 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { useLang } from "@/lib/lang";
 
 const T = {
   en: { online: "SYSTEM ONLINE", wordmark: "ARDLABS // ENGINEERING STUDIO" },
-  fr: { online: "SYSTÈME EN LIGNE", wordmark: "ARDLABS // STUDIO D'INGÉNIERIE" },
+  fr: { online: "SYSTÈME EN LIGNE", wordmark: "ARDLABS // STUDIO D’INGÉNIERIE" },
 } as const;
 
 /**
@@ -16,14 +16,22 @@ const T = {
  */
 export function HeroHud({ ready }: { ready: boolean }) {
   const t = T[useLang()];
-  const [coords, setCoords] = useState({ x: 0, y: 0 });
   const [clock, setClock] = useState("00:00:00 UTC");
+  const latRef = useRef<HTMLSpanElement>(null);
+  const lonRef = useRef<HTMLSpanElement>(null);
 
   useEffect(() => {
+    // write the decorative LAT/LON straight to the DOM via refs, throttled to
+    // one rAF — no React re-render on a pointer storm (protects INP)
+    let frame = 0;
     const onMove = (e: PointerEvent) => {
-      setCoords({
-        x: e.clientX / window.innerWidth,
-        y: e.clientY / window.innerHeight,
+      if (frame) return;
+      frame = requestAnimationFrame(() => {
+        frame = 0;
+        const lat = ((e.clientY / window.innerHeight) * 180 - 90).toFixed(4);
+        const lon = ((e.clientX / window.innerWidth) * 360 - 180).toFixed(4);
+        if (latRef.current) latRef.current.textContent = `LAT ${lat}`;
+        if (lonRef.current) lonRef.current.textContent = `LON ${lon}`;
       });
     };
     window.addEventListener("pointermove", onMove, { passive: true });
@@ -41,6 +49,7 @@ export function HeroHud({ ready }: { ready: boolean }) {
     return () => {
       window.removeEventListener("pointermove", onMove);
       clearInterval(id);
+      if (frame) cancelAnimationFrame(frame);
     };
   }, []);
 
@@ -76,8 +85,8 @@ export function HeroHud({ ready }: { ready: boolean }) {
           <span className="inline-block h-1.5 w-1.5 animate-pulse rounded-full bg-accent-2" />
           {t.online}
         </div>
-        <div>LAT {(coords.y * 180 - 90).toFixed(4)}</div>
-        <div>LON {(coords.x * 360 - 180).toFixed(4)}</div>
+        <div><span ref={latRef}>LAT -90.0000</span></div>
+        <div><span ref={lonRef}>LON -180.0000</span></div>
       </motion.div>
 
       {/* top-right readout */}

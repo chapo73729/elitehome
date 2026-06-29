@@ -458,7 +458,7 @@ const en = {
   },
   cta: {
     eyebrow: "Engage",
-    title: "Have something worth building right?",
+    title: "Got something worth building?",
     body: "We take on a small number of projects at a time, for teams who care about software that holds up. Tell us what you're trying to build.",
     button: "Start a conversation",
   },
@@ -591,7 +591,7 @@ const fr: DeepPartial<Content> = {
   },
   network: {
     eyebrow: "Réseau mondial",
-    title: "Un studio. Basé à Prague. Au service du monde entier.",
+    title: "Un studio. Basé à Prague. Présent dans le monde entier.",
     intro:
       "Nous travaillons avec des fondateurs et des équipes sur tous les fuseaux — async par défaut, précis à la livraison.",
     routesLabel: "Routes connectées",
@@ -601,12 +601,12 @@ const fr: DeepPartial<Content> = {
     eyebrow: "Services",
     title: "Quatre pôles. Un seul standard.",
     intro:
-      "L'ingénierie numérique est l'ombrelle. En dessous, quatre pôles couvrent une idée de bout en bout.",
+      "L'ingénierie numérique est le fil conducteur. En dessous, quatre pôles couvrent une idée de bout en bout.",
     explore: "EXPLORER →",
     viewAll: "Voir tous les services",
     indexEyebrow: "Quatre pôles.",
     indexIntro:
-      "L'ingénierie numérique est l'ombrelle. En dessous, quatre pôles couvrent une idée de bout en bout. Choisissez un pôle.",
+      "L'ingénierie numérique est le fil conducteur. En dessous, quatre pôles couvrent une idée de bout en bout. Choisissez un pôle.",
     items: [
       {
         title: "Conseil & stratégie",
@@ -940,7 +940,7 @@ const fr: DeepPartial<Content> = {
     ],
   },
   cta: {
-    eyebrow: "Engager",
+    eyebrow: "Collaborer",
     title: "Un projet à construire correctement ?",
     body: "Nous prenons un petit nombre de projets à la fois, pour des équipes qui tiennent à un logiciel qui dure. Dites-nous ce que vous voulez construire.",
     button: "Démarrer la conversation",
@@ -952,7 +952,7 @@ const fr: DeepPartial<Content> = {
       "Nous prenons un petit nombre de projets à la fois. Dites-nous ce que vous construisez — on vous dira comment on l'aborderait.",
     name: "Nom",
     namePlaceholder: "Ada Lovelace",
-    email: "Email",
+    email: "E-mail",
     emailPlaceholder: "vous@entreprise.com",
     domain: "Domaine",
     domains: ["Conseil & stratégie", "Conception & développement", "Données & IA", "Cloud & infrastructure"],
@@ -966,7 +966,7 @@ const fr: DeepPartial<Content> = {
     errorPrefix: "Échec de l'envoi — écrivez à",
     step: "Vous êtes ici · 04 / 04",
     copyHint: "Cliquer pour copier",
-    copied: "Email copié",
+    copied: "E-mail copié",
   },
   footer: {
     tagline: "Un studio d'ingénierie numérique qui conçoit et développe logiciels, plateformes et systèmes IA, soignés jusqu'au détail.",
@@ -1027,9 +1027,40 @@ function merge<T>(base: T, over: any): T {
   return over !== undefined ? over : base;
 }
 
+/* ---- French typography ----------------------------------------------------
+   Apply correct French micro-typography to French-authored strings: a thin
+   non-breaking space (U+202F) before ; : ! ? and inside « », and curly
+   apostrophes. Run ONLY on the fr override (not the English base), idempotent,
+   with guards so URLs (://) and times/ratios (12:00) are left intact. */
+const NNBSP = " ";
+function frTypo(s: string): string {
+  return (
+    s
+      // curly apostrophes
+      .replace(/'/g, "’")
+      // thin nbsp before ; ! ? (collapse any preceding space)
+      .replace(/([^\s])\s*([;!?])/g, `$1${NNBSP}$2`)
+      // before colon — but not in URLs (://) nor between digits (12:00, 16:9)
+      .replace(/([^\s\d])\s*:(?!\/\/)/g, `$1${NNBSP}:`)
+      // inside guillemets
+      .replace(/«\s*/g, `«${NNBSP}`)
+      .replace(/\s*»/g, `${NNBSP}»`)
+  );
+}
+function frDeep<T>(v: T): T {
+  if (typeof v === "string") return frTypo(v) as unknown as T;
+  if (Array.isArray(v)) return v.map(frDeep) as unknown as T;
+  if (v && typeof v === "object") {
+    const o: Record<string, unknown> = {};
+    for (const k of Object.keys(v as object)) o[k] = frDeep((v as Record<string, unknown>)[k]);
+    return o as unknown as T;
+  }
+  return v;
+}
+
 export const CONTENT: Record<Lang, Content> = {
   en,
-  fr: merge(en, fr),
+  fr: merge(en, frDeep(fr)),
 };
 
 /** Reactive localized content for the current language. */

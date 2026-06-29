@@ -14,7 +14,7 @@
   --color-elev-3: #1c1f27;      /* bg/elev-3 — hover, tooltips */
 
   /* Text — spec Ch.05 §5.2 */
-  --color-fog: #6a7280;         /* text/muted */
+  --color-fog: #8b93a0;         /* text/muted — ≥4.5:1 on the dark surfaces (WCAG 1.4.3) */
   --color-mist: #9ba3af;        /* text/secondary */
   --color-chalk: #f4f6f8;       /* text/primary */
   --color-white-pure: #ffffff;
@@ -249,11 +249,11 @@ html.hide-cursor * {
 /* faint, slow brightness breathing on top of the jitter so the grain reads as
    living emulsion rather than a static texture overlay */
 @keyframes grain-shift {
-  0%   { transform: translate(0, 0);       opacity: 0.05; }
-  25%  { transform: translate(-1.2%, 0.8%);  opacity: 0.045; }
-  50%  { transform: translate(0.6%, -1%);    opacity: 0.055; }
-  75%  { transform: translate(-0.6%, -0.4%); opacity: 0.048; }
-  100% { transform: translate(1%, 0.6%);     opacity: 0.05; }
+  0%   { transform: translate(0, 0); }
+  25%  { transform: translate(-1.2%, 0.8%); }
+  50%  { transform: translate(0.6%, -1%); }
+  75%  { transform: translate(-0.6%, -0.4%); }
+  100% { transform: translate(1%, 0.6%); }
 }
 
 /* ---------- Scanline veil ----------

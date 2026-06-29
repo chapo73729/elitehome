@@ -26,7 +26,7 @@ const T = {
     eyebrow: "Réalisations",
     h1: "Des réalisations, peaufinées dans le détail.",
     intro:
-      "Une sélection de ce que nous construisons — logiciels, plateformes, données et cloud, chacun tenu à un même standard d'ingénierie.",
+      "Une sélection de ce que nous construisons — logiciels, plateformes, données et cloud, chacun tenu à un même standard d’ingénierie.",
     nda: "Projets représentatifs, présentés pour illustrer notre façon de travailler. Les noms des clients sont tus lorsque les engagements sont couverts par un accord de confidentialité.",
     representative: "Projet représentatif",
     caseStudy: "ÉTUDE DE CAS",

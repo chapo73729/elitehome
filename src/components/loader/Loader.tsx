@@ -13,7 +13,7 @@ const T = {
     entering: "Entering",
   },
   fr: {
-    wordmark: "ARDLABS® · Studio d'ingénierie numérique",
+    wordmark: "ARDLABS® · Studio d’ingénierie numérique",
     initializing: "Initialisation du cœur",
     assembling: "Assemblage de la trame",
     calibrating: "Calibrage",
