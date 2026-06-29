@@ -171,7 +171,11 @@ export function Cinematic() {
             )}
           </SceneBoundary>
         </div>
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(80%_80%_at_30%_50%,transparent_25%,#050505_90%)]" />
+        {/* left-anchored scrim: solid void behind the (left-aligned) type so the
+            white headline reads crisp, fading to transparent on the right where
+            the spark field is the clean feature — same idiom as the AI Core. */}
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-[#050505] from-30% via-[#050505]/80 via-55% to-transparent to-85%" />
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#050505] via-transparent to-transparent" />
 
         {/* ghost chapter numeral, bleeding top-left */}
         <ChapterNumeral n="00" label="MANIFESTO" />
