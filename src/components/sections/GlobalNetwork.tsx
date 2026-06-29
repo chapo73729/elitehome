@@ -27,21 +27,9 @@ export function GlobalNetwork() {
       <div className="relative mt-10">
         {/* edge-to-edge map */}
         <div className="relative w-full">
-          <WorldMap onFocus={setFocus} />
-
-          {/* soft scrims at the seams so the sea melts into the page rather
-              than ending on a hard rectangle */}
-          <div className="pointer-events-none absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-[#050505] to-transparent" />
-          <div className="pointer-events-none absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-[#050505] to-transparent" />
-
-          {/* heading plate — small, top-left, overlaid on the map. Inset is
-              aligned to the centered container gutter. */}
-          <div
-            className="pointer-events-none absolute top-6 z-10 max-w-xs md:top-10 lg:max-w-sm"
-            style={{
-              left: "max(clamp(1.25rem,5vw,5rem), calc((100vw - 1440px) / 2 + clamp(1.25rem,5vw,5rem)))",
-            }}
-          >
+          {/* heading plate — in-flow ABOVE the map on mobile (no collision with
+              the city labels), overlaid top-left on the map from lg up. */}
+          <div className="pointer-events-none relative z-10 mb-10 max-w-md px-[clamp(1.25rem,5vw,5rem)] lg:absolute lg:top-10 lg:mb-0 lg:max-w-sm lg:px-0 lg:left-[max(clamp(1.25rem,5vw,5rem),calc((100vw-1440px)/2+clamp(1.25rem,5vw,5rem)))]">
             <Reveal>
               <div className="flex items-center gap-3">
                 <span className="font-mono text-xs text-accent">02</span>
@@ -72,6 +60,15 @@ export function GlobalNetwork() {
                 <span>WORLD · 06 HUBS</span>
               )}
             </div>
+          </div>
+
+          {/* the map itself */}
+          <div className="relative">
+            <WorldMap onFocus={setFocus} />
+            {/* soft scrims at the seams so the sea melts into the page rather
+                than ending on a hard rectangle */}
+            <div className="pointer-events-none absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-[#050505] to-transparent" />
+            <div className="pointer-events-none absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-[#050505] to-transparent" />
           </div>
 
           {/* detail plate — slides in near the focused hub (which has been
