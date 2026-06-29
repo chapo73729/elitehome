@@ -52,11 +52,13 @@ const nebulaFrag = /* glsl */ `
 
   ${simplexNoise}
 
-  // fractal brownian motion over the shared 3D simplex noise
+  // fractal brownian motion over the shared 3D simplex noise.
+  // 3 octaves is plenty for a soft background nebula and ~40% cheaper than 5 —
+  // this shader is fullscreen and always-on, so octave count is the main cost.
   float fbm(vec3 p) {
     float v = 0.0;
     float a = 0.5;
-    for (int i = 0; i < 5; i++) {
+    for (int i = 0; i < 3; i++) {
       v += a * snoise(p);
       p *= 2.02;
       a *= 0.5;
@@ -220,7 +222,9 @@ export default function AtmosphereScene({
     <Canvas
       className="!fixed inset-0"
       frameloop={frameloop}
-      dpr={lite ? [1, 1] : tier === "low" ? [1, 1.25] : [1, 1.5]}
+      // a soft background nebula reads fine at DPR 1 — no need to pay for
+      // retina fill on an always-on fullscreen pass
+      dpr={1}
       gl={{
         antialias: false,
         alpha: true,

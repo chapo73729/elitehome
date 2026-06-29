@@ -35,10 +35,24 @@ export function Atmosphere() {
   const scroll = useRef(0);
   const vel = useRef(0);
 
-  // mount only after first paint so the canvas never blocks initial content
+  // mount only once the browser is idle, well after first paint — this canvas
+  // is a background, so it must never compete with the hero's init or LCP.
   useEffect(() => {
-    const id = requestAnimationFrame(() => setMounted(true));
-    return () => cancelAnimationFrame(id);
+    let idleId = 0;
+    const w = window as unknown as {
+      requestIdleCallback?: (cb: () => void, opts?: { timeout: number }) => number;
+      cancelIdleCallback?: (id: number) => void;
+    };
+    const to = setTimeout(() => {
+      idleId = w.requestIdleCallback
+        ? w.requestIdleCallback(() => setMounted(true), { timeout: 2000 })
+        : requestAnimationFrame(() => setMounted(true));
+    }, 900);
+    return () => {
+      clearTimeout(to);
+      if (w.requestIdleCallback && w.cancelIdleCallback) w.cancelIdleCallback(idleId);
+      else cancelAnimationFrame(idleId);
+    };
   }, []);
 
   // pause the frameloop when the tab is hidden — no work on an unseen bg
