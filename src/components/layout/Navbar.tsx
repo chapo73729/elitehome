@@ -86,7 +86,11 @@ export function Navbar({ ready = true }: { ready?: boolean }) {
         initial={{ y: -40, opacity: 0 }}
         animate={ready ? { y: 0, opacity: 1 } : {}}
         transition={{ duration: 1, ease: [0.16, 1, 0.3, 1], delay: 0.2 }}
-        className="fixed inset-x-0 top-0 z-[120]"
+        className={`fixed inset-x-0 top-0 z-[120] transition-colors duration-500 ${
+          scrolled
+            ? "border-b border-white/[0.06] bg-void/70 backdrop-blur-xl"
+            : "border-b border-transparent"
+        }`}
       >
         <div
           className={`mx-auto flex items-center justify-between px-6 transition-all duration-500 md:px-14 ${
@@ -106,7 +110,7 @@ export function Navbar({ ready = true }: { ready?: boolean }) {
           </Magnetic>
 
           {/* desktop nav pill */}
-          <nav className="hidden items-center gap-1 rounded-full px-2 py-2 md:flex glass">
+          <nav className="hidden items-center gap-1 rounded-full px-2 py-2 lg:flex glass">
             {NAV.map((item) => {
               const isActive = active === item.href;
               return (
@@ -131,7 +135,7 @@ export function Navbar({ ready = true }: { ready?: boolean }) {
             })}
           </nav>
 
-          <div className="hidden items-center gap-2 md:flex">
+          <div className="hidden items-center gap-2 lg:flex">
             <LanguageToggle />
             <SoundToggle />
             <Magnetic strength={0.3}>
@@ -147,7 +151,7 @@ export function Navbar({ ready = true }: { ready?: boolean }) {
           {/* mobile toggle */}
           <button
             onClick={() => setOpen((o) => !o)}
-            className="relative z-[130] flex h-10 w-10 flex-col items-center justify-center gap-1.5 md:hidden"
+            className="relative z-[130] flex h-10 w-10 flex-col items-center justify-center gap-1.5 lg:hidden"
             aria-label={open ? t.closeMenu : t.openMenu}
             aria-expanded={open}
           >
@@ -172,7 +176,7 @@ export function Navbar({ ready = true }: { ready?: boolean }) {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[115] flex flex-col items-center justify-center gap-2 overflow-y-auto bg-void/95 py-24 backdrop-blur-xl md:hidden"
+            className="fixed inset-0 z-[115] flex flex-col items-center justify-center gap-2 overflow-y-auto bg-void/95 py-24 backdrop-blur-xl lg:hidden"
           >
             <div className="flex max-h-[80vh] w-full flex-col items-center gap-2 overflow-y-auto">
               {NAV.map((item, i) => (

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useId, useState } from "react";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { Reveal } from "@/components/ui/Reveal";
 import { ChapterNumeral } from "@/components/ui/ChapterNumeral";
@@ -22,6 +22,7 @@ export function Contact() {
   const [field, setField] = useState<string>(FIELDS[0]);
   const sent = status === "sent";
   const reduce = useReducedMotion() ?? false;
+  const messageId = useId();
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -185,12 +186,18 @@ export function Contact() {
                   </motion.div>
                   <motion.div {...collapse(1)}>
                     <div className="flex items-baseline justify-between">
-                      <label className="eyebrow">{t.domain}</label>
+                      <span id="contact-domain-label" className="eyebrow">
+                        {t.domain}
+                      </span>
                       <span className="font-mono text-[0.6rem] tracking-widest text-fog">
                         03
                       </span>
                     </div>
-                    <div className="mt-3 flex flex-wrap gap-2">
+                    <div
+                      role="group"
+                      aria-labelledby="contact-domain-label"
+                      className="mt-3 flex flex-wrap gap-2"
+                    >
                       {FIELDS.map((f) => (
                         <button
                           type="button"
@@ -210,8 +217,9 @@ export function Contact() {
                     </div>
                   </motion.div>
                   <motion.div {...collapse(0)}>
-                    <Field label={t.message} num="04">
+                    <Field label={t.message} num="04" htmlFor={messageId}>
                       <textarea
+                        id={messageId}
                         name="message"
                         rows={4}
                         required
@@ -275,16 +283,20 @@ export function Contact() {
 function Field({
   label,
   num,
+  htmlFor,
   children,
 }: {
   label: string;
   num: string;
+  htmlFor?: string;
   children: React.ReactNode;
 }) {
   return (
     <div className="group">
       <div className="flex items-baseline justify-between">
-        <label className="eyebrow">{label}</label>
+        <label htmlFor={htmlFor} className="eyebrow">
+          {label}
+        </label>
         <span className="font-mono text-[0.6rem] tracking-widest text-fog">
           {num}
         </span>
@@ -303,9 +315,11 @@ function Input({
   num,
   ...props
 }: { label: string; num: string } & React.InputHTMLAttributes<HTMLInputElement>) {
+  const id = useId();
   return (
-    <Field label={label} num={num}>
+    <Field label={label} num={num} htmlFor={id}>
       <input
+        id={id}
         {...props}
         className="w-full bg-transparent py-2.5 text-base text-chalk caret-accent outline-none placeholder:text-fog/50"
       />

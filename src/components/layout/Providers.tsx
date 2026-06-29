@@ -28,6 +28,7 @@ import { initAccent } from "@/lib/accent";
 import { initPerf } from "@/lib/perf";
 import { initAchievements } from "@/lib/achievements";
 import { stripLocale } from "@/lib/i18n";
+import { useContent } from "@/lib/content";
 
 /**
  * Global site chrome shared by every route: smooth scroll, custom cursor,
@@ -37,6 +38,7 @@ import { stripLocale } from "@/lib/i18n";
 export function Providers({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const isHome = stripLocale(pathname).rest === "/";
+  const skip = useContent().common.skip;
 
   useEffect(() => {
     initAccent();
@@ -47,10 +49,10 @@ export function Providers({ children }: { children: React.ReactNode }) {
   return (
     <MotionConfig reducedMotion="user">
       <a
-        href="#manifesto"
+        href="#content-top"
         className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[300] focus:rounded-full focus:bg-chalk focus:px-5 focus:py-2.5 focus:text-sm focus:font-medium focus:text-void"
       >
-        Skip to content
+        {skip}
       </a>
       <AmbientBackdrop />
       <Atmosphere />
@@ -73,6 +75,8 @@ export function Providers({ children }: { children: React.ReactNode }) {
       <MobileCTA />
       <SmoothScroll>
         <Navbar />
+        {/* stable skip-link target on every route */}
+        <div id="content-top" tabIndex={-1} className="outline-none" />
         {children}
         <Footer />
       </SmoothScroll>

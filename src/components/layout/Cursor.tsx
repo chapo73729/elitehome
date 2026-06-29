@@ -13,7 +13,10 @@ export function Cursor() {
 
   useEffect(() => {
     const coarse = window.matchMedia("(pointer: coarse)").matches;
-    if (coarse) return;
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    // coarse pointers have no cursor; reduced-motion users get the native
+    // cursor (no lagging/spring ring) — leave the custom one dormant + invisible
+    if (coarse || reduce) return;
 
     // hide the native cursor only now that the custom one is live
     document.documentElement.classList.add("hide-cursor");

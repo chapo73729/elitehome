@@ -39,6 +39,10 @@ export function CookieConsent() {
       localStorage.setItem("ardlabs-consent", v);
     } catch {}
     setShow(false);
+    // let the bottom-left mobile CTA know it can appear now (no overlap)
+    try {
+      window.dispatchEvent(new Event("ardlabs-consent-set"));
+    } catch {}
   };
 
   return (

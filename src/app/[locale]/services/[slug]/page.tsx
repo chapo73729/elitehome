@@ -54,6 +54,11 @@ export default async function IndustryPage({
   const prev = INDUSTRIES[(idx - 1 + INDUSTRIES.length) % INDUSTRIES.length];
   const next = INDUSTRIES[(idx + 1) % INDUSTRIES.length];
 
+  const crumb =
+    locale === "fr"
+      ? { home: "Accueil", services: "Services" }
+      : { home: "Home", services: "Services" };
+
   const jsonLd = {
     "@context": "https://schema.org",
     "@graph": [
@@ -68,8 +73,8 @@ export default async function IndustryPage({
       {
         "@type": "BreadcrumbList",
         itemListElement: [
-          { "@type": "ListItem", position: 1, name: "Home", item: `${SITE.url}/${locale}` },
-          { "@type": "ListItem", position: 2, name: "Services", item: `${SITE.url}/${locale}/services` },
+          { "@type": "ListItem", position: 1, name: crumb.home, item: `${SITE.url}/${locale}` },
+          { "@type": "ListItem", position: 2, name: crumb.services, item: `${SITE.url}/${locale}/services` },
           {
             "@type": "ListItem",
             position: 3,
