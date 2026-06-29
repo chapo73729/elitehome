@@ -41,14 +41,14 @@ export function Hero({ ready }: { ready: boolean }) {
         <motion.span
           initial={{ opacity: 0, y: 16, filter: "blur(8px)" }}
           animate={ready ? { opacity: 1, y: 0, filter: "blur(0px)" } : {}}
-          transition={{ duration: 1.1, ease: EASE, delay: 0.45 }}
+          transition={{ duration: 0.7, ease: EASE, delay: 0.12 }}
           className="eyebrow mb-8 [@media(max-height:680px)]:mb-3"
         >
           {c.eyebrow}
         </motion.span>
 
         <h1 className="text-mega text-gradient select-none">
-          <Line ready={ready} delay={0.4}>
+          <Line ready={ready} delay={0.18}>
             ARDLABS
             <span className="align-top text-[0.32em] text-accent">®</span>
           </Line>
@@ -57,7 +57,7 @@ export function Hero({ ready }: { ready: boolean }) {
         <motion.p
           initial={{ opacity: 0, y: 18, filter: "blur(6px)" }}
           animate={ready ? { opacity: 1, y: 0, filter: "blur(0px)" } : {}}
-          transition={{ duration: 1.1, ease: EASE, delay: 1.05 }}
+          transition={{ duration: 0.8, ease: EASE, delay: 0.42 }}
           className="mt-7 max-w-2xl text-balance font-display text-xl font-medium leading-snug text-chalk md:text-2xl [@media(max-height:680px)]:mt-3 [@media(max-height:680px)]:text-lg"
         >
           {c.headline}
@@ -66,7 +66,7 @@ export function Hero({ ready }: { ready: boolean }) {
         <motion.p
           initial={{ opacity: 0, y: 20, filter: "blur(6px)" }}
           animate={ready ? { opacity: 1, y: 0, filter: "blur(0px)" } : {}}
-          transition={{ duration: 1.1, ease: EASE, delay: 1.3 }}
+          transition={{ duration: 0.8, ease: EASE, delay: 0.56 }}
           className="mt-5 max-w-xl text-balance text-sm text-mist md:text-base [@media(max-height:680px)]:mt-2 [@media(max-height:680px)]:text-xs"
         >
           {c.subtitle}
@@ -75,7 +75,7 @@ export function Hero({ ready }: { ready: boolean }) {
         <motion.div
           initial={{ opacity: 0, y: 20, filter: "blur(6px)" }}
           animate={ready ? { opacity: 1, y: 0, filter: "blur(0px)" } : {}}
-          transition={{ duration: 1, ease: EASE, delay: 1.4 }}
+          transition={{ duration: 0.7, ease: EASE, delay: 0.7 }}
           className="mt-11 flex flex-wrap items-center justify-center gap-4 [@media(max-height:680px)]:mt-5"
         >
           <Button href="#services" variant="primary">
@@ -92,7 +92,7 @@ export function Hero({ ready }: { ready: boolean }) {
       <motion.div
         initial={{ opacity: 0 }}
         animate={ready ? { opacity: 1 } : {}}
-        transition={{ duration: 1, delay: 1.6 }}
+        transition={{ duration: 1, delay: 0.95 }}
         className="absolute bottom-8 left-1/2 z-10 flex -translate-x-1/2 flex-col items-center gap-3 [@media(max-height:680px)]:hidden"
       >
         <span className="font-display text-xs text-mist">{c.scrollHint}</span>

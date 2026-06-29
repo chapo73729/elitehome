@@ -86,31 +86,31 @@ export function Footer() {
         </div>
 
         <div className="mt-16 flex flex-wrap items-center gap-x-6 gap-y-2 hairline-t pt-8 font-mono text-xs tracking-wider text-fog">
-          <LocaleLink href="/about" className="transition-colors hover:text-chalk">
+          <LocaleLink href="/about" className="inline-block py-1 transition-colors hover:text-chalk">
             {t.about}
           </LocaleLink>
-          <LocaleLink href="/work" className="transition-colors hover:text-chalk">
+          <LocaleLink href="/work" className="inline-block py-1 transition-colors hover:text-chalk">
             {t.work}
           </LocaleLink>
-          <LocaleLink href="/approach" className="transition-colors hover:text-chalk">
+          <LocaleLink href="/approach" className="inline-block py-1 transition-colors hover:text-chalk">
             {t.approach}
           </LocaleLink>
-          <LocaleLink href="/careers" className="transition-colors hover:text-chalk">
+          <LocaleLink href="/careers" className="inline-block py-1 transition-colors hover:text-chalk">
             {t.careers}
           </LocaleLink>
-          <LocaleLink href="/contact" className="transition-colors hover:text-chalk">
+          <LocaleLink href="/contact" className="inline-block py-1 transition-colors hover:text-chalk">
             {t.contact}
           </LocaleLink>
-          <LocaleLink href="/insights" className="transition-colors hover:text-chalk">
+          <LocaleLink href="/insights" className="inline-block py-1 transition-colors hover:text-chalk">
             {f.insights ?? "Insights"}
           </LocaleLink>
-          <LocaleLink href="/legal/imprint" className="transition-colors hover:text-chalk">
+          <LocaleLink href="/legal/imprint" className="inline-block py-1 transition-colors hover:text-chalk">
             {f.legalNotice}
           </LocaleLink>
-          <LocaleLink href="/legal/privacy" className="transition-colors hover:text-chalk">
+          <LocaleLink href="/legal/privacy" className="inline-block py-1 transition-colors hover:text-chalk">
             {f.privacy}
           </LocaleLink>
-          <LocaleLink href="/legal/terms" className="transition-colors hover:text-chalk">
+          <LocaleLink href="/legal/terms" className="inline-block py-1 transition-colors hover:text-chalk">
             {f.terms}
           </LocaleLink>
         </div>

@@ -23,11 +23,16 @@ export function AccentSwitcher() {
             aria-label={a.name}
             aria-pressed={active === a.id}
             title={a.name}
-            className={`h-4 w-4 rounded-full transition-transform duration-300 hover:scale-125 ${
+            className={`grid h-6 w-6 place-items-center rounded-full transition-transform duration-300 hover:scale-110 ${
               active === a.id ? "ring-2 ring-white/70 ring-offset-2 ring-offset-void" : ""
             }`}
-            style={{ background: `linear-gradient(135deg, ${a.a}, ${a.a2})` }}
-          />
+          >
+            <span
+              aria-hidden
+              className="h-4 w-4 rounded-full"
+              style={{ background: `linear-gradient(135deg, ${a.a}, ${a.a2})` }}
+            />
+          </button>
         ))}
       </div>
     </div>
