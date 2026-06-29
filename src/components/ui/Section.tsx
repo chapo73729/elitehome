@@ -51,7 +51,7 @@ export function SectionHeading({
       </Reveal>
       <Reveal delay={0.08}>
         <SkewText>
-          <h2 className="text-section-title text-gradient mt-7 max-w-4xl text-balance">
+          <h2 className="text-section-title text-chalk mt-7 max-w-4xl text-balance">
             {title}
           </h2>
         </SkewText>

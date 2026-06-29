@@ -9,6 +9,7 @@ import { GlobalNetwork } from "@/components/sections/GlobalNetwork";
 import { Industries } from "@/components/sections/Industries";
 import { CtaBanner } from "@/components/sections/CtaBanner";
 import { Contact } from "@/components/sections/Contact";
+import { GutterRuler } from "@/components/layout/GutterRuler";
 
 /**
  * Homepage experience — a tight, cinematic flow over one continuous world.
@@ -21,6 +22,7 @@ export function Experience() {
   return (
     <>
       <Loader onComplete={() => setReady(true)} />
+      <GutterRuler />
       <main className="relative">
         <Hero ready={ready} />
         <Cinematic />

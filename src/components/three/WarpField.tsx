@@ -85,7 +85,9 @@ function Stream({
   useFrame((state, delta) => {
     const dt = Math.min(delta, 0.05);
     const p = progress.current;
-    const base = 6 + p * 70; // accelerate as you scroll
+    // Calmer ceiling than a frantic starfield: the dive eases out as the
+    // manifesto locks, so the end reads composed rather than chaotic.
+    const base = 4 + p * 38;
     const geo = ref.current?.geometry as THREE.BufferGeometry | undefined;
     if (geo) {
       const pos = geo.attributes.position as THREE.BufferAttribute;
@@ -103,7 +105,14 @@ function Stream({
       }
       pos.needsUpdate = true;
     }
-    if (ref.current) ref.current.rotation.z += dt * (0.04 + p * 0.5);
+    if (ref.current) {
+      // Roll spins up mid-dive then settles toward 0 as p→1, so streaks
+      // resolve into near-vertical "lines of code" instead of a roll.
+      const roll = (0.04 + p * 0.5) * (1 - p) * (1 - p);
+      ref.current.rotation.z += dt * roll;
+      // ease any accumulated roll back toward vertical as we lock
+      ref.current.rotation.z *= 1 - Math.min(1, p * 1.2) * dt * 1.5;
+    }
     if (matRef.current) matRef.current.uniforms.uTime.value = state.clock.elapsedTime;
   });
 

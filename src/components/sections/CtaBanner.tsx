@@ -24,7 +24,7 @@ export function CtaBanner() {
 
             <div className="relative z-10">
               <span className="eyebrow">{c.eyebrow}</span>
-              <h2 className="text-section-title text-gradient mx-auto mt-6 max-w-3xl text-balance">
+              <h2 className="text-section-title text-chalk mx-auto mt-6 max-w-3xl text-balance">
                 {c.title}
               </h2>
               <p className="mx-auto mt-6 max-w-xl text-balance text-mist">

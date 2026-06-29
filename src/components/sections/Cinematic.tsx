@@ -4,48 +4,152 @@ import dynamic from "next/dynamic";
 import { useRef, useState } from "react";
 import {
   motion,
-  AnimatePresence,
-  useScroll,
+  useTransform,
   useMotionValueEvent,
+  cubicBezier,
+  type MotionValue,
 } from "framer-motion";
 import { useContent } from "@/lib/content";
 import { SceneBoundary } from "@/components/three/SceneBoundary";
 import { useSceneVisibility } from "@/hooks/useSceneVisibility";
+import { useScrollScrub } from "@/hooks/useScrollScrub";
+import { ChapterNumeral } from "@/components/ui/ChapterNumeral";
 
 const WarpField = dynamic(() => import("@/components/three/WarpField"), {
   ssr: false,
   loading: () => null,
 });
 
-const EASE = [0.16, 1, 0.3, 1] as const;
+const EASE = cubicBezier(0.16, 1, 0.3, 1);
+
+/* The manifesto typesets across this progress window; before LEAD_IN the
+   stage is empty, after the lines have locked the outro types in. */
+const LEAD_IN = 0.08;
+const TYPE_END = 0.86;
 
 /**
- * Scroll-pinned cinematic chapter. A tall track drives a particle warp whose
- * speed scales with scroll progress, while manifesto lines crossfade in the
- * sticky viewport — an Apple/Lusion-style dive between content acts.
+ * A single word that rises out of an overflow-hidden mask, scrubbed by the
+ * section's scroll progress. Each word owns a narrow sub-range of the overall
+ * 0→1 progress so the four lines set themselves word-by-word, then persist.
+ */
+function ScrubWord({
+  progress,
+  start,
+  end,
+  children,
+  accent,
+}: {
+  progress: MotionValue<number>;
+  start: number;
+  end: number;
+  children: string;
+  accent?: boolean;
+}) {
+  const y = useTransform(progress, [start, end], ["110%", "0%"], {
+    ease: EASE,
+  });
+  const opacity = useTransform(progress, [start, (start + end) / 2], [0, 1]);
+  return (
+    <span className="inline-block overflow-hidden align-bottom">
+      <motion.span
+        className="inline-block will-change-transform"
+        style={
+          accent ? { y, opacity, color: "var(--color-accent)" } : { y, opacity }
+        }
+      >
+        {children}
+        {" "}
+      </motion.span>
+    </span>
+  );
+}
+
+/** Scrubbed line: words stagger across the line's progress band; letter-spacing
+ *  tightens subtly as the line locks into place. */
+function ScrubLine({
+  progress,
+  text,
+  bandStart,
+  bandEnd,
+  accentLastWord,
+}: {
+  progress: MotionValue<number>;
+  text: string;
+  bandStart: number;
+  bandEnd: number;
+  accentLastWord?: boolean;
+}) {
+  const words = text.split(" ");
+  const span = bandEnd - bandStart;
+  const perWord = span / words.length;
+  // tracking eases from a touch open to tight as the line completes
+  const letterSpacing = useTransform(
+    progress,
+    [bandStart, bandEnd],
+    ["0.01em", "-0.035em"]
+  );
+
+  return (
+    <motion.span className="block" style={{ letterSpacing }}>
+      {words.map((w, i) => {
+        const start = bandStart + perWord * i;
+        const end = start + perWord * 1.6; // overlap neighbours for flow
+        return (
+          <ScrubWord
+            key={i}
+            progress={progress}
+            start={start}
+            end={Math.min(end, bandEnd + perWord)}
+            accent={accentLastWord && i === words.length - 1}
+          >
+            {w}
+          </ScrubWord>
+        );
+      })}
+    </motion.span>
+  );
+}
+
+/**
+ * Scroll-pinned manifesto chapter. A tall track drives a particle warp that
+ * eases out as you descend; in the sticky stage the four manifesto lines
+ * typeset themselves word-by-word — left-aligned, baseline-gridded — and stay,
+ * composing one readable paragraph. The mono outro types in last and the final
+ * word settles in azure: the only colour in the section.
  */
 export function Cinematic() {
   const c = useContent().cinematic;
   const lines = c.lines;
+  const n = lines.length;
 
   const trackRef = useRef<HTMLDivElement>(null);
-  const progress = useRef(0);
+  const progressRef = useRef(0);
   const scene = useSceneVisibility<HTMLDivElement>();
 
-  const [active, setActive] = useState(0);
-  const [entered, setEntered] = useState(false);
+  const { progress, reduced } = useScrollScrub(trackRef);
 
-  const { scrollYProgress } = useScroll({
-    target: trackRef,
-    offset: ["start start", "end end"],
+  // feed the raw MotionValue into the WarpField's ref-based plumbing
+  useMotionValueEvent(progress, "change", (v) => {
+    progressRef.current = v;
   });
 
-  useMotionValueEvent(scrollYProgress, "change", (v) => {
-    progress.current = v;
-    setEntered(v > 0.04 && v < 0.97);
-    const n = lines.length;
-    const t = Math.min(0.9999, Math.max(0, (v - 0.1) / 0.78));
-    setActive(Math.floor(t * n));
+  // per-line progress bands inside [LEAD_IN, TYPE_END]
+  const typeSpan = TYPE_END - LEAD_IN;
+  const bandFor = (i: number) => {
+    const start = LEAD_IN + (typeSpan / n) * i;
+    const end = LEAD_IN + (typeSpan / n) * (i + 1);
+    return [start, end] as const;
+  };
+
+  // outro types in after the last line locks
+  const outroOpacity = useTransform(progress, [TYPE_END, TYPE_END + 0.05], [0, 1]);
+  // gutter fill scrubs with overall progress (echo of the page GutterRuler)
+  const gutterScaleY = progress;
+  // chapter readout counts the active line as it sets
+  const [readout, setReadout] = useState("00");
+  useMotionValueEvent(progress, "change", (v) => {
+    const t = Math.max(0, Math.min(n, ((v - LEAD_IN) / typeSpan) * n));
+    setReadout(String(Math.min(n, Math.floor(t))).padStart(2, "0"));
   });
 
   return (
@@ -57,66 +161,107 @@ export function Cinematic() {
     >
       <div
         ref={scene.ref}
-        className="sticky top-0 flex h-screen items-center justify-center overflow-hidden"
+        className="sticky top-0 flex h-screen items-center overflow-hidden"
       >
         {/* warp backdrop */}
         <div className="pointer-events-none absolute inset-0">
           <SceneBoundary>
             {scene.mounted && (
-              <WarpField progress={progress} frameloop={scene.frameloop} />
+              <WarpField progress={progressRef} frameloop={scene.frameloop} />
             )}
           </SceneBoundary>
         </div>
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(70%_70%_at_50%_50%,transparent_30%,#050505_88%)]" />
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(80%_80%_at_30%_50%,transparent_25%,#050505_90%)]" />
 
-        {/* manifesto */}
-        <div className="container-x relative flex min-h-screen flex-col items-center justify-center text-center">
-          <motion.span
-            className="eyebrow mb-8 block"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: entered ? 1 : 0.25 }}
-            transition={{ duration: 0.6 }}
-          >
-            {c.tag}
-          </motion.span>
+        {/* ghost chapter numeral, bleeding top-left */}
+        <ChapterNumeral n="00" label="MANIFESTO" />
 
-          <div className="relative flex h-[4.5em] items-center justify-center md:h-[3.2em]">
-            <AnimatePresence mode="wait">
-              <motion.h2
-                key={active}
-                className="text-giant text-gradient mx-auto max-w-4xl text-balance"
-                initial={{ opacity: 0, y: 36, filter: "blur(8px)" }}
-                animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-                exit={{ opacity: 0, y: -28, filter: "blur(8px)" }}
-                transition={{ duration: 0.7, ease: EASE }}
-              >
-                {lines[Math.min(active, lines.length - 1)]}
-              </motion.h2>
-            </AnimatePresence>
+        {/* per-section gutter measure — echoes the page GutterRuler */}
+        <div className="pointer-events-none absolute left-6 top-1/2 hidden -translate-y-1/2 flex-col items-center gap-3 lg:flex">
+          <span className="font-mono text-[0.6rem] tabular-nums tracking-[0.3em] text-chalk/70">
+            {reduced ? "04" : readout}
+            <span className="text-fog/50"> / 04</span>
+          </span>
+          <div className="relative h-[34vh] w-px overflow-hidden bg-white/10">
+            <motion.div
+              style={{ scaleY: reduced ? 1 : gutterScaleY, transformOrigin: "top" }}
+              className="absolute inset-0 origin-top bg-[var(--color-accent)]"
+            />
           </div>
+        </div>
 
-          <motion.p
-            className="mt-10 font-mono text-xs uppercase tracking-[0.3em] text-accent-2"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: active >= lines.length - 1 ? 1 : 0 }}
-            transition={{ duration: 0.8 }}
-          >
-            {c.outro}
-          </motion.p>
+        {/* manifesto — left-aligned, baseline-gridded editorial typesetting */}
+        <div className="container-x relative z-10">
+          <span className="eyebrow mb-10 block pl-[3.2em] lg:pl-0">{c.tag}</span>
 
-          {/* progress rail */}
-          <div className="mt-12 flex items-center gap-2">
-            {lines.map((_, i) => (
-              <span
-                key={i}
-                className={`h-1 rounded-full transition-all duration-500 ${
-                  i <= active ? "w-8 bg-accent" : "w-3 bg-white/15"
-                }`}
-              />
-            ))}
+          <div className="max-w-4xl">
+            {reduced ? (
+              <StaticManifesto lines={lines} />
+            ) : (
+              <h2 className="text-giant font-display text-chalk">
+                {lines.map((line, i) => {
+                  const [s, e] = bandFor(i);
+                  return (
+                    <span key={i} className="relative block">
+                      {/* hanging mono micro-label in the gutter */}
+                      <span className="absolute -left-2 top-[0.35em] hidden -translate-x-full font-mono text-[0.6rem] tracking-[0.25em] text-fog/50 md:block">
+                        {`L0${i + 1}`}
+                      </span>
+                      <ScrubLine
+                        progress={progress}
+                        text={line}
+                        bandStart={s}
+                        bandEnd={e}
+                        accentLastWord={i === lines.length - 1}
+                      />
+                    </span>
+                  );
+                })}
+              </h2>
+            )}
+
+            <motion.p
+              className="mt-10 font-mono text-xs uppercase tracking-[0.3em] text-accent-2"
+              style={{ opacity: reduced ? 1 : outroOpacity }}
+            >
+              {c.outro}
+            </motion.p>
           </div>
         </div>
       </div>
     </section>
+  );
+}
+
+/** Static final-frame layout for reduced-motion: all lines present, last word
+ *  in azure, no scrub. */
+function StaticManifesto({ lines }: { lines: string[] }) {
+  return (
+    <h2 className="text-giant font-display tracking-[-0.035em] text-chalk">
+      {lines.map((line, i) => {
+        const words = line.split(" ");
+        const last = i === lines.length - 1;
+        return (
+          <span key={i} className="relative block">
+            <span className="absolute -left-2 top-[0.35em] hidden -translate-x-full font-mono text-[0.6rem] tracking-[0.25em] text-fog/50 md:block">
+              {`L0${i + 1}`}
+            </span>
+            {words.map((w, j) => (
+              <span
+                key={j}
+                style={
+                  last && j === words.length - 1
+                    ? { color: "var(--color-accent)" }
+                    : undefined
+                }
+              >
+                {w}
+                {j < words.length - 1 ? " " : ""}
+              </span>
+            ))}
+          </span>
+        );
+      })}
+    </h2>
   );
 }

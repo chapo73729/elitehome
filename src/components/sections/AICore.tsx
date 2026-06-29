@@ -57,7 +57,7 @@ export function AICore() {
           </div>
         </Reveal>
         <Reveal delay={0.08}>
-          <h2 className="text-section-title text-gradient mt-7 max-w-3xl text-balance">
+          <h2 className="text-section-title text-chalk mt-7 max-w-3xl text-balance">
             {c.title}
           </h2>
         </Reveal>

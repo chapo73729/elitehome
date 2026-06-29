@@ -24,7 +24,7 @@ export function GlobalNetwork() {
 
         <div className="mt-10 max-w-2xl">
           <Reveal delay={0.08}>
-            <h2 className="text-section-title text-gradient text-balance">
+            <h2 className="text-section-title text-chalk text-balance">
               {c.title}
             </h2>
           </Reveal>
