@@ -1,8 +1,10 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { CITIES } from "@/lib/site";
 import { WORLD_DOTS } from "@/lib/worldDots";
+import { audio } from "@/lib/audio";
+import { useLite } from "@/hooks/useDeviceTier";
 
 /* ------------------------------------------------------------------ *
  * Equirectangular projection shared by the dot map AND the city pins, *
@@ -49,6 +51,8 @@ const META: Record<string, string> = {
   "New York": "US · GMT−5",
 };
 
+const HQ = "Prague";
+
 const byName = (n: string) => cityPts.find((c) => c.name === n)!;
 
 // Routes between hubs (great-circle look via a lifted quadratic control point).
@@ -70,11 +74,129 @@ function arcPath(a: { x: number; y: number }, b: { x: number; y: number }) {
   return `M ${a.x} ${a.y} Q ${mx} ${my - lift} ${b.x} ${b.y}`;
 }
 
-export function WorldMap() {
+// Routes that touch a given hub, expressed as the *other* endpoint.
+function routesFor(name: string): string[] {
+  return ROUTES.filter(([a, b]) => a === name || b === name).map(([a, b]) =>
+    a === name ? b : a
+  );
+}
+
+// Convert a lat/lon back into the mono N../E.. vocabulary used elsewhere.
+function coordLabel(lat: number, lon: number) {
+  const ns = lat >= 0 ? "N" : "S";
+  const ew = lon >= 0 ? "E" : "W";
+  return `${Math.abs(lat).toFixed(2)}°${ns} · ${Math.abs(lon).toFixed(2)}°${ew}`;
+}
+
+type ViewBox = { x: number; y: number; w: number; h: number };
+const WORLD_VB: ViewBox = { x: 0, y: Y_TOP, w: VB_W, h: VB_CROP_H };
+
+const EASE = (t: number) => {
+  // cubic-bezier(0.16, 1, 0.3, 1) approximated as an easeOutExpo-ish curve.
+  return t === 1 ? 1 : 1 - Math.pow(2, -10 * t);
+};
+
+export type FocusInfo = {
+  name: string;
+  meta: string;
+  coord: string;
+  routes: string[];
+} | null;
+
+export function WorldMap({ onFocus }: { onFocus?: (info: FocusInfo) => void }) {
   const wrapRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const [active, setActive] = useState<string | null>(null);
+  const svgRef = useRef<SVGSVGElement>(null);
+  const [active, setActive] = useState<string | null>(null); // hover preview
+  const [selected, setSelected] = useState<string | null>(null); // click focus
   const [vw, setVw] = useState(VB_W);
+  const lite = useLite();
+
+  // The viewBox is animated imperatively (rAF tween) so the SVG can zoom toward
+  // a hub without re-rendering on every frame.
+  const vbRef = useRef<ViewBox>({ ...WORLD_VB });
+  const rafRef = useRef<number | null>(null);
+
+  const applyVb = useCallback((vb: ViewBox) => {
+    const svg = svgRef.current;
+    if (svg) svg.setAttribute("viewBox", `${vb.x} ${vb.y} ${vb.w} ${vb.h}`);
+  }, []);
+
+  const tweenTo = useCallback(
+    (target: ViewBox) => {
+      if (rafRef.current != null) cancelAnimationFrame(rafRef.current);
+      // Reduced-motion / lite: snap, no tween.
+      if (lite) {
+        vbRef.current = { ...target };
+        applyVb(target);
+        return;
+      }
+      const from = { ...vbRef.current };
+      const dur = 800;
+      const start = performance.now();
+      const step = (now: number) => {
+        const t = Math.min(1, (now - start) / dur);
+        const e = EASE(t);
+        const cur: ViewBox = {
+          x: from.x + (target.x - from.x) * e,
+          y: from.y + (target.y - from.y) * e,
+          w: from.w + (target.w - from.w) * e,
+          h: from.h + (target.h - from.h) * e,
+        };
+        vbRef.current = cur;
+        applyVb(cur);
+        if (t < 1) rafRef.current = requestAnimationFrame(step);
+        else rafRef.current = null;
+      };
+      rafRef.current = requestAnimationFrame(step);
+    },
+    [applyVb, lite]
+  );
+
+  // Focus a hub: recenter/zoom the viewBox on it and report its true data up.
+  const focusHub = useCallback(
+    (name: string) => {
+      const c = byName(name);
+      const w = VB_W * 0.42;
+      const h = VB_CROP_H * 0.42;
+      tweenTo({
+        x: c.x - w / 2,
+        y: c.y - h / 2,
+        w,
+        h,
+      });
+      setSelected(name);
+      onFocus?.({
+        name,
+        meta: META[name] ?? "",
+        coord: coordLabel(c.lat, c.lon),
+        routes: routesFor(name),
+      });
+    },
+    [onFocus, tweenTo]
+  );
+
+  const clearFocus = useCallback(() => {
+    tweenTo({ ...WORLD_VB });
+    setSelected(null);
+    onFocus?.(null);
+  }, [onFocus, tweenTo]);
+
+  // Esc returns to the world view.
+  useEffect(() => {
+    if (!selected) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") clearFocus();
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [selected, clearFocus]);
+
+  useEffect(() => {
+    return () => {
+      if (rafRef.current != null) cancelAnimationFrame(rafRef.current);
+    };
+  }, []);
 
   // Because the SVG uses preserveAspectRatio="none", label font sizes (in
   // viewBox units) shrink with the rendered width. On a ~360px phone the map
@@ -129,23 +251,37 @@ export function WorldMap() {
       ref={wrapRef}
       className="relative w-full min-h-[280px] sm:min-h-0"
       style={{ aspectRatio: `${VB_W} / ${VB_CROP_H}` }}
+      data-cursor="drag"
     >
       <canvas ref={canvasRef} className="absolute inset-0 h-full w-full" />
 
       <svg
+        ref={svgRef}
         className="absolute inset-0 h-full w-full overflow-visible"
         viewBox={`0 ${Y_TOP} ${VB_W} ${VB_CROP_H}`}
         preserveAspectRatio="none"
         role="img"
         aria-label="Map of ARDLABS global hubs"
       >
+        {/* sea: clicking empty water returns to the world view */}
+        <rect
+          x={0}
+          y={Y_TOP}
+          width={VB_W}
+          height={VB_CROP_H}
+          fill="transparent"
+          onClick={() => selected && clearFocus()}
+          style={{ cursor: selected ? "zoom-out" : "default" }}
+        />
+
         {/* routes */}
         <g>
           {ROUTES.map(([a, b], i) => {
             const pa = byName(a);
             const pb = byName(b);
             const d = arcPath(pa, pb);
-            const on = active === a || active === b;
+            const hot = selected ?? active;
+            const on = hot === a || hot === b;
             return (
               <g key={i}>
                 <path
@@ -156,16 +292,18 @@ export function WorldMap() {
                   strokeOpacity={on ? 0.9 : 0.32}
                   style={{ vectorEffect: "non-scaling-stroke" }}
                 />
-                <circle r={on ? 3 : 2.2} fill="var(--color-accent-2)">
-                  <animateMotion
-                    dur={`${3.2 + i * 0.4}s`}
-                    repeatCount="indefinite"
-                    path={d}
-                    keyPoints="0;1"
-                    keyTimes="0;1"
-                    calcMode="linear"
-                  />
-                </circle>
+                {!lite && (
+                  <circle r={on ? 3 : 2.2} fill="var(--color-accent-2)">
+                    <animateMotion
+                      dur={`${3.2 + i * 0.4}s`}
+                      repeatCount="indefinite"
+                      path={d}
+                      keyPoints="0;1"
+                      keyTimes="0;1"
+                      calcMode="linear"
+                    />
+                  </circle>
+                )}
               </g>
             );
           })}
@@ -175,16 +313,44 @@ export function WorldMap() {
         {cityPts.map((c, i) => {
           const lab = LABEL[c.name] ?? { dx: 9, dy: -7, anchor: "start" as const };
           const meta = META[c.name] ?? "";
-          const on = active === c.name;
+          const isHq = c.name === HQ;
+          const on = (selected ?? active) === c.name;
+          const isSelected = selected === c.name;
           // short leader line from the dot toward the label
           const lx = lab.anchor === "end" ? lab.dx + 2 : lab.dx - 2;
           return (
             <g
               key={c.name}
               transform={`translate(${c.x} ${c.y})`}
-              onMouseEnter={() => setActive(c.name)}
+              role="button"
+              tabIndex={0}
+              aria-label={`${c.name} — ${meta}`}
+              aria-pressed={isSelected}
+              onMouseEnter={() => {
+                setActive(c.name);
+                audio.hover();
+              }}
               onMouseLeave={() => setActive(null)}
-              style={{ cursor: "pointer", animation: `markerIn 0.6s ease ${0.25 + i * 0.12}s both` }}
+              onClick={(e) => {
+                e.stopPropagation();
+                audio.click();
+                if (isSelected) clearFocus();
+                else focusHub(c.name);
+              }}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault();
+                  audio.click();
+                  if (isSelected) clearFocus();
+                  else focusHub(c.name);
+                }
+              }}
+              style={{
+                cursor: "pointer",
+                animation: lite
+                  ? undefined
+                  : `markerIn 0.6s ease ${0.25 + i * 0.12}s both`,
+              }}
             >
               {/* generous invisible hit area */}
               <circle r={16} fill="transparent" />
@@ -200,13 +366,32 @@ export function WorldMap() {
                 vectorEffect="non-scaling-stroke"
               />
               {/* pulse halo */}
-              <circle r={5} fill="var(--color-accent-2)" opacity={0.16}>
-                <animate attributeName="r" values="4;9;4" dur="2.6s" repeatCount="indefinite" begin={`${i * 0.3}s`} />
-                <animate attributeName="opacity" values="0.22;0;0.22" dur="2.6s" repeatCount="indefinite" begin={`${i * 0.3}s`} />
-              </circle>
-              {/* dot: ring + core */}
-              <circle r={on ? 4 : 3.2} fill="none" stroke="var(--color-accent-2)" strokeWidth={0.8} strokeOpacity={0.6} vectorEffect="non-scaling-stroke" />
-              <circle r={1.7} fill={on ? "#ffffff" : "var(--color-accent-2)"} />
+              {!lite && (
+                <circle r={5} fill="var(--color-accent-2)" opacity={0.16}>
+                  <animate attributeName="r" values="4;9;4" dur="2.6s" repeatCount="indefinite" begin={`${i * 0.3}s`} />
+                  <animate attributeName="opacity" values="0.22;0;0.22" dur="2.6s" repeatCount="indefinite" begin={`${i * 0.3}s`} />
+                </circle>
+              )}
+              {/* dot: ring + core. HQ (Prague) is visually primary: a larger
+                  ring and the only hub with a filled azure core at rest. */}
+              <circle
+                r={isHq ? (on ? 5.2 : 4.4) : on ? 4 : 3.2}
+                fill="none"
+                stroke="var(--color-accent-2)"
+                strokeWidth={isHq ? 1.1 : 0.8}
+                strokeOpacity={isHq ? 0.85 : 0.6}
+                vectorEffect="non-scaling-stroke"
+              />
+              <circle
+                r={isHq ? 2.2 : 1.7}
+                fill={
+                  isHq
+                    ? "var(--color-accent)"
+                    : on
+                      ? "#ffffff"
+                      : "var(--color-accent-2)"
+                }
+              />
               {/* label: name (display) + sub (mono) */}
               <text
                 x={lab.dx}

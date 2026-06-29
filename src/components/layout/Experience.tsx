@@ -7,7 +7,6 @@ import { Cinematic } from "@/components/sections/Cinematic";
 import { AICore } from "@/components/sections/AICore";
 import { GlobalNetwork } from "@/components/sections/GlobalNetwork";
 import { Industries } from "@/components/sections/Industries";
-import { CtaBanner } from "@/components/sections/CtaBanner";
 import { Contact } from "@/components/sections/Contact";
 import { GutterRuler } from "@/components/layout/GutterRuler";
 
@@ -29,7 +28,6 @@ export function Experience() {
         <AICore />
         <GlobalNetwork />
         <Industries />
-        <CtaBanner />
         <Contact />
       </main>
     </>

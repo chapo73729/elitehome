@@ -75,6 +75,8 @@ const en = {
     title: "One studio. Prague-based. Working worldwide.",
     intro:
       "We work with founders and teams across timezones — async by default, precise in delivery.",
+    routesLabel: "Connected routes",
+    returnHint: "Click the sea or press Esc to return",
   },
   industries: {
     eyebrow: "Services",
@@ -479,6 +481,9 @@ const en = {
     sentBody: "Thank you — your message is on its way to our team. We respond to every signal worth answering.",
     sendAnother: "Send another",
     errorPrefix: "Couldn't send — please email",
+    step: "You are here · 04 / 04",
+    copyHint: "Click to copy",
+    copied: "Email copied",
   },
   footer: {
     tagline: "A digital engineering studio designing and building software, platforms and AI systems, refined to the detail.",
@@ -589,6 +594,8 @@ const fr: DeepPartial<Content> = {
     title: "Un studio. Basé à Prague. Au service du monde entier.",
     intro:
       "Nous travaillons avec des fondateurs et des équipes sur tous les fuseaux — async par défaut, précis à la livraison.",
+    routesLabel: "Routes connectées",
+    returnHint: "Cliquez la mer ou appuyez sur Échap pour revenir",
   },
   industries: {
     eyebrow: "Services",
@@ -957,6 +964,9 @@ const fr: DeepPartial<Content> = {
     sentBody: "Merci — votre message est en route vers notre équipe. Nous répondons à chaque signal qui le mérite.",
     sendAnother: "Envoyer un autre",
     errorPrefix: "Échec de l'envoi — écrivez à",
+    step: "Vous êtes ici · 04 / 04",
+    copyHint: "Cliquer pour copier",
+    copied: "Email copié",
   },
   footer: {
     tagline: "Un studio d'ingénierie numérique qui conçoit et développe logiciels, plateformes et systèmes IA, soignés jusqu'au détail.",

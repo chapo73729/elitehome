@@ -1,59 +1,131 @@
 "use client";
 
+import { useState } from "react";
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { Reveal } from "@/components/ui/Reveal";
-import { CITIES } from "@/lib/site";
+import { ChapterNumeral } from "@/components/ui/ChapterNumeral";
 import { useContent } from "@/lib/content";
-import { WorldMap } from "./WorldMap";
-import { NetworkHud } from "./NetworkHud";
+import { WorldMap, type FocusInfo } from "./WorldMap";
+
+const EASE = [0.16, 1, 0.3, 1] as const;
 
 export function GlobalNetwork() {
   const c = useContent().network;
+  const reduce = useReducedMotion() ?? false;
+  const [focus, setFocus] = useState<FocusInfo>(null);
+
   return (
     <section
       id="network"
       className="relative z-10 overflow-hidden py-28 md:py-36"
     >
-      <div className="container-x">
-        <Reveal>
-          <div className="flex items-center gap-4">
-            <span className="font-mono text-xs text-accent">02</span>
-            <span className="eyebrow">{c.eyebrow}</span>
-            <span className="h-px flex-1 bg-gradient-to-r from-white/15 to-transparent" />
-          </div>
-        </Reveal>
+      <ChapterNumeral n="02" label="NETWORK" />
 
-        <div className="mt-10 max-w-2xl">
-          <Reveal delay={0.08}>
-            <h2 className="text-section-title text-chalk text-balance">
-              {c.title}
-            </h2>
-          </Reveal>
-          <Reveal delay={0.16}>
-            <p className="mt-6 max-w-md text-balance text-mist">{c.intro}</p>
-          </Reveal>
-        </div>
+      {/* full-bleed interactive stage — the map breaks out of the reading
+          column so the dark sea bleeds toward the section seams and reads as
+          one continuous world. */}
+      <div className="relative mt-10">
+        {/* edge-to-edge map */}
+        <div className="relative w-full">
+          <WorldMap onFocus={setFocus} />
 
-        {/* flat world map — cities placed on a real equirectangular projection */}
-        <Reveal delay={0.1}>
-          <div className="relative mt-14">
-            <WorldMap />
-            <div className="absolute -bottom-2 left-0 hidden md:block lg:-bottom-4">
-              <NetworkHud />
+          {/* soft scrims at the seams so the sea melts into the page rather
+              than ending on a hard rectangle */}
+          <div className="pointer-events-none absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-[#050505] to-transparent" />
+          <div className="pointer-events-none absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-[#050505] to-transparent" />
+
+          {/* heading plate — small, top-left, overlaid on the map. Inset is
+              aligned to the centered container gutter. */}
+          <div
+            className="pointer-events-none absolute top-6 z-10 max-w-xs md:top-10 lg:max-w-sm"
+            style={{
+              left: "max(clamp(1.25rem,5vw,5rem), calc((100vw - 1440px) / 2 + clamp(1.25rem,5vw,5rem)))",
+            }}
+          >
+            <Reveal>
+              <div className="flex items-center gap-3">
+                <span className="font-mono text-xs text-accent">02</span>
+                <span className="eyebrow">{c.eyebrow}</span>
+              </div>
+            </Reveal>
+            <Reveal delay={0.08}>
+              <h2 className="text-section-title mt-5 text-balance text-chalk">
+                {c.title}
+              </h2>
+            </Reveal>
+            <Reveal delay={0.16}>
+              <p className="mt-4 max-w-xs text-sm leading-relaxed text-mist">
+                {c.intro}
+              </p>
+            </Reveal>
+
+            {/* mono coordinate readout — tracks the focused hub, else idles
+                on the world view. Hardcoded mono vocabulary, non-translatable. */}
+            <div
+              aria-hidden
+              className="mt-6 font-mono text-[0.68rem] tracking-wider text-fog tabular-nums"
+            >
+              <span className="text-accent">▮</span>{" "}
+              {focus ? (
+                <span className="text-mist">{focus.coord}</span>
+              ) : (
+                <span>WORLD · 06 HUBS</span>
+              )}
             </div>
           </div>
-        </Reveal>
 
-        {/* legend */}
-        <ul className="mt-12 grid grid-cols-2 gap-px overflow-hidden rounded-xl hairline sm:grid-cols-3 lg:grid-cols-6">
-          {CITIES.map((city, i) => (
-            <Reveal key={city.name} delay={0.04 * i}>
-              <li className="glass flex items-center gap-2.5 p-4">
-                <span className="inline-block h-1.5 w-1.5 animate-pulse rounded-full bg-accent-2" />
-                <span className="text-sm text-chalk">{city.name}</span>
-              </li>
-            </Reveal>
-          ))}
-        </ul>
+          {/* detail plate — slides in near the focused hub (which has been
+              recentered toward the stage). Shows ONLY true data: name,
+              country · timezone, and the hubs it connects to. */}
+          <AnimatePresence>
+            {focus && (
+              <motion.div
+                key={focus.name}
+                className="absolute bottom-8 z-20 w-[15rem]"
+                style={{
+                  right:
+                    "max(clamp(1.25rem,5vw,5rem), calc((100vw - 1440px) / 2 + clamp(1.25rem,5vw,5rem)))",
+                }}
+                initial={reduce ? { opacity: 0 } : { opacity: 0, y: 16 }}
+                animate={reduce ? { opacity: 1 } : { opacity: 1, y: 0 }}
+                exit={reduce ? { opacity: 0 } : { opacity: 0, y: 16 }}
+                transition={{ duration: 0.5, ease: EASE }}
+              >
+                <div className="glass rounded-2xl p-5 backdrop-blur-xl">
+                  <div className="flex items-baseline justify-between gap-3">
+                    <span className="font-display text-lg leading-none text-chalk">
+                      {focus.name}
+                    </span>
+                    <span className="font-mono text-[0.7rem] tracking-wider text-accent-2">
+                      {focus.meta}
+                    </span>
+                  </div>
+
+                  <div className="mt-4 border-t border-white/10 pt-4">
+                    <p className="font-mono text-[0.6rem] uppercase tracking-[0.3em] text-fog">
+                      {c.routesLabel}
+                    </p>
+                    <ul className="mt-2 space-y-1.5">
+                      {focus.routes.map((r) => (
+                        <li
+                          key={r}
+                          className="flex items-center gap-2.5 text-sm text-mist"
+                        >
+                          <span className="inline-block h-1 w-1 rounded-full bg-accent" />
+                          {r}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+
+                  <p className="mt-4 font-mono text-[0.6rem] uppercase tracking-[0.25em] text-fog/70">
+                    {c.returnHint}
+                  </p>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
       </div>
     </section>
   );
