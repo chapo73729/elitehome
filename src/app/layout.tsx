@@ -32,6 +32,7 @@ export const metadata: Metadata = {
   publisher: SITE.legal,
   alternates: { canonical: "/" },
   openGraph: {
+      images: [{ url: "/opengraph-image", width: 1200, height: 630 }],
     type: "website",
     locale: "en_US",
     url: SITE.url,
@@ -39,10 +40,11 @@ export const metadata: Metadata = {
     title: `${SITE.legal} — ${SITE.tagline}`,
     description: SITE.description,
   },
+  // Card type + creator only: without a twitter:title/description here,
+  // X/Twitter falls back to each page's LOCALIZED og:* tags instead of
+  // inheriting this English default on every route.
   twitter: {
     card: "summary_large_image",
-    title: `${SITE.legal} — ${SITE.tagline}`,
-    description: SITE.description,
     creator: "@ardlabs",
   },
   robots: {

@@ -16,6 +16,7 @@ export async function generateMetadata({
     description,
     alternates: i18nAlternates(locale, "/work"),
     openGraph: {
+      images: [{ url: "/opengraph-image", width: 1200, height: 630 }],
       title: `${title} · ARDLABS®`,
       description,
       url: `/${locale}/work`,

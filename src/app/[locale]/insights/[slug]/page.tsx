@@ -24,6 +24,7 @@ export async function generateMetadata({
     description: post.excerpt,
     alternates: i18nAlternates(locale, `/insights/${post.slug}`),
     openGraph: {
+      images: [{ url: "/opengraph-image", width: 1200, height: 630 }],
       type: "article",
       title: `${post.title} · ARDLABS®`,
       description: post.excerpt,

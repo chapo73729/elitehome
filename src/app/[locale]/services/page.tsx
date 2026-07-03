@@ -17,6 +17,7 @@ export async function generateMetadata({
     description,
     alternates: i18nAlternates(locale, "/services"),
     openGraph: {
+      images: [{ url: "/opengraph-image", width: 1200, height: 630 }],
       title: `${title} — ${SITE.legal}`,
       description,
       url: `${SITE.url}/${locale}/services`,
