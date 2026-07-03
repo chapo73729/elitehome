@@ -4,7 +4,23 @@ import { useSyncExternalStore } from "react";
 
 export type Lang = "en" | "fr";
 
-let current: Lang = "en";
+function langFromPathname(pathname: string): Lang {
+  return pathname === "/fr" || pathname.startsWith("/fr/") ? "fr" : "en";
+}
+
+/**
+ * The URL is the single source of truth for the active language, and the
+ * middleware guarantees every page URL is locale-prefixed. Deriving the
+ * initial value from location.pathname at module-init time means the store
+ * is already correct on the client's first render — no render-phase writes
+ * needed anywhere (see LocaleSync). On the server this stays "en", matching
+ * getServerSnapshot below.
+ */
+let current: Lang =
+  typeof window !== "undefined"
+    ? langFromPathname(window.location.pathname)
+    : "en";
+
 const subs = new Set<() => void>();
 
 function emit() {
@@ -23,18 +39,6 @@ export function setLang(l: Lang) {
     document.documentElement.lang = l;
   } catch {}
   emit();
-}
-
-/** Resolve the initial language from storage / browser (call once on mount). */
-export function initLang() {
-  if (typeof window === "undefined") return;
-  let next: Lang | null = null;
-  try {
-    const stored = localStorage.getItem("ardlabs-lang") as Lang | null;
-    if (stored === "en" || stored === "fr") next = stored;
-  } catch {}
-  if (!next && navigator.language?.toLowerCase().startsWith("fr")) next = "fr";
-  if (next && next !== current) setLang(next);
 }
 
 function subscribe(fn: () => void) {

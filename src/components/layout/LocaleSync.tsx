@@ -1,28 +1,30 @@
 "use client";
 
+import { useEffect } from "react";
 import { usePathname } from "next/navigation";
 import { setLang } from "@/lib/lang";
 import { stripLocale, type AppLocale } from "@/lib/i18n";
 
 /**
- * Seeds the client language store from the URL locale. The URL is the single
- * source of truth for the active language. This runs during render (not in an
- * effect) so the store is set before children commit, avoiding a flash of the
- * wrong language and matching SSR. It also keeps <html lang> in sync.
+ * Keeps the client language store and <html lang> in sync with the URL locale
+ * across client-side navigations (e.g. the language toggle's router.replace).
  *
- * Receives the server-resolved `locale` (validated in the layout) but also
- * watches the live pathname so client-side locale switches stay in sync.
+ * Nothing here runs during render:
+ * - The initial <html lang> is server-rendered by the [locale] root layout.
+ * - The store seeds itself from location.pathname at module-init time
+ *   (see src/lib/lang.ts), so it is correct before the first render.
+ * This effect only handles subsequent SPA locale changes.
  */
 export function LocaleSync({ locale }: { locale: AppLocale }) {
   const pathname = usePathname();
-  const fromUrl = stripLocale(pathname ?? "").locale ?? locale;
 
-  // setLang() is a no-op when the value is unchanged, so this is safe to call
-  // on every render — it only emits on an actual change.
-  setLang(fromUrl);
-  if (typeof document !== "undefined") {
+  useEffect(() => {
+    const fromUrl = pathname ? stripLocale(pathname).locale : locale;
+    setLang(fromUrl);
+    // setLang no-ops when unchanged, so make sure <html lang> is right even
+    // if the store already matches (e.g. after recovering from global-error).
     document.documentElement.lang = fromUrl;
-  }
+  }, [pathname, locale]);
 
   return null;
 }
