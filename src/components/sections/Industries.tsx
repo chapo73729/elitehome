@@ -12,6 +12,7 @@ import {
 } from "framer-motion";
 import { SectionHeading } from "@/components/ui/Section";
 import { Reveal } from "@/components/ui/Reveal";
+import { Compile } from "@/components/ui/Compile";
 import { ChapterNumeral } from "@/components/ui/ChapterNumeral";
 import { CanvasMotif } from "@/components/ui/CanvasMotif";
 import { useContent } from "@/lib/content";
@@ -233,12 +234,17 @@ export function Industries() {
         <ChapterNumeral n="03" label="SERVICES" />
       </div>
 
-      <SectionHeading
-        index="03"
-        eyebrow={c.eyebrow}
-        title={c.title}
-        intro={c.intro}
-      />
+      <div className="container-x">
+        <Compile label="services" index="03" disabled={perf}>
+          <SectionHeading
+            flush
+            index="03"
+            eyebrow={c.eyebrow}
+            title={c.title}
+            intro={c.intro}
+          />
+        </Compile>
+      </div>
 
       <div className="container-x mt-16">
         <div className="relative grid gap-x-10 lg:grid-cols-[1fr_minmax(280px,38%)]">

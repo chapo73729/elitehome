@@ -4,6 +4,7 @@ import { useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { Reveal } from "@/components/ui/Reveal";
 import { ChapterNumeral } from "@/components/ui/ChapterNumeral";
+import { Compile } from "@/components/ui/Compile";
 import { useContent } from "@/lib/content";
 import { WorldMap, type FocusInfo } from "./WorldMap";
 
@@ -30,36 +31,38 @@ export function GlobalNetwork() {
           {/* heading plate — in-flow ABOVE the map on mobile (no collision with
               the city labels), overlaid top-left on the map from lg up. */}
           <div className="pointer-events-none relative z-10 mb-10 max-w-md px-[clamp(1.25rem,5vw,5rem)] lg:absolute lg:top-10 lg:mb-0 lg:max-w-sm lg:px-0 lg:left-[max(clamp(1.25rem,5vw,5rem),calc((100vw-1440px)/2+clamp(1.25rem,5vw,5rem)))]">
-            <Reveal>
-              <div className="flex items-center gap-3">
-                <span className="font-mono text-xs text-accent">02</span>
-                <span className="eyebrow">{c.eyebrow}</span>
-              </div>
-            </Reveal>
-            <Reveal delay={0.08}>
-              <h2 className="text-section-title mt-5 text-balance text-chalk">
-                {c.title}
-              </h2>
-            </Reveal>
-            <Reveal delay={0.16}>
-              <p className="mt-4 max-w-xs text-sm leading-relaxed text-mist">
-                {c.intro}
-              </p>
-            </Reveal>
+            <Compile label="network" index="02">
+              <Reveal>
+                <div className="flex items-center gap-3">
+                  <span className="font-mono text-xs text-accent">02</span>
+                  <span className="eyebrow">{c.eyebrow}</span>
+                </div>
+              </Reveal>
+              <Reveal delay={0.08}>
+                <h2 className="text-section-title mt-5 text-balance text-chalk">
+                  {c.title}
+                </h2>
+              </Reveal>
+              <Reveal delay={0.16}>
+                <p className="mt-4 max-w-xs text-sm leading-relaxed text-mist">
+                  {c.intro}
+                </p>
+              </Reveal>
 
-            {/* mono coordinate readout — tracks the focused hub, else idles
-                on the world view. Hardcoded mono vocabulary, non-translatable. */}
-            <div
-              aria-hidden
-              className="mt-6 font-mono text-[0.68rem] tracking-wider text-fog tabular-nums"
-            >
-              <span className="text-accent">▮</span>{" "}
-              {focus ? (
-                <span className="text-mist">{focus.coord}</span>
-              ) : (
-                <span>WORLD · 06 HUBS</span>
-              )}
-            </div>
+              {/* mono coordinate readout — tracks the focused hub, else idles
+                  on the world view. Hardcoded mono vocabulary, non-translatable. */}
+              <div
+                aria-hidden
+                className="mt-6 font-mono text-[0.68rem] tracking-wider text-fog tabular-nums"
+              >
+                <span className="text-accent">▮</span>{" "}
+                {focus ? (
+                  <span className="text-mist">{focus.coord}</span>
+                ) : (
+                  <span>WORLD · 06 HUBS</span>
+                )}
+              </div>
+            </Compile>
           </div>
 
           {/* the map itself */}

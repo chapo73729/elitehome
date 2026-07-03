@@ -32,14 +32,18 @@ export function SectionHeading({
   eyebrow,
   title,
   intro,
+  flush = false,
 }: {
   index?: string;
   eyebrow: string;
   title: ReactNode;
   intro?: string;
+  /** Skip the built-in container — for callers that already provide one
+   *  (e.g. when wrapping the heading in a Compile frame). */
+  flush?: boolean;
 }) {
   return (
-    <div className="container-x">
+    <div className={flush ? undefined : "container-x"}>
       <Reveal>
         <div className="flex items-center gap-4">
           {index && (

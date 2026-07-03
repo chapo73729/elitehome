@@ -4,6 +4,7 @@ import { useId, useState } from "react";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { Reveal } from "@/components/ui/Reveal";
 import { ChapterNumeral } from "@/components/ui/ChapterNumeral";
+import { Compile } from "@/components/ui/Compile";
 import { SITE } from "@/lib/site";
 import { useContent } from "@/lib/content";
 import { audio } from "@/lib/audio";
@@ -80,7 +81,7 @@ export function Contact() {
       <div className="container-x relative">
         <ChapterNumeral n="04" label="ENGAGE" />
 
-        <div className="relative z-10">
+        <Compile label="engage" index="04" className="relative z-10">
           {/* Oversized payoff statement — the one white→mist gradient headline. */}
           <Reveal>
             <span className="eyebrow">{t.eyebrow}</span>
@@ -274,7 +275,7 @@ export function Contact() {
               )}
             </AnimatePresence>
           </div>
-        </div>
+        </Compile>
       </div>
     </section>
   );

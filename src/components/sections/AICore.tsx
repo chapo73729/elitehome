@@ -5,6 +5,7 @@ import dynamic from "next/dynamic";
 import { motion, useInView, useReducedMotion } from "framer-motion";
 import { Reveal } from "@/components/ui/Reveal";
 import { ChapterNumeral } from "@/components/ui/ChapterNumeral";
+import { Compile } from "@/components/ui/Compile";
 import { SceneBoundary } from "@/components/three/SceneBoundary";
 import { useSceneVisibility } from "@/hooks/useSceneVisibility";
 import { useContent } from "@/lib/content";
@@ -119,7 +120,7 @@ export function AICore() {
             <div className="relative">
               <ChapterNumeral n="01" label="INTELLIGENCE" />
 
-              <div className="relative z-10">
+              <Compile label="ai-core" index="01" className="relative z-10">
                 <Reveal>
                   <span className="eyebrow">{c.eyebrow}</span>
                 </Reveal>
@@ -182,7 +183,7 @@ export function AICore() {
                     </a>
                   </div>
                 </Reveal>
-              </div>
+              </Compile>
             </div>
           </div>
         </div>
