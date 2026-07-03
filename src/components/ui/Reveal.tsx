@@ -11,15 +11,20 @@ export function Reveal({
   y = 28,
   className,
   once = true,
+  as: Tag = "div",
 }: {
   children: ReactNode;
   delay?: number;
   y?: number;
   className?: string;
   once?: boolean;
+  /** Render as a specific element (e.g. "li" inside a ul/ol so the list
+   *  keeps valid direct children for assistive tech). */
+  as?: "div" | "li" | "span" | "section";
 }) {
+  const MTag = motion[Tag];
   return (
-    <motion.div
+    <MTag
       className={className}
       initial={{ opacity: 0, y }}
       whileInView={{ opacity: 1, y: 0 }}
@@ -27,7 +32,7 @@ export function Reveal({
       transition={{ duration: 0.9, ease: EASE, delay }}
     >
       {children}
-    </motion.div>
+    </MTag>
   );
 }
 

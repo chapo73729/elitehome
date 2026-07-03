@@ -239,13 +239,11 @@ export function IndustryDetail({
           <div className="lg:col-span-8">
             <ul className="grid gap-px overflow-hidden rounded-3xl hairline sm:grid-cols-2">
               {industry.deliverables.map((d, i) => (
-                <Reveal key={d} delay={(i % 2) * 0.06}>
-                  <li className="flex h-full items-start gap-4 bg-ink p-6">
-                    <span className="mt-1 font-mono text-xs" style={{ color: accent }} aria-hidden>
-                      ✓
-                    </span>
-                    <span className="text-chalk">{d}</span>
-                  </li>
+                <Reveal as="li" key={d} delay={(i % 2) * 0.06} className="flex h-full items-start gap-4 bg-ink p-6">
+                  <span className="mt-1 font-mono text-xs" style={{ color: accent }} aria-hidden>
+                    ✓
+                  </span>
+                  <span className="text-chalk">{d}</span>
                 </Reveal>
               ))}
             </ul>
@@ -265,16 +263,14 @@ export function IndustryDetail({
           </Reveal>
           <ol className="mt-12 grid gap-px overflow-hidden rounded-3xl hairline md:grid-cols-3">
             {industry.engagement.map((step, i) => (
-              <Reveal key={step.t} delay={i * 0.08}>
-                <li className="flex h-full flex-col bg-ink p-7">
-                  <div className="flex items-center gap-3">
-                    <span className="font-mono text-xs" style={{ color: accent }}>
-                      {String(i + 1).padStart(2, "0")}
-                    </span>
-                    <span className="font-display text-lg font-semibold text-chalk">{step.t}</span>
-                  </div>
-                  <p className="mt-3 text-sm text-mist">{step.d}</p>
-                </li>
+              <Reveal as="li" key={step.t} delay={i * 0.08} className="flex h-full flex-col bg-ink p-7">
+                <div className="flex items-center gap-3">
+                  <span className="font-mono text-xs" style={{ color: accent }}>
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
+                  <span className="font-display text-lg font-semibold text-chalk">{step.t}</span>
+                </div>
+                <p className="mt-3 text-sm text-mist">{step.d}</p>
               </Reveal>
             ))}
           </ol>
@@ -323,8 +319,7 @@ export function IndustryDetail({
             </Reveal>
             <ul className="mt-12 grid gap-px overflow-hidden rounded-3xl hairline sm:grid-cols-2">
               {relatedWork.map((w, i) => (
-                <Reveal key={w.slug} delay={(i % 2) * 0.06}>
-                  <li>
+                <Reveal as="li" key={w.slug} delay={(i % 2) * 0.06}>
                     <LocaleLink
                       href={`/work/${w.slug}`}
                       className="group flex h-full flex-col bg-ink p-7 transition-colors duration-500 hover:bg-smoke"
@@ -341,7 +336,6 @@ export function IndustryDetail({
                         <span className="transition-transform duration-300 group-hover:translate-x-1" aria-hidden>→</span>
                       </span>
                     </LocaleLink>
-                  </li>
                 </Reveal>
               ))}
             </ul>
