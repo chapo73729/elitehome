@@ -8,11 +8,20 @@ import { useDeviceTier, useLite, LITE_FACTOR, type Tier } from "@/hooks/useDevic
 
 const vertex = /* glsl */ `
   uniform float uTime;
+  uniform float uAdvance; // accumulated dive distance (CPU integrates 1 scalar)
   attribute float aScale;
   attribute float aSeed;
+  attribute float aSpeed;
   varying float vFade;
   void main() {
-    vec4 mv = modelViewMatrix * vec4(position, 1.0);
+    // advect along +Z entirely on the GPU: wrap through [-60, 4] so points
+    // stream past the camera and respawn at the far plane — no CPU buffer
+    // rewrites, no per-frame VBO upload.
+    const float RANGE = 64.0; // 60 behind + 4 past the camera
+    vec3 pos = position;
+    pos.z = -60.0 + mod(position.z + 60.0 + uAdvance * aSpeed, RANGE);
+
+    vec4 mv = modelViewMatrix * vec4(pos, 1.0);
     // fade in from the far plane, fade out as it passes the camera
     float depth = -mv.z;
     vFade = smoothstep(0.0, 6.0, depth) * smoothstep(60.0, 30.0, depth);
@@ -54,20 +63,17 @@ function Stream({
 }) {
   const ref = useRef<THREE.Points>(null);
   const matRef = useRef<THREE.ShaderMaterial>(null);
+  const advance = useRef(0);
   const DEPTH = 60;
 
-  const { positions, scales, seeds, radii, angles, speeds } = useMemo(() => {
+  const { positions, scales, seeds, speeds } = useMemo(() => {
     const positions = new Float32Array(count * 3);
     const scales = new Float32Array(count);
     const seeds = new Float32Array(count);
-    const radii = new Float32Array(count);
-    const angles = new Float32Array(count);
     const speeds = new Float32Array(count);
     for (let i = 0; i < count; i++) {
       const r = 1.5 + Math.pow(Math.random(), 0.6) * 12;
       const a = Math.random() * Math.PI * 2;
-      radii[i] = r;
-      angles[i] = a;
       speeds[i] = 0.6 + Math.random() * 0.8;
       positions[i * 3] = Math.cos(a) * r;
       positions[i * 3 + 1] = Math.sin(a) * r;
@@ -75,12 +81,13 @@ function Stream({
       scales[i] = Math.random() * 1.8 + 0.5;
       seeds[i] = Math.random();
     }
-    return { positions, scales, seeds, radii, angles, speeds };
+    return { positions, scales, seeds, speeds };
   }, [count]);
 
   const uniforms = useMemo(
     () => ({
       uTime: { value: 0 },
+      uAdvance: { value: 0 },
       uColorA: { value: new THREE.Color("#6b9dff") },
       uColorB: { value: new THREE.Color("#4f8cff") },
     }),
@@ -92,24 +99,10 @@ function Stream({
     const p = progress.current;
     // Calmer ceiling than a frantic starfield: the dive eases out as the
     // manifesto locks, so the end reads composed rather than chaotic.
+    // The CPU integrates ONE scalar; the whole field advects in the vertex
+    // shader (per-point speed via aSpeed).
     const base = 4 + p * 38;
-    const geo = ref.current?.geometry as THREE.BufferGeometry | undefined;
-    if (geo) {
-      const pos = geo.attributes.position as THREE.BufferAttribute;
-      const arr = pos.array as Float32Array;
-      for (let i = 0; i < count; i++) {
-        let z = arr[i * 3 + 2] + base * speeds[i] * dt;
-        if (z > 4) {
-          z = -DEPTH;
-          // gentle radial reshuffle on respawn keeps the stream lively
-          angles[i] += 0.3;
-          arr[i * 3] = Math.cos(angles[i]) * radii[i];
-          arr[i * 3 + 1] = Math.sin(angles[i]) * radii[i];
-        }
-        arr[i * 3 + 2] = z;
-      }
-      pos.needsUpdate = true;
-    }
+    advance.current += base * dt;
     if (ref.current) {
       // Roll spins up mid-dive then settles toward 0 as p→1, so streaks
       // resolve into near-vertical "lines of code" instead of a roll.
@@ -118,15 +111,19 @@ function Stream({
       // ease any accumulated roll back toward vertical as we lock
       ref.current.rotation.z *= 1 - Math.min(1, p * 1.2) * dt * 1.5;
     }
-    if (matRef.current) matRef.current.uniforms.uTime.value = state.clock.elapsedTime;
+    if (matRef.current) {
+      matRef.current.uniforms.uTime.value = state.clock.elapsedTime;
+      matRef.current.uniforms.uAdvance.value = advance.current;
+    }
   });
 
   return (
-    <points ref={ref}>
+    <points ref={ref} frustumCulled={false}>
       <bufferGeometry>
         <bufferAttribute attach="attributes-position" args={[positions, 3]} />
         <bufferAttribute attach="attributes-aScale" args={[scales, 1]} />
         <bufferAttribute attach="attributes-aSeed" args={[seeds, 1]} />
+        <bufferAttribute attach="attributes-aSpeed" args={[speeds, 1]} />
       </bufferGeometry>
       <shaderMaterial
         ref={matRef}
