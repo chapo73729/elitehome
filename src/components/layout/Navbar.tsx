@@ -88,7 +88,7 @@ export function Navbar({ ready = true }: { ready?: boolean }) {
         transition={{ duration: 1, ease: [0.16, 1, 0.3, 1], delay: 0.2 }}
         className={`fixed inset-x-0 top-0 z-[120] transition-colors duration-500 ${
           scrolled
-            ? "border-b border-white/[0.06] bg-void/70 backdrop-blur-xl"
+            ? "border-b border-white/[0.06] bg-void/85 backdrop-blur-xl"
             : "border-b border-transparent"
         }`}
       >

@@ -24,8 +24,10 @@ export function ChapterNumeral({
         className
       )}
     >
+      {/* fainter on mobile, where the small digit sits right behind the
+          eyebrow text — full presence from md up */}
       <span
-        className="text-mega block font-display leading-none"
+        className="text-mega block font-display leading-none opacity-55 md:opacity-100"
         style={{
           color: "color-mix(in oklab, var(--color-accent) 14%, transparent)",
         }}
@@ -33,7 +35,10 @@ export function ChapterNumeral({
         {n}
       </span>
       {label && (
-        <span className="ml-[0.12em] block font-mono text-[0.6rem] uppercase tracking-[0.42em] text-fog/60">
+        // hidden below md: at mobile sizes the numeral is only ~3rem tall, so
+        // this register mark lands right on the section eyebrow and reads as
+        // text-on-text. Desktop has the room; phones keep just the ghost digit.
+        <span className="ml-[0.12em] hidden font-mono text-[0.6rem] uppercase tracking-[0.42em] text-fog/60 md:block">
           {label}
         </span>
       )}
