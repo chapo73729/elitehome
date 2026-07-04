@@ -12,6 +12,7 @@ const T = {
   en: {
     cities: "Prague · Geneva · Singapore",
     cities2: "Dubai · Tokyo · New York",
+    sitemap: "Sitemap",
     about: "About",
     work: "Work",
     approach: "Approach",
@@ -21,6 +22,7 @@ const T = {
   fr: {
     cities: "Prague · Genève · Singapour",
     cities2: "Dubaï · Tokyo · New York",
+    sitemap: "Plan du site",
     about: "À propos",
     work: "Réalisations",
     approach: "Approche",
@@ -29,6 +31,9 @@ const T = {
   },
 } as const;
 
+/** [01]-style register mark — the homepage's numbered index idiom. */
+const num = (i: number) => `[${String(i + 1).padStart(2, "0")}]`;
+
 export function Footer() {
   const year = 2026;
   const c = useContent();
@@ -36,56 +41,96 @@ export function Footer() {
   const t = T[useLang()];
   return (
     <footer className="relative z-10 hairline-t bg-void">
-      <div className="container-x py-20">
-        <div className="grid gap-12 md:grid-cols-12">
-          <div className="md:col-span-5">
-            <div className="font-display text-3xl font-bold tracking-tight md:text-4xl">
-              {SITE.name}
-              <span className="text-accent">®</span>
-            </div>
-            <p className="mt-4 max-w-sm text-mist">{f.tagline}</p>
-          </div>
+      <div className="container-x pb-14 pt-20 md:pb-16 md:pt-28">
+        {/* editorial masthead — the studio signs off at display scale */}
+        <p className="text-giant select-none">
+          <span className="text-gradient">{SITE.name}</span>
+          <span className="text-accent">®</span>
+        </p>
+        <p className="mt-6 max-w-md text-mist md:text-lg">{f.tagline}</p>
 
-          <div className="md:col-span-3 md:col-start-7">
-            <div className="eyebrow mb-5">{f.index}</div>
-            <ul className="space-y-3">
-              {c.nav.map((n) => (
-                <li key={n.href}>
+        {/* index + contact — hairline-ruled mono registers */}
+        <div className="mt-16 grid gap-14 md:mt-24 md:grid-cols-12 md:gap-10">
+          <nav aria-label={f.index} className="md:col-span-6 lg:col-span-5">
+            <div className="eyebrow mb-6">{f.index}</div>
+            <ul>
+              {c.nav.map((n, i) => (
+                <li key={n.href} className="hairline-t">
                   <button
                     onClick={() => scrollToTarget(n.href)}
-                    className="link-underline text-mist transition-colors hover:text-chalk"
+                    className="group flex w-full items-baseline gap-5 py-3 text-left"
                   >
-                    {n.label}
+                    <span className="font-mono text-xs text-accent tabular-nums">
+                      {num(i)}
+                    </span>
+                    <span className="font-mono text-sm tracking-wider text-mist transition-colors group-hover:text-chalk">
+                      {n.label}
+                    </span>
+                    <span
+                      aria-hidden
+                      className="ml-auto font-mono text-xs text-fog opacity-0 transition-opacity group-hover:opacity-100"
+                    >
+                      →
+                    </span>
                   </button>
                 </li>
               ))}
             </ul>
-          </div>
+          </nav>
 
-          <div className="md:col-span-3 md:col-start-10">
-            <div className="eyebrow mb-5">{f.contact}</div>
-            <button
-              onClick={async () => {
-                if (await copyText(SITE.email)) toast(f.copied, "✓");
-              }}
-              data-cursor
-              className="link-underline text-left text-mist transition-colors hover:text-chalk"
-              title={f.copyHint}
-            >
-              {SITE.email}
-            </button>
-            <p className="mt-6 text-sm text-fog">
-              {t.cities}
-              <br />
-              {t.cities2}
-            </p>
-            <div className="mt-8">
+          <div className="md:col-span-6 md:col-start-7 md:border-l md:border-[color-mix(in_oklab,var(--color-chalk)_7%,transparent)] md:pl-10 lg:col-span-5 lg:col-start-8">
+            <div className="eyebrow mb-6">{f.contact}</div>
+            <ul>
+              <li className="hairline-t">
+                <button
+                  onClick={async () => {
+                    if (await copyText(SITE.email)) toast(f.copied, "✓");
+                  }}
+                  data-cursor
+                  className="group flex w-full items-baseline gap-5 py-3 text-left"
+                  title={f.copyHint}
+                >
+                  <span className="font-mono text-xs text-accent tabular-nums">
+                    {num(c.nav.length)}
+                  </span>
+                  <span className="font-mono text-sm tracking-wider text-mist transition-colors group-hover:text-chalk">
+                    {SITE.email}
+                  </span>
+                </button>
+              </li>
+              <li className="hairline-t flex items-baseline gap-5 py-3">
+                <span
+                  aria-hidden
+                  className="font-mono text-xs text-accent tabular-nums"
+                >
+                  {num(c.nav.length + 1)}
+                </span>
+                <span className="font-mono text-sm tracking-wider text-fog">
+                  {t.cities}
+                </span>
+              </li>
+              <li className="hairline-t flex items-baseline gap-5 py-3">
+                <span
+                  aria-hidden
+                  className="font-mono text-xs text-accent tabular-nums"
+                >
+                  {num(c.nav.length + 2)}
+                </span>
+                <span className="font-mono text-sm tracking-wider text-fog">
+                  {t.cities2}
+                </span>
+              </li>
+            </ul>
+            <div className="mt-10">
               <AccentSwitcher />
             </div>
           </div>
         </div>
 
-        <div className="mt-16 flex flex-wrap items-center gap-x-6 gap-y-2 hairline-t pt-8 font-mono text-xs tracking-wider text-fog">
+        <nav
+          aria-label={t.sitemap}
+          className="mt-16 flex flex-wrap items-center gap-x-6 gap-y-2 hairline-t pt-8 font-mono text-xs tracking-wider text-fog md:mt-24"
+        >
           <LocaleLink href="/about" className="inline-block py-1 transition-colors hover:text-chalk">
             {t.about}
           </LocaleLink>
@@ -113,7 +158,7 @@ export function Footer() {
           <LocaleLink href="/legal/terms" className="inline-block py-1 transition-colors hover:text-chalk">
             {f.terms}
           </LocaleLink>
-        </div>
+        </nav>
 
         <div className="mt-6 flex flex-col items-start justify-between gap-4 font-mono text-xs tracking-wider text-fog md:flex-row md:items-center">
           <span>

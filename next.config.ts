@@ -19,33 +19,38 @@ const nextConfig: NextConfig = {
     ];
   },
   async headers() {
-    const csp = [
-      "default-src 'self'",
-      // Next.js injects inline bootstrap scripts; styled-jsx/framer use inline styles
-      "script-src 'self' 'unsafe-inline'",
-      "style-src 'self' 'unsafe-inline'",
-      "img-src 'self' data: blob:",
-      "font-src 'self' data:",
-      "connect-src 'self' https://api.web3forms.com",
-      "worker-src 'self' blob:",
-      "frame-ancestors 'self'",
-      "base-uri 'self'",
-      "form-action 'self' https://api.web3forms.com",
-      "object-src 'none'",
-      "upgrade-insecure-requests",
-    ].join("; ");
-
+    // CSP note: a nonce + 'strict-dynamic' policy is NOT viable here — the
+    // site is SSG and prerendered inline scripts can't carry per-request
+    // nonces (verified: it blocked every script). 'unsafe-inline' for
+    // script-src is the workable model for static output.
     return [
       {
         source: "/(.*)",
         headers: [
-          { key: "Content-Security-Policy", value: csp },
+          {
+            key: "Content-Security-Policy",
+            value: [
+              "default-src 'self'",
+              "script-src 'self' 'unsafe-inline'",
+              "style-src 'self' 'unsafe-inline'",
+              "img-src 'self' data: blob:",
+              "font-src 'self' data:",
+              "connect-src 'self' https://api.web3forms.com",
+              "worker-src 'self' blob:",
+              "frame-ancestors 'self'",
+              "base-uri 'self'",
+              "form-action 'self' https://api.web3forms.com",
+              "object-src 'none'",
+              "upgrade-insecure-requests",
+            ].join("; "),
+          },
           { key: "X-Content-Type-Options", value: "nosniff" },
           { key: "X-Frame-Options", value: "SAMEORIGIN" },
           { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
           {
             key: "Permissions-Policy",
-            value: "camera=(), microphone=(), geolocation=(), interest-cohort=()",
+            value:
+              "camera=(), microphone=(), geolocation=(), payment=(), usb=(), accelerometer=(), gyroscope=(), magnetometer=(), display-capture=()",
           },
           {
             key: "Strict-Transport-Security",

@@ -33,6 +33,22 @@ function rateLimited(ip: string): boolean {
 }
 
 export async function POST(req: Request) {
+  // same-origin check: browsers send Origin on cross-site POSTs — if it's
+  // present and doesn't match the Host we're serving, reject.
+  const origin = req.headers.get("origin");
+  if (origin) {
+    let originHost: string | null = null;
+    try {
+      originHost = new URL(origin).host;
+    } catch {
+      originHost = null;
+    }
+    const host = req.headers.get("host");
+    if (!originHost || !host || originHost !== host) {
+      return NextResponse.json({ ok: false, error: "forbidden" }, { status: 403 });
+    }
+  }
+
   const ip =
     req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
     req.headers.get("x-real-ip") ||
@@ -50,7 +66,8 @@ export async function POST(req: Request) {
 
   const name = String(body.name ?? "").trim();
   const email = String(body.email ?? "").trim();
-  const domain = String(body.domain ?? "").trim();
+  // strip CR/LF so `domain` can never smuggle extra lines into the subject
+  const domain = String(body.domain ?? "").replace(/[\r\n]/g, "").trim();
   const message = String(body.message ?? "").trim();
   const honeypot = String(body.company ?? "").trim(); // spam trap
 
@@ -62,6 +79,7 @@ export async function POST(req: Request) {
     name.length > 120 ||
     email.length > 160 ||
     message.length > 4000 ||
+    domain.length > 80 ||
     !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)
   ) {
     return NextResponse.json({ ok: false, error: "invalid" }, { status: 422 });

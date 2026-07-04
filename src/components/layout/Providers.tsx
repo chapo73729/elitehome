@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import { MotionConfig } from "framer-motion";
 import { usePathname } from "next/navigation";
 import { SmoothScroll } from "./SmoothScroll";
+import { PageTransition } from "./PageTransition";
 import { AmbientBackdrop } from "./AmbientBackdrop";
 import { Atmosphere } from "./Atmosphere";
 import { Cursor } from "./Cursor";
@@ -58,6 +59,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
       <Atmosphere />
       <div className="scanlines" aria-hidden />
       <Cursor />
+      <PageTransition />
       <ScrollProgress />
       <SoundSystem />
       <Shortcuts />

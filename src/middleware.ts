@@ -4,6 +4,12 @@ import { defaultLocale, isLocale, type AppLocale } from "@/lib/i18n";
 
 const COOKIE = "ardlabs-lang";
 
+/* NOTE on CSP: a per-request nonce + 'strict-dynamic' policy was tried here
+   and reverted — this site is statically generated (SSG), so Next cannot
+   stamp a per-request nonce onto prerendered inline scripts, and the policy
+   blocked every script on the page. The CSP lives in next.config.ts headers()
+   with 'unsafe-inline', which is the workable model for SSG output. */
+
 function detectLocale(req: NextRequest): AppLocale {
   // 1) explicit cookie preference
   const cookie = req.cookies.get(COOKIE)?.value;

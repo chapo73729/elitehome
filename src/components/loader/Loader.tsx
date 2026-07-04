@@ -7,19 +7,31 @@ import { useLang } from "@/lib/lang";
 const T = {
   en: {
     wordmark: "ARDLABS® · Digital Engineering Studio",
-    initializing: "Initializing core",
-    assembling: "Assembling lattice",
-    calibrating: "Calibrating",
-    entering: "Entering",
+    core: "core",
+    lattice: "lattice",
+    interface: "interface",
   },
   fr: {
     wordmark: "ARDLABS® · Studio d’ingénierie numérique",
-    initializing: "Initialisation du cœur",
-    assembling: "Assemblage de la trame",
-    calibrating: "Calibrage",
-    entering: "Entrée",
+    core: "cœur",
+    lattice: "trame",
+    interface: "interface",
   },
 } as const;
+
+const EASE = [0.16, 1, 0.3, 1] as const;
+
+/**
+ * « Compile » visual vocabulary — the same corner-bracket paths as
+ * ui/Compile.tsx. Each path starts at a leg tip and runs through the corner,
+ * so the draw-on reads as the bracket snapping into the corner.
+ */
+const CORNERS = [
+  { d: "M17 1L1 1L1 17", cls: "left-5 top-5 md:left-8 md:top-8" },
+  { d: "M7 1L23 1L23 17", cls: "right-5 top-5 md:right-8 md:top-8" },
+  { d: "M1 7L1 23L17 23", cls: "bottom-5 left-5 md:bottom-8 md:left-8" },
+  { d: "M23 7L23 23L7 23", cls: "bottom-5 right-5 md:bottom-8 md:right-8" },
+] as const;
 
 type Phase = "ignite" | "form" | "hold" | "explode" | "done";
 
@@ -276,6 +288,13 @@ export function Loader({ onComplete }: { onComplete: () => void }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // compile annotation vocabulary, phase by phase
+  const compileWord =
+    phase === "ignite" ? t.core : phase === "form" ? t.lattice : t.interface;
+  // "ok" lands once the lattice holds; the chrome fades as we pass through
+  const compiled = phase === "hold" || phase === "explode" || phase === "done";
+  const fading = phase === "explode" || phase === "done";
+
   return (
     <AnimatePresence>
       {!hidden && (
@@ -292,21 +311,60 @@ export function Loader({ onComplete }: { onComplete: () => void }) {
         >
           <canvas ref={canvasRef} className="absolute inset-0" />
 
-          {/* progress + status readout */}
+          {/* « Compile » corner brackets — draw on during ignite, rest faint */}
+          {CORNERS.map((cn, i) => (
+            <svg
+              key={cn.cls}
+              aria-hidden
+              viewBox="0 0 24 24"
+              fill="none"
+              className={`pointer-events-none absolute h-5 w-5 select-none text-accent ${cn.cls}`}
+            >
+              <motion.path
+                d={cn.d}
+                stroke="currentColor"
+                strokeWidth={1.5}
+                initial={{ pathLength: 0, opacity: 0.9 }}
+                animate={{ pathLength: 1, opacity: fading ? 0 : 0.3 }}
+                transition={{
+                  pathLength: {
+                    delay: 0.05 + i * 0.07,
+                    duration: 0.5,
+                    ease: EASE,
+                  },
+                  opacity: fading
+                    ? { duration: 0.4, ease: "easeOut" }
+                    : { delay: 0.7, duration: 0.45, ease: "easeOut" },
+                }}
+              />
+            </svg>
+          ))}
+
+          {/* progress + compile-annotation readout */}
           <motion.div
             className="absolute bottom-10 left-0 right-0 flex items-end justify-between px-6 md:px-14 font-mono text-[0.7rem] tracking-[0.3em] text-fog"
-            animate={{ opacity: phase === "explode" || phase === "done" ? 0 : 1 }}
+            animate={{ opacity: fading ? 0 : 1 }}
             transition={{ duration: 0.4 }}
           >
             <span className="uppercase">{t.wordmark}</span>
-            <span className="hidden text-accent-2/80 uppercase sm:inline">
-              {phase === "ignite"
-                ? t.initializing
-                : phase === "form"
-                  ? t.assembling
-                  : phase === "hold"
-                    ? t.calibrating
-                    : t.entering}
+            <span className="hidden items-baseline normal-case tracking-wider text-accent/80 sm:inline-flex">
+              <motion.span
+                key={compileWord}
+                className="inline-block whitespace-nowrap"
+                initial={{ clipPath: "inset(0 100% 0 0)" }}
+                animate={{ clipPath: "inset(0 0% 0 0)" }}
+                transition={{ duration: 0.45, ease: "linear" }}
+              >
+                {`// compile: ${compileWord} …`}
+              </motion.span>
+              <motion.span
+                className="inline-block"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: compiled ? 1 : 0 }}
+                transition={{ duration: 0.2, ease: "linear" }}
+              >
+                &nbsp;ok
+              </motion.span>
             </span>
             <span className="text-chalk tabular-nums">
               {String(progress).padStart(3, "0")}

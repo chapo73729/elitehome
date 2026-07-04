@@ -3,6 +3,8 @@
 import { LocaleLink } from "@/components/ui/LocaleLink";
 import { INSIGHTS, getInsight, localizeInsight } from "@/lib/insights";
 import { PageHeaderFX } from "@/components/ui/PageHeaderFX";
+import { Reveal } from "@/components/ui/Reveal";
+import { ChapterNumeral } from "@/components/ui/ChapterNumeral";
 import { useLang, type Lang } from "@/lib/lang";
 
 const T = {
@@ -26,6 +28,8 @@ function fmt(date: string, lang: Lang) {
   });
 }
 
+const pad2 = (n: number) => String(n).padStart(2, "0");
+
 export function InsightArticleView({ slug }: { slug: string }) {
   const lang = useLang();
   const t = T[lang];
@@ -33,6 +37,7 @@ export function InsightArticleView({ slug }: { slug: string }) {
   const base = getInsight(slug);
   if (!base) return null;
   const post = localizeInsight(base, lang);
+  const num = pad2(INSIGHTS.findIndex((i) => i.slug === post.slug) + 1);
 
   const more = INSIGHTS.filter((i) => i.slug !== post.slug)
     .slice(0, 2)
@@ -40,73 +45,140 @@ export function InsightArticleView({ slug }: { slug: string }) {
 
   return (
     <main className="relative">
-      <section className="relative overflow-hidden pb-8 pt-40">
+      {/* ---------- HEADER — ghost entry numeral, mono dateline register ---------- */}
+      <section className="relative overflow-hidden pb-10 pt-40">
         <PageHeaderFX accent={post.accent} />
-        <div
-          className="pointer-events-none absolute -top-40 left-1/2 h-[45vh] w-[45vh] -translate-x-1/2 rounded-full blur-[140px]"
-          style={{ backgroundColor: `${post.accent}1f` }}
-        />
-        <div className="container-x relative max-w-3xl">
-          <LocaleLink
-            href="/insights"
-            className="link-underline font-mono text-xs tracking-widest text-mist"
-          >
-            {t.back}
-          </LocaleLink>
-          <div className="mt-8 flex flex-wrap items-center gap-4 font-mono text-xs tracking-widest text-fog">
-            <span style={{ color: post.accent }}>{post.category}</span>
-            <span>{fmt(post.date, lang)}</span>
-            <span>{post.readingMinutes} {t.minRead}</span>
+        <div className="container-x relative">
+          <div className="mx-auto max-w-[44rem]">
+            <Reveal>
+              <LocaleLink
+                href="/insights"
+                data-cursor
+                className="link-underline font-mono text-xs tracking-widest text-mist"
+              >
+                {t.back}
+              </LocaleLink>
+            </Reveal>
+
+            <div className="relative mt-12">
+              <ChapterNumeral n={num} label="insight" />
+              <div className="relative z-10">
+                <Reveal delay={0.05}>
+                  <div className="flex flex-wrap items-center gap-x-4 gap-y-2 font-mono text-xs tracking-widest text-fog">
+                    <span className="text-accent tabular-nums">{num}</span>
+                    <span style={{ color: post.accent }}>{post.category}</span>
+                    <span>{fmt(post.date, lang)}</span>
+                    <span>
+                      {post.readingMinutes} {t.minRead}
+                    </span>
+                  </div>
+                </Reveal>
+                <Reveal delay={0.12}>
+                  <h1 className="text-giant text-gradient mt-6 text-balance">
+                    {post.title}
+                  </h1>
+                </Reveal>
+                <Reveal delay={0.2}>
+                  <p className="mt-6 text-balance text-lg leading-relaxed text-mist">
+                    {post.excerpt}
+                  </p>
+                </Reveal>
+              </div>
+            </div>
           </div>
-          <h1 className="text-giant text-gradient mt-4 text-balance">
-            {post.title}
-          </h1>
-          <p className="mt-6 text-balance text-lg text-mist">{post.excerpt}</p>
         </div>
       </section>
 
-      <article className="relative z-10 bg-void pb-24 pt-8">
-        <div className="container-x max-w-3xl space-y-12">
-          {post.body.map((block) => (
-            <section key={block.heading}>
-              <h2 className="font-display text-2xl font-semibold text-chalk">
-                {block.heading}
-              </h2>
-              <div className="mt-4 space-y-4">
-                {block.paragraphs.map((p, i) => (
-                  <p key={i} className="leading-relaxed text-mist">
-                    {p}
-                  </p>
-                ))}
-              </div>
-            </section>
-          ))}
+      {/* ---------- BODY — a single reading measure, numbered movements ---------- */}
+      <article className="relative z-10 bg-void pb-24 pt-10">
+        <div className="container-x">
+          <div className="mx-auto max-w-[44rem]">
+            {post.body.map((block, i) => (
+              <section
+                key={block.heading}
+                className={i === 0 ? undefined : "mt-16 md:mt-20"}
+              >
+                <Reveal>
+                  <div className="flex items-center gap-4">
+                    <span className="font-mono text-xs text-accent tabular-nums">
+                      {pad2(i + 1)}
+                    </span>
+                    <span className="h-px flex-1 bg-gradient-to-r from-white/15 to-transparent" />
+                  </div>
+                  <h2 className="mt-5 max-w-xl text-balance font-display text-2xl font-semibold tracking-tight text-chalk md:text-3xl">
+                    {block.heading}
+                  </h2>
+                </Reveal>
+                <div className="mt-6 space-y-5">
+                  {block.paragraphs.map((p, j) => (
+                    <p
+                      key={j}
+                      className="text-[1.0625rem] leading-[1.85] text-mist"
+                    >
+                      {p}
+                    </p>
+                  ))}
+                </div>
+              </section>
+            ))}
+
+            {/* mono end mark — hardcoded, non-translatable instrument readout */}
+            <div
+              aria-hidden
+              className="mt-16 flex items-center gap-4 font-mono text-[0.68rem] tracking-wider text-fog tabular-nums"
+            >
+              <span>
+                <span className="text-accent">▮</span> end of entry {num}
+              </span>
+              <span className="h-px flex-1 bg-gradient-to-r from-white/15 to-transparent" />
+            </div>
+          </div>
         </div>
       </article>
 
+      {/* ---------- KEEP READING — hairline index rows, no cards ---------- */}
       <section className="relative z-10 bg-void pb-32">
-        <div className="container-x max-w-3xl">
-          <div className="eyebrow mb-6 hairline-t pt-10">{t.keepReading}</div>
-          <ul className="grid gap-px overflow-hidden rounded-2xl hairline sm:grid-cols-2">
-            {more.map((p) => (
-              <li key={p.slug}>
-                <LocaleLink
-                  href={`/insights/${p.slug}`}
-                  className="group block h-full bg-ink p-6 transition-colors hover:bg-white/[0.03]"
-                >
-                  <span
-                    className="font-mono text-[0.7rem] tracking-widest"
-                    style={{ color: p.accent }}
+        <div className="container-x">
+          <div className="mx-auto max-w-[44rem]">
+            <Reveal>
+              <div className="flex items-center gap-4">
+                <span className="eyebrow">{t.keepReading}</span>
+                <span className="h-px flex-1 bg-gradient-to-r from-white/15 to-transparent" />
+              </div>
+            </Reveal>
+            <ul className="mt-8 border-b border-white/[0.07]">
+              {more.map((p, i) => (
+                <Reveal as="li" key={p.slug} delay={i * 0.06} className="hairline-t">
+                  <LocaleLink
+                    href={`/insights/${p.slug}`}
+                    data-cursor
+                    className="group flex items-baseline gap-5 py-6"
                   >
-                    {p.category}
-                  </span>
-                  <h3 className="mt-2 font-display text-lg font-semibold text-chalk transition-colors group-hover:text-gradient">
-                    {p.title}
-                  </h3>
-                </LocaleLink>
-              </li>
-            ))}
-          </ul>
+                    <span className="font-mono text-xs text-accent tabular-nums">
+                      {pad2(i + 1)}
+                    </span>
+                    <div className="flex-1">
+                      <span
+                        className="font-mono text-[0.65rem] uppercase tracking-[0.25em]"
+                        style={{ color: p.accent }}
+                      >
+                        {p.category}
+                      </span>
+                      <h3 className="mt-1.5 font-display text-xl font-semibold tracking-tight text-chalk transition-transform duration-500 group-hover:translate-x-1">
+                        {p.title}
+                      </h3>
+                    </div>
+                    <span
+                      aria-hidden
+                      className="font-mono text-xs text-fog transition-all duration-500 group-hover:translate-x-1 group-hover:text-chalk"
+                    >
+                      →
+                    </span>
+                  </LocaleLink>
+                </Reveal>
+              ))}
+            </ul>
+          </div>
         </div>
       </section>
     </main>
