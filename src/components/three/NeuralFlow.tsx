@@ -6,6 +6,7 @@ import { EffectComposer, Bloom } from "@react-three/postprocessing";
 import * as THREE from "three";
 import { simplexNoise } from "./noise.glsl";
 import { useDeviceTier, useLite, LITE_FACTOR } from "@/hooks/useDeviceTier";
+import { getJourney } from "@/lib/journey";
 
 /* ============================================================
    AI Core — a curl-noise flow field. Thousands of particles
@@ -166,7 +167,14 @@ function Flow({ count, activeMode = 0 }: { count: number; activeMode?: number })
       u.uSpeed.value += (m.uSpeed - u.uSpeed.value) * 0.05;
       u.uDrift.value += (m.uDrift - u.uDrift.value) * 0.05;
     }
-    if (ref.current) ref.current.rotation.y += delta * 0.05;
+    if (ref.current) {
+      ref.current.rotation.y += delta * 0.05;
+      // shared journey drift: the field rises as the page scrolls on — the
+      // same downward camera direction the hero establishes (anchored around
+      // this section's typical position in the page, ~0.35)
+      const j = getJourney();
+      ref.current.position.y = (j.progress - 0.35) * 1.6;
+    }
   });
 
   return (

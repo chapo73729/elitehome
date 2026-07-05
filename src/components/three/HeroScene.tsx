@@ -13,6 +13,7 @@ import { BlendFunction } from "postprocessing";
 import * as THREE from "three";
 import { ParticlePlanet } from "./ParticlePlanet";
 import { Starfield } from "./Starfield";
+import { getJourney } from "@/lib/journey";
 import { useDeviceTier, useLite, LITE_FACTOR, type Tier } from "@/hooks/useDeviceTier";
 
 /** Scroll-driven camera dolly + a cinematic fly-in synced to the loader clear. */
@@ -33,13 +34,17 @@ function CameraRig({ ready }: { ready: boolean }) {
     const baseZ = 6 - p * 3.4; // 6 -> 2.6 (travel into the field)
     const z = baseZ + intro.current * 9; // +9 farther at arrival, then dollies in
 
+    // the shared journey drift: as the page scrolls on, this camera keeps
+    // descending in the same direction every other scene continues — one
+    // camera passing between rooms
+    const j = getJourney();
     target.current.set(
       state.pointer.x * 0.4 * (1 - intro.current),
-      state.pointer.y * 0.3 * (1 - intro.current),
+      state.pointer.y * 0.3 * (1 - intro.current) - j.progress * 2.2,
       z
     );
     camera.position.lerp(target.current, ready ? 0.08 : 0.2);
-    camera.lookAt(0, 0, 0);
+    camera.lookAt(0, -j.progress * 1.4, 0);
   });
 
   return null;

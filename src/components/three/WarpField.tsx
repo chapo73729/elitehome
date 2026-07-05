@@ -5,6 +5,7 @@ import { Canvas, useFrame } from "@react-three/fiber";
 import { EffectComposer, Bloom, Vignette } from "@react-three/postprocessing";
 import * as THREE from "three";
 import { useDeviceTier, useLite, LITE_FACTOR, type Tier } from "@/hooks/useDeviceTier";
+import { getJourney } from "@/lib/journey";
 
 const vertex = /* glsl */ `
   uniform float uTime;
@@ -110,6 +111,10 @@ function Stream({
       ref.current.rotation.z += dt * roll;
       // ease any accumulated roll back toward vertical as we lock
       ref.current.rotation.z *= 1 - Math.min(1, p * 1.2) * dt * 1.5;
+      // shared journey drift: subtle rise in the same direction as the rest
+      // of the page (the dive itself stays dominant); anchored ~0.18
+      const j = getJourney();
+      ref.current.position.y = (j.progress - 0.18) * 1.1;
     }
     if (matRef.current) {
       matRef.current.uniforms.uTime.value = state.clock.elapsedTime;
