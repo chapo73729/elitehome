@@ -22,9 +22,13 @@ import { stripLocale } from "@/lib/i18n";
 export function MobileCTA() {
   const pathname = usePathname();
   const label = useContent().hero.engage;
-  const isHome = stripLocale(pathname).rest === "/";
+  const rest = stripLocale(pathname).rest;
+  const isHome = rest === "/";
   const href = isHome ? "#contact" : "/contact";
   const [show, setShow] = useState(false);
+  // redundant on the contact page itself — and it covered the brief-flow's
+  // bottom hint on mobile
+  const onContact = rest === "/contact";
 
   useEffect(() => {
     let consented = true;
@@ -44,6 +48,8 @@ export function MobileCTA() {
     window.addEventListener("ardlabs-consent-set", onConsent);
     return () => window.removeEventListener("ardlabs-consent-set", onConsent);
   }, []);
+
+  if (onContact) return null;
 
   return (
     <motion.div
