@@ -12,6 +12,7 @@ import { ChapterNumeral } from "@/components/ui/ChapterNumeral";
 import { Compile } from "@/components/ui/Compile";
 import { SITE } from "@/lib/site";
 import { useContent } from "@/lib/content";
+import { track } from "@vercel/analytics";
 import { audio } from "@/lib/audio";
 import { copyText, toast } from "@/lib/toast";
 
@@ -69,6 +70,8 @@ export function Contact() {
       return;
     }
     audio.click();
+    // conversion funnel: where do visitors drop out of the brief?
+    track("brief_step", { step: step + 1 });
     goTo(step + 1);
   };
 
@@ -116,6 +119,7 @@ export function Contact() {
       if (res.ok) {
         setStatus("sent");
         audio.success();
+        track("brief_transmitted", { domain: field });
         return;
       }
       // not configured / failed → graceful mail fallback to the PUBLIC address

@@ -24,6 +24,39 @@ export default function Og() {
           fontFamily: "sans-serif",
         }}
       >
+        {/* Compile signature: dashed blueprint frame + corner brackets */}
+        <div
+          style={{
+            position: "absolute",
+            top: 44,
+            left: 44,
+            right: 44,
+            bottom: 44,
+            border: "1px dashed rgba(79,140,255,0.35)",
+            display: "flex",
+          }}
+        />
+        {[
+          { top: 28, left: 28, borderTop: "3px solid rgba(79,140,255,0.9)", borderLeft: "3px solid rgba(79,140,255,0.9)" },
+          { top: 28, right: 28, borderTop: "3px solid rgba(79,140,255,0.9)", borderRight: "3px solid rgba(79,140,255,0.9)" },
+          { bottom: 28, left: 28, borderBottom: "3px solid rgba(79,140,255,0.9)", borderLeft: "3px solid rgba(79,140,255,0.9)" },
+          { bottom: 28, right: 28, borderBottom: "3px solid rgba(79,140,255,0.9)", borderRight: "3px solid rgba(79,140,255,0.9)" },
+        ].map((s, i) => (
+          <div key={i} style={{ position: "absolute", width: 34, height: 34, display: "flex", ...s }} />
+        ))}
+        <div
+          style={{
+            position: "absolute",
+            top: 62,
+            right: 70,
+            fontSize: 22,
+            letterSpacing: "0.1em",
+            color: "rgba(139,147,160,0.9)",
+            display: "flex",
+          }}
+        >
+          {"// compile: ardlabs … ok"}
+        </div>
         <div
           style={{
             fontSize: 150,
