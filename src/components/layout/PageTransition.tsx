@@ -4,6 +4,7 @@ import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import { usePathname } from "next/navigation";
 import { stripLocale } from "@/lib/i18n";
+import { audio } from "@/lib/audio";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 /** How long the void holds fully covering while the new route paints. */
@@ -67,6 +68,7 @@ export function PageTransition() {
     const { rest } = stripLocale(pathname);
     setLabel(rest === "/" ? "/index" : rest);
     setPhase("cover"); // overlay appears instantly, fully covering
+    audio.whoosh(); // soft filtered sweep under the reveal (no-op when muted)
     const t = window.setTimeout(() => setPhase("reveal"), HOLD_MS);
     return () => window.clearTimeout(t);
   }, [pathname, reduce]);

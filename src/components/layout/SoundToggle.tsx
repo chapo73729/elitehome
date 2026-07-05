@@ -2,12 +2,31 @@
 
 import { useEffect, useState } from "react";
 import { audio } from "@/lib/audio";
+import { useLang } from "@/lib/lang";
+
+const T = {
+  en: {
+    labelOn: "Mute sound",
+    labelOff: "Enable sound",
+    titleOn: "Sound on",
+    titleOff: "Sound off",
+  },
+  fr: {
+    labelOn: "Couper le son",
+    labelOff: "Activer le son",
+    titleOn: "Son activé",
+    titleOff: "Son désactivé",
+  },
+} as const;
 
 /** Animated speaker/equalizer toggle for the synthesized sound design. */
 export function SoundToggle({ className }: { className?: string }) {
   const [on, setOn] = useState(false);
+  const t = T[useLang()];
 
   useEffect(() => {
+    // reflect the persisted state if audio was enabled before mount
+    setOn(audio.enabled);
     const unsub = audio.subscribe(setOn);
     return () => {
       unsub();
@@ -18,8 +37,8 @@ export function SoundToggle({ className }: { className?: string }) {
     <button
       onClick={() => audio.toggle()}
       aria-pressed={on}
-      aria-label={on ? "Mute sound" : "Enable sound"}
-      title={on ? "Sound on" : "Sound off"}
+      aria-label={on ? t.labelOn : t.labelOff}
+      title={on ? t.titleOn : t.titleOff}
       data-cursor
       className={`flex h-9 items-center gap-[3px] rounded-full px-3 transition-colors duration-300 ${
         on ? "text-accent-2" : "text-fog hover:text-chalk"

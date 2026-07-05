@@ -115,6 +115,7 @@ export function Contact() {
       });
       if (res.ok) {
         setStatus("sent");
+        audio.success();
         return;
       }
       // not configured / failed → graceful mail fallback to the PUBLIC address
