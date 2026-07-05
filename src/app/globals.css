@@ -28,7 +28,8 @@
   --color-glow: #4f8cff;
 
   --font-display: var(--font-display), "Geist", system-ui, sans-serif;
-  --font-sans: var(--font-sans), "Geist", system-ui, sans-serif;
+  /* body shares the display face — one Geist load, one preload (perf) */
+  --font-sans: var(--font-display), "Geist", system-ui, sans-serif;
   --font-mono: var(--font-mono), "Geist Mono", ui-monospace, monospace;
 
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);

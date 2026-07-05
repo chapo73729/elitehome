@@ -1,6 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { notFound } from "next/navigation";
-import { fontDisplay, fontSans, fontMono } from "@/lib/fonts";
+import { fontDisplay, fontMono } from "@/lib/fonts";
 import { SITE } from "@/lib/site";
 import { isLocale, locales } from "@/lib/i18n";
 import { JsonLd } from "@/components/layout/JsonLd";
@@ -94,7 +94,7 @@ export default async function LocaleLayout({
   return (
     <html
       lang={locale}
-      className={`${fontDisplay.variable} ${fontSans.variable} ${fontMono.variable}`}
+      className={`${fontDisplay.variable} ${fontMono.variable}`}
       suppressHydrationWarning
     >
       <body>
