@@ -1,5 +1,6 @@
 "use client";
 
+import { usePathname } from "next/navigation";
 import { LocaleLink } from "@/components/ui/LocaleLink";
 import { SITE } from "@/lib/site";
 import { useContent } from "@/lib/content";
@@ -7,6 +8,8 @@ import { scrollToTarget } from "./SmoothScroll";
 import { AccentSwitcher } from "@/components/feature/AccentSwitcher";
 import { copyText, toast } from "@/lib/toast";
 import { useLang } from "@/lib/lang";
+import { useLocaleRouter } from "@/hooks/useLocaleRouter";
+import { stripLocale } from "@/lib/i18n";
 
 const T = {
   en: {
@@ -39,6 +42,20 @@ export function Footer() {
   const c = useContent();
   const f = c.footer;
   const t = T[useLang()];
+  const pathname = usePathname();
+  const router = useLocaleRouter();
+  const isHome = stripLocale(pathname).rest === "/";
+
+  // same rule as the header nav: the [0x] registers point at homepage
+  // anchors, so off the homepage they must navigate home first —
+  // scrollToTarget alone silently no-ops on a selector that isn't there
+  const goRegister = (href: string) => {
+    if (href.startsWith("#") && !isHome) {
+      router.push("/" + href);
+      return;
+    }
+    scrollToTarget(href);
+  };
   return (
     <footer className="relative z-10 hairline-t bg-void">
       <div className="container-x pb-14 pt-20 md:pb-16 md:pt-28">
@@ -57,7 +74,7 @@ export function Footer() {
               {c.nav.map((n, i) => (
                 <li key={n.href} className="hairline-t">
                   <button
-                    onClick={() => scrollToTarget(n.href)}
+                    onClick={() => goRegister(n.href)}
                     className="group flex w-full items-baseline gap-5 py-3 text-left"
                   >
                     <span className="font-mono text-xs text-accent tabular-nums">

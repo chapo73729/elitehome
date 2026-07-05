@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import { MotionConfig } from "framer-motion";
 import { usePathname } from "next/navigation";
 import { SmoothScroll } from "./SmoothScroll";
+import { AnchorAlign } from "./AnchorAlign";
 import { PageTransition } from "./PageTransition";
 import { AmbientBackdrop } from "./AmbientBackdrop";
 import { Atmosphere } from "./Atmosphere";
@@ -73,6 +74,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
       <ShowreelControl />
       <CookieConsent />
       <SmoothScroll>
+        <AnchorAlign />
         <Navbar />
         {/* stable skip-link target on every route */}
         <div id="content-top" tabIndex={-1} className="outline-none" />
