@@ -170,12 +170,12 @@ export const SERVICE_META: Record<string, Record<AppLocale, PageMeta>> = {
     en: {
       title: "Data & AI",
       description:
-        "We put data and AI to work where it pays off: intelligent automation, process automation (workflow, RPA), data pipelines and the dashboards and internal tools that turn raw operations into decisions.",
+        "Data and AI where they pay off: intelligent automation, data pipelines, and the dashboards that turn raw operations into decisions.",
     },
     fr: {
       title: "Données & IA",
       description:
-        "Nous mettons la donnée et l'IA là où elles rapportent : automatisation intelligente, automatisation des process (workflow, RPA), pipelines de données et les tableaux de bord et outils métier qui transforment l'opérationnel en décisions.",
+        "La donnée et l'IA là où elles rapportent : automatisation intelligente, pipelines de données et tableaux de bord qui éclairent les décisions.",
     },
   },
   cloud: {
@@ -205,7 +205,7 @@ export const HOME_META: Record<AppLocale, PageMeta> = {
   fr: {
     title: "ARDLABS® — Studio d'ingénierie numérique",
     description:
-      "ARDLABS est un studio d'ingénierie numérique. Nous concevons et développons des logiciels, plateformes et systèmes IA rapides, fiables et soignés jusqu'au détail.",
+      "Studio d'ingénierie numérique : logiciels, plateformes et systèmes IA rapides, fiables et soignés jusqu'au détail.",
   },
 };
 
