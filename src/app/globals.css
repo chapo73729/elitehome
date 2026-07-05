@@ -45,11 +45,13 @@
   box-sizing: border-box;
 }
 
-/* keyboard focus — visible ring without affecting mouse users */
+/* keyboard focus — one consistent ring without affecting mouse users.
+   Solid light azure so it reads clearly on #050505. No border-radius
+   here: the outline follows each element's own radius (pills stay
+   pills); bare links pick up a soft radius in @layer base below. */
 :focus-visible {
-  outline: 2px solid color-mix(in oklab, var(--color-accent) 70%, white 10%);
+  outline: 2px solid var(--color-accent-2);
   outline-offset: 3px;
-  border-radius: 4px;
 }
 
 .sr-only {
@@ -109,12 +111,26 @@ html.hide-cursor * {
   }
 }
 
+/* branded selection — azure wash, pure-white text (≥9:1 on the mix) */
 ::selection {
   background: color-mix(in oklab, var(--color-accent) 35%, transparent);
   color: var(--color-white-pure);
 }
 
-/* Custom scrollbar (visible when Lenis disabled / native) */
+/* explicit rules for fields — engines don't reliably cascade ::selection
+   into form controls (the contact Brief, terminal, command palette) */
+input::selection,
+textarea::selection {
+  background: color-mix(in oklab, var(--color-accent) 35%, transparent);
+  color: var(--color-white-pure);
+}
+
+/* Custom scrollbar (visible when Lenis disabled / native) —
+   void track, hairline-grey thumb; Firefox gets the same palette */
+html {
+  scrollbar-width: thin;
+  scrollbar-color: #1c1c22 var(--color-void);
+}
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
@@ -125,9 +141,13 @@ html.hide-cursor * {
 ::-webkit-scrollbar-thumb {
   background: #1c1c22;
   border-radius: 999px;
+  border: 2px solid var(--color-void); /* inset the thumb off the edge */
 }
 ::-webkit-scrollbar-thumb:hover {
   background: #2a2a32;
+}
+::-webkit-scrollbar-corner {
+  background: var(--color-void);
 }
 
 /* ---------- Typography utilities ---------- */
@@ -405,4 +425,118 @@ html.hyperdrive .marquee-track {
   max-width: 1440px;
   margin-inline: auto;
   padding-inline: clamp(1.25rem, 5vw, 5rem);
+}
+
+/* ============================================================
+   Micro-craft — final polish layer
+   Selection / scrollbar / focus refinements live with their
+   original blocks above; everything else lands here. Quiet by
+   design: no new visual signals, only correctness.
+   ============================================================ */
+
+html {
+  /* horizontal overscroll only — vertical stays native so Lenis
+     (SmoothScroll.tsx drives window scroll) and iOS pull-to-refresh
+     keep working exactly as they do today */
+  overscroll-behavior-x: none;
+  /* mobile: no grey tap flash — press/focus states carry the feedback */
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Base-layer defaults — kept inside @layer base so per-component
+   Tailwind utilities (placeholder:text-fog/40, disabled:opacity-70,
+   rounded-*) still out-cascade them. */
+@layer base {
+  /* remove the 300ms double-tap delay on everything interactive */
+  a,
+  button,
+  input,
+  select,
+  textarea,
+  summary,
+  [role="button"],
+  [data-cursor] {
+    touch-action: manipulation;
+  }
+
+  /* bare text links get a softly-rounded focus ring; any rounded-*
+     utility (pills, cards) overrides this and the ring follows it */
+  a:focus-visible {
+    border-radius: 4px;
+  }
+
+  /* ---- forms (the contact Brief + terminal/palette fields) ---- */
+  input,
+  textarea,
+  select {
+    caret-color: var(--color-accent);
+  }
+
+  ::placeholder {
+    color: color-mix(in oklab, var(--color-fog) 55%, transparent);
+  }
+
+  /* autofill — clip the UA's white/yellow fill to the glyphs so dark
+     fields never flash light. background-clip is used instead of the
+     long-transition hack because the reduced-motion override above
+     zeroes transition-duration and would re-expose the flash. */
+  input:-webkit-autofill,
+  input:-webkit-autofill:hover,
+  input:-webkit-autofill:focus,
+  textarea:-webkit-autofill {
+    -webkit-text-fill-color: var(--color-chalk);
+    -webkit-background-clip: text;
+    background-clip: text;
+    caret-color: var(--color-accent);
+  }
+
+  /* one quiet disabled convention everywhere */
+  :is(button, input, select, textarea):disabled {
+    cursor: not-allowed;
+    opacity: 0.55;
+  }
+
+  /* <hr> matches the hairline system (.hairline-t) */
+  hr {
+    border: 0;
+    border-top: 1px solid color-mix(in oklab, var(--color-chalk) 7%, transparent);
+  }
+
+  /* decorative imagery shouldn't produce an OS drag ghost */
+  img {
+    -webkit-user-drag: none;
+    user-select: none;
+  }
+}
+
+/* ---------- Print (minimal) ----------
+   On paper: strip the atmosphere (canvases, grain, fixed chrome) and
+   print readable black-on-white text. */
+@media print {
+  [class*="fixed"], /* cursor, navbar, overlays, HUD chrome */
+  canvas,
+  video,
+  .grain,
+  .scanlines,
+  .vignette,
+  .marquee-track {
+    display: none !important;
+  }
+  * {
+    background: transparent !important;
+    color: #000 !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+    opacity: 1 !important; /* un-hide Reveal/Compile mid-animation states */
+    transform: none !important;
+  }
+  body {
+    background: #fff !important;
+  }
+  /* gradient headlines paint via background-clip — restore solid ink */
+  .text-gradient,
+  .text-gradient-accent {
+    background: none !important;
+    -webkit-text-fill-color: #000 !important;
+  }
 }

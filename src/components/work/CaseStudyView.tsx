@@ -49,10 +49,10 @@ const T = {
     prev: "Précédent",
     next: "Suivant",
     poleTitles: {
-      strategy: "Stratégie & Conseil",
-      software: "Design & Développement",
+      strategy: "Conseil & stratégie",
+      software: "Conception & développement",
       ai: "Données & IA",
-      cloud: "Cloud & Infrastructure",
+      cloud: "Cloud & infrastructure",
     } as Record<string, string>,
   },
 };
@@ -108,6 +108,7 @@ export function CaseStudyView({ slug }: { slug: string }) {
             <Reveal delay={0.06}>
               <div className="mt-8 flex flex-wrap items-center gap-x-4 gap-y-1 font-mono text-xs tracking-widest text-fog">
                 <span style={{ color: w.accent }}>{w.code}</span>
+                <span className="text-mist">{w.client}</span>
                 <span>{w.field}</span>
                 <span>{w.stage}</span>
               </div>

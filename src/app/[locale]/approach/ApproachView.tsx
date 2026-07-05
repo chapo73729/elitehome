@@ -60,8 +60,8 @@ const T = {
     intro:
       "Chaque projet commence par un problème et aboutit à un produit qui tient dans le temps. La méthode entre ces deux points est délibérée, et elle est la même quel que soit le pôle concerné.",
     principlesEyebrow: "Principes de travail",
-    ctaTitle: "Vous avez un projet à mener correctement ?",
-    startConversation: "Entamer la conversation",
+    ctaTitle: "Un projet à mener dans les règles de l'art ?",
+    startConversation: "Démarrer la conversation",
     seeWork: "Voir les réalisations",
     PHASES: [
       {
@@ -94,7 +94,7 @@ const T = {
       { t: "La justesse avant la vitesse", d: "Nous avançons vite là où l'erreur coûte peu, et lentement là où elle coûte cher." },
       { t: "Mesurer, ne pas se fier aux apparences", d: "Un comportement doit être évalué, et non tenu pour acquis parce qu'il fait bonne impression." },
       { t: "Construire la boucle", d: "La robustesse vient du système dans son ensemble — planifier, agir, observer, corriger — et non d'une seule étape." },
-      { t: "Escalader tôt", d: "Les systèmes autonomes doivent signaler toute ambiguïté aux humains au moment précis où il le faut." },
+      { t: "Passer la main tôt", d: "Les systèmes autonomes doivent signaler toute ambiguïté aux humains au moment précis où il le faut." },
     ],
   },
 };

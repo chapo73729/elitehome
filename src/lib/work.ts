@@ -19,6 +19,8 @@ export type CaseStudy = {
   accent: string;
   summary: string;
   stage: string;
+  /** Client marque (representative). */
+  client: string;
   /** Services pole this project best represents (matches INDUSTRIES id). */
   pole: string;
   /** Disciplines we owned on the engagement. */
@@ -55,6 +57,7 @@ export const WORK: CaseStudy[] = [
       "An AI decision-support engine for operations teams who can't afford a wrong call.",
     stage: "Shipped · In production",
     pole: "ai",
+    client: "Vltava Energo",
     roles: ["Applied AI", "Backend engineering", "Evaluation & guardrails"],
     tech: ["Python", "OpenAI", "Postgres", "FastAPI"],
     challenge: [
@@ -91,6 +94,7 @@ export const WORK: CaseStudy[] = [
       "A logistics SaaS dashboard that turns scattered operational data into live, routable decisions.",
     stage: "Shipped · Scaling",
     pole: "software",
+    client: "Hradek Logistika",
     roles: ["Product design", "Full-stack engineering", "Data integration"],
     tech: ["React", "Next.js", "TypeScript", "Postgres"],
     challenge: [
@@ -127,6 +131,7 @@ export const WORK: CaseStudy[] = [
       "A manufacturing operations dashboard and internal tooling suite that makes a plant floor legible.",
     stage: "Shipped · In production",
     pole: "ai",
+    client: "Koruna Capital",
     roles: ["Data engineering", "Internal tooling", "Dashboards & BI"],
     tech: ["Python", "dbt", "Postgres", "React"],
     challenge: [
@@ -163,6 +168,7 @@ export const WORK: CaseStudy[] = [
       "A distributed runtime that places computation microseconds from the user.",
     stage: "Shipped · In production",
     pole: "cloud",
+    client: "Orloj Systems",
     roles: ["Systems engineering", "Cloud architecture", "Developer experience"],
     tech: ["Rust", "Kubernetes", "AWS", "Terraform"],
     challenge: [
@@ -200,7 +206,7 @@ export const WORK_FR: Record<string, CaseStudyL10n> = {
   "helix-core": {
     field: "Données & IA",
     summary:
-      "Un moteur d'aide à la décision par IA pour les équipes opérationnelles qui ne peuvent pas se permettre une mauvaise décision.",
+      "Un moteur d'aide à la décision par IA pour les équipes opérationnelles qui n'ont pas droit à l'erreur.",
     stage: "Livré · En production",
     roles: ["IA appliquée", "Ingénierie backend", "Évaluation & garde-fous"],
     challenge: [
@@ -225,17 +231,17 @@ export const WORK_FR: Record<string, CaseStudyL10n> = {
       "En production, Helix traite automatiquement la majorité des décisions de routine tout en signalant tôt à l'équipe celles qui sont véritablement ambiguës.",
       "Le résultat n'est pas un système qui remplace le jugement, mais un système qui concentre l'attention humaine là où elle compte le plus.",
     ],
-    highlights: ["Raisonnement auto-auditable", "Décisions en moins d'une seconde", "Voies d'escalade vers l'humain"],
+    highlights: ["Raisonnement auto-auditable", "Décisions en moins d'une seconde", "Transmission à l'humain au bon moment"],
   },
   tideglass: {
     field: "Plateforme SaaS",
     summary:
-      "Un tableau de bord SaaS logistique qui transforme des données opérationnelles éparses en décisions vivantes et exploitables pour le routage.",
+      "Un tableau de bord SaaS logistique qui transforme des données opérationnelles éparses en décisions de routage prises en temps réel.",
     stage: "Livré · En montée en charge",
     roles: ["Design produit", "Ingénierie full-stack", "Intégration de données"],
     challenge: [
       "L'activité logistique du client reposait sur de faibles marges et des informations obsolètes, dispersées dans une mosaïque d'outils déconnectés. Les décisions étaient souvent prises sur des données vieilles de plusieurs heures.",
-      "L'opportunité consistait à donner aux opérateurs une vue unique et en temps réel de leur réseau — et à planifier en continu plutôt qu'une fois par jour.",
+      "L'enjeu était de donner aux opérateurs une vue unique et en temps réel de leur réseau — et de planifier en continu plutôt qu'une fois par jour.",
     ],
     approach: [
       {
@@ -248,14 +254,14 @@ export const WORK_FR: Record<string, CaseStudyL10n> = {
       },
       {
         title: "L'opérateur dans la boucle",
-        body: "Les recommandations sont explicables et peuvent être outrepassées — le système conseille, le répartiteur décide.",
+        body: "Les recommandations sont explicables et l'opérateur garde la main — le système conseille, le répartiteur décide.",
       },
     ],
     outcome: [
       "Le déploiement initial a réduit sensiblement les coûts d'exploitation sur l'ensemble du réseau tout en améliorant la ponctualité.",
       "Les opérateurs ont gagné un tableau de bord partagé et en temps réel, qui a remplacé une mosaïque de tableurs et d'outils déconnectés.",
     ],
-    highlights: ["Modèle opérationnel en temps réel", "Routage soucieux des coûts", "Recommandations explicables"],
+    highlights: ["Modèle opérationnel en temps réel", "Routage optimisé en coût", "Recommandations explicables"],
   },
   foundry: {
     field: "Outils internes",
@@ -283,7 +289,7 @@ export const WORK_FR: Record<string, CaseStudyL10n> = {
     ],
     outcome: [
       "Les superviseurs ont gagné une vue en temps réel de l'atelier et une réduction marquée des arrêts non planifiés.",
-      "Des heures de reporting manuel en fin de poste ont été remplacées par des tableaux de bord toujours à jour.",
+      "Des heures de rapports manuels en fin de poste ont été remplacées par des tableaux de bord toujours à jour.",
     ],
     highlights: ["Tableau de bord en temps réel", "Couche de données opérationnelle", "Maintenance prédictive"],
   },
@@ -315,7 +321,7 @@ export const WORK_FR: Record<string, CaseStudyL10n> = {
       "Les applications ont atteint des temps de réponse qui paraissent instantanés pour les utilisateurs, sans travail d'infrastructure sur mesure.",
       "De petites équipes ont obtenu des capacités qui exigeaient auparavant une organisation plateforme dédiée.",
     ],
-    highlights: ["Environnement d'exécution natif edge", "Déploiement en binaire unique", "Bascule mondiale"],
+    highlights: ["Exécution native en périphérie", "Déploiement en binaire unique", "Bascule mondiale"],
   },
 };
 

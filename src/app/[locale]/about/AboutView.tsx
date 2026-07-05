@@ -63,7 +63,7 @@ const T = {
     why1:
       "La plupart des studios s'arrêtent aux fonctionnalités. Nous concevons le produit dans son ensemble. Chaque projet commence par une question difficile — quoi construire, pourquoi, et comment cela tiendra dans le temps — et aboutit à un logiciel, une plateforme ou un système d'IA qui fonctionne en production et continue de fonctionner longtemps après le lancement.",
     why2:
-      "L'ingénierie numérique est le fil conducteur. Sous cette bannière, quatre pôles couvrent une idée de bout en bout : stratégie et conseil, design et développement, données et IA, cloud et infrastructure. Une ingénierie pointue, un design clair et le souci constant de livrer sont ce qui permet à une idée exigeante de résister à l'épreuve du réel.",
+      "L'ingénierie numérique chapeaute l'ensemble. Dessous, quatre pôles couvrent une idée de bout en bout : conseil et stratégie, conception et développement, données et IA, cloud et infrastructure. Une ingénierie pointue, un design clair et le souci constant de livrer sont ce qui permet à une idée exigeante de résister à l'épreuve du réel.",
     principlesEyebrow: "Principes",
     builtEyebrow: "Notre organisation",
     builtTitle: "Un seul studio, quatre pôles.",
@@ -86,15 +86,15 @@ const T = {
         v: "Nous partons de la question difficile pour aboutir à un produit en production, maintenu au-delà du lancement.",
       },
       {
-        k: "Une norme, quatre pôles",
-        v: "Stratégie, design et développement, données et IA, et cloud — des disciplines distinctes, une même exigence d'ingénierie.",
+        k: "Un standard, quatre pôles",
+        v: "Conseil, conception et développement, données et IA, et cloud — des disciplines distinctes, une même exigence d'ingénierie.",
       },
     ],
     DISCIPLINES: [
-      { t: "Stratégie et conseil", d: "Conseil technologique, R&D appliquée et prototypage pour transformer une idée en un plan validé." },
-      { t: "Design et développement", d: "Logiciels sur mesure, web, mobile, SaaS et plateformes internes — conçus et développés de bout en bout." },
-      { t: "Données et IA", d: "IA appliquée, automatisation intelligente et tableaux de bord qui transforment les opérations en décisions." },
-      { t: "Cloud et infrastructure", d: "Architecture cloud, déploiement, API et intégrations conçus pour la disponibilité et la montée en charge." },
+      { t: "Conseil & stratégie", d: "Conseil technologique, R&D appliquée et prototypage pour transformer une idée en un plan validé." },
+      { t: "Conception & développement", d: "Logiciels sur mesure, web, mobile, SaaS et plateformes internes — conçus et développés de bout en bout." },
+      { t: "Données & IA", d: "IA appliquée, automatisation intelligente et tableaux de bord qui transforment les opérations en décisions." },
+      { t: "Cloud & infrastructure", d: "Architecture cloud, déploiement, APIs et intégrations pensés pour la disponibilité et l'échelle." },
     ],
   },
 };

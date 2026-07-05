@@ -197,7 +197,7 @@ export function ImprintView() {
             <Clause index="02" id="contact" title={t.contact}>
               {lang === "fr" ? (
                 <p>
-                  Courriel : <a href={`mailto:${SITE.email}`}>{SITE.email}</a>
+                  E-mail : <a href={`mailto:${SITE.email}`}>{SITE.email}</a>
                   <br />
                   Représentée par : <Fill>[Représentant autorisé / gérant]</Fill>
                 </p>

@@ -15,7 +15,7 @@ const T = {
     labelOn: "Couper le son",
     labelOff: "Activer le son",
     titleOn: "Son activé",
-    titleOff: "Son désactivé",
+    titleOff: "Son coupé",
   },
 } as const;
 

@@ -6,6 +6,7 @@ import { Hero } from "@/components/sections/Hero";
 import { Cinematic } from "@/components/sections/Cinematic";
 import { AICore } from "@/components/sections/AICore";
 import { GlobalNetwork } from "@/components/sections/GlobalNetwork";
+import { Partners } from "@/components/sections/Partners";
 import { Industries } from "@/components/sections/Industries";
 import { Contact } from "@/components/sections/Contact";
 import { GutterRuler } from "@/components/layout/GutterRuler";
@@ -27,6 +28,7 @@ export function Experience() {
         <Cinematic />
         <AICore />
         <GlobalNetwork />
+        <Partners />
         <Industries />
         <Contact />
       </main>

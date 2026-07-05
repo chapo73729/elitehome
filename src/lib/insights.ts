@@ -130,7 +130,7 @@ export const INSIGHTS_FR: Record<string, InsightL10n> = {
     category: "Ingénierie",
     title: "Concevoir un logiciel qui dure",
     excerpt:
-      "Pourquoi nous optimisons pour un logiciel toujours rapide, sûr et lisible des années après son lancement — et pas seulement impressionnant le premier jour.",
+      "Pourquoi nous concevons des logiciels encore rapides, sûrs et lisibles des années après le lancement — pas seulement impressionnants le premier jour.",
     body: [
       {
         heading: "La démo est la mauvaise cible",
@@ -159,7 +159,7 @@ export const INSIGHTS_FR: Record<string, InsightL10n> = {
     category: "Données & IA",
     title: "Rendre l'IA fiable en production",
     excerpt:
-      "La capacité de pointe est nécessaire mais pas suffisante. Le problème le plus difficile est de rendre les systèmes intelligents assez fiables pour porter du poids en production.",
+      "La capacité de pointe est nécessaire, mais pas suffisante. Le plus difficile est de rendre les systèmes intelligents assez fiables pour qu'on leur confie de vraies décisions en production.",
     body: [
       {
         heading: "De la capacité à la fiabilité",
@@ -188,19 +188,19 @@ export const INSIGHTS_FR: Record<string, InsightL10n> = {
     category: "Studio",
     title: "Une équipe, quatre pôles.",
     excerpt:
-      "Comment la stratégie, le design & développement, les données & l'IA et le cloud fonctionnent comme une seule équipe plutôt que comme quatre passations.",
+      "Comment le conseil, la conception & le développement, les données & l'IA et le cloud fonctionnent comme une seule équipe plutôt que comme quatre passations.",
     body: [
       {
         heading: "Une équipe, pas une course de relais",
         paragraphs: [
           "La plupart des projets numériques sont fragmentés en passations : la stratégie envoie une présentation par-dessus le mur au design, le design à l'ingénierie, l'ingénierie à l'exploitation. Chaque passation perd du contexte, et le produit en paie le prix.",
-          "Nous fonctionnons comme une seule équipe répartie sur quatre pôles — Stratégie & Conseil, Design & Développement, Données & IA, et Cloud & Infrastructure. Ceux qui cadrent le problème sont proches de ceux qui le construisent et de ceux qui le maintiennent en marche.",
+          "Nous fonctionnons comme une seule équipe répartie sur quatre pôles — Conseil & stratégie, Conception & développement, Données & IA, et Cloud & infrastructure. Ceux qui cadrent le problème sont proches de ceux qui le construisent et de ceux qui le maintiennent en marche.",
         ],
       },
       {
         heading: "Une idée, prise en charge de bout en bout",
         paragraphs: [
-          "Chaque pôle est une discipline à part entière, mais tous partagent un même standard d'ingénierie. La stratégie dérisque l'idée, le design et le développement la construisent, les données et l'IA rendent l'exploitation lisible, et le cloud la maintient rapide et fiable.",
+          "Chaque pôle est une discipline à part entière, mais tous partagent un même standard d'ingénierie. Le conseil écarte les risques de l'idée, la conception et le développement la construisent, les données et l'IA rendent l'exploitation lisible, et le cloud la maintient rapide et fiable.",
           "Traiter ces quatre pôles comme une seule pratique — plutôt que comme quatre prestataires — est ce qui permet à une idée de voyager d'une question précise jusqu'à un produit qui tient la route, sans rien perdre en chemin.",
         ],
       },

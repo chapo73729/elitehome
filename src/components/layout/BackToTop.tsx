@@ -27,7 +27,7 @@ export function BackToTop() {
           onClick={() => scrollToTarget(0)}
           aria-label={lang === "fr" ? "Retour en haut" : "Back to top"}
           data-cursor
-          className="fixed bottom-6 right-6 z-[110] flex h-12 w-12 items-center justify-center rounded-full glass text-chalk transition-colors duration-300 hover:border-white/25"
+          className="fixed bottom-[max(1.5rem,env(safe-area-inset-bottom))] right-[max(1.5rem,env(safe-area-inset-right))] z-[110] flex h-12 w-12 items-center justify-center rounded-full glass text-chalk transition-colors duration-300 hover:border-white/25"
         >
           <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden>
             <path

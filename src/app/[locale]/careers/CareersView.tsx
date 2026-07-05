@@ -59,11 +59,11 @@ const T = {
       { t: "Culture de la justesse", d: "Nous valorisons le fait de bien faire plutôt que de livrer vite — et nous le pensons vraiment." },
     ],
     ROLES: [
-      { t: "Stratège produit", team: "Stratégie et conseil", loc: "À distance · International" },
-      { t: "Ingénieur full-stack", team: "Design et développement", loc: "À distance · International" },
-      { t: "Designer produit", team: "Design et développement", loc: "À distance · International" },
-      { t: "Ingénieur IA / données", team: "Données et IA", loc: "À distance · International" },
-      { t: "Ingénieur plateforme / DevOps", team: "Cloud et infrastructure", loc: "Prague · Hybride" },
+      { t: "Stratège produit", team: "Conseil & stratégie", loc: "À distance · International" },
+      { t: "Ingénieur full-stack", team: "Conception & développement", loc: "À distance · International" },
+      { t: "Designer produit", team: "Conception & développement", loc: "À distance · International" },
+      { t: "Ingénieur IA / données", team: "Données & IA", loc: "À distance · International" },
+      { t: "Ingénieur plateforme / DevOps", team: "Cloud & infrastructure", loc: "Prague · Hybride" },
     ],
   },
 };

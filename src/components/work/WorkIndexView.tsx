@@ -28,10 +28,10 @@ const T = {
   fr: {
     home: "← Accueil",
     eyebrow: "Réalisations",
-    h1: "Des réalisations, peaufinées dans le détail.",
+    h1: "Des réalisations, soignées jusqu’au détail.",
     intro:
-      "Une sélection de ce que nous construisons — logiciels, plateformes, données et cloud, chacun tenu à un même standard d’ingénierie.",
-    nda: "Projets représentatifs, présentés pour illustrer notre façon de travailler. Les noms des clients sont tus lorsque les engagements sont couverts par un accord de confidentialité.",
+      "Une sélection de ce que nous construisons — logiciels, plateformes, données et cloud, tenus à un même standard d’ingénierie.",
+    nda: "Projets représentatifs, présentés pour illustrer notre façon de travailler. Les noms des clients sont omis lorsque l’engagement est couvert par un accord de confidentialité.",
     representative: "Projet représentatif",
     caseStudy: "ÉTUDE DE CAS",
     caseStudyAria: "étude de cas",
@@ -106,6 +106,7 @@ export function WorkIndexView() {
                       </span>
                       <span className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 font-mono text-[0.65rem] uppercase tracking-[0.25em] text-fog">
                         <span style={{ color: w.accent }}>{w.code}</span>
+                        <span className="text-mist">{w.client}</span>
                         <span>{w.field}</span>
                       </span>
                     </span>

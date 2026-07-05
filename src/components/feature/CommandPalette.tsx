@@ -56,8 +56,8 @@ const T = {
     perfToast: "Mode performance activé",
     emailCopied: "E-mail copié",
     accentToast: (name: string) => `Accent ${name}`,
-    placeholder: "Rechercher sections, secteurs, actions…",
-    searchAria: "Rechercher sections, secteurs et actions",
+    placeholder: "Rechercher sections, services, actions…",
+    searchAria: "Rechercher sections, services et actions",
     noResults: "Aucun résultat.",
   },
 } as const;
@@ -132,12 +132,19 @@ export function CommandPalette() {
     return () => window.removeEventListener("keydown", onKey);
   }, []);
 
+  // remember what had focus before the palette opened and hand it back on
+  // close, so keyboard users aren't dropped onto <body>
+  const restoreRef = useRef<HTMLElement | null>(null);
   useEffect(() => {
     if (open) {
+      restoreRef.current = document.activeElement as HTMLElement | null;
       unlock("palette");
       setQ("");
       setSel(0);
       setTimeout(() => inputRef.current?.focus(), 30);
+    } else {
+      restoreRef.current?.focus?.();
+      restoreRef.current = null;
     }
   }, [open]);
 
@@ -183,6 +190,9 @@ export function CommandPalette() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -10, scale: 0.98 }}
             transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
+            role="dialog"
+            aria-modal="true"
+            aria-label={t.searchAria}
             className="relative z-10 w-full max-w-xl overflow-hidden rounded-2xl glass"
             onKeyDown={onListKey}
           >
@@ -194,10 +204,14 @@ export function CommandPalette() {
                 onChange={(e) => setQ(e.target.value)}
                 placeholder={t.placeholder}
                 aria-label={t.searchAria}
+                role="combobox"
+                aria-expanded="true"
+                aria-controls="palette-results"
+                aria-activedescendant={filtered[sel] ? `palette-opt-${filtered[sel].id}` : undefined}
                 className="w-full bg-transparent text-chalk outline-none placeholder:text-fog"
               />
             </div>
-            <div className="max-h-[50vh] overflow-y-auto p-2">
+            <div id="palette-results" role="listbox" aria-label={t.searchAria} className="max-h-[50vh] overflow-y-auto p-2">
               {filtered.length === 0 && (
                 <div className="px-4 py-6 text-center text-sm text-fog">{t.noResults}</div>
               )}
@@ -212,6 +226,10 @@ export function CommandPalette() {
                       </div>
                     )}
                     <button
+                      id={`palette-opt-${c.id}`}
+                      role="option"
+                      aria-selected={sel === i}
+                      tabIndex={-1}
                       onMouseEnter={() => setSel(i)}
                       onClick={() => {
                         c.run();

@@ -72,9 +72,6 @@ export function Providers({ children }: { children: React.ReactNode }) {
       <Toaster />
       <ShowreelControl />
       <CookieConsent />
-      {isHome && <SectionNav />}
-      <BackToTop />
-      <MobileCTA />
       <SmoothScroll>
         <Navbar />
         {/* stable skip-link target on every route */}
@@ -82,6 +79,12 @@ export function Providers({ children }: { children: React.ReactNode }) {
         {children}
         <Footer />
       </SmoothScroll>
+      {/* fixed rails AFTER the document flow so the Tab order reads
+          header → content → footer → rails (they are position:fixed,
+          so DOM placement has no visual effect) */}
+      {isHome && <SectionNav />}
+      <BackToTop />
+      <MobileCTA />
     </MotionConfig>
   );
 }

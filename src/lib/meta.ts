@@ -25,7 +25,7 @@ export const PAGE_META: Record<string, Record<AppLocale, PageMeta>> = {
     fr: {
       title: "À propos",
       description:
-        "ARDLABS® est un studio d'ingénierie numérique. Nous concevons et développons des logiciels, plateformes et systèmes IA — soignés jusqu'au détail.",
+        "ARDLABS® est un studio d'ingénierie numérique. Nous concevons et développons des logiciels, plateformes et systèmes d'IA — soignés jusqu'au détail.",
     },
   },
   approach: {
@@ -49,7 +49,7 @@ export const PAGE_META: Record<string, Record<AppLocale, PageMeta>> = {
     fr: {
       title: "Carrières",
       description:
-        "Rejoignez ARDLABS® — un studio d'ingénierie numérique restreint et senior qui construit logiciels, plateformes et systèmes IA, soignés jusqu'au détail.",
+        "Rejoignez ARDLABS® — un studio d'ingénierie numérique, petit et senior, qui conçoit et développe logiciels, plateformes et systèmes d'IA, soignés jusqu'au détail.",
     },
   },
   contact: {
@@ -61,7 +61,7 @@ export const PAGE_META: Record<string, Record<AppLocale, PageMeta>> = {
     fr: {
       title: "Contact",
       description:
-        "Contactez ARDLABS® — engagez la conversation sur la conception et le développement de logiciels, plateformes, données & IA, et cloud.",
+        "Contactez ARDLABS® — démarrez la conversation sur la conception et le développement de logiciels, plateformes, données & IA et cloud.",
     },
   },
   work: {
@@ -85,7 +85,7 @@ export const PAGE_META: Record<string, Record<AppLocale, PageMeta>> = {
     fr: {
       title: "Perspectives",
       description:
-        "Les notes d'ARDLABS® sur l'ingénierie numérique — livrer un logiciel fiable, l'IA appliquée et une infrastructure soignée jusqu'au détail.",
+        "Les notes d'ARDLABS® sur l'ingénierie numérique — logiciels fiables, IA appliquée et infrastructures soignées jusqu'au détail.",
     },
   },
   services: {
@@ -151,7 +151,7 @@ export const SERVICE_META: Record<string, Record<AppLocale, PageMeta>> = {
     fr: {
       title: "Conseil & stratégie",
       description:
-        "Avant la moindre ligne de code, les vraies questions : quoi construire, pourquoi, et comment ça tiendra. Conseil technologique, R&D appliquée et prototypage rapide pour dérisquer l'idée et tracer le chemin vers le produit.",
+        "Avant la moindre ligne de code, les vraies questions : quoi construire, pourquoi, et comment cela tiendra. Conseil technologique, R&D appliquée et prototypage rapide pour réduire le risque et tracer le chemin vers le produit.",
     },
   },
   software: {
@@ -205,7 +205,7 @@ export const HOME_META: Record<AppLocale, PageMeta> = {
   fr: {
     title: "ARDLABS® — Studio d'ingénierie numérique",
     description:
-      "Studio d'ingénierie numérique : logiciels, plateformes et systèmes IA rapides, fiables et soignés jusqu'au détail.",
+      "Studio d'ingénierie numérique : logiciels, plateformes et systèmes d'IA rapides, fiables et soignés jusqu'au détail.",
   },
 };
 

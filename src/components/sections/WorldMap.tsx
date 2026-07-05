@@ -651,7 +651,7 @@ export function WorldMap({ onFocus }: { onFocus?: (info: FocusInfo) => void }) {
       style={{ aspectRatio: isMobile ? "810 / 620" : `${VB_W} / ${VB_CROP_H}` }}
       data-cursor="drag"
     >
-      <canvas ref={canvasRef} className="absolute inset-0 h-full w-full" />
+      <canvas ref={canvasRef} aria-hidden className="absolute inset-0 h-full w-full" />
 
       {/* gentle vignette so the sea dissolves at the stage edges */}
       <div

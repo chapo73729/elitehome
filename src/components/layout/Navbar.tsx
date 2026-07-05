@@ -14,8 +14,8 @@ import { useLocaleRouter } from "@/hooks/useLocaleRouter";
 import { stripLocale } from "@/lib/i18n";
 
 const T = {
-  en: { openMenu: "Open menu", closeMenu: "Close menu", sound: "SOUND" },
-  fr: { openMenu: "Ouvrir le menu", closeMenu: "Fermer le menu", sound: "SON" },
+  en: { openMenu: "Open menu", closeMenu: "Close menu", sound: "SOUND", primary: "Primary" },
+  fr: { openMenu: "Ouvrir le menu", closeMenu: "Fermer le menu", sound: "SON", primary: "Navigation principale" },
 } as const;
 
 export function Navbar({ ready = true }: { ready?: boolean }) {
@@ -70,6 +70,18 @@ export function Navbar({ ready = true }: { ready?: boolean }) {
     return () => window.removeEventListener("keydown", onKey);
   }, []);
 
+  // while the full-screen menu is open, the page behind it must be inert —
+  // otherwise Tab walks out of the menu into obscured content. Also move
+  // focus onto the first menu item so keyboard users land inside it.
+  useEffect(() => {
+    if (!open) return;
+    const behind = document.querySelectorAll<HTMLElement>("main, footer");
+    behind.forEach((el) => el.setAttribute("inert", ""));
+    const first = document.querySelector<HTMLElement>("#mobile-menu button");
+    first?.focus();
+    return () => behind.forEach((el) => el.removeAttribute("inert"));
+  }, [open]);
+
   const go = (href: string) => {
     setOpen(false);
     // when off the homepage, navigate home (with hash) instead of scrolling
@@ -116,7 +128,7 @@ export function Navbar({ ready = true }: { ready?: boolean }) {
           </Magnetic>
 
           {/* desktop nav pill */}
-          <nav className="hidden items-center gap-1 rounded-full px-2 py-2 lg:flex glass">
+          <nav aria-label={t.primary} className="hidden items-center gap-1 rounded-full px-2 py-2 lg:flex glass">
             {NAV.map((item) => {
               const isActive = active === item.href;
               return (
@@ -160,6 +172,7 @@ export function Navbar({ ready = true }: { ready?: boolean }) {
             className="relative z-[130] flex h-10 w-10 flex-col items-center justify-center gap-1.5 lg:hidden"
             aria-label={open ? t.closeMenu : t.openMenu}
             aria-expanded={open}
+            aria-controls="mobile-menu"
           >
             <span
               className={`h-px w-6 bg-chalk transition-transform duration-300 ${
@@ -179,6 +192,7 @@ export function Navbar({ ready = true }: { ready?: boolean }) {
       <AnimatePresence>
         {open && (
           <motion.div
+            id="mobile-menu"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}

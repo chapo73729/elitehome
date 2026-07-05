@@ -6,6 +6,9 @@ import { useLang } from "@/lib/lang";
 import { unlock } from "@/lib/achievements";
 import { stripLocale, localizePath, locales, type AppLocale } from "@/lib/i18n";
 
+const NAMES: Record<AppLocale, string> = { en: "English", fr: "Français" };
+const GROUP: Record<AppLocale, string> = { en: "Language", fr: "Langue" };
+
 export function LanguageToggle({ className }: { className?: string }) {
   const lang = useLang();
   const pathname = usePathname();
@@ -29,7 +32,7 @@ export function LanguageToggle({ className }: { className?: string }) {
     <div
       className={`flex items-center gap-1 font-mono text-xs ${className ?? ""}`}
       role="group"
-      aria-label="Language"
+      aria-label={GROUP[lang]}
     >
       {locales.map((l) => (
         <button
@@ -37,6 +40,7 @@ export function LanguageToggle({ className }: { className?: string }) {
           onClick={() => switchTo(l)}
           data-cursor
           aria-pressed={lang === l}
+          aria-label={NAMES[l]}
           className={`rounded-full px-2 py-1 uppercase tracking-widest transition-colors duration-300 ${
             lang === l ? "text-chalk" : "text-fog hover:text-mist"
           }`}

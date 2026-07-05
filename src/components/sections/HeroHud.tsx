@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import { useLang } from "@/lib/lang";
 
 const T = {
@@ -16,6 +16,7 @@ const T = {
  */
 export function HeroHud({ ready }: { ready: boolean }) {
   const t = T[useLang()];
+  const reducedMotion = useReducedMotion();
   const [clock, setClock] = useState("00:00:00 UTC");
   const latRef = useRef<HTMLSpanElement>(null);
   const lonRef = useRef<HTMLSpanElement>(null);
@@ -104,13 +105,16 @@ export function HeroHud({ ready }: { ready: boolean }) {
         {t.wordmark}
       </motion.div>
 
-      {/* sweeping scan line */}
-      <motion.span
-        initial={{ top: "20%", opacity: 0 }}
-        animate={ready ? { top: ["20%", "80%", "20%"], opacity: 0.5 } : {}}
-        transition={{ duration: 9, repeat: Infinity, ease: "easeInOut", delay: 2 }}
-        className="absolute left-0 right-0 h-px bg-gradient-to-r from-transparent via-accent/40 to-transparent"
-      />
+      {/* sweeping scan line — framer's reduced-motion handling doesn't cover
+          `top` keyframes, so guard the infinite sweep explicitly */}
+      {!reducedMotion && (
+        <motion.span
+          initial={{ top: "20%", opacity: 0 }}
+          animate={ready ? { top: ["20%", "80%", "20%"], opacity: 0.5 } : {}}
+          transition={{ duration: 9, repeat: Infinity, ease: "easeInOut", delay: 2 }}
+          className="absolute left-0 right-0 h-px bg-gradient-to-r from-transparent via-accent/40 to-transparent"
+        />
+      )}
     </div>
   );
 }

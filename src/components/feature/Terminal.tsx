@@ -84,8 +84,8 @@ const T = {
     about: [
       "ARDLABS® — Studio d’ingénierie numérique.",
       "Nous concevons et développons logiciels, plateformes",
-      "et systèmes d’IA, soignés dans le détail. Quatre pôles :",
-      "stratégie, logiciel, data & IA, cloud.",
+      "et systèmes d’IA, soignés jusqu’au détail. Quatre pôles :",
+      "conseil, développement, données & IA, cloud.",
     ],
     whoami: "visitor@ardlabs — accès : invité",
     opening: (id: string) => `ouverture de /services/${id} …`,
