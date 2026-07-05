@@ -174,30 +174,3 @@ export const TECH = [
   "WebGPU",
 ] as const;
 
-export const TIMELINE = [
-  {
-    year: "2019",
-    title: "Founded",
-    text: "ARDLABS is founded in Prague as a digital engineering studio with a single conviction: design and build software that holds up.",
-  },
-  {
-    year: "2021",
-    title: "The team",
-    text: "The studio grows into a senior bench of designers and engineers, shipping web, mobile and SaaS products end to end.",
-  },
-  {
-    year: "2023",
-    title: "Data & AI",
-    text: "We expand into applied AI, automation and data — putting models and dashboards to work inside real operations.",
-  },
-  {
-    year: "2025",
-    title: "Cloud & scale",
-    text: "Cloud architecture and infrastructure become a full pole, engineered for uptime and growth.",
-  },
-  {
-    year: "2027",
-    title: "Four poles",
-    text: "Strategy, design & development, data & AI and cloud operate as one team covering an idea from question to product.",
-  },
-] as const;
