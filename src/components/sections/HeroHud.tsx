@@ -22,14 +22,16 @@ export function HeroHud({ ready }: { ready: boolean }) {
 
   useEffect(() => {
     // write the decorative LAT/LON straight to the DOM via refs, throttled to
-    // one rAF — no React re-render on a pointer storm (protects INP)
+    // one rAF — no React re-render on a pointer storm (protects INP).
+    // Anchored at the studio's real coordinates (Prague) with a small
+    // pointer-driven drift, so the readout stays truthful at rest and on touch.
     let frame = 0;
     const onMove = (e: PointerEvent) => {
       if (frame) return;
       frame = requestAnimationFrame(() => {
         frame = 0;
-        const lat = ((e.clientY / window.innerHeight) * 180 - 90).toFixed(4);
-        const lon = ((e.clientX / window.innerWidth) * 360 - 180).toFixed(4);
+        const lat = (50.0755 + (e.clientY / window.innerHeight - 0.5) * 1.2).toFixed(4);
+        const lon = (14.4378 + (e.clientX / window.innerWidth - 0.5) * 2.4).toFixed(4);
         if (latRef.current) latRef.current.textContent = `LAT ${lat}`;
         if (lonRef.current) lonRef.current.textContent = `LON ${lon}`;
       });
@@ -85,8 +87,8 @@ export function HeroHud({ ready }: { ready: boolean }) {
           <span className="inline-block h-1.5 w-1.5 animate-pulse rounded-full bg-accent-2" />
           {t.online}
         </div>
-        <div><span ref={latRef}>LAT -90.0000</span></div>
-        <div><span ref={lonRef}>LON -180.0000</span></div>
+        <div><span ref={latRef}>LAT 50.0755</span></div>
+        <div><span ref={lonRef}>LON 14.4378</span></div>
       </motion.div>
 
       {/* top-right readout */}

@@ -36,8 +36,14 @@ export function Navbar({ ready = true }: { ready?: boolean }) {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // track the section currently in view to light up the matching nav item
+  // track the section currently in view to light up the matching nav item;
+  // clear it off the homepage — the navbar persists across client navigations,
+  // so a stale highlight would otherwise survive onto inner pages
   useEffect(() => {
+    if (!isHome) {
+      setActive("");
+      return;
+    }
     const ids = NAV.map((n) => n.href.replace("#", ""));
     const els = ids
       .map((id) => document.getElementById(id))
@@ -53,7 +59,7 @@ export function Navbar({ ready = true }: { ready?: boolean }) {
     );
     els.forEach((el) => io.observe(el));
     return () => io.disconnect();
-  }, [ready, NAV]);
+  }, [ready, NAV, isHome]);
 
   // close the mobile menu on Escape
   useEffect(() => {

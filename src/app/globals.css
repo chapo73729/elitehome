@@ -177,7 +177,10 @@ html.hide-cursor * {
 
 @media (max-width: 480px) {
   .eyebrow {
-    letter-spacing: 0.25em;
+    /* the longest eyebrow ("Digital Engineering Studio · Prague") must clear
+       the 24px gutters on a 390px viewport */
+    font-size: 0.66rem;
+    letter-spacing: 0.22em;
   }
 }
 
