@@ -34,11 +34,6 @@ const en = {
     scroll: "SCROLL",
     scrollHint: "The studio, in five moves.",
   },
-  vision: {
-    tag: "ARDLABS.AI · COMPOSING VISION",
-    lines: ["We don't just promise.", "We engineer — to the detail,", "and we ship."],
-    para: "Every project starts as a hard question and ends as a product that holds up. We bring deep engineering, clear design and a bias for shipping.",
-  },
   cinematic: {
     tag: "MANIFESTO",
     lines: [
@@ -48,14 +43,6 @@ const en = {
       "built to the detail, made to last.",
     ],
     outro: "This is digital engineering, done right.",
-  },
-  synthesis: {
-    eyebrow: "Living Synthesis",
-    title: "One system, many forms.",
-    intro:
-      "Intelligence, network, infrastructure — the same effort, recomposed. Click to reshape the field; move your cursor to disturb it.",
-    hint: "Click to morph · move to disturb",
-    shapes: ["Core", "Network", "Continuum", "Lattice"],
   },
   core: {
     eyebrow: "Interactive AI Core",
@@ -564,11 +551,6 @@ const fr: DeepPartial<Content> = {
     scroll: "DÉFILER",
     scrollHint: "Le studio, en cinq temps.",
   },
-  vision: {
-    tag: "ARDLABS.AI · COMPOSITION DE LA VISION",
-    lines: ["On ne fait pas que promettre.", "On conçoit — jusqu'au détail,", "et on livre."],
-    para: "Chaque projet part d'une question difficile et finit en produit qui tient. Ingénierie pointue, design clair, et le réflexe de livrer.",
-  },
   cinematic: {
     tag: "MANIFESTE",
     lines: [
@@ -578,14 +560,6 @@ const fr: DeepPartial<Content> = {
       "soignés jusqu'au détail, faits pour durer.",
     ],
     outro: "L'ingénierie numérique, faite correctement.",
-  },
-  synthesis: {
-    eyebrow: "Synthèse vivante",
-    title: "Un système, plusieurs formes.",
-    intro:
-      "Intelligence, réseau, infrastructure — un même effort, recomposé. Cliquez pour transformer le champ ; bougez le curseur pour le perturber.",
-    hint: "Cliquez pour transformer · bougez pour perturber",
-    shapes: ["Cœur", "Réseau", "Continuum", "Treillis"],
   },
   core: {
     eyebrow: "Cœur IA interactif",
