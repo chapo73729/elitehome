@@ -15,6 +15,8 @@ const T = {
     h1: "A digital engineering studio.",
     intro:
       "ARDLABS is a digital engineering studio. We design and build software, platforms and AI systems that are fast, reliable, and refined to the detail — products built to hold up, not demonstrations.",
+    photoAlt: "The ARDLABS studio — engineers at work in the Prague office.",
+    photoCaption: "The studio · Prague",
     whyTitle: "Why we exist",
     why1:
       "Most studios stop at features. We engineer the whole product. Every project starts as a hard question — what to build, why, and how it will hold up — and ends as software, a platform or an AI system that works in production and keeps working long after launch.",
@@ -59,6 +61,8 @@ const T = {
     h1: "Un studio d'ingénierie numérique.",
     intro:
       "ARDLABS est un studio d'ingénierie numérique. Nous concevons et développons des logiciels, des plateformes et des systèmes d'IA rapides, fiables et soignés jusqu'au détail — des produits conçus pour durer, et non de simples démonstrations.",
+    photoAlt: "Le studio ARDLABS — les ingénieurs au travail dans les bureaux de Prague.",
+    photoCaption: "Le studio · Prague",
     whyTitle: "Notre raison d'être",
     why1:
       "La plupart des studios s'arrêtent aux fonctionnalités. Nous concevons le produit dans son ensemble. Chaque projet commence par une question difficile — quoi construire, pourquoi, et comment cela tiendra dans le temps — et aboutit à un logiciel, une plateforme ou un système d'IA qui fonctionne en production et continue de fonctionner longtemps après le lancement.",
@@ -144,6 +148,48 @@ export function AboutView() {
               <p className="mt-6 max-w-2xl text-balance text-lg text-mist">{t.intro}</p>
             </Reveal>
           </div>
+        </div>
+      </section>
+
+      {/* ---------- STUDIO PHOTOGRAPH — blueprint-framed ---------- */}
+      <section className="relative z-10 bg-void pb-6 pt-10 md:pt-14">
+        <div className="container-x">
+          <Reveal>
+            <figure>
+              <div className="relative overflow-hidden">
+                <picture>
+                  <source media="(max-width: 640px)" srcSet="/images/studio-sm.webp" />
+                  <img
+                    src="/images/studio.webp"
+                    alt={t.photoAlt}
+                    width={1600}
+                    height={1062}
+                    loading="lazy"
+                    decoding="async"
+                    className="h-auto w-full object-cover saturate-[0.85]"
+                  />
+                </picture>
+                {/* dark wash so the warm photograph sits in the void */}
+                <div
+                  aria-hidden
+                  className="absolute inset-0 bg-gradient-to-t from-[#050505]/50 via-transparent to-[#050505]/20"
+                />
+                {/* blueprint chrome — the Compile idiom at rest */}
+                <div
+                  aria-hidden
+                  className="pointer-events-none absolute inset-3 border border-dashed border-accent/25 md:inset-4"
+                />
+                <span aria-hidden className="absolute left-1.5 top-1.5 h-5 w-5 border-l-2 border-t-2 border-accent/70 md:left-2 md:top-2" />
+                <span aria-hidden className="absolute right-1.5 top-1.5 h-5 w-5 border-r-2 border-t-2 border-accent/70 md:right-2 md:top-2" />
+                <span aria-hidden className="absolute bottom-1.5 left-1.5 h-5 w-5 border-b-2 border-l-2 border-accent/70 md:bottom-2 md:left-2" />
+                <span aria-hidden className="absolute bottom-1.5 right-1.5 h-5 w-5 border-b-2 border-r-2 border-accent/70 md:bottom-2 md:right-2" />
+              </div>
+              <figcaption className="flex flex-wrap items-baseline justify-between gap-2 py-3 font-mono text-[0.62rem] uppercase tracking-[0.22em] text-fog">
+                <span>{t.photoCaption}</span>
+                <span aria-hidden className="normal-case text-fog/60">{"// studio: prague … ok"}</span>
+              </figcaption>
+            </figure>
+          </Reveal>
         </div>
       </section>
 
