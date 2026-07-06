@@ -6,9 +6,9 @@ export const SITE = {
   name: "ARDLABS",
   legal: "ARDLABS®",
   tagline: "Digital Engineering Studio",
-  domain: "ardlabs.cz",
-  url: "https://ardlabs.cz",
-  email: "info@ardlabs.cz",
+  domain: "ardlabs.eu",
+  url: "https://ardlabs.eu",
+  email: "info@ardlabs.eu",
   description:
     "ARDLABS® is a digital engineering studio. We design and build software, platforms and AI systems that are fast, reliable, and refined to the detail.",
   locale: "en",
