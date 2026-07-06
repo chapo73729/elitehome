@@ -8,13 +8,15 @@ export type Accent = {
   a3: string;
 };
 
-/* Spec acté: ONE azure accent. Presets stay strictly in the azure family —
-   subtle temperature shifts only, never a rainbow. */
+/* Four clearly distinct accent families (owner's call): the original azure
+   plus ruby, emerald and violet — each tuned to azure's brightness structure
+   (base / lighter hover / deeper variant) so every preset keeps its contrast
+   on the near-black canvas. */
 export const ACCENTS: Accent[] = [
   { id: "azure", name: "Azure", a: "#4f8cff", a2: "#6b9dff", a3: "#3d6fe0" },
-  { id: "ice", name: "Ice", a: "#5ea2ff", a2: "#8fbdff", a3: "#3f86e6" },
-  { id: "steel", name: "Steel", a: "#5c86d8", a2: "#7ea3e6", a3: "#3a62b0" },
-  { id: "deep", name: "Deep", a: "#3f6fe0", a2: "#5d8bff", a3: "#2c52b8" },
+  { id: "ruby", name: "Ruby", a: "#f0524a", a2: "#ff7a70", a3: "#c93a34" },
+  { id: "emerald", name: "Emerald", a: "#35c98e", a2: "#5fe0ac", a3: "#1fa06b" },
+  { id: "violet", name: "Violet", a: "#8b5cf6", a2: "#a78bfa", a3: "#6d3fe0" },
 ];
 
 const subs = new Set<(id: string) => void>();
