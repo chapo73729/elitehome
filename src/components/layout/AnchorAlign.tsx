@@ -45,8 +45,9 @@ export function AnchorAlign() {
       if (Math.abs(el.getBoundingClientRect().top + 10) > 24) scrollToTarget(hash);
     };
     // spaced passes: scene mounts settle early, the first-visit loader can
-    // hold layout for ~4s — the late pass covers deep links on first visit
-    const timers = [600, 1400, 2600, 4500].map((t) => setTimeout(align, t));
+    // hold layout for ~4s — the late passes cover deep links on first visit
+    // and stragglers that mount after the loader lifts
+    const timers = [600, 1400, 2600, 4500, 6500].map((t) => setTimeout(align, t));
 
     return () => {
       timers.forEach(clearTimeout);

@@ -42,16 +42,25 @@ export function SmoothScroll({ children }: { children: React.ReactNode }) {
   return <>{children}</>;
 }
 
-/** Smooth-scroll to a selector or y-offset, falling back to native. */
+/** Smooth-scroll to a selector or y-offset, falling back to native.
+ *
+ * Selectors are resolved to an absolute y HERE (live rect + current scroll)
+ * rather than handed to Lenis: Lenis's element targeting computed a landing
+ * ~100px short on this layout (measured drift grew down the page, +87px on
+ * #services, +116px on #contact), while numeric targets land exactly. */
 export function scrollToTarget(target: string | number) {
+  let y: number;
+  if (typeof target === "string") {
+    const el = document.querySelector(target);
+    if (!el) return;
+    y = window.scrollY + el.getBoundingClientRect().top - 10;
+  } else {
+    y = target;
+  }
   const lenis = (window as any).__lenis as Lenis | null | undefined;
   if (lenis) {
-    lenis.scrollTo(target as any, { offset: -10, duration: 1.4 });
+    lenis.scrollTo(y, { duration: 1.4 });
     return;
   }
-  if (typeof target === "string") {
-    document.querySelector(target)?.scrollIntoView({ behavior: "smooth" });
-  } else {
-    window.scrollTo({ top: target, behavior: "smooth" });
-  }
+  window.scrollTo({ top: y, behavior: "smooth" });
 }
