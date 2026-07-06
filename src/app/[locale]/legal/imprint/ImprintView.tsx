@@ -154,42 +154,21 @@ export function ImprintView() {
                   Siège social :{" "}
                   <Fill>Na Příkopě 21, 110 00 Praha 1, Czech Republic</Fill>
                   <br />
-                  Numéro d&rsquo;identification (IČO) : <Fill>12345678</Fill>, inscrite
+                  Numéro d&rsquo;identification (IČO) : <Fill>19341698</Fill>, inscrite
                   au Registre du commerce tchèque (Městský soud v Praze, sp. zn. C
-                  123456)
+                  163956)
                   <br />
-                  Numéro de TVA (DIČ) : <Fill>CZ12345678</Fill>
-                  <br />
-                  Capital social : <Fill>200 000 CZK</Fill>
+                  Capital social : <Fill>500 000 CZK</Fill>
                 </p>
               ) : (
                 <p>
                   Registered office:{" "}
                   <Fill>Na Příkopě 21, 110 00 Praha 1, Czech Republic</Fill>
                   <br />
-                  Company ID (IČO): <Fill>12345678</Fill>, registered in the Czech
-                  Commercial Register (Městský soud v Praze, sp. zn. C 123456)
+                  Company ID (IČO): <Fill>19341698</Fill>, registered in the Czech
+                  Commercial Register (Městský soud v Praze, sp. zn. C 163956)
                   <br />
-                  VAT no. (DIČ): <Fill>CZ12345678</Fill>
-                  <br />
-                  Share capital: <Fill>200 000 CZK</Fill>
-                </p>
-              )}
-              {lang === "fr" ? (
-                <p>
-                  <em>
-                    Les informations d&rsquo;immatriculation ci-dessus sont des valeurs
-                    fictives destinées à cette démonstration et doivent être remplacées
-                    par les données réelles de la société avant la mise en ligne.
-                  </em>
-                </p>
-              ) : (
-                <p>
-                  <em>
-                    The registration details above are placeholder values for this
-                    demonstration and must be replaced with the company&rsquo;s real
-                    data before launch.
-                  </em>
+                  Share capital: <Fill>500 000 CZK</Fill>
                 </p>
               )}
             </Clause>
@@ -199,13 +178,13 @@ export function ImprintView() {
                 <p>
                   E-mail : <a href={`mailto:${SITE.email}`}>{SITE.email}</a>
                   <br />
-                  Représentée par : <Fill>[Représentant autorisé / gérant]</Fill>
+                  Représentée par : <Fill>Metaforbs</Fill>
                 </p>
               ) : (
                 <p>
                   Email: <a href={`mailto:${SITE.email}`}>{SITE.email}</a>
                   <br />
-                  Represented by: <Fill>[Authorised representative / director]</Fill>
+                  Represented by: <Fill>Metaforbs</Fill>
                 </p>
               )}
             </Clause>
