@@ -1,12 +1,14 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { motion } from "framer-motion";
+import { useEffect } from "react";
+import { motion, useReducedMotion } from "framer-motion";
 import { Button } from "@/components/ui/Button";
 import { HeroHud } from "./HeroHud";
 import { SceneBoundary } from "@/components/three/SceneBoundary";
 import { useSceneVisibility } from "@/hooks/useSceneVisibility";
 import { useContent } from "@/lib/content";
+import { audio } from "@/lib/audio";
 
 const HeroScene = dynamic(() => import("@/components/three/HeroScene"), {
   ssr: false,
@@ -18,6 +20,11 @@ const EASE = [0.16, 1, 0.3, 1] as const;
 export function Hero({ ready }: { ready: boolean }) {
   const scene = useSceneVisibility<HTMLDivElement>({ mountMargin: "800px 0px" });
   const c = useContent().hero;
+
+  // cinematic entrance cue, timed to the wordmark assembling (opt-in sound)
+  useEffect(() => {
+    if (ready) audio.arrival();
+  }, [ready]);
   return (
     <section
       id="hero"
@@ -47,12 +54,7 @@ export function Hero({ ready }: { ready: boolean }) {
           {c.eyebrow}
         </motion.span>
 
-        <h1 className="text-mega text-gradient select-none">
-          <Line ready={ready} delay={0.18}>
-            ARDLABS
-            <span className="align-top text-[0.32em] text-accent">®</span>
-          </Line>
-        </h1>
+        <Wordmark ready={ready} />
 
         <motion.p
           initial={{ opacity: 0, y: 18, filter: "blur(6px)" }}
@@ -111,25 +113,71 @@ export function Hero({ ready }: { ready: boolean }) {
   );
 }
 
-function Line({
-  children,
-  ready,
-  delay,
-}: {
-  children: React.ReactNode;
-  ready: boolean;
-  delay: number;
-}) {
+/**
+ * The hero wordmark — ARDLABS assembling letter by letter out of a masked
+ * rise (blur + tilt resolving to sharp), then crossed by a luminous sweep;
+ * the ® snaps in last on a spring. It settles into the permanent gradient
+ * wordmark between the eyebrow and the headline.
+ *
+ * The gradient is applied PER LETTER (each animated span owns its own
+ * background-clip) — putting it on the parent h1 breaks paint in Chromium
+ * once children live on their own composited layers, which is exactly why
+ * the previous wordmark rendered invisible.
+ */
+function Wordmark({ ready }: { ready: boolean }) {
+  const reduced = useReducedMotion();
+  const letters = "ARDLABS".split("");
+
+  if (reduced) {
+    return (
+      <h1 className="text-mega select-none">
+        <span className="text-gradient">ARDLABS</span>
+        <span className="align-top text-[0.32em] text-accent">®</span>
+      </h1>
+    );
+  }
+
   return (
-    <span className="block overflow-hidden pb-[0.08em]">
-      <motion.span
-        className="block"
-        initial={{ y: "118%", scale: 1.06, filter: "blur(10px)" }}
-        animate={ready ? { y: "0%", scale: 1, filter: "blur(0px)" } : {}}
-        transition={{ duration: 1.35, ease: EASE, delay }}
-      >
-        {children}
-      </motion.span>
-    </span>
+    <h1 className="text-mega select-none" aria-label="ARDLABS®">
+      <span aria-hidden className="relative block overflow-hidden pb-[0.08em]">
+        <span className="flex items-baseline justify-center">
+          {letters.map((ch, i) => (
+            <motion.span
+              key={i}
+              className="text-gradient inline-block will-change-transform"
+              initial={{ y: "115%", opacity: 0, filter: "blur(14px)", rotateX: 50 }}
+              animate={
+                ready
+                  ? { y: "0%", opacity: 1, filter: "blur(0px)", rotateX: 0 }
+                  : {}
+              }
+              transition={{ duration: 1.05, ease: EASE, delay: 0.22 + i * 0.07 }}
+            >
+              {ch}
+            </motion.span>
+          ))}
+          <motion.span
+            className="align-top text-[0.32em] text-accent"
+            initial={{ opacity: 0, scale: 0 }}
+            animate={ready ? { opacity: 1, scale: 1 } : {}}
+            transition={{ delay: 0.95, type: "spring", stiffness: 320, damping: 16 }}
+          >
+            ®
+          </motion.span>
+        </span>
+        {/* luminous sweep across the letters as they lock */}
+        <motion.span
+          className="pointer-events-none absolute inset-0"
+          style={{
+            background:
+              "linear-gradient(100deg, transparent 32%, rgba(255,255,255,0.75) 50%, transparent 68%)",
+            mixBlendMode: "overlay",
+          }}
+          initial={{ x: "-130%" }}
+          animate={ready ? { x: "130%" } : {}}
+          transition={{ duration: 1.15, ease: "easeInOut", delay: 1.05 }}
+        />
+      </span>
+    </h1>
   );
 }

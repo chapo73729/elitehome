@@ -41,6 +41,7 @@ class AudioManager {
   private ambient: AmbientVoice | null = null;
   private music: HTMLAudioElement | null = null;
   private musicNode: MediaElementAudioSourceNode | null = null;
+  private musicGate = false;
   private noiseBuffer: AudioBuffer | null = null;
   private listeners = new Set<Listener>();
   private _enabled = false;
@@ -128,10 +129,22 @@ class AudioManager {
     const t = ctx.currentTime;
     this.master.gain.cancelScheduledValues(t);
     this.master.gain.setTargetAtTime(1, t, 0.12);
-    this.startAmbient();
+    // the music bed waits for its gate (the visitor reaching the manifesto
+    // on the homepage; open immediately on inner pages) — the arrival cue
+    // and UI cues carry the hero on their own
+    if (this.musicGate) this.startAmbient();
     // gentle two-note confirmation so enabling is unmistakable
     setTimeout(() => this.success(), 120);
     this.emit();
+  }
+
+  /** Open the gate that lets the music bed begin. Called when the visitor
+   *  reaches the manifesto chapter (or lands on an inner page). Opens once
+   *  per page load; if sound is already on, the track fades in now. */
+  allowMusic() {
+    if (this.musicGate) return;
+    this.musicGate = true;
+    if (this._enabled) this.startAmbient();
   }
 
   disable() {
@@ -334,6 +347,44 @@ class AudioManager {
       freqTo: 2200,
       q: 0.8,
     });
+  }
+
+  /** Cinematic entrance — timed to the hero wordmark assembling (~1.6 s):
+   *  a deep swell rising an octave, air sweeping upward, and a two-note
+   *  sparkle landing exactly when the letters lock. */
+  arrival() {
+    if (!this._enabled || !this.ctx || !this.master) return;
+    const ctx = this.ctx;
+    const t = ctx.currentTime;
+
+    // deep swell: A1 -> A2 over the letters' rise
+    const o = ctx.createOscillator();
+    o.type = "sine";
+    o.frequency.setValueAtTime(55, t);
+    o.frequency.exponentialRampToValueAtTime(110, t + 1.3);
+    const g = ctx.createGain();
+    g.gain.setValueAtTime(0, t);
+    g.gain.setTargetAtTime(dB(-20), t, 0.35);
+    g.gain.setTargetAtTime(0, t + 1.25, 0.3);
+    o.connect(g);
+    g.connect(this.master);
+    o.start(t);
+    o.stop(t + 3);
+
+    // air rising with the sweep
+    this.noiseBurst({
+      peak: dB(-30),
+      attack: 0.4,
+      decayTc: 0.45,
+      dur: 1.8,
+      freqFrom: 220,
+      freqTo: 1500,
+      q: 0.7,
+    });
+
+    // the ® snap — a soft sparkle fifth as everything settles
+    this.tone({ freq: 880, peak: dB(-27), attack: 0.005, decayTc: 0.3, dur: 1.5, delay: 1.05 });
+    this.tone({ freq: 1318.5, peak: dB(-27), attack: 0.004, decayTc: 0.26, dur: 1.4, delay: 1.15 });
   }
 
   /** Two-note rising confirmation (C5 -> G5). */
