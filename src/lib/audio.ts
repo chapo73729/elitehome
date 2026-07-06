@@ -8,11 +8,12 @@
    - lazy AudioContext, created only on a user gesture
    - one master GainNode; every ramp uses setTargetAtTime
      (exponential approach — no clicks/pops, ever)
-   - ambient bed: a cinematic "space orchestra" drone — a warm
-     D-major stack of sine/triangle voices (root, beating octave
-     pair, fifth, and a major third that swells in and out) plus
-     filtered air, everything kept below ~1 kHz so there is no
-     harsh content anywhere; fading in/out over ~2 s on toggle
+   - ambient bed: an A-minor "slowed + reverb" atmosphere modelled
+     on a reference track's measured spectrum — deep 55 Hz sub,
+     beating octave pair, breathing minor third, filtered air, and
+     a sparse haunting pluck line sent through a generated 4.5 s
+     reverb tail; everything soft sines/triangles under a ~1 kHz
+     ceiling, fading in/out over ~2 s on toggle
    - context is suspended while the tab is hidden and after
      the disable fade completes
    ============================================================ */
@@ -197,18 +198,18 @@ class AudioManager {
       return g;
     };
 
-    /* A warm D-major "space orchestra" stack — every partial is a soft
-       sine/triangle, every interval consonant:
-         D2 root, a D3 octave pair beating at ~0.3 Hz (string-section
-         shimmer), the A3 fifth, and an F#4 major third that swells in
-         and out like a distant horn line. */
-    voice("sine", 73.42, 0.9); // D2 — foundation
-    voice("triangle", 146.83, 0.42, -3); // D3, slow beat pair
-    voice("triangle", 146.83, 0.42, +4);
-    voice("sine", 220.0, 0.3); // A3 — fifth
-    const third = voice("sine", 369.99, 0.1); // F#4 — the hopeful colour
+    /* A-minor "slowed + reverb" bed, modelled on the reference's measured
+       DNA (A-minor chroma, 55 Hz sub fundamental, ~650 Hz spectral centroid,
+       ~30% of energy below 90 Hz):
+         a deep A1 sub, a beating A2 pair, the E3 fifth and a breathing C4
+         minor third — all soft sine/triangle voices under one low ceiling. */
+    voice("sine", 55.0, 1.0); // A1 — the sub foundation
+    voice("triangle", 110.0, 0.4, -3); // A2, slow beat pair
+    voice("triangle", 110.0, 0.4, +4);
+    voice("sine", 164.81, 0.3); // E3 — fifth
+    const third = voice("sine", 261.63, 0.1); // C4 — the melancholy colour
 
-    // the third breathes: a very slow swell from near-silence to present
+    // the minor third breathes: a very slow swell in and out
     const swell = ctx.createOscillator();
     const swellGain = ctx.createGain();
     swell.type = "sine";
@@ -246,9 +247,60 @@ class AudioManager {
     air.start(t);
     stops.push(air);
 
+    /* The signature of the reference: a sparse, haunting pluck line
+       drowned in a long reverb tail. The plucks are pure sines (no harsh
+       partials possible) sent through a generated 4.5 s "cathedral" IR;
+       phrases alternate and rest, so the line never becomes a loop you
+       notice. Runs ~9 dB above the bed — the melody is the feature. */
+    const reverb = ctx.createConvolver();
+    reverb.buffer = this.getReverbIR(ctx);
+    const wet = ctx.createGain();
+    wet.gain.value = 4.2; // plucks are quiet sines — the tail carries them
+    reverb.connect(wet);
+    wet.connect(pad);
+    const dry = ctx.createGain();
+    dry.gain.value = 1.1;
+    dry.connect(pad);
+
+    const A3 = 220, B3 = 246.94, C4 = 261.63, D4 = 293.66, E4 = 329.63, A4 = 440;
+    const PHRASES: number[][] = [
+      [A4, E4, C4, B3], // falling, unresolved
+      [E4, C4, D4, B3, A3], // the answer, settling home
+      [A4, E4, B3, C4], // variation — the 9th leans on the minor third
+    ];
+    let phrase = 0;
+    const pluck = (freq: number, at: number, vel: number) => {
+      const o = ctx.createOscillator();
+      o.type = "sine";
+      o.frequency.value = freq;
+      const g = ctx.createGain();
+      g.gain.setValueAtTime(0, at);
+      g.gain.setTargetAtTime(vel, at, 0.008); // soft mallet attack
+      g.gain.setTargetAtTime(0, at + 0.05, 0.45); // ~1.5 s natural decay
+      o.connect(g);
+      g.connect(reverb);
+      g.connect(dry);
+      o.start(at);
+      o.stop(at + 3);
+    };
+    const scheduleBar = () => {
+      // never schedule into a suspended context (notes would pile up)
+      if (ctx.state !== "running" || !this.ambient) return;
+      const notes = PHRASES[phrase % PHRASES.length];
+      phrase++;
+      const start = ctx.currentTime + 0.15;
+      const step = 0.62; // slow, weightless pacing
+      notes.forEach((f, i) => pluck(f, start + i * step, 0.5 - i * 0.055));
+    };
+    // first phrase enters once the pad has faded in, then one phrase ~7.5 s
+    const firstPhrase = setTimeout(scheduleBar, 2600);
+    const melodyTimer = setInterval(scheduleBar, 7500);
+
     this.ambient = {
       gain: pad,
       stop: () => {
+        clearTimeout(firstPhrase);
+        clearInterval(melodyTimer);
         stops.forEach((node) => {
           try {
             node.stop();
@@ -258,6 +310,23 @@ class AudioManager {
         this.ambient = null;
       },
     };
+  }
+
+  /** Generated stereo impulse response — a 4.5 s exponentially decaying
+   *  noise tail, i.e. the acoustics of a vast dark hall. Cached. */
+  private reverbIR: AudioBuffer | null = null;
+  private getReverbIR(ctx: AudioContext): AudioBuffer {
+    if (this.reverbIR) return this.reverbIR;
+    const len = Math.floor(ctx.sampleRate * 4.5);
+    const buf = ctx.createBuffer(2, len, ctx.sampleRate);
+    for (let c = 0; c < 2; c++) {
+      const data = buf.getChannelData(c);
+      for (let i = 0; i < len; i++) {
+        data[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 2.9);
+      }
+    }
+    this.reverbIR = buf;
+    return buf;
   }
 
   /* ---------------- shared helpers ---------------- */
