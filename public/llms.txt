@@ -1,0 +1,30 @@
+# ARDLABS®
+
+> ARDLABS is a digital engineering studio based in Prague, working worldwide
+> in English and French. We design and build software, platforms and AI
+> systems that are fast, reliable, and refined to the detail.
+
+Four service poles cover an idea end to end: Strategy & Consulting,
+Design & Development, Data & AI, and Cloud & Infrastructure.
+
+Contact: info@ardlabs.eu
+
+## Services
+
+- [Strategy & Consulting](https://ardlabs.eu/en/services/strategy): technology consulting, applied R&D, product prototyping, technical due diligence.
+- [Design & Development](https://ardlabs.eu/en/services/software): custom software, web & mobile apps, SaaS platforms, internal systems, design systems.
+- [Data & AI](https://ardlabs.eu/en/services/ai): applied AI, intelligent automation, data pipelines, dashboards and internal tools.
+- [Cloud & Infrastructure](https://ardlabs.eu/en/services/cloud): cloud architecture, deployment, APIs & integrations, CI/CD, observability.
+
+## Key pages
+
+- [About the studio](https://ardlabs.eu/en/about)
+- [How we work](https://ardlabs.eu/en/approach)
+- [Selected work](https://ardlabs.eu/en/work)
+- [Insights (engineering notes)](https://ardlabs.eu/en/insights)
+- [Contact / start a project](https://ardlabs.eu/en/contact)
+
+## Optional
+
+- [Version française](https://ardlabs.eu/fr)
+- [Careers](https://ardlabs.eu/en/careers)

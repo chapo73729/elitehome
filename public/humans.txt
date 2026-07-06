@@ -1,0 +1,8 @@
+/* ARDLABS® — Digital Engineering Studio */
+Site: https://ardlabs.eu
+Location: Prague, Czech Republic
+Languages: English / Français
+Contact: info@ardlabs.eu
+
+/* Stack */
+Next.js · React · TypeScript · Tailwind CSS · React Three Fiber · WebGL

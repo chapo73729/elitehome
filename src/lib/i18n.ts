@@ -87,5 +87,8 @@ export function i18nAlternates(locale: AppLocale, path: string) {
       fr: `/fr${clean}`,
       "x-default": `/en${clean}`,
     },
+    // page-level alternates replace the layout's wholesale, so the feed
+    // must ride along here to appear on every page
+    types: { "application/rss+xml": "/feed.xml" },
   };
 }

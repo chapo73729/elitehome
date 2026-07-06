@@ -5,7 +5,7 @@ export function JsonLd() {
     "@context": "https://schema.org",
     "@graph": [
       {
-        "@type": "Organization",
+        "@type": ["Organization", "ProfessionalService"],
         "@id": `${SITE.url}/#organization`,
         name: SITE.legal,
         legalName: SITE.legal,
@@ -13,6 +13,15 @@ export function JsonLd() {
         email: SITE.email,
         description: SITE.description,
         slogan: SITE.tagline,
+        foundingDate: "2019",
+        logo: `${SITE.url}/icon.svg`,
+        image: `${SITE.url}/opengraph-image`,
+        contactPoint: {
+          "@type": "ContactPoint",
+          contactType: "sales",
+          email: SITE.email,
+          availableLanguage: ["en", "fr"],
+        },
         address: {
           "@type": "PostalAddress",
           streetAddress: "Na Příkopě 21",
