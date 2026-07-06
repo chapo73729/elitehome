@@ -8,12 +8,12 @@
    - one master GainNode; every ramp uses setTargetAtTime
      (exponential approach — no clicks/pops, ever)
    - ambient bed: /audio/ambient.mp3 — used with the artist's
-     written permission (website-background use only). Streamed
-     through an HTMLAudioElement (no PCM in memory), fetched only
-     when a visitor enables sound, looped, faded in/out over ~2 s
-     and mixed well below the UI cues
-   - context is suspended and the media element paused while the
-     tab is hidden and after the disable fade completes
+     written permission (website-background use only). Fetched and
+     decoded ONLY when a visitor enables sound, then looped through
+     an AudioBufferSourceNode (never a MediaElementSource, which is
+     silent on iOS WebKit), faded in/out over ~2 s
+   - context is suspended while the tab is hidden and after the
+     disable fade completes — the buffer source freezes in place
    ============================================================ */
 
 type Listener = (enabled: boolean) => void;
@@ -39,8 +39,8 @@ class AudioManager {
   private ctx: AudioContext | null = null;
   private master: GainNode | null = null;
   private ambient: AmbientVoice | null = null;
-  private music: HTMLAudioElement | null = null;
-  private musicNode: MediaElementAudioSourceNode | null = null;
+  private musicBuffer: AudioBuffer | null = null;
+  private musicLoading = false;
   private musicGate = false;
   private noiseBuffer: AudioBuffer | null = null;
   private listeners = new Set<Listener>();
@@ -69,16 +69,15 @@ class AudioManager {
       window.addEventListener("keydown", resume, { once: true });
     }
 
-    // Save CPU + battery: park the context AND the media element while
-    // the tab is hidden.
+    // Save CPU + battery: park the whole context while the tab is hidden
+    // (suspending freezes the buffer source in place — it resumes exactly
+    // where it stopped).
     document.addEventListener("visibilitychange", () => {
       if (!this.ctx) return;
       if (document.hidden) {
-        this.music?.pause();
         void this.ctx.suspend();
       } else if (this._enabled) {
         void this.ctx.resume();
-        if (this.ambient) void this.music?.play().catch(() => {});
       }
     });
   }
@@ -129,11 +128,9 @@ class AudioManager {
     const t = ctx.currentTime;
     this.master.gain.cancelScheduledValues(t);
     this.master.gain.setTargetAtTime(1, t, 0.12);
-    // ALWAYS start the media element inside this click: iOS/Safari only
-    // honours play() issued from a user gesture, and once a media element
-    // has been user-activated it may be resumed from anywhere. Before the
-    // gate opens the bed simply plays at gain 0 — the gate then only has
-    // to raise a volume, which no autoplay policy can block.
+    // start (or resume) the bed now, inside this gesture — it runs at
+    // gain 0 until the manifesto gate opens, so the gate only ever has to
+    // raise a volume
     this.startAmbient();
     // gentle two-note confirmation so enabling is unmistakable
     setTimeout(() => this.success(), 120);
@@ -151,7 +148,6 @@ class AudioManager {
       const t = this.ctx.currentTime;
       this.ambient.gain.gain.cancelScheduledValues(t);
       this.ambient.gain.gain.setTargetAtTime(AMBIENT_LEVEL, t, FADE_TC);
-      void this.music?.play().catch(() => {});
     } else {
       this.startAmbient();
     }
@@ -185,48 +181,72 @@ class AudioManager {
     const ctx = this.ctx;
     const t = ctx.currentTime;
 
-    // the bed is only audible once the gate is open; until then it plays
-    // muted so iOS keeps the element user-activated
+    // the bed is only audible once the gate is open; until then it runs
+    // muted so the moment of first sound is the manifesto, not the hero
     const target = this.musicGate ? AMBIENT_LEVEL : 0;
 
     if (this.ambient) {
       // re-enabled mid fade-out: breathe the existing bed back in
       this.ambient.gain.gain.cancelScheduledValues(t);
       this.ambient.gain.gain.setTargetAtTime(target, t, FADE_TC);
-      void this.music?.play().catch(() => {});
       return;
     }
 
-    /* Licensed music bed — streamed, looped, created once. The element and
-       its MediaElementSource are cached for the page's lifetime because a
-       media element can only ever be wired into one source node. */
-    if (!this.music) {
-      this.music = new Audio("/audio/ambient.mp3");
-      this.music.loop = true;
-      this.music.preload = "auto";
-    }
-    if (!this.musicNode) {
-      this.musicNode = ctx.createMediaElementSource(this.music);
-    }
-
+    /* Licensed music bed. Decoded to an AudioBuffer and played through an
+       AudioBufferSourceNode — deliberately NOT a MediaElementSource: WebKit
+       has a long-standing bug where a media element routed into a Web Audio
+       graph produces silence on iOS. A buffer source is plain Web Audio:
+       gain fades work everywhere and no autoplay policy is involved once
+       the context has been unlocked by the enable gesture. */
     const bed = ctx.createGain();
     bed.gain.value = 0;
-    bed.gain.setTargetAtTime(target, t, FADE_TC); // ~2 s fade-in (or stay muted)
-    this.musicNode.connect(bed);
     bed.connect(this.master);
 
-    void this.music.play().catch(() => {
-      /* If the browser still refuses (should not happen — enable() runs on
-         a user gesture), the UI cues keep working and the bed stays silent. */
-    });
+    let source: AudioBufferSourceNode | null = null;
+    let cancelled = false;
+
+    const startSource = (buffer: AudioBuffer) => {
+      if (cancelled || !this.ctx) return;
+      source = this.ctx.createBufferSource();
+      source.buffer = buffer;
+      source.loop = true;
+      source.connect(bed);
+      source.start();
+      const now = this.ctx.currentTime;
+      bed.gain.cancelScheduledValues(now);
+      bed.gain.setTargetAtTime(
+        this.musicGate ? AMBIENT_LEVEL : 0,
+        now,
+        FADE_TC
+      );
+    };
+
+    if (this.musicBuffer) {
+      startSource(this.musicBuffer);
+    } else if (!this.musicLoading) {
+      this.musicLoading = true;
+      fetch("/audio/ambient.mp3")
+        .then((r) => r.arrayBuffer())
+        .then((data) => ctx.decodeAudioData(data))
+        .then((buffer) => {
+          this.musicBuffer = buffer;
+          this.musicLoading = false;
+          startSource(buffer);
+        })
+        .catch(() => {
+          // network/decode failure: UI cues keep working, bed stays silent
+          this.musicLoading = false;
+        });
+    }
 
     this.ambient = {
       gain: bed,
       stop: () => {
-        this.music?.pause();
+        cancelled = true;
         try {
-          this.musicNode?.disconnect();
+          source?.stop();
         } catch {}
+        source = null;
         bed.disconnect();
         this.ambient = null;
       },

@@ -139,44 +139,49 @@ function Wordmark({ ready }: { ready: boolean }) {
 
   return (
     <h1 className="text-mega select-none" aria-label="ARDLABS®">
-      <span aria-hidden className="relative block overflow-hidden pb-[0.08em]">
-        <span className="flex items-baseline justify-center">
-          {letters.map((ch, i) => (
-            <motion.span
-              key={i}
-              className="text-gradient inline-block will-change-transform"
-              initial={{ y: "115%", opacity: 0, filter: "blur(14px)", rotateX: 50 }}
-              animate={
-                ready
-                  ? { y: "0%", opacity: 1, filter: "blur(0px)", rotateX: 0 }
-                  : {}
-              }
-              transition={{ duration: 1.05, ease: EASE, delay: 0.22 + i * 0.07 }}
-            >
-              {ch}
-            </motion.span>
-          ))}
+      <span aria-hidden className="relative flex items-start justify-center">
+        {/* the letters rise inside their own mask… */}
+        <span className="relative block overflow-hidden pb-[0.08em]">
+          <span className="flex items-baseline">
+            {letters.map((ch, i) => (
+              <motion.span
+                key={i}
+                className="text-gradient inline-block will-change-transform"
+                initial={{ y: "115%", opacity: 0, filter: "blur(14px)", rotateX: 50 }}
+                animate={
+                  ready
+                    ? { y: "0%", opacity: 1, filter: "blur(0px)", rotateX: 0 }
+                    : {}
+                }
+                transition={{ duration: 1.05, ease: EASE, delay: 0.22 + i * 0.07 }}
+              >
+                {ch}
+              </motion.span>
+            ))}
+          </span>
+          {/* luminous sweep across the letters as they lock */}
           <motion.span
-            className="align-top text-[0.32em] text-accent"
-            initial={{ opacity: 0, scale: 0 }}
-            animate={ready ? { opacity: 1, scale: 1 } : {}}
-            transition={{ delay: 0.95, type: "spring", stiffness: 320, damping: 16 }}
-          >
-            ®
-          </motion.span>
+            className="pointer-events-none absolute inset-0"
+            style={{
+              background:
+                "linear-gradient(100deg, transparent 32%, rgba(255,255,255,0.75) 50%, transparent 68%)",
+              mixBlendMode: "overlay",
+            }}
+            initial={{ x: "-130%" }}
+            animate={ready ? { x: "130%" } : {}}
+            transition={{ duration: 1.15, ease: "easeInOut", delay: 1.05 }}
+          />
         </span>
-        {/* luminous sweep across the letters as they lock */}
+        {/* …the ® lives OUTSIDE the mask (it scales in, so a clipping
+            container would slice it) — superscript via self-start */}
         <motion.span
-          className="pointer-events-none absolute inset-0"
-          style={{
-            background:
-              "linear-gradient(100deg, transparent 32%, rgba(255,255,255,0.75) 50%, transparent 68%)",
-            mixBlendMode: "overlay",
-          }}
-          initial={{ x: "-130%" }}
-          animate={ready ? { x: "130%" } : {}}
-          transition={{ duration: 1.15, ease: "easeInOut", delay: 1.05 }}
-        />
+          className="mt-[0.14em] text-[0.32em] text-accent"
+          initial={{ opacity: 0, scale: 0 }}
+          animate={ready ? { opacity: 1, scale: 1 } : {}}
+          transition={{ delay: 0.95, type: "spring", stiffness: 320, damping: 16 }}
+        >
+          ®
+        </motion.span>
       </span>
     </h1>
   );
