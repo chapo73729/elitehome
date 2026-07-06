@@ -8,9 +8,11 @@
    - lazy AudioContext, created only on a user gesture
    - one master GainNode; every ramp uses setTargetAtTime
      (exponential approach — no clicks/pops, ever)
-   - ambient bed: two detuned oscillators -> lowpass whose
-     cutoff drifts under a slow LFO, at ~-38 dB, fading
-     in/out over ~2 s on toggle
+   - ambient bed: a cinematic "space orchestra" drone — a warm
+     D-major stack of sine/triangle voices (root, beating octave
+     pair, fifth, and a major third that swells in and out) plus
+     filtered air, everything kept below ~1 kHz so there is no
+     harsh content anywhere; fading in/out over ~2 s on toggle
    - context is suspended while the tab is hidden and after
      the disable fade completes
    ============================================================ */
@@ -20,7 +22,7 @@ type Listener = (enabled: boolean) => void;
 /** dB (full scale) -> linear gain. */
 const dB = (v: number) => Math.pow(10, v / 20);
 
-const AMBIENT_LEVEL = dB(-38); // ≈ 0.0126 — barely-there bed
+const AMBIENT_LEVEL = dB(-35); // sines read quieter than saws — still a barely-there bed
 const CLICK_LEVEL = dB(-24); // ≈ 0.063
 const HOVER_LEVEL = dB(-31); // ≈ 0.028 — even quieter tick
 const WHOOSH_LEVEL = dB(-27);
@@ -167,40 +169,87 @@ class AudioManager {
     pad.gain.setTargetAtTime(AMBIENT_LEVEL, t, FADE_TC); // ~2 s fade-in
     pad.connect(this.master);
 
+    // one gentle ceiling for the whole chord: nothing above ~1 kHz survives,
+    // so the bed can never turn harsh or fatiguing
     const filter = ctx.createBiquadFilter();
     filter.type = "lowpass";
-    filter.frequency.value = 520;
-    filter.Q.value = 1.1;
+    filter.frequency.value = 950;
+    filter.Q.value = 0.4;
     filter.connect(pad);
 
-    // slow, breathing sweep of the cutoff
-    const lfo = ctx.createOscillator();
-    const lfoGain = ctx.createGain();
-    lfo.type = "sine";
-    lfo.frequency.value = 0.055;
-    lfoGain.gain.value = 240;
-    lfo.connect(lfoGain);
-    lfoGain.connect(filter.frequency);
-    lfo.start(t);
+    const stops: { stop: () => void }[] = [];
+    const voice = (
+      type: OscillatorType,
+      freq: number,
+      level: number,
+      detune = 0
+    ) => {
+      const o = ctx.createOscillator();
+      o.type = type;
+      o.frequency.value = freq;
+      o.detune.value = detune;
+      const g = ctx.createGain();
+      g.gain.value = level;
+      o.connect(g);
+      g.connect(filter);
+      o.start(t);
+      stops.push(o);
+      return g;
+    };
 
-    // two detuned oscillators beating slowly against each other
-    const oscA = ctx.createOscillator();
-    const oscB = ctx.createOscillator();
-    oscA.type = "sawtooth";
-    oscB.type = "sawtooth";
-    oscA.frequency.value = 110; // A2
-    oscB.frequency.value = 110;
-    oscA.detune.value = -6; // cents
-    oscB.detune.value = +7;
-    oscA.connect(filter);
-    oscB.connect(filter);
-    oscA.start(t);
-    oscB.start(t);
+    /* A warm D-major "space orchestra" stack — every partial is a soft
+       sine/triangle, every interval consonant:
+         D2 root, a D3 octave pair beating at ~0.3 Hz (string-section
+         shimmer), the A3 fifth, and an F#4 major third that swells in
+         and out like a distant horn line. */
+    voice("sine", 73.42, 0.9); // D2 — foundation
+    voice("triangle", 146.83, 0.42, -3); // D3, slow beat pair
+    voice("triangle", 146.83, 0.42, +4);
+    voice("sine", 220.0, 0.3); // A3 — fifth
+    const third = voice("sine", 369.99, 0.1); // F#4 — the hopeful colour
+
+    // the third breathes: a very slow swell from near-silence to present
+    const swell = ctx.createOscillator();
+    const swellGain = ctx.createGain();
+    swell.type = "sine";
+    swell.frequency.value = 0.03; // one swell ≈ 33 s
+    swellGain.gain.value = 0.09;
+    swell.connect(swellGain);
+    swellGain.connect(third.gain);
+    swell.start(t);
+    stops.push(swell);
+
+    // whole pad breathes ±18% over ~20 s — alive, never static
+    const breath = ctx.createOscillator();
+    const breathGain = ctx.createGain();
+    breath.type = "sine";
+    breath.frequency.value = 0.05;
+    breathGain.gain.value = AMBIENT_LEVEL * 0.18;
+    breath.connect(breathGain);
+    breathGain.connect(pad.gain);
+    breath.start(t);
+    stops.push(breath);
+
+    // filtered air — the quiet "room tone" of a very large space
+    const air = ctx.createBufferSource();
+    air.buffer = this.getNoise(ctx);
+    air.loop = true;
+    const airFilter = ctx.createBiquadFilter();
+    airFilter.type = "lowpass";
+    airFilter.frequency.value = 320;
+    airFilter.Q.value = 0.3;
+    const airGain = ctx.createGain();
+    airGain.gain.value = 0.05;
+    air.connect(airFilter);
+    airFilter.connect(airGain);
+    airGain.connect(pad);
+    air.start(t);
+    stops.push(air);
 
     this.ambient = {
       gain: pad,
       stop: () => {
-        [oscA, oscB, lfo].forEach((node) => {
+        stops.forEach((node) => {
           try {
             node.stop();
           } catch {}
