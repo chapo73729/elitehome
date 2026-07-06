@@ -129,22 +129,32 @@ class AudioManager {
     const t = ctx.currentTime;
     this.master.gain.cancelScheduledValues(t);
     this.master.gain.setTargetAtTime(1, t, 0.12);
-    // the music bed waits for its gate (the visitor reaching the manifesto
-    // on the homepage; open immediately on inner pages) — the arrival cue
-    // and UI cues carry the hero on their own
-    if (this.musicGate) this.startAmbient();
+    // ALWAYS start the media element inside this click: iOS/Safari only
+    // honours play() issued from a user gesture, and once a media element
+    // has been user-activated it may be resumed from anywhere. Before the
+    // gate opens the bed simply plays at gain 0 — the gate then only has
+    // to raise a volume, which no autoplay policy can block.
+    this.startAmbient();
     // gentle two-note confirmation so enabling is unmistakable
     setTimeout(() => this.success(), 120);
     this.emit();
   }
 
-  /** Open the gate that lets the music bed begin. Called when the visitor
-   *  reaches the manifesto chapter (or lands on an inner page). Opens once
-   *  per page load; if sound is already on, the track fades in now. */
+  /** Open the gate that lets the music bed be HEARD. Called when the
+   *  visitor reaches the manifesto chapter (or lands on an inner page).
+   *  Opens once per page load; the already-playing bed fades up. */
   allowMusic() {
     if (this.musicGate) return;
     this.musicGate = true;
-    if (this._enabled) this.startAmbient();
+    if (!this._enabled) return;
+    if (this.ambient && this.ctx) {
+      const t = this.ctx.currentTime;
+      this.ambient.gain.gain.cancelScheduledValues(t);
+      this.ambient.gain.gain.setTargetAtTime(AMBIENT_LEVEL, t, FADE_TC);
+      void this.music?.play().catch(() => {});
+    } else {
+      this.startAmbient();
+    }
   }
 
   disable() {
@@ -175,10 +185,14 @@ class AudioManager {
     const ctx = this.ctx;
     const t = ctx.currentTime;
 
+    // the bed is only audible once the gate is open; until then it plays
+    // muted so iOS keeps the element user-activated
+    const target = this.musicGate ? AMBIENT_LEVEL : 0;
+
     if (this.ambient) {
       // re-enabled mid fade-out: breathe the existing bed back in
       this.ambient.gain.gain.cancelScheduledValues(t);
-      this.ambient.gain.gain.setTargetAtTime(AMBIENT_LEVEL, t, FADE_TC);
+      this.ambient.gain.gain.setTargetAtTime(target, t, FADE_TC);
       void this.music?.play().catch(() => {});
       return;
     }
@@ -197,7 +211,7 @@ class AudioManager {
 
     const bed = ctx.createGain();
     bed.gain.value = 0;
-    bed.gain.setTargetAtTime(AMBIENT_LEVEL, t, FADE_TC); // ~2 s fade-in
+    bed.gain.setTargetAtTime(target, t, FADE_TC); // ~2 s fade-in (or stay muted)
     this.musicNode.connect(bed);
     bed.connect(this.master);
 

@@ -25,6 +25,13 @@ export function MusicGate() {
       audio.allowMusic();
       return;
     }
+    // already below the manifesto (deep link, restored scroll position,
+    // fast jump the observer missed): the visitor has "reached" it — open
+    const past = setTimeout(() => {
+      if (el.getBoundingClientRect().top < window.innerHeight * 0.65) {
+        audio.allowMusic();
+      }
+    }, 600);
     const io = new IntersectionObserver(
       ([e]) => {
         if (e.isIntersecting) {
@@ -36,7 +43,10 @@ export function MusicGate() {
       { rootMargin: "0px 0px -35% 0px" }
     );
     io.observe(el);
-    return () => io.disconnect();
+    return () => {
+      clearTimeout(past);
+      io.disconnect();
+    };
   }, [pathname]);
 
   return null;
