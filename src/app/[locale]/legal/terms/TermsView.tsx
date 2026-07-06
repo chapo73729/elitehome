@@ -141,13 +141,13 @@ export function TermsView() {
               {lang === "fr" ? (
                 <p>
                   Les présentes conditions régissent votre utilisation de ce site,
-                  exploité par <Fill>[Legal entity name]</Fill> ({SITE.legal}). En
+                  exploité par <Fill>ARDLABS s.r.o.</Fill> ({SITE.legal}). En
                   utilisant le site, vous les acceptez.
                 </p>
               ) : (
                 <p>
                   These terms govern your use of this website, operated by{" "}
-                  <Fill>[Legal entity name]</Fill> ({SITE.legal}). By using the site
+                  <Fill>ARDLABS s.r.o.</Fill> ({SITE.legal}). By using the site
                   you agree to them.
                 </p>
               )}

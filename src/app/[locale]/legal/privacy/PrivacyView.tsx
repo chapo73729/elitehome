@@ -147,13 +147,13 @@ export function PrivacyView() {
               {lang === "fr" ? (
                 <p>
                   La présente politique explique comment{" "}
-                  <Fill>[Legal entity name]</Fill> ({SITE.legal}) traite les données à
+                  <Fill>ARDLABS s.r.o.</Fill> ({SITE.legal}) traite les données à
                   caractère personnel lorsque vous visitez ce site ou nous contactez.
                   Nous agissons en qualité de responsable du traitement.
                 </p>
               ) : (
                 <p>
-                  This policy explains how <Fill>[Legal entity name]</Fill> (
+                  This policy explains how <Fill>ARDLABS s.r.o.</Fill> (
                   {SITE.legal}) processes personal data when you visit this website or
                   contact us. We act as the data controller.
                 </p>
