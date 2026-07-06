@@ -1,21 +1,19 @@
 /* ============================================================
-   ARDLABS — fully synthesized sound design (no audio files).
-   A tiny Web Audio engine: an evolving ambient pad + refined UI
-   cues (click / hover / whoosh / success). Opt-in, persisted,
-   and safe to import on the server.
+   ARDLABS — sound design. A tiny Web Audio engine: a licensed
+   music bed + fully synthesized UI cues (click / hover / whoosh /
+   success). Opt-in, persisted, and safe to import on the server.
 
    Architecture
    - lazy AudioContext, created only on a user gesture
    - one master GainNode; every ramp uses setTargetAtTime
      (exponential approach — no clicks/pops, ever)
-   - ambient bed: an A-minor "slowed + reverb" atmosphere modelled
-     on a reference track's measured spectrum — deep 55 Hz sub,
-     beating octave pair, breathing minor third, filtered air, and
-     a sparse haunting pluck line sent through a generated 4.5 s
-     reverb tail; everything soft sines/triangles under a ~1 kHz
-     ceiling, fading in/out over ~2 s on toggle
-   - context is suspended while the tab is hidden and after
-     the disable fade completes
+   - ambient bed: /audio/ambient.mp3 — used with the artist's
+     written permission (website-background use only). Streamed
+     through an HTMLAudioElement (no PCM in memory), fetched only
+     when a visitor enables sound, looped, faded in/out over ~2 s
+     and mixed well below the UI cues
+   - context is suspended and the media element paused while the
+     tab is hidden and after the disable fade completes
    ============================================================ */
 
 type Listener = (enabled: boolean) => void;
@@ -23,7 +21,7 @@ type Listener = (enabled: boolean) => void;
 /** dB (full scale) -> linear gain. */
 const dB = (v: number) => Math.pow(10, v / 20);
 
-const AMBIENT_LEVEL = dB(-35); // sines read quieter than saws — still a barely-there bed
+const AMBIENT_LEVEL = dB(-19); // music bed — clearly present yet under the content
 const CLICK_LEVEL = dB(-24); // ≈ 0.063
 const HOVER_LEVEL = dB(-31); // ≈ 0.028 — even quieter tick
 const WHOOSH_LEVEL = dB(-27);
@@ -41,6 +39,8 @@ class AudioManager {
   private ctx: AudioContext | null = null;
   private master: GainNode | null = null;
   private ambient: AmbientVoice | null = null;
+  private music: HTMLAudioElement | null = null;
+  private musicNode: MediaElementAudioSourceNode | null = null;
   private noiseBuffer: AudioBuffer | null = null;
   private listeners = new Set<Listener>();
   private _enabled = false;
@@ -68,13 +68,16 @@ class AudioManager {
       window.addEventListener("keydown", resume, { once: true });
     }
 
-    // Save CPU + battery: park the whole context while the tab is hidden.
+    // Save CPU + battery: park the context AND the media element while
+    // the tab is hidden.
     document.addEventListener("visibilitychange", () => {
       if (!this.ctx) return;
       if (document.hidden) {
+        this.music?.pause();
         void this.ctx.suspend();
       } else if (this._enabled) {
         void this.ctx.resume();
+        if (this.ambient) void this.music?.play().catch(() => {});
       }
     });
   }
@@ -158,175 +161,49 @@ class AudioManager {
     if (!this.ctx || !this.master) return;
     const ctx = this.ctx;
     const t = ctx.currentTime;
+
     if (this.ambient) {
-      // re-enabled mid fade-out: breathe the existing pad back in
+      // re-enabled mid fade-out: breathe the existing bed back in
       this.ambient.gain.gain.cancelScheduledValues(t);
       this.ambient.gain.gain.setTargetAtTime(AMBIENT_LEVEL, t, FADE_TC);
+      void this.music?.play().catch(() => {});
       return;
     }
 
-    const pad = ctx.createGain();
-    pad.gain.value = 0;
-    pad.gain.setTargetAtTime(AMBIENT_LEVEL, t, FADE_TC); // ~2 s fade-in
-    pad.connect(this.master);
+    /* Licensed music bed — streamed, looped, created once. The element and
+       its MediaElementSource are cached for the page's lifetime because a
+       media element can only ever be wired into one source node. */
+    if (!this.music) {
+      this.music = new Audio("/audio/ambient.mp3");
+      this.music.loop = true;
+      this.music.preload = "auto";
+    }
+    if (!this.musicNode) {
+      this.musicNode = ctx.createMediaElementSource(this.music);
+    }
 
-    // one gentle ceiling for the whole chord: nothing above ~1 kHz survives,
-    // so the bed can never turn harsh or fatiguing
-    const filter = ctx.createBiquadFilter();
-    filter.type = "lowpass";
-    filter.frequency.value = 950;
-    filter.Q.value = 0.4;
-    filter.connect(pad);
+    const bed = ctx.createGain();
+    bed.gain.value = 0;
+    bed.gain.setTargetAtTime(AMBIENT_LEVEL, t, FADE_TC); // ~2 s fade-in
+    this.musicNode.connect(bed);
+    bed.connect(this.master);
 
-    const stops: { stop: () => void }[] = [];
-    const voice = (
-      type: OscillatorType,
-      freq: number,
-      level: number,
-      detune = 0
-    ) => {
-      const o = ctx.createOscillator();
-      o.type = type;
-      o.frequency.value = freq;
-      o.detune.value = detune;
-      const g = ctx.createGain();
-      g.gain.value = level;
-      o.connect(g);
-      g.connect(filter);
-      o.start(t);
-      stops.push(o);
-      return g;
-    };
-
-    /* A-minor "slowed + reverb" bed, modelled on the reference's measured
-       DNA (A-minor chroma, 55 Hz sub fundamental, ~650 Hz spectral centroid,
-       ~30% of energy below 90 Hz):
-         a deep A1 sub, a beating A2 pair, the E3 fifth and a breathing C4
-         minor third — all soft sine/triangle voices under one low ceiling. */
-    voice("sine", 55.0, 1.0); // A1 — the sub foundation
-    voice("triangle", 110.0, 0.4, -3); // A2, slow beat pair
-    voice("triangle", 110.0, 0.4, +4);
-    voice("sine", 164.81, 0.3); // E3 — fifth
-    const third = voice("sine", 261.63, 0.1); // C4 — the melancholy colour
-
-    // the minor third breathes: a very slow swell in and out
-    const swell = ctx.createOscillator();
-    const swellGain = ctx.createGain();
-    swell.type = "sine";
-    swell.frequency.value = 0.03; // one swell ≈ 33 s
-    swellGain.gain.value = 0.09;
-    swell.connect(swellGain);
-    swellGain.connect(third.gain);
-    swell.start(t);
-    stops.push(swell);
-
-    // whole pad breathes ±18% over ~20 s — alive, never static
-    const breath = ctx.createOscillator();
-    const breathGain = ctx.createGain();
-    breath.type = "sine";
-    breath.frequency.value = 0.05;
-    breathGain.gain.value = AMBIENT_LEVEL * 0.18;
-    breath.connect(breathGain);
-    breathGain.connect(pad.gain);
-    breath.start(t);
-    stops.push(breath);
-
-    // filtered air — the quiet "room tone" of a very large space
-    const air = ctx.createBufferSource();
-    air.buffer = this.getNoise(ctx);
-    air.loop = true;
-    const airFilter = ctx.createBiquadFilter();
-    airFilter.type = "lowpass";
-    airFilter.frequency.value = 320;
-    airFilter.Q.value = 0.3;
-    const airGain = ctx.createGain();
-    airGain.gain.value = 0.05;
-    air.connect(airFilter);
-    airFilter.connect(airGain);
-    airGain.connect(pad);
-    air.start(t);
-    stops.push(air);
-
-    /* The signature of the reference: a sparse, haunting pluck line
-       drowned in a long reverb tail. The plucks are pure sines (no harsh
-       partials possible) sent through a generated 4.5 s "cathedral" IR;
-       phrases alternate and rest, so the line never becomes a loop you
-       notice. Runs ~9 dB above the bed — the melody is the feature. */
-    const reverb = ctx.createConvolver();
-    reverb.buffer = this.getReverbIR(ctx);
-    const wet = ctx.createGain();
-    wet.gain.value = 4.2; // plucks are quiet sines — the tail carries them
-    reverb.connect(wet);
-    wet.connect(pad);
-    const dry = ctx.createGain();
-    dry.gain.value = 1.1;
-    dry.connect(pad);
-
-    const A3 = 220, B3 = 246.94, C4 = 261.63, D4 = 293.66, E4 = 329.63, A4 = 440;
-    const PHRASES: number[][] = [
-      [A4, E4, C4, B3], // falling, unresolved
-      [E4, C4, D4, B3, A3], // the answer, settling home
-      [A4, E4, B3, C4], // variation — the 9th leans on the minor third
-    ];
-    let phrase = 0;
-    const pluck = (freq: number, at: number, vel: number) => {
-      const o = ctx.createOscillator();
-      o.type = "sine";
-      o.frequency.value = freq;
-      const g = ctx.createGain();
-      g.gain.setValueAtTime(0, at);
-      g.gain.setTargetAtTime(vel, at, 0.008); // soft mallet attack
-      g.gain.setTargetAtTime(0, at + 0.05, 0.45); // ~1.5 s natural decay
-      o.connect(g);
-      g.connect(reverb);
-      g.connect(dry);
-      o.start(at);
-      o.stop(at + 3);
-    };
-    const scheduleBar = () => {
-      // never schedule into a suspended context (notes would pile up)
-      if (ctx.state !== "running" || !this.ambient) return;
-      const notes = PHRASES[phrase % PHRASES.length];
-      phrase++;
-      const start = ctx.currentTime + 0.15;
-      const step = 0.62; // slow, weightless pacing
-      notes.forEach((f, i) => pluck(f, start + i * step, 0.5 - i * 0.055));
-    };
-    // first phrase enters once the pad has faded in, then one phrase ~7.5 s
-    const firstPhrase = setTimeout(scheduleBar, 2600);
-    const melodyTimer = setInterval(scheduleBar, 7500);
+    void this.music.play().catch(() => {
+      /* If the browser still refuses (should not happen — enable() runs on
+         a user gesture), the UI cues keep working and the bed stays silent. */
+    });
 
     this.ambient = {
-      gain: pad,
+      gain: bed,
       stop: () => {
-        clearTimeout(firstPhrase);
-        clearInterval(melodyTimer);
-        stops.forEach((node) => {
-          try {
-            node.stop();
-          } catch {}
-        });
-        pad.disconnect();
+        this.music?.pause();
+        try {
+          this.musicNode?.disconnect();
+        } catch {}
+        bed.disconnect();
         this.ambient = null;
       },
     };
-  }
-
-  /** Generated stereo impulse response — a 4.5 s exponentially decaying
-   *  noise tail, i.e. the acoustics of a vast dark hall. Cached. */
-  private reverbIR: AudioBuffer | null = null;
-  private getReverbIR(ctx: AudioContext): AudioBuffer {
-    if (this.reverbIR) return this.reverbIR;
-    const len = Math.floor(ctx.sampleRate * 4.5);
-    const buf = ctx.createBuffer(2, len, ctx.sampleRate);
-    for (let c = 0; c < 2; c++) {
-      const data = buf.getChannelData(c);
-      for (let i = 0; i < len; i++) {
-        data[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 2.9);
-      }
-    }
-    this.reverbIR = buf;
-    return buf;
   }
 
   /* ---------------- shared helpers ---------------- */
