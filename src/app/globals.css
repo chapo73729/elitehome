@@ -541,36 +541,27 @@ html {
   }
 }
 
-/* ---------- Partners wall: travelling scan wave ----------
-   Each cell flashes its glow in sequence (delay stepped by --wi), so a
-   slow wave of light crosses the wall register by register, forever. */
-.partner-wave {
-  opacity: 0;
-  animation: partner-wave 9s linear infinite;
-  animation-delay: calc(var(--wi, 0) * 0.45s);
-}
-@keyframes partner-wave {
-  0%, 100% { opacity: 0; }
-  4% { opacity: 1; }
-  11% { opacity: 0; }
-}
-@media (prefers-reduced-motion: reduce) {
-  .partner-wave {
-    animation: none;
-  }
-}
 
-/* Partners wall: the comet head orbiting the register route */
-.partner-comet {
-  animation: partner-comet 14s linear infinite;
+
+/* ---------- Partners band: counter-scrolling marquee ----------
+   Two rows glide under soft edge fades; hovering a row pauses it so a
+   marque can be inspected. Reduced motion renders a static wall instead
+   (handled in the component). */
+.marquee-mask {
+  mask-image: linear-gradient(to right, transparent, black 9%, black 91%, transparent);
+  -webkit-mask-image: linear-gradient(to right, transparent, black 9%, black 91%, transparent);
 }
-@keyframes partner-comet {
-  from { stroke-dashoffset: 1; }
-  to { stroke-dashoffset: 0; }
+.marquee-track {
+  animation: marquee var(--marquee-duration, 44s) linear infinite;
+  will-change: transform;
 }
-@media (prefers-reduced-motion: reduce) {
-  .partner-comet {
-    animation: none;
-    opacity: 0;
-  }
+.marquee-reverse {
+  animation-direction: reverse;
+}
+.marquee-mask:hover .marquee-track {
+  animation-play-state: paused;
+}
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
 }

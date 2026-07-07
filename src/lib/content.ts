@@ -264,6 +264,7 @@ const en = {
   },
   partners: {
     eyebrow: "Selected Clients",
+    title: "In good company.",
     note: "A representative selection",
     items: [
       { name: "\u010cEZ Group", sector: "Energy & grid" },
@@ -273,7 +274,7 @@ const en = {
       { name: "Devolli Corporation", sector: "Industrial group \u00b7 Kosovo" },
       { name: "Alza.cz", sector: "E-commerce" },
       { name: "Seznam.cz", sector: "Internet & media" },
-      { name: "Gjirafa", sector: "Digital platforms \u00b7 Kosovo" },
+      { name: "YTC Group", sector: "Industrial group \u00b7 Albania" },
     ],
   },
   cta: {
@@ -594,6 +595,7 @@ const fr: DeepPartial<Content> = {
   },
   partners: {
     eyebrow: "R\u00e9f\u00e9rences",
+    title: "En bonne compagnie.",
     note: "Une s\u00e9lection repr\u00e9sentative",
     items: [
       { sector: "\u00c9nergie & r\u00e9seaux" },
@@ -603,7 +605,7 @@ const fr: DeepPartial<Content> = {
       { sector: "Groupe industriel \u00b7 Kosovo" },
       { sector: "E-commerce" },
       { sector: "Internet & m\u00e9dias" },
-      { sector: "Plateformes num\u00e9riques \u00b7 Kosovo" },
+      { sector: "Groupe industriel \u00b7 Albanie" },
     ],
   },
   cta: {
