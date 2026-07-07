@@ -7,7 +7,6 @@ import { SITE } from "@/lib/site";
 import { useContent } from "@/lib/content";
 import { scrollToTarget } from "./SmoothScroll";
 import { Magnetic } from "@/components/ui/Magnetic";
-import { Brandmark } from "@/components/ui/Brandmark";
 import { SoundToggle } from "./SoundToggle";
 import { LanguageToggle } from "@/components/feature/LanguageToggle";
 import { useLang } from "@/lib/lang";
@@ -124,7 +123,6 @@ export function Navbar({ ready = true }: { ready?: boolean }) {
               data-cursor
               aria-label={SITE.name}
             >
-              <Brandmark size={26} className="shrink-0" />
               <span>
                 {SITE.name}
                 <span className="text-accent">®</span>

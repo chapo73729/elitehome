@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Lenis from "lenis";
 
 /**
@@ -9,6 +9,21 @@ import Lenis from "lenis";
  * and respects prefers-reduced-motion by disabling lerp.
  */
 export function SmoothScroll({ children }: { children: React.ReactNode }) {
+  // Read BEFORE any effect runs (lazy initializer fires during render, the
+  // one phase guaranteed to complete before every component's effects) so
+  // this is immune to whichever of SmoothScroll/Loader happens to mount
+  // first: on a fresh session the Loader is about to boot and lock scroll,
+  // so Lenis must come up already stopped — starting live even for a
+  // handful of frames is enough for its own eased target to fight the
+  // Loader's lock and drag scrollY away from the top before it catches up.
+  const [freshBoot] = useState(() => {
+    try {
+      return !sessionStorage.getItem("ardlabs-booted");
+    } catch {
+      return true;
+    }
+  });
+
   useEffect(() => {
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (reduce) return;
@@ -21,6 +36,7 @@ export function SmoothScroll({ children }: { children: React.ReactNode }) {
       touchMultiplier: 1.6,
       lerp: 0.1,
     });
+    if (freshBoot) lenis.stop();
 
     // expose for anchor navigation
     (window as any).__lenis = lenis;

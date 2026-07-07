@@ -63,15 +63,25 @@ class AudioManager {
     if (typeof window === "undefined" || this.initialized) return;
     this.initialized = true;
 
-    if (localStorage.getItem(STORAGE_KEY) === "on") {
-      // preference is on, but audio can only start after a user gesture
+    // Unless the visitor explicitly muted before, arm sound on their very
+    // first real gesture anywhere on the page — the one moment every
+    // browser (iOS included) honours to unlock playback. No dedicated
+    // screen, no gate blocking paint: sound simply comes alive the instant
+    // the visitor starts using the site.
+    let pref: string | null = null;
+    try {
+      pref = localStorage.getItem(STORAGE_KEY);
+    } catch {}
+    if (pref !== "off") {
       const resume = () => {
         this.enable();
         window.removeEventListener("pointerdown", resume);
         window.removeEventListener("keydown", resume);
+        window.removeEventListener("touchend", resume);
       };
       window.addEventListener("pointerdown", resume, { once: true });
       window.addEventListener("keydown", resume, { once: true });
+      window.addEventListener("touchend", resume, { once: true });
     }
 
     // Park everything while the tab is hidden; restore on return.
