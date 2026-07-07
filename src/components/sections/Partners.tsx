@@ -1,34 +1,35 @@
 "use client";
 
+import { useEffect, useRef } from "react";
 import { useReducedMotion } from "framer-motion";
 import { useContent } from "@/lib/content";
 import { Reveal } from "@/components/ui/Reveal";
 
 /* ============================================================
-   Partners — rebuilt from zero as a cinematic reference band.
+   Partners — a cinematic full-bleed reference band.
 
-   Two counter-scrolling marquee rows of large marques glide under
-   soft edge fades, each carrying its sector register; a row pauses
-   the moment it is hovered and its marque lifts to full light.
-   Reduced motion (and touch devices without hover) degrade to a
-   clean static wall.
+   Two counter-scrolling rows of large marques glide under soft
+   edge fades. The motion is driven frame by frame (not a CSS
+   animation): the rows breathe with the visitor's scroll — they
+   accelerate as the page moves, echoing the site's continuous-
+   world idiom — and hovering a row eases it to a stop instead of
+   freezing it. Runs only while the band is on screen; reduced
+   motion renders a static wall.
 
-   REAL LOGOS: drop files into /public/partners/ and reference them
-   in LOGO_SRC below (name -> file). Until a marque has its file it
-   renders as a refined uniform wordmark — the swap is one line.
+   REAL LOGOS: drop files into /public/partners/ and reference
+   them in LOGO_SRC below (name -> file). Until a marque has its
+   file it renders as a refined uniform wordmark.
    ============================================================ */
 
-/** Official logo files, self-hosted in /public/partners/.
- *  e.g. `"ČEZ Group": "/partners/cez.svg"` — null falls back to the
- *  wordmark treatment. */
+/** Official logo files, self-hosted in /public/partners/. */
 const LOGO_SRC: Record<string, string | null> = {
-  "ČEZ Group": null,
-  Packeta: null,
-  "Česká spořitelna": null,
-  "Kiwi.com": null,
+  Gjirafa: null,
+  "LinkPlus IT": null,
+  Cacttus: null,
   "Devolli Corporation": null,
-  "Alza.cz": null,
-  "Seznam.cz": null,
+  "InfoSoft Group": null,
+  Facilization: null,
+  "Communication Progress": null,
   "YTC Group": null,
 };
 
@@ -40,7 +41,6 @@ function Marque({ item, index }: { item: Item; index: number }) {
     <div className="group/m flex shrink-0 flex-col items-center gap-3 px-12 py-2 md:px-16">
       <div className="flex h-10 items-center">
         {src ? (
-          /* real logo: rendered white-on-void at rest, full colour on hover */
           // eslint-disable-next-line @next/next/no-img-element
           <img
             src={src}
@@ -63,18 +63,97 @@ function Marque({ item, index }: { item: Item; index: number }) {
   );
 }
 
+/** Frame-driven marquee row: base drift + scroll-velocity boost, eased
+ *  pause on hover, wrapped modulo half the track width. */
+function useMarquee(
+  trackRef: React.RefObject<HTMLDivElement | null>,
+  sectionRef: React.RefObject<HTMLElement | null>,
+  dir: 1 | -1,
+  base: number
+) {
+  useEffect(() => {
+    const track = trackRef.current;
+    const section = sectionRef.current;
+    if (!track || !section) return;
+
+    let half = 0;
+    const measure = () => {
+      half = track.scrollWidth / 2;
+    };
+    measure();
+    const ro = new ResizeObserver(measure);
+    ro.observe(track);
+
+    let x = 0;
+    let speed = base;
+    let target = base;
+    let raf = 0;
+    let last = performance.now();
+    let running = false;
+
+    const hoverIn = () => {
+      target = 0;
+    };
+    const hoverOut = () => {
+      target = base;
+    };
+    track.parentElement?.addEventListener("mouseenter", hoverIn);
+    track.parentElement?.addEventListener("mouseleave", hoverOut);
+
+    const loop = (now: number) => {
+      const dt = Math.min(0.05, (now - last) / 1000);
+      last = now;
+      // scroll velocity feeds the drift — the band lives with the page
+      const lenis = (window as { __lenis?: { velocity?: number } }).__lenis;
+      const boost = Math.min(240, Math.abs(lenis?.velocity ?? 0) * 6);
+      speed += (target + (target === 0 ? 0 : boost) - speed) * Math.min(1, dt * 6);
+      x -= dir * speed * dt;
+      if (half > 0) {
+        x = ((x % half) + half) % half;
+        track.style.transform = `translate3d(${-x}px, 0, 0)`;
+      }
+      raf = requestAnimationFrame(loop);
+    };
+
+    const io = new IntersectionObserver(([e]) => {
+      if (e.isIntersecting && !running) {
+        running = true;
+        last = performance.now();
+        raf = requestAnimationFrame(loop);
+      } else if (!e.isIntersecting && running) {
+        running = false;
+        cancelAnimationFrame(raf);
+      }
+    });
+    io.observe(section);
+
+    return () => {
+      cancelAnimationFrame(raf);
+      io.disconnect();
+      ro.disconnect();
+      track.parentElement?.removeEventListener("mouseenter", hoverIn);
+      track.parentElement?.removeEventListener("mouseleave", hoverOut);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+}
+
 function Row({
   items,
   offset,
-  reverse,
-  duration,
+  dir,
+  base,
+  sectionRef,
 }: {
   items: Item[];
   offset: number;
-  reverse?: boolean;
-  duration: number;
+  dir: 1 | -1;
+  base: number;
+  sectionRef: React.RefObject<HTMLElement | null>;
 }) {
   const reduced = useReducedMotion();
+  const trackRef = useRef<HTMLDivElement>(null);
+  useMarquee(trackRef, sectionRef, dir, base);
 
   if (reduced) {
     return (
@@ -87,20 +166,10 @@ function Row({
   }
 
   return (
-    <div
-      className="marquee-mask relative overflow-hidden"
-      // the row pauses while the visitor inspects it
-      style={{ ["--marquee-duration" as string]: `${duration}s` }}
-    >
-      <div
-        className={`marquee-track flex w-max items-start ${reverse ? "marquee-reverse" : ""}`}
-      >
+    <div className="marquee-mask relative overflow-hidden">
+      <div ref={trackRef} className="flex w-max items-start will-change-transform">
         {[0, 1].map((copy) => (
-          <div
-            key={copy}
-            aria-hidden={copy === 1}
-            className="flex items-start"
-          >
+          <div key={copy} aria-hidden={copy === 1} className="flex items-start">
             {items.map((p, i) => (
               <Marque key={`${copy}-${p.name}`} item={p} index={offset + i} />
             ))}
@@ -116,9 +185,14 @@ export function Partners() {
   const items = c.items as unknown as Item[];
   const rowA = items.slice(0, 4);
   const rowB = items.slice(4);
+  const sectionRef = useRef<HTMLElement>(null);
 
   return (
-    <section aria-label={c.eyebrow} className="relative z-10 overflow-hidden bg-void">
+    <section
+      ref={sectionRef}
+      aria-label={c.eyebrow}
+      className="relative z-10 overflow-hidden bg-void"
+    >
       <div className="py-24 md:py-32">
         {/* editorial header, on the page grid */}
         <div className="container-x">
@@ -131,9 +205,7 @@ export function Partners() {
             </div>
           </Reveal>
           <Reveal delay={0.08}>
-            <h2 className="text-section-title text-gradient mt-5 max-w-2xl">
-              {c.title}
-            </h2>
+            <h2 className="text-section-title text-gradient mt-5 max-w-2xl">{c.title}</h2>
           </Reveal>
         </div>
 
@@ -141,8 +213,8 @@ export function Partners() {
         <Reveal delay={0.16} className="mt-14">
           <div className="hairline-t" />
           <div className="space-y-2 py-10">
-            <Row items={rowA} offset={0} duration={48} />
-            <Row items={rowB} offset={4} duration={40} reverse />
+            <Row items={rowA} offset={0} dir={1} base={26} sectionRef={sectionRef} />
+            <Row items={rowB} offset={4} dir={-1} base={21} sectionRef={sectionRef} />
           </div>
           <div className="hairline-t" />
         </Reveal>
@@ -151,7 +223,7 @@ export function Partners() {
         <div className="container-x">
           <Reveal delay={0.22}>
             <p className="mt-6 text-right font-mono text-[0.6rem] uppercase tracking-[0.25em] text-fog/50">
-              {"08 · CZ — XK — AL — EU"}
+              {"08 · KOSOVO — ALBANIA"}
             </p>
           </Reveal>
         </div>

@@ -551,17 +551,3 @@ html {
   mask-image: linear-gradient(to right, transparent, black 9%, black 91%, transparent);
   -webkit-mask-image: linear-gradient(to right, transparent, black 9%, black 91%, transparent);
 }
-.marquee-track {
-  animation: marquee var(--marquee-duration, 44s) linear infinite;
-  will-change: transform;
-}
-.marquee-reverse {
-  animation-direction: reverse;
-}
-.marquee-mask:hover .marquee-track {
-  animation-play-state: paused;
-}
-@keyframes marquee {
-  from { transform: translateX(0); }
-  to { transform: translateX(-50%); }
-}
