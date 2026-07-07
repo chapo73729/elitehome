@@ -115,6 +115,22 @@ class AudioManager {
     const ctx = this.ensureCtx();
     if (!ctx || !this.master) return;
     if (ctx.state === "suspended" && !document.hidden) void ctx.resume();
+
+    /* iOS unlock, belt and braces — all INSIDE this gesture:
+       1. a one-sample buffer through the destination (the classic Web
+          Audio unlock);
+       2. a looping SILENT <audio> element ("keeper") — playing any media
+          element flips iOS's audio session to `playback`, which is what
+          stops the hardware mute switch from silencing Web Audio. Without
+          it, sound "randomly" works depending on the ringer switch. */
+    try {
+      const unlock = ctx.createBufferSource();
+      unlock.buffer = ctx.createBuffer(1, 1, 22050);
+      unlock.connect(ctx.destination);
+      unlock.start(0);
+    } catch {}
+    void this.ensureKeeper().play().catch(() => {});
+
     // cancel any pending ambient teardown from a recent disable()
     if (this.stopTimer) {
       clearTimeout(this.stopTimer);
@@ -132,9 +148,59 @@ class AudioManager {
     // gain 0 until the manifesto gate opens, so the gate only ever has to
     // raise a volume
     this.startAmbient();
-    // gentle two-note confirmation so enabling is unmistakable
-    setTimeout(() => this.success(), 120);
+    // confirmation scheduled synchronously (still within the gesture's
+    // call stack) — its own delays live on the audio clock
+    this.success();
+
+    // watchdog: if the context is still not running shortly after (some
+    // iOS states refuse the first resume), the very next touch anywhere
+    // finishes the job — no user-visible failure mode left
+    setTimeout(() => {
+      if (!this._enabled || !this.ctx || this.ctx.state === "running") return;
+      const kick = () => {
+        if (!this.ctx) return;
+        void this.ctx.resume();
+        void this.ensureKeeper().play().catch(() => {});
+      };
+      window.addEventListener("pointerdown", kick, { once: true });
+      window.addEventListener("touchend", kick, { once: true });
+    }, 600);
     this.emit();
+  }
+
+  /** Looping silent <audio> element that holds iOS's audio session in
+   *  `playback` mode (defeats the hardware mute switch for Web Audio).
+   *  The WAV is generated on the fly — 8 samples of silence. */
+  private keeper: HTMLAudioElement | null = null;
+  private ensureKeeper(): HTMLAudioElement {
+    if (this.keeper) return this.keeper;
+    const sr = 8000;
+    const n = 8;
+    const size = 44 + n * 2;
+    const b = new DataView(new ArrayBuffer(size));
+    const w = (o: number, s: string) => {
+      for (let i = 0; i < s.length; i++) b.setUint8(o + i, s.charCodeAt(i));
+    };
+    w(0, "RIFF");
+    b.setUint32(4, size - 8, true);
+    w(8, "WAVE");
+    w(12, "fmt ");
+    b.setUint32(16, 16, true);
+    b.setUint16(20, 1, true);
+    b.setUint16(22, 1, true);
+    b.setUint32(24, sr, true);
+    b.setUint32(28, sr * 2, true);
+    b.setUint16(32, 2, true);
+    b.setUint16(34, 16, true);
+    w(36, "data");
+    b.setUint32(40, n * 2, true);
+    let s = "";
+    new Uint8Array(b.buffer).forEach((x) => (s += String.fromCharCode(x)));
+    const a = new Audio("data:audio/wav;base64," + btoa(s));
+    a.loop = true;
+    a.setAttribute("playsinline", "");
+    this.keeper = a;
+    return a;
   }
 
   /** Open the gate that lets the music bed be HEARD. Called when the
@@ -168,6 +234,7 @@ class AudioManager {
     if (this.stopTimer) clearTimeout(this.stopTimer);
     this.stopTimer = setTimeout(() => {
       this.ambient?.stop();
+      this.keeper?.pause();
       if (this.ctx && this.ctx.state === "running") void this.ctx.suspend();
       this.stopTimer = null;
     }, 2400);
