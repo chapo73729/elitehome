@@ -116,7 +116,8 @@ class AudioManager {
     a.loop = true;
     a.preload = "auto";
     a.setAttribute("playsinline", "");
-    a.crossOrigin = "anonymous";
+    // same-origin file — no crossOrigin needed (and it avoids any edge
+    // interaction with the Cross-Origin-Resource-Policy: same-origin header)
     a.volume = BED_VOLUME;
     this.music = a;
     return a;
