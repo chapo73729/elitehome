@@ -275,6 +275,8 @@ const en = {
       { name: "VirusTotal", sector: "Threat analysis engine" },
       { name: "Communication Progress", sector: "ICT & cybersecurity \u00b7 Albania" },
       { name: "YTC Group", sector: "Industrial group \u00b7 Albania" },
+      { name: "Avast", sector: "Cybersecurity \u00b7 Czech Republic" },
+      { name: "JetBrains", sector: "Developer tools \u00b7 Czech Republic" },
     ],
   },
   cta: {
@@ -606,6 +608,8 @@ const fr: DeepPartial<Content> = {
       { sector: "Moteur d'analyse des menaces" },
       { sector: "ICT & cybers\u00e9curit\u00e9 \u00b7 Albanie" },
       { sector: "Groupe industriel \u00b7 Albanie" },
+      { sector: "Cybers\u00e9curit\u00e9 \u00b7 R\u00e9publique tch\u00e8que" },
+      { sector: "Outils de d\u00e9veloppement \u00b7 R\u00e9publique tch\u00e8que" },
     ],
   },
   cta: {

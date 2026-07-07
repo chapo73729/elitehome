@@ -31,6 +31,8 @@ const LOGO_SRC: Record<string, string | null> = {
   VirusTotal: null,
   "Communication Progress": null,
   "YTC Group": null,
+  Avast: null,
+  JetBrains: null,
 };
 
 type Item = { name: string; sector: string };
@@ -183,8 +185,9 @@ function Row({
 export function Partners() {
   const c = useContent().partners;
   const items = c.items as unknown as Item[];
-  const rowA = items.slice(0, 4);
-  const rowB = items.slice(4);
+  const split = Math.ceil(items.length / 2);
+  const rowA = items.slice(0, split);
+  const rowB = items.slice(split);
   const sectionRef = useRef<HTMLElement>(null);
 
   return (
@@ -214,7 +217,7 @@ export function Partners() {
           <div className="hairline-t" />
           <div className="space-y-2 py-10">
             <Row items={rowA} offset={0} dir={1} base={26} sectionRef={sectionRef} />
-            <Row items={rowB} offset={4} dir={-1} base={21} sectionRef={sectionRef} />
+            <Row items={rowB} offset={split} dir={-1} base={21} sectionRef={sectionRef} />
           </div>
           <div className="hairline-t" />
         </Reveal>
@@ -223,7 +226,7 @@ export function Partners() {
         <div className="container-x">
           <Reveal delay={0.22}>
             <p className="mt-6 text-right font-mono text-[0.6rem] uppercase tracking-[0.25em] text-fog/50">
-              {"08 · KOSOVO — ALBANIA"}
+              {"10 · KOSOVO — ALBANIA — CZ"}
             </p>
           </Reveal>
         </div>
