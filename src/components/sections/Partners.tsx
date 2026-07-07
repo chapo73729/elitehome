@@ -1,6 +1,6 @@
 "use client";
 
-import type { ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import { useContent } from "@/lib/content";
 import { Reveal } from "@/components/ui/Reveal";
@@ -171,9 +171,85 @@ function Emblem({ glyph, delay }: { glyph: Glyph; delay: number }) {
   );
 }
 
+/**
+ * The comet: one continuous route snaking through every register's centre
+ * (the world-map "connected routes" idiom brought onto the wall), with a
+ * bright head travelling it in a loop over a faint dashed track. The path
+ * rebuilds on resize so it follows the 4-col and 2-col layouts alike.
+ */
+function CometRoute({ grid }: { grid: React.RefObject<HTMLUListElement | null> }) {
+  const reduced = useReducedMotion();
+  const [geo, setGeo] = useState<{ w: number; h: number; d: string } | null>(null);
+
+  useEffect(() => {
+    const el = grid.current;
+    if (!el) return;
+    const measure = () => {
+      const w = el.clientWidth;
+      const h = el.clientHeight;
+      if (!w || !h) return;
+      const cols = w >= 900 ? 4 : 2;
+      const rows = 8 / cols;
+      const cx = (col: number) => (w / cols) * (col + 0.5);
+      const cy = (row: number) => (h / rows) * (row + 0.5);
+      // boustrophedon through the registers, then home along the left edge
+      const pts: [number, number][] = [];
+      for (let r = 0; r < rows; r++) {
+        const range = [...Array(cols).keys()];
+        const order = r % 2 === 0 ? range : [...range].reverse();
+        order.forEach((col) => pts.push([cx(col), cy(r)]));
+      }
+      const d =
+        `M ${pts[0][0]} ${pts[0][1]} ` +
+        pts.slice(1).map(([x, y]) => `L ${x} ${y}`).join(" ") +
+        ` L ${pts[0][0]} ${pts[0][1]}`;
+      setGeo({ w, h, d });
+    };
+    measure();
+    const ro = new ResizeObserver(measure);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [grid]);
+
+  if (reduced || !geo) return null;
+  return (
+    <svg
+      aria-hidden
+      className="pointer-events-none absolute inset-0"
+      width="100%"
+      height="100%"
+      viewBox={`0 0 ${geo.w} ${geo.h}`}
+      preserveAspectRatio="none"
+    >
+      {/* the faint route the comet follows */}
+      <path
+        d={geo.d}
+        pathLength={1}
+        fill="none"
+        stroke="color-mix(in oklab, var(--color-accent) 14%, transparent)"
+        strokeWidth="1"
+        strokeDasharray="0.004 0.008"
+      />
+      {/* the comet — a short bright dash orbiting the route */}
+      <path
+        d={geo.d}
+        pathLength={1}
+        fill="none"
+        className="partner-comet"
+        stroke="var(--color-accent)"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeDasharray="0.045 0.955"
+        style={{ filter: "drop-shadow(0 0 6px var(--color-accent))" }}
+      />
+    </svg>
+  );
+}
+
 export function Partners() {
   const c = useContent().partners;
   const items = c.items;
+  const gridRef = useRef<HTMLUListElement>(null);
 
   return (
     <section aria-label={c.eyebrow} className="relative z-10 bg-void">
@@ -187,7 +263,8 @@ export function Partners() {
           </div>
         </Reveal>
 
-        <ul className="mt-10 grid grid-cols-2 lg:grid-cols-4" role="list">
+        <div className="relative mt-10">
+        <ul ref={gridRef} className="grid grid-cols-2 lg:grid-cols-4" role="list">
           {items.map((p, i) => (
             <Reveal
               as="li"
@@ -198,9 +275,24 @@ export function Partners() {
             >
               <div
                 onMouseMove={(e) => {
-                  const r = e.currentTarget.getBoundingClientRect();
-                  e.currentTarget.style.setProperty("--mx", `${e.clientX - r.left}px`);
-                  e.currentTarget.style.setProperty("--my", `${e.clientY - r.top}px`);
+                  const el = e.currentTarget;
+                  const r = el.getBoundingClientRect();
+                  const x = e.clientX - r.left;
+                  const y = e.clientY - r.top;
+                  el.style.setProperty("--mx", `${x}px`);
+                  el.style.setProperty("--my", `${y}px`);
+                  // gentle 3D tilt toward the cursor
+                  el.style.setProperty("--ry", `${(x / r.width - 0.5) * 5}deg`);
+                  el.style.setProperty("--rx", `${(y / r.height - 0.5) * -5}deg`);
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.setProperty("--rx", "0deg");
+                  e.currentTarget.style.setProperty("--ry", "0deg");
+                }}
+                style={{
+                  transform:
+                    "perspective(700px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg))",
+                  transition: "transform 200ms ease-out",
                 }}
                 className="relative flex h-32 flex-col items-center justify-center gap-2.5 overflow-hidden px-4 text-mist/55 transition-colors duration-500 group-hover:text-chalk md:h-36"
               >
@@ -231,7 +323,7 @@ export function Partners() {
                   {`[${String(i + 1).padStart(2, "0")}]`}
                 </span>
                 <div className="relative flex items-center gap-2.5 transition-transform duration-500 group-hover:-translate-y-0.5">
-                  <span className="text-current transition-colors duration-500 group-hover:text-accent">
+                  <span className="text-current transition-all duration-500 group-hover:text-accent group-hover:[filter:drop-shadow(0_0_7px_var(--color-accent))]">
                     <Emblem glyph={GLYPHS[i % GLYPHS.length]} delay={0.15 + i * 0.12} />
                   </span>
                   {VOICES[i % VOICES.length](p.name)}
@@ -243,6 +335,8 @@ export function Partners() {
             </Reveal>
           ))}
         </ul>
+        <CometRoute grid={gridRef} />
+        </div>
         <div className="hairline-t" />
       </div>
     </section>

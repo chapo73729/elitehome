@@ -559,3 +559,18 @@ html {
     animation: none;
   }
 }
+
+/* Partners wall: the comet head orbiting the register route */
+.partner-comet {
+  animation: partner-comet 14s linear infinite;
+}
+@keyframes partner-comet {
+  from { stroke-dashoffset: 1; }
+  to { stroke-dashoffset: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .partner-comet {
+    animation: none;
+    opacity: 0;
+  }
+}
