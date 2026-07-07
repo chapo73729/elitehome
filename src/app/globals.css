@@ -540,3 +540,22 @@ html {
     -webkit-text-fill-color: #000 !important;
   }
 }
+
+/* ---------- Partners wall: travelling scan wave ----------
+   Each cell flashes its glow in sequence (delay stepped by --wi), so a
+   slow wave of light crosses the wall register by register, forever. */
+.partner-wave {
+  opacity: 0;
+  animation: partner-wave 9s linear infinite;
+  animation-delay: calc(var(--wi, 0) * 0.45s);
+}
+@keyframes partner-wave {
+  0%, 100% { opacity: 0; }
+  4% { opacity: 1; }
+  11% { opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .partner-wave {
+    animation: none;
+  }
+}

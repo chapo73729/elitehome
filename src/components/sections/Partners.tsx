@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, type ReactNode } from "react";
+import type { ReactNode } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import { useContent } from "@/lib/content";
 import { Reveal } from "@/components/ui/Reveal";
@@ -12,10 +12,9 @@ import { Reveal } from "@/components/ui/Reveal";
    cursor spotlight per cell. Original in-house glyphs, one type
    voice per marque.
 
-   Preview mode: append `?partners=preview` to the URL to swap in
-   the real-company list (for pitching those partners — the public
-   default stays the representative set until authorizations are
-   in). A small `// preview` annotation marks the mode.
+   A slow luminous wave travels the wall in a loop — register by
+   register, like a scan across an index — on top of the draw-on
+   reveal and the per-cell cursor spotlight.
    ============================================================ */
 
 const EASE = [0.16, 1, 0.3, 1] as const;
@@ -66,8 +65,7 @@ const GLYPHS: Glyph[] = [
   },
 ];
 
-/* The wordmark voices — one typographic identity per marque; the same
-   voices dress the preview (real) names by index. */
+/* The wordmark voices — one typographic identity per marque. */
 const VOICES: ((name: string) => ReactNode)[] = [
   (n) => (
     <span className="font-mono text-[0.72rem] font-semibold uppercase tracking-[0.24em]">
@@ -120,22 +118,8 @@ const VOICES: ((name: string) => ReactNode)[] = [
   (n) => (
     <span className="font-display text-[0.92rem] font-medium tracking-[0.1em]">
       {n}
-      <span className="text-current/60">+</span>
     </span>
   ),
-];
-
-/* Real-company preview set (swapped in via ?partners=preview — shown to
-   the companies themselves while authorizations are being collected). */
-const PREVIEW: { name: string; sectorEn: string; sectorFr: string }[] = [
-  { name: "ČEZ Group", sectorEn: "Energy & grid", sectorFr: "Énergie & réseaux" },
-  { name: "Packeta", sectorEn: "European logistics", sectorFr: "Logistique européenne" },
-  { name: "Česká spořitelna", sectorEn: "Financial services", sectorFr: "Services financiers" },
-  { name: "Kiwi.com", sectorEn: "Travel technology", sectorFr: "Technologies du voyage" },
-  { name: "Škoda Auto", sectorEn: "Automotive", sectorFr: "Automobile" },
-  { name: "Alza.cz", sectorEn: "E-commerce", sectorFr: "E-commerce" },
-  { name: "Seznam.cz", sectorEn: "Internet & media", sectorFr: "Internet & médias" },
-  { name: "Rohlik Group", sectorEn: "Online grocery", sectorFr: "Épicerie en ligne" },
 ];
 
 function Emblem({ glyph, delay }: { glyph: Glyph; delay: number }) {
@@ -189,20 +173,7 @@ function Emblem({ glyph, delay }: { glyph: Glyph; delay: number }) {
 
 export function Partners() {
   const c = useContent().partners;
-  const [preview, setPreview] = useState(false);
-
-  useEffect(() => {
-    try {
-      setPreview(new URLSearchParams(window.location.search).get("partners") === "preview");
-    } catch {}
-  }, []);
-
-  const isFr =
-    typeof c.eyebrow === "string" && c.eyebrow.toLowerCase().startsWith("réf");
-
-  const items = preview
-    ? PREVIEW.map((p) => ({ name: p.name, sector: isFr ? p.sectorFr : p.sectorEn }))
-    : c.items;
+  const items = c.items;
 
   return (
     <section aria-label={c.eyebrow} className="relative z-10 bg-void">
@@ -211,7 +182,7 @@ export function Partners() {
           <div className="flex flex-wrap items-baseline justify-between gap-x-10 gap-y-3">
             <span className="eyebrow">{c.eyebrow}</span>
             <span className="font-mono text-[0.62rem] uppercase tracking-[0.2em] text-fog/70">
-              {preview ? "// preview" : c.note}
+              {c.note}
             </span>
           </div>
         </Reveal>
@@ -240,6 +211,16 @@ export function Partners() {
                   style={{
                     background:
                       "radial-gradient(200px circle at var(--mx, 50%) var(--my, 50%), color-mix(in oklab, var(--color-accent) 9%, transparent), transparent 70%)",
+                  }}
+                />
+                {/* travelling wave — a slow scan crossing the wall in a loop */}
+                <div
+                  aria-hidden
+                  className="partner-wave pointer-events-none absolute inset-0"
+                  style={{
+                    ["--wi" as string]: i,
+                    background:
+                      "radial-gradient(180px circle at 50% 45%, color-mix(in oklab, var(--color-accent) 11%, transparent), transparent 70%)",
                   }}
                 />
                 {/* register numeral, the site's index idiom */}
