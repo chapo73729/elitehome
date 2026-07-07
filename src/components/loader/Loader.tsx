@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useLang } from "@/lib/lang";
+import { audio } from "@/lib/audio";
 
 const T = {
   en: {
@@ -10,12 +11,18 @@ const T = {
     core: "core",
     lattice: "lattice",
     interface: "interface",
+    gateEyebrow: "the studio awaits",
+    gateCta: "Enter ARDLABS",
+    gateHint: "Sound is part of the experience — best with the volume on",
   },
   fr: {
     wordmark: "ARDLABS® · Studio d’ingénierie numérique",
     core: "cœur",
     lattice: "trame",
     interface: "interface",
+    gateEyebrow: "le studio vous attend",
+    gateCta: "Découvrez ARDLABS",
+    gateHint: "Le son fait partie de l’expérience — activez le volume",
   },
 } as const;
 
@@ -65,17 +72,46 @@ export function Loader({ onComplete }: { onComplete: () => void }) {
   const [phase, setPhase] = useState<Phase>("ignite");
   const [progress, setProgress] = useState(0);
   const [hidden, setHidden] = useState(false);
+  const [gateReady, setGateReady] = useState(false);
+
+  /**
+   * The visitor crosses the threshold. This runs INSIDE the click/keydown
+   * gesture, so audio.enable() is a guaranteed user activation — the one
+   * moment every browser (iOS included) will honour to unlock sound. From
+   * here the bed is primed and the wipe reveals the site.
+   */
+  const enterSite = () => {
+    audio.enable();
+    setGateReady(false);
+    setPhase("done"); // triggers the clip-path wipe
+    window.setTimeout(() => {
+      setHidden(true);
+      onComplete();
+    }, 900);
+  };
 
   useEffect(() => {
-    // Respect reduced motion / repeat visits: short-circuit.
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const seen = sessionStorage.getItem("ardlabs-booted");
-    if (reduce || seen) {
+
+    // Repeat visit this session: don't re-gate every navigation — reveal at
+    // once. (Any prior sound preference resumes on the first interaction via
+    // audio.init's gesture listener.)
+    if (seen) {
       setHidden(true);
       onComplete();
       return;
     }
     sessionStorage.setItem("ardlabs-booted", "1");
+
+    // Reduced motion: skip the particle sequence but still present the entry
+    // gate, so a keyboard/click can unlock sound on a calm, static stage.
+    if (reduce) {
+      setPhase("hold");
+      setProgress(100);
+      setGateReady(true);
+      return;
+    }
 
     const canvas = canvasRef.current!;
     const ctx = canvas.getContext("2d", { alpha: true })!;
@@ -252,18 +288,16 @@ export function Loader({ onComplete }: { onComplete: () => void }) {
     };
 
     let finished = false;
-    let revealTimer: ReturnType<typeof setTimeout>;
     const finish = () => {
       if (finished) return;
       finished = true;
       cancelAnimationFrame(raf);
-      setPhase((localPhase = "done"));
+      // The particles have passed through; hold the stage and raise the
+      // entry gate. We wait here for the visitor's click — that gesture is
+      // what unlocks audio everywhere — rather than auto-revealing.
+      setPhase((localPhase = "hold"));
       setProgress(100);
-      // allow the wipe transition to play
-      revealTimer = setTimeout(() => {
-        setHidden(true);
-        onComplete();
-      }, 900);
+      setGateReady(true);
     };
 
     // resilient loop: a thrown frame can never freeze the boot screen
@@ -282,7 +316,6 @@ export function Loader({ onComplete }: { onComplete: () => void }) {
     return () => {
       cancelAnimationFrame(raf);
       clearTimeout(safety);
-      clearTimeout(revealTimer!);
       window.removeEventListener("resize", resize);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -294,6 +327,8 @@ export function Loader({ onComplete }: { onComplete: () => void }) {
   // "ok" lands once the lattice holds; the chrome fades as we pass through
   const compiled = phase === "hold" || phase === "explode" || phase === "done";
   const fading = phase === "explode" || phase === "done";
+  // the boot readout gives way to the entry gate
+  const readoutHidden = fading || gateReady;
 
   return (
     <AnimatePresence>
@@ -325,7 +360,10 @@ export function Loader({ onComplete }: { onComplete: () => void }) {
                 stroke="currentColor"
                 strokeWidth={1.5}
                 initial={{ pathLength: 0, opacity: 0.9 }}
-                animate={{ pathLength: 1, opacity: fading ? 0 : 0.3 }}
+                animate={{
+                  pathLength: 1,
+                  opacity: fading ? 0 : gateReady ? 0.45 : 0.3,
+                }}
                 transition={{
                   pathLength: {
                     delay: 0.05 + i * 0.07,
@@ -343,7 +381,7 @@ export function Loader({ onComplete }: { onComplete: () => void }) {
           {/* progress + compile-annotation readout */}
           <motion.div
             className="absolute bottom-10 left-0 right-0 flex items-end justify-between px-6 md:px-14 font-mono text-[0.7rem] tracking-[0.3em] text-fog"
-            animate={{ opacity: fading ? 0 : 1 }}
+            animate={{ opacity: readoutHidden ? 0 : 1 }}
             transition={{ duration: 0.4 }}
           >
             <span className="uppercase">{t.wordmark}</span>
@@ -374,9 +412,85 @@ export function Loader({ onComplete }: { onComplete: () => void }) {
           <motion.div
             className="absolute left-0 right-0 top-[58%] mx-auto h-px max-w-[min(80vw,640px)] origin-left bg-gradient-to-r from-transparent via-accent/50 to-transparent"
             initial={{ scaleX: 0 }}
-            animate={{ scaleX: progress / 100 }}
+            animate={{ scaleX: gateReady ? 0 : progress / 100, opacity: gateReady ? 0 : 1 }}
             transition={{ ease: "linear" }}
           />
+
+          {/* ── Entry gate ──────────────────────────────────────────────
+              The click here is a genuine user gesture, so audio.enable()
+              unlocks sound on every device (iOS included). It is the one
+              guaranteed moment to start the experience with sound. */}
+          <AnimatePresence>
+            {gateReady && (
+              <motion.div
+                className="absolute inset-0 z-10 flex flex-col items-center justify-center px-6 text-center"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.5 }}
+              >
+                <motion.span
+                  className="font-mono text-[0.62rem] uppercase tracking-[0.42em] text-accent/80"
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.15, duration: 0.6, ease: EASE }}
+                >
+                  {`// ${t.gateEyebrow}`}
+                </motion.span>
+
+                <motion.button
+                  type="button"
+                  onClick={enterSite}
+                  autoFocus
+                  className="group relative mt-6 inline-flex items-center gap-4 rounded-full border border-chalk/15 bg-chalk/[0.03] px-9 py-4 backdrop-blur-sm transition-colors duration-500 hover:border-accent/60 hover:bg-accent/[0.07] focus:outline-none focus-visible:ring-2 focus-visible:ring-accent/70 focus-visible:ring-offset-2 focus-visible:ring-offset-void md:px-11 md:py-5"
+                  initial={{ opacity: 0, y: 18, scale: 0.96 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  transition={{ delay: 0.28, duration: 0.7, ease: EASE }}
+                >
+                  {/* soft accent halo on hover */}
+                  <span
+                    aria-hidden
+                    className="pointer-events-none absolute inset-0 rounded-full opacity-0 transition-opacity duration-500 group-hover:opacity-100 [background:radial-gradient(circle_at_center,rgba(79,140,255,0.22),transparent_70%)]"
+                  />
+                  {/* animated sound glyph — three bars */}
+                  <span aria-hidden className="relative flex h-4 items-end gap-[3px]">
+                    {[0, 1, 2].map((i) => (
+                      <motion.span
+                        key={i}
+                        className="w-[2px] rounded-full bg-accent"
+                        initial={{ height: 4 }}
+                        animate={{ height: [4, 14, 6, 12, 4] }}
+                        transition={{
+                          duration: 1.4,
+                          repeat: Infinity,
+                          ease: "easeInOut",
+                          delay: i * 0.18,
+                        }}
+                      />
+                    ))}
+                  </span>
+                  <span className="font-display text-lg font-semibold tracking-tight text-chalk md:text-xl">
+                    {t.gateCta}
+                  </span>
+                  <span
+                    aria-hidden
+                    className="font-mono text-base leading-none text-accent transition-transform duration-500 group-hover:translate-x-1"
+                  >
+                    →
+                  </span>
+                </motion.button>
+
+                <motion.span
+                  className="mt-6 max-w-xs font-mono text-[0.6rem] uppercase leading-relaxed tracking-[0.22em] text-fog/70"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.5, duration: 0.7 }}
+                >
+                  {t.gateHint}
+                </motion.span>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </motion.div>
       )}
     </AnimatePresence>
