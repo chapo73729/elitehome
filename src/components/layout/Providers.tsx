@@ -14,7 +14,6 @@ import { Navbar } from "./Navbar";
 import { Footer } from "./Footer";
 import { SectionNav } from "./SectionNav";
 import { BackToTop } from "./BackToTop";
-import { MobileCTA } from "./MobileCTA";
 import { SoundSystem } from "./SoundSystem";
 import { CookieConsent } from "./CookieConsent";
 import { ScrollProgress } from "@/components/ui/ScrollProgress";
@@ -88,7 +87,6 @@ export function Providers({ children }: { children: React.ReactNode }) {
           so DOM placement has no visual effect) */}
       {isHome && <SectionNav />}
       <BackToTop />
-      <MobileCTA />
     </MotionConfig>
   );
 }
