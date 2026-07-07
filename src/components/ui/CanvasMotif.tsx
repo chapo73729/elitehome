@@ -2,11 +2,13 @@
 
 import { useEffect, useRef } from "react";
 
-type Variant = "code" | "ai" | "industrial" | "ocean";
+type Variant = "code" | "ai" | "industrial" | "ocean" | "cyber";
 
 /**
  * Lightweight 2D-canvas motifs — one per capability — giving each section a
- * distinct living visual without spawning additional WebGL contexts.
+ * distinct living visual without spawning additional WebGL contexts. A single
+ * rAF owner (guarded by the `raf` handle) means the loop is never double-run,
+ * and it pauses entirely while offscreen.
  */
 export function CanvasMotif({
   variant,
@@ -18,13 +20,15 @@ export function CanvasMotif({
   const ref = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
-    const canvas = ref.current!;
-    const ctx = canvas.getContext("2d")!;
+    const canvas = ref.current;
+    const ctx = canvas ? canvas.getContext("2d") : null;
+    if (!canvas || !ctx) return;
+
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
     let W = 0;
     let H = 0;
     let raf = 0;
-    let running = true;
+    let running = false;
 
     const resize = () => {
       const r = canvas.getBoundingClientRect();
@@ -38,11 +42,15 @@ export function CanvasMotif({
     const ro = new ResizeObserver(resize);
     ro.observe(canvas);
 
-    // pause when offscreen
+    // single-owner scheduler — start() is a no-op if a frame is already queued
+    const start = () => {
+      if (!raf) raf = requestAnimationFrame(loop);
+    };
+
     const io = new IntersectionObserver(
       ([e]) => {
         running = e.isIntersecting;
-        if (running) raf = requestAnimationFrame(loop);
+        if (running) start();
       },
       { threshold: 0 }
     );
@@ -52,11 +60,48 @@ export function CanvasMotif({
     const cols: number[] = [];
     const glyphs = "01<>{}[]#$/\\=+*ABCDEF".split("");
     const sparks: { x: number; y: number; vx: number; vy: number; life: number }[] = [];
+    // cyber: network graph + travelling packets + radar sweep
+    const nodes: { x: number; y: number; phase: number }[] = [];
+    const links: [number, number][] = [];
+    const packets: { l: number; p: number; speed: number }[] = [];
+    let cyberInit = false;
+    const initCyber = () => {
+      nodes.length = 0;
+      links.length = 0;
+      packets.length = 0;
+      const n = Math.max(10, Math.min(20, Math.round((W * H) / 26000)));
+      for (let i = 0; i < n; i++) {
+        nodes.push({
+          x: 40 + Math.random() * Math.max(1, W - 80),
+          y: 30 + Math.random() * Math.max(1, H - 60),
+          phase: Math.random() * Math.PI * 2,
+        });
+      }
+      // connect each node to its 2 nearest neighbours
+      for (let i = 0; i < nodes.length; i++) {
+        const d = nodes
+          .map((m, j) => ({ j, dist: (m.x - nodes[i].x) ** 2 + (m.y - nodes[i].y) ** 2 }))
+          .filter((o) => o.j !== i)
+          .sort((a, b) => a.dist - b.dist);
+        for (let k = 0; k < 2 && k < d.length; k++) {
+          const a = i;
+          const b = d[k].j;
+          if (!links.some(([x, y]) => (x === a && y === b) || (x === b && y === a))) {
+            links.push([a, b]);
+          }
+        }
+      }
+      for (let i = 0; i < Math.min(links.length, 10); i++) {
+        packets.push({ l: (Math.random() * links.length) | 0, p: Math.random(), speed: 0.3 + Math.random() * 0.5 });
+      }
+      cyberInit = true;
+    };
 
-    const start = performance.now();
+    const startT = performance.now();
     const loop = (now: number) => {
+      raf = 0;
       if (!running) return;
-      const t = (now - start) / 1000;
+      const t = (now - startT) / 1000;
       ctx.clearRect(0, 0, W, H);
 
       if (variant === "code") {
@@ -76,13 +121,12 @@ export function CanvasMotif({
           cols[i] = y > H + Math.random() * 200 ? Math.random() * -60 : y + fs;
         }
       } else if (variant === "ai") {
-        // pulsing radial node web with travelling signals
         const cx = W / 2;
         const cy = H / 2;
-        const nodes = 38;
+        const nodeCount = 38;
         ctx.globalCompositeOperation = "lighter";
-        for (let i = 0; i < nodes; i++) {
-          const a = (i / nodes) * Math.PI * 2 + t * 0.15;
+        for (let i = 0; i < nodeCount; i++) {
+          const a = (i / nodeCount) * Math.PI * 2 + t * 0.15;
           const r = (Math.min(W, H) / 2) * (0.32 + 0.55 * (0.5 + 0.5 * Math.sin(t + i)));
           const x = cx + Math.cos(a) * r;
           const y = cy + Math.sin(a) * r * 0.72;
@@ -92,7 +136,6 @@ export function CanvasMotif({
           ctx.moveTo(cx, cy);
           ctx.lineTo(x, y);
           ctx.stroke();
-          // travelling signal along the spoke
           const sp = (t * 0.6 + i * 0.13) % 1;
           ctx.fillStyle = "rgba(180,240,255,0.9)";
           ctx.beginPath();
@@ -109,7 +152,6 @@ export function CanvasMotif({
         ctx.fill();
         ctx.globalCompositeOperation = "source-over";
       } else if (variant === "industrial") {
-        // rotating gear-like rings + sparks
         const cx = W * 0.5;
         const cy = H * 0.55;
         ctx.save();
@@ -132,13 +174,7 @@ export function CanvasMotif({
         }
         ctx.restore();
         if (Math.random() > 0.6)
-          sparks.push({
-            x: cx + (Math.random() - 0.5) * 40,
-            y: cy,
-            vx: (Math.random() - 0.5) * 3,
-            vy: -Math.random() * 3 - 1,
-            life: 1,
-          });
+          sparks.push({ x: cx + (Math.random() - 0.5) * 40, y: cy, vx: (Math.random() - 0.5) * 3, vy: -Math.random() * 3 - 1, life: 1 });
         for (let i = sparks.length - 1; i >= 0; i--) {
           const s = sparks[i];
           s.x += s.vx;
@@ -150,7 +186,6 @@ export function CanvasMotif({
           if (s.life <= 0) sparks.splice(i, 1);
         }
       } else if (variant === "ocean") {
-        // layered sine waves + horizon glow
         const glow = ctx.createLinearGradient(0, 0, 0, H);
         glow.addColorStop(0, "rgba(150,185,255,0.18)");
         glow.addColorStop(0.5, "rgba(107,157,255,0.07)");
@@ -163,20 +198,88 @@ export function CanvasMotif({
           ctx.lineWidth = 1.4;
           const yBase = H * (0.45 + layer * 0.1);
           for (let x = 0; x <= W; x += 6) {
-            const y =
-              yBase +
-              Math.sin(x * 0.012 + t * (1 + layer * 0.3)) * (8 + layer * 4) +
-              Math.sin(x * 0.03 - t * 1.5) * 3;
+            const y = yBase + Math.sin(x * 0.012 + t * (1 + layer * 0.3)) * (8 + layer * 4) + Math.sin(x * 0.03 - t * 1.5) * 3;
             if (x === 0) ctx.moveTo(x, y);
             else ctx.lineTo(x, y);
           }
           ctx.stroke();
         }
+      } else if (variant === "cyber") {
+        if (!cyberInit || nodes.length === 0) initCyber();
+        // faint blueprint grid
+        ctx.strokeStyle = "rgba(79,140,255,0.06)";
+        ctx.lineWidth = 1;
+        const step = 34;
+        for (let x = (t * 6) % step; x < W; x += step) {
+          ctx.beginPath();
+          ctx.moveTo(x, 0);
+          ctx.lineTo(x, H);
+          ctx.stroke();
+        }
+        for (let y = 0; y < H; y += step) {
+          ctx.beginPath();
+          ctx.moveTo(0, y);
+          ctx.lineTo(W, y);
+          ctx.stroke();
+        }
+        // radar sweep from centre
+        const cx = W / 2;
+        const cy = H / 2;
+        const sweep = t * 0.9;
+        const rMax = Math.hypot(W, H) / 2;
+        const grad = ctx.createConicGradient ? ctx.createConicGradient(sweep, cx, cy) : null;
+        if (grad) {
+          grad.addColorStop(0, "rgba(79,140,255,0.14)");
+          grad.addColorStop(0.08, "rgba(79,140,255,0)");
+          grad.addColorStop(1, "rgba(79,140,255,0)");
+          ctx.fillStyle = grad;
+          ctx.beginPath();
+          ctx.arc(cx, cy, rMax, 0, Math.PI * 2);
+          ctx.fill();
+        }
+        // links
+        ctx.strokeStyle = "rgba(107,157,255,0.22)";
+        ctx.lineWidth = 1;
+        for (const [a, b] of links) {
+          ctx.beginPath();
+          ctx.moveTo(nodes[a].x, nodes[a].y);
+          ctx.lineTo(nodes[b].x, nodes[b].y);
+          ctx.stroke();
+        }
+        // travelling packets
+        ctx.globalCompositeOperation = "lighter";
+        for (const pk of packets) {
+          pk.p += pk.speed * 0.008;
+          if (pk.p > 1) {
+            pk.p = 0;
+            pk.l = (Math.random() * links.length) | 0;
+          }
+          const [a, b] = links[pk.l] ?? [0, 0];
+          const x = nodes[a].x + (nodes[b].x - nodes[a].x) * pk.p;
+          const y = nodes[a].y + (nodes[b].y - nodes[a].y) * pk.p;
+          ctx.fillStyle = "rgba(180,220,255,0.95)";
+          ctx.beginPath();
+          ctx.arc(x, y, 1.8, 0, Math.PI * 2);
+          ctx.fill();
+        }
+        // nodes
+        for (const nd of nodes) {
+          const pulse = 0.6 + 0.4 * Math.sin(t * 2 + nd.phase);
+          ctx.fillStyle = `rgba(150,190,255,${0.5 + 0.4 * pulse})`;
+          ctx.beginPath();
+          ctx.arc(nd.x, nd.y, 2.2, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.strokeStyle = `rgba(79,140,255,${0.25 * pulse})`;
+          ctx.lineWidth = 1;
+          ctx.beginPath();
+          ctx.arc(nd.x, nd.y, 5 + pulse * 3, 0, Math.PI * 2);
+          ctx.stroke();
+        }
+        ctx.globalCompositeOperation = "source-over";
       }
 
       raf = requestAnimationFrame(loop);
     };
-    raf = requestAnimationFrame(loop);
 
     return () => {
       cancelAnimationFrame(raf);

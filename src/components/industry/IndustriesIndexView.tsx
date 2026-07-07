@@ -55,7 +55,7 @@ export function IndustriesIndexView() {
                     href={`/services/${ind.id}`}
                     data-cursor
                     aria-label={`${ind.title} — ${c.explore}`}
-                    className="group flex items-baseline gap-5 py-10 outline-none sm:gap-8 md:gap-12 md:py-12"
+                    className="group flex items-baseline gap-5 rounded-sm py-10 outline-none focus-visible:ring-1 focus-visible:ring-accent/60 focus-visible:ring-offset-4 focus-visible:ring-offset-void sm:gap-8 md:gap-12 md:py-12"
                   >
                     <span className="w-[2.2ch] shrink-0 font-mono text-base text-fog tabular-nums transition-colors duration-500 group-hover:text-accent sm:text-xl">
                       {ind.index}

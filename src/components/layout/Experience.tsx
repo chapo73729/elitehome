@@ -8,6 +8,8 @@ import { AICore } from "@/components/sections/AICore";
 import { GlobalNetwork } from "@/components/sections/GlobalNetwork";
 import { Partners } from "@/components/sections/Partners";
 import { Industries } from "@/components/sections/Industries";
+import { CyberSecurity } from "@/components/sections/CyberSecurity";
+import { Team } from "@/components/sections/Team";
 import { Contact } from "@/components/sections/Contact";
 import { GutterRuler } from "@/components/layout/GutterRuler";
 
@@ -30,6 +32,8 @@ export function Experience() {
         <GlobalNetwork />
         <Partners />
         <Industries />
+        <CyberSecurity />
+        <Team />
         <Contact />
       </main>
     </>

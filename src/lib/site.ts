@@ -30,7 +30,7 @@ export const CITIES = [
   { name: "New York", lat: 40.7128, lon: -74.006, primary: true },
 ] as const;
 
-export type MotifVariant = "ai" | "code" | "industrial" | "ocean";
+export type MotifVariant = "ai" | "code" | "industrial" | "ocean" | "cyber";
 
 export const INDUSTRIES = [
   {

@@ -10,6 +10,8 @@ const SECTIONS = [
   { id: "core", label: { en: "AI Core", fr: "Cœur IA" } },
   { id: "network", label: { en: "Network", fr: "Réseau" } },
   { id: "services", label: { en: "Services", fr: "Services" } },
+  { id: "security", label: { en: "Security", fr: "Sécurité" } },
+  { id: "team", label: { en: "Team", fr: "Équipe" } },
   { id: "contact", label: { en: "Contact", fr: "Contact" } },
 ] as const;
 

@@ -57,8 +57,8 @@ function Marque({ item, index }: { item: Item; index: number }) {
           </span>
         )}
       </div>
-      <span className="flex items-center gap-2 whitespace-nowrap font-mono text-[0.58rem] uppercase tracking-[0.22em] text-fog/55 transition-colors duration-500 group-hover/m:text-fog">
-        <span aria-hidden className="text-accent/70">{`[${String(index + 1).padStart(2, "0")}]`}</span>
+      <span className="flex items-center gap-2 whitespace-nowrap font-mono text-[0.58rem] uppercase tracking-[0.22em] text-fog transition-colors duration-500 group-hover/m:text-mist">
+        <span aria-hidden className="text-accent">{`[${String(index + 1).padStart(2, "0")}]`}</span>
         {item.sector}
       </span>
     </div>
@@ -202,7 +202,7 @@ export function Partners() {
           <Reveal>
             <div className="flex flex-wrap items-baseline justify-between gap-x-10 gap-y-3">
               <span className="eyebrow">{c.eyebrow}</span>
-              <span className="font-mono text-[0.62rem] uppercase tracking-[0.2em] text-fog/70">
+              <span className="font-mono text-[0.62rem] uppercase tracking-[0.2em] text-fog">
                 {c.note}
               </span>
             </div>
@@ -225,7 +225,7 @@ export function Partners() {
         {/* registry line — the studio's mono idiom */}
         <div className="container-x">
           <Reveal delay={0.22}>
-            <p className="mt-6 text-right font-mono text-[0.6rem] uppercase tracking-[0.25em] text-fog/50">
+            <p className="mt-6 text-right font-mono text-[0.6rem] uppercase tracking-[0.25em] text-fog">
               {"10 · KOSOVO — ALBANIA — CZ"}
             </p>
           </Reveal>

@@ -57,6 +57,12 @@ export default function Og() {
         >
           {"// compile: ardlabs … ok"}
         </div>
+        {/* brandmark glyph — matches the favicon / on-site logo */}
+        <svg width={96} height={96} viewBox="0 0 64 64" fill="none" style={{ marginBottom: 18 }}>
+          <path d="M18 48 L32 15 L46 48" fill="none" stroke="#F4F6FB" strokeWidth={4.6} strokeLinecap="round" strokeLinejoin="round" />
+          <path d="M24.2 34.5 H42.5" fill="none" stroke="#4f8cff" strokeWidth={4} strokeLinecap="round" />
+          <circle cx="46" cy="34.5" r="2.5" fill="#4f8cff" />
+        </svg>
         <div
           style={{
             fontSize: 150,

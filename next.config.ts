@@ -7,7 +7,7 @@ const nextConfig: NextConfig = {
   // three.js and its R3F ecosystem ship ESM that benefits from transpilation
   transpilePackages: ["three"],
   experimental: {
-    optimizePackageImports: ["@react-three/drei", "framer-motion", "lucide-react"],
+    optimizePackageImports: ["framer-motion"],
   },
   images: {
     formats: ["image/avif", "image/webp"],

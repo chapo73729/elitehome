@@ -157,7 +157,7 @@ export function CareersView() {
                   <a
                     href={`mailto:${SITE.email}?subject=${encodeURIComponent(t.applySubject + r.t)}`}
                     data-cursor
-                    className="group grid items-baseline gap-x-6 gap-y-2 py-8 outline-none md:grid-cols-12 md:py-10"
+                    className="group grid items-baseline gap-x-6 gap-y-2 rounded-sm py-8 outline-none focus-visible:ring-1 focus-visible:ring-accent/60 focus-visible:ring-offset-4 focus-visible:ring-offset-void md:grid-cols-12 md:py-10"
                   >
                     <span className="font-mono text-xs text-fog tabular-nums transition-colors duration-500 group-hover:text-accent md:col-span-1">
                       {String(i + 1).padStart(2, "0")}

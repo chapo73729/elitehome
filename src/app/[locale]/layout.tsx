@@ -37,6 +37,11 @@ export const metadata: Metadata = {
     canonical: "/",
     types: { "application/rss+xml": `${SITE.url}/feed.xml` },
   },
+  // icon.svg, favicon.ico and apple-icon.png are auto-injected by Next's file
+  // conventions (src/app/*); only the Safari mask-icon needs explicit wiring.
+  icons: {
+    other: [{ rel: "mask-icon", url: "/safari-pinned-tab.svg", color: "#4f8cff" }],
+  },
   openGraph: {
       images: [{ url: "/opengraph-image", width: 1200, height: 630 }],
     type: "website",

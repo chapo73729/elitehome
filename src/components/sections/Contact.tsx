@@ -122,10 +122,16 @@ export function Contact() {
         track("brief_transmitted", { domain: field });
         return;
       }
-      // not configured / failed → graceful mail fallback to the PUBLIC address
+      // not configured / failed → graceful mail fallback to the PUBLIC address.
+      // Cap the message so the encoded mailto: URL can't exceed browser/OS
+      // length limits (which would silently open an empty mail client).
       const subject = encodeURIComponent(`ARDLABS enquiry — ${field}`);
+      const trimmed =
+        payload.message.length > 1200
+          ? `${payload.message.slice(0, 1200)}…`
+          : payload.message;
       const body = encodeURIComponent(
-        `Name: ${payload.name}\nEmail: ${payload.email}\nDomain: ${field}\n\n${payload.message}`
+        `Name: ${payload.name}\nEmail: ${payload.email}\nDomain: ${field}\n\n${trimmed}`
       );
       window.location.href = `mailto:${SITE.email}?subject=${subject}&body=${body}`;
       setStatus("sent");
@@ -186,9 +192,9 @@ export function Contact() {
       className="relative z-10 scroll-mt-24 overflow-hidden py-28 md:py-40"
     >
       <div className="container-x relative">
-        <ChapterNumeral n="04" label="ENGAGE" />
+        <ChapterNumeral n="06" label="ENGAGE" />
 
-        <Compile label="engage" index="04" className="relative z-10">
+        <Compile label="engage" index="06" className="relative z-10">
           {/* Oversized payoff statement — the one white→mist gradient headline. */}
           <Reveal>
             <span className="eyebrow">{t.eyebrow}</span>

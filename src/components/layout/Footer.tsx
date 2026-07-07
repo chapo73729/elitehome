@@ -2,6 +2,7 @@
 
 import { usePathname } from "next/navigation";
 import { LocaleLink } from "@/components/ui/LocaleLink";
+import { Brandmark } from "@/components/ui/Brandmark";
 import { SITE } from "@/lib/site";
 import { useContent } from "@/lib/content";
 import { scrollToTarget } from "./SmoothScroll";
@@ -60,6 +61,7 @@ export function Footer() {
     <footer className="relative z-10 hairline-t bg-void">
       <div className="container-x pb-14 pt-20 md:pb-16 md:pt-28">
         {/* editorial masthead — the studio signs off at display scale */}
+        <Brandmark size={44} className="mb-6 text-chalk" />
         <p className="text-giant select-none">
           <span className="text-gradient">{SITE.name}</span>
           <span className="text-accent">®</span>

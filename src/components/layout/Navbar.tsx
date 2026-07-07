@@ -7,6 +7,7 @@ import { SITE } from "@/lib/site";
 import { useContent } from "@/lib/content";
 import { scrollToTarget } from "./SmoothScroll";
 import { Magnetic } from "@/components/ui/Magnetic";
+import { Brandmark } from "@/components/ui/Brandmark";
 import { SoundToggle } from "./SoundToggle";
 import { LanguageToggle } from "@/components/feature/LanguageToggle";
 import { useLang } from "@/lib/lang";
@@ -119,11 +120,15 @@ export function Navbar({ ready = true }: { ready?: boolean }) {
           <Magnetic strength={0.25}>
             <button
               onClick={goHome}
-              className="font-display text-lg font-bold tracking-tight text-chalk"
+              className="flex items-center gap-2.5 font-display text-lg font-bold tracking-tight text-chalk"
               data-cursor
+              aria-label={SITE.name}
             >
-              {SITE.name}
-              <span className="text-accent">®</span>
+              <Brandmark size={26} className="shrink-0" />
+              <span>
+                {SITE.name}
+                <span className="text-accent">®</span>
+              </span>
             </button>
           </Magnetic>
 

@@ -1,6 +1,12 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
-  <rect width="64" height="64" rx="14" fill="#050505"/>
-  <circle cx="32" cy="32" r="18" fill="none" stroke="#5b8cff" stroke-width="1.5" opacity="0.5"/>
-  <path d="M20 44 L32 18 L44 44 M25 36 H39" fill="none" stroke="#ffffff" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/>
-  <circle cx="32" cy="32" r="2.4" fill="#7af2e0"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img" aria-label="ARDLABS">
+  <rect width="64" height="64" rx="14" fill="#0A0A0B"/>
+  <g stroke="#4F8CFF" stroke-width="1.4" fill="none" opacity="0.45" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M8 15 V8 H15"/>
+    <path d="M49 8 H56 V15"/>
+    <path d="M56 49 V56 H49"/>
+    <path d="M15 56 H8 V49"/>
+  </g>
+  <path d="M18 48 L32 15 L46 48" fill="none" stroke="#F4F6FB" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M24.2 34.5 H42.5" fill="none" stroke="#4F8CFF" stroke-width="4" stroke-linecap="round"/>
+  <circle cx="46" cy="34.5" r="2.5" fill="#4F8CFF"/>
 </svg>

@@ -95,7 +95,7 @@ export function WorkIndexView() {
                     href={`/work/${w.slug}`}
                     data-cursor
                     aria-label={`${w.name} — ${w.field} ${t.caseStudyAria}`}
-                    className="group grid items-baseline gap-x-6 gap-y-2 py-10 outline-none md:grid-cols-12 md:py-12"
+                    className="group grid items-baseline gap-x-6 gap-y-2 rounded-sm py-10 outline-none focus-visible:ring-1 focus-visible:ring-accent/60 focus-visible:ring-offset-4 focus-visible:ring-offset-void md:grid-cols-12 md:py-12"
                   >
                     <span className="font-mono text-xs text-fog tabular-nums transition-colors duration-500 group-hover:text-accent md:col-span-1">
                       {String(i + 1).padStart(2, "0")}

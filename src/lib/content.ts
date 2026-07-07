@@ -15,6 +15,8 @@ const en = {
     { label: "AI Core", href: "#core" },
     { label: "Network", href: "#network" },
     { label: "Services", href: "#services" },
+    { label: "Security", href: "#security" },
+    { label: "Team", href: "#team" },
     { label: "Contact", href: "#contact" },
   ],
   common: {
@@ -279,6 +281,55 @@ const en = {
       { name: "JetBrains", sector: "Developer tools \u00b7 Czech Republic" },
     ],
   },
+  security: {
+    eyebrow: "Cyber Security",
+    title: "Defence, engineered in.",
+    intro:
+      "Security is a discipline we build with, not a layer we bolt on. From the SOC floor to the red-team edge, we operate across the full spectrum of offensive and defensive engineering.",
+    registry: "10 domains · offensive + defensive",
+    items: [
+      { id: "soc", title: "Security Operations", tag: "SOC", blurb: "Round-the-clock monitoring, detection engineering and triage across your estate." },
+      { id: "pentest", title: "Penetration Testing", tag: "OFFENSE", blurb: "Goal-driven exploitation that proves what an attacker could really reach." },
+      { id: "redteam", title: "Red Team Operations", tag: "ADVERSARY", blurb: "Full-scope adversary emulation against people, process and technology." },
+      { id: "blueteam", title: "Blue Team Defense", tag: "DEFENSE", blurb: "Hardening, detection and response tuned to your real threat model." },
+      { id: "threatintel", title: "Threat Intelligence", tag: "INTEL", blurb: "Actor tracking and IOC enrichment that turns noise into decisions." },
+      { id: "forensics", title: "Digital Forensics", tag: "DFIR", blurb: "Evidence-grade investigation and root-cause reconstruction." },
+      { id: "ir", title: "Incident Response", tag: "RESPONSE", blurb: "Contain, eradicate and recover — with a calm, rehearsed playbook." },
+      { id: "cloudsec", title: "Cloud Security", tag: "CLOUD", blurb: "Identity, posture and workload protection across AWS, Azure and GCP." },
+      { id: "infrasec", title: "Infrastructure Security", tag: "INFRA", blurb: "Zero-trust networks, segmentation and hardened baselines." },
+      { id: "vulnassess", title: "Vulnerability Assessment", tag: "ASSESS", blurb: "Continuous discovery and prioritised remediation at scale." },
+    ],
+  },
+  team: {
+    eyebrow: "The Team",
+    title: "The people behind the work.",
+    intro:
+      "A small, senior team — engineers who have shipped and defended systems in production. Every project runs through the same hands.",
+    stackLabel: "Core stack",
+    members: [
+      {
+        id: "jakub",
+        name: "Jakub Novák",
+        role: "Senior Software Engineer",
+        bio: "Systems and platform engineering — software that holds up under load and over time.",
+        stack: ["Rust", "Go", "C++", "TypeScript", "React", "PostgreSQL"],
+      },
+      {
+        id: "tomas",
+        name: "Tomáš Dvořák",
+        role: "Cybersecurity Specialist",
+        bio: "Offensive and defensive security — from red-team operations to hardened production defence.",
+        stack: ["Pentest", "Red Team", "Blue Team", "Threat Intel", "DevSecOps", "Linux"],
+      },
+      {
+        id: "samir",
+        name: "Samir Dajani",
+        role: "AI & Cloud Engineer",
+        bio: "Dependable AI in production and the cloud platforms that carry it.",
+        stack: ["Python", "Kubernetes", "Docker", "AWS", "Azure", "Terraform", "Machine Learning"],
+      },
+    ],
+  },
   cta: {
     eyebrow: "Engage",
     title: "Got something worth building?",
@@ -286,7 +337,7 @@ const en = {
     button: "Start a conversation",
   },
   contact: {
-    eyebrow: "Contact · 04",
+    eyebrow: "Contact · 06",
     title: "Let's build it.",
     intro:
       "We take on a small number of projects at a time. Tell us what you're building — we'll tell you how we'd approach it.",
@@ -368,6 +419,8 @@ const fr: DeepPartial<Content> = {
     { label: "Cœur IA" },
     { label: "Réseau" },
     { label: "Services" },
+    { label: "Sécurité" },
+    { label: "Équipe" },
     { label: "Contact" },
   ],
   common: {
@@ -612,6 +665,37 @@ const fr: DeepPartial<Content> = {
       { sector: "Outils de d\u00e9veloppement \u00b7 R\u00e9publique tch\u00e8que" },
     ],
   },
+  security: {
+    eyebrow: "Cybersécurité",
+    title: "La défense, intégrée dès la conception.",
+    intro:
+      "La sécurité est une discipline avec laquelle nous construisons, pas une couche qu'on ajoute après coup. Du plateau SOC jusqu'à la ligne de front red team, nous couvrons tout le spectre de l'ingénierie offensive et défensive.",
+    registry: "10 domaines · offensif + défensif",
+    items: [
+      { title: "Security Operations", blurb: "Surveillance continue, ingénierie de détection et triage sur l'ensemble du parc." },
+      { title: "Tests d'intrusion", blurb: "Exploitation orientée objectif qui prouve ce qu'un attaquant pourrait réellement atteindre." },
+      { title: "Opérations Red Team", blurb: "Émulation d'adversaire complète contre les personnes, les processus et la technologie." },
+      { title: "Défense Blue Team", blurb: "Durcissement, détection et réponse calibrés sur votre modèle de menace réel." },
+      { title: "Renseignement sur les menaces", blurb: "Suivi d'acteurs et enrichissement d'IOC qui transforment le bruit en décisions." },
+      { title: "Investigation numérique", blurb: "Investigation à valeur probante et reconstruction des causes racines." },
+      { title: "Réponse à incident", blurb: "Contenir, éradiquer et rétablir — avec un playbook calme et répété." },
+      { title: "Sécurité du cloud", blurb: "Identité, posture et protection des charges sur AWS, Azure et GCP." },
+      { title: "Sécurité des infrastructures", blurb: "Réseaux zero-trust, segmentation et socles durcis." },
+      { title: "Évaluation des vulnérabilités", blurb: "Découverte continue et remédiation priorisée à grande échelle." },
+    ],
+  },
+  team: {
+    eyebrow: "L'équipe",
+    title: "Les personnes derrière le travail.",
+    intro:
+      "Une équipe réduite et senior — des ingénieurs qui ont livré et défendu des systèmes en production. Chaque projet passe entre les mêmes mains.",
+    stackLabel: "Stack principale",
+    members: [
+      { role: "Ingénieur logiciel senior", bio: "Ingénierie systèmes et plateforme — un logiciel qui tient sous la charge et dans le temps." },
+      { role: "Spécialiste cybersécurité", bio: "Sécurité offensive et défensive — des opérations red team à la défense durcie en production." },
+      { role: "Ingénieur IA & Cloud", bio: "Une IA fiable en production et les plateformes cloud qui la portent." },
+    ],
+  },
   cta: {
     eyebrow: "Collaborer",
     title: "Quelque chose qui mérite d'être construit ?",
@@ -619,7 +703,7 @@ const fr: DeepPartial<Content> = {
     button: "Démarrer la conversation",
   },
   contact: {
-    eyebrow: "Contact · 04",
+    eyebrow: "Contact · 06",
     title: "Construisons-le.",
     intro:
       "Nous menons un petit nombre de projets à la fois. Dites-nous ce que vous construisez — nous vous dirons comment nous l'aborderions.",

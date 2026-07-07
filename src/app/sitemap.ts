@@ -61,9 +61,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: e.changeFrequency,
       priority: e.priority,
       alternates: {
-        languages: Object.fromEntries(
-          locales.map((l) => [l, `${SITE.url}/${l}${e.path}`])
-        ),
+        languages: {
+          ...Object.fromEntries(
+            locales.map((l) => [l, `${SITE.url}/${l}${e.path}`])
+          ),
+          // mirror the page-level x-default (points at the English locale)
+          "x-default": `${SITE.url}/en${e.path}`,
+        },
       },
     }))
   );
