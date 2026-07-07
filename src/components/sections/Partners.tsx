@@ -23,12 +23,12 @@ import { Reveal } from "@/components/ui/Reveal";
 
 /** Official logo files, self-hosted in /public/partners/. */
 const LOGO_SRC: Record<string, string | null> = {
-  Gjirafa: null,
+  "MITRE ATT&CK": null,
   "LinkPlus IT": null,
   Cacttus: null,
-  "Devolli Corporation": null,
+  theHarvester: null,
   "InfoSoft Group": null,
-  Facilization: null,
+  VirusTotal: null,
   "Communication Progress": null,
   "YTC Group": null,
 };
