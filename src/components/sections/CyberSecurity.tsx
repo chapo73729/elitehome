@@ -3,16 +3,23 @@
 import { motion, useReducedMotion } from "framer-motion";
 import { useContent } from "@/lib/content";
 import { usePerf } from "@/lib/perf";
+import { useLang } from "@/lib/lang";
 import { audio } from "@/lib/audio";
 import { Reveal } from "@/components/ui/Reveal";
 import { SectionHeading } from "@/components/ui/Section";
 import { Compile } from "@/components/ui/Compile";
 import { ChapterNumeral } from "@/components/ui/ChapterNumeral";
-import { CyberLock } from "./CyberLock";
+import { CyberDefense } from "./CyberDefense";
 
 type Item = { id: string; title: string; tag: string; blurb: string };
 
 const EASE = [0.16, 1, 0.3, 1] as const;
+
+/** One-word stage captions + counter label for the animated explainer. */
+const STAGE_LABELS = {
+  en: { monitor: "monitor", detect: "detect", intercept: "intercept", respond: "respond", secured: "secured", counter: "threats neutralised" },
+  fr: { monitor: "surveillance", detect: "détection", intercept: "interception", respond: "réponse", secured: "sécurisé", counter: "menaces neutralisées" },
+} as const;
 
 /** Blueprint corner bracket, matched to the « Compile » idiom. */
 const STAGE_CORNERS = [
@@ -22,12 +29,13 @@ const STAGE_CORNERS = [
   "bottom-4 right-4 border-b border-r",
 ] as const;
 
-/** The animated-padlock centrepiece — a framed SOC stage. */
-function LockStage({ reduced }: { reduced: boolean }) {
+/** The animated defence-in-depth explainer — a framed SOC stage. */
+function DefenseStage({ reduced }: { reduced: boolean }) {
+  const labels = STAGE_LABELS[useLang()];
   return (
     <Reveal delay={0.12}>
-      <div className="relative mx-auto h-[clamp(320px,44vh,500px)] w-full max-w-4xl overflow-hidden rounded-2xl border border-chalk/10 bg-[radial-gradient(120%_120%_at_50%_35%,#0b0e14_0%,#050608_70%)]">
-        <CyberLock still={reduced} className="absolute inset-0 h-full w-full" />
+      <div className="relative mx-auto h-[clamp(340px,48vh,520px)] w-full max-w-4xl overflow-hidden rounded-2xl border border-chalk/10 bg-[radial-gradient(120%_120%_at_50%_35%,#0b0e14_0%,#050608_70%)]">
+        <CyberDefense still={reduced} labels={labels} className="absolute inset-0 h-full w-full" />
 
         {/* blueprint corner brackets */}
         {STAGE_CORNERS.map((cls) => (
@@ -38,22 +46,19 @@ function LockStage({ reduced }: { reduced: boolean }) {
           />
         ))}
 
-        {/* HUD readouts — the studio's mono idiom */}
+        {/* static HUD readouts — the studio's mono idiom */}
         <span aria-hidden className="pointer-events-none absolute left-6 top-5 font-mono text-[0.55rem] uppercase tracking-[0.28em] text-fog/80">
-          {"// perimeter.secure"}
+          {"// defence.in.depth"}
         </span>
         <span aria-hidden className="pointer-events-none absolute right-6 top-5 flex items-center gap-2 font-mono text-[0.55rem] uppercase tracking-[0.28em] text-accent/85">
           <span className="relative flex h-1.5 w-1.5">
             <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent/70" />
             <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-accent" />
           </span>
-          secured
+          live
         </span>
         <span aria-hidden className="pointer-events-none absolute bottom-5 left-6 font-mono text-[0.55rem] uppercase tracking-[0.28em] text-fog/70">
           {"AES-256 · zero-trust"}
-        </span>
-        <span aria-hidden className="pointer-events-none absolute bottom-5 right-6 font-mono text-[0.55rem] uppercase tracking-[0.28em] text-fog/70">
-          {"SOC · 24 / 7"}
         </span>
       </div>
     </Reveal>
@@ -124,9 +129,9 @@ export function CyberSecurity() {
         </Compile>
       </div>
 
-      {/* the animated-padlock centrepiece */}
+      {/* the animated defence-in-depth explainer */}
       <div className="container-x relative mt-14">
-        <LockStage reduced={reduced} />
+        <DefenseStage reduced={reduced} />
       </div>
 
       <div className="container-x relative mt-14">
