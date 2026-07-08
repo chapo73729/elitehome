@@ -323,7 +323,7 @@ const en = {
       },
       {
         id: "samir",
-        name: "Samir Dajani",
+        name: "Samir Gojani",
         role: "AI & Cloud Engineer",
         bio: "Dependable AI in production and the cloud platforms that carry it.",
         stack: ["Python", "Kubernetes", "Docker", "AWS", "Azure", "Terraform", "Machine Learning"],

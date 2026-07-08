@@ -17,9 +17,9 @@ const EASE = [0.16, 1, 0.3, 1] as const;
    and map them here (id -> src). Until a member has a file, a refined
    blueprint portrait renders in the studio's own visual language. */
 const PORTRAIT_SRC: Record<string, string | null> = {
-  jakub: null,
-  tomas: null,
-  samir: null,
+  jakub: "/team/jakub.webp",
+  tomas: "/team/tomas.webp",
+  samir: "/team/samir.webp",
 };
 
 function initials(name: string) {
@@ -45,7 +45,7 @@ function Portrait({ member }: { member: Member }) {
           height={600}
           loading="lazy"
           decoding="async"
-          className="h-full w-full object-cover grayscale transition-all duration-700 group-hover:grayscale-0"
+          className="h-full w-full object-cover object-top grayscale transition-all duration-700 group-hover:grayscale-0"
         />
       ) : (
         <>
