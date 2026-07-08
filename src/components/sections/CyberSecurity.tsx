@@ -57,7 +57,7 @@ function DefenseStage({ reduced }: { reduced: boolean }) {
           </span>
           live
         </span>
-        <span aria-hidden className="pointer-events-none absolute bottom-5 left-6 font-mono text-[0.55rem] uppercase tracking-[0.28em] text-fog/70">
+        <span aria-hidden className="pointer-events-none absolute bottom-5 left-6 hidden font-mono text-[0.55rem] uppercase tracking-[0.28em] text-fog/70 sm:block">
           {"AES-256 · zero-trust"}
         </span>
       </div>
