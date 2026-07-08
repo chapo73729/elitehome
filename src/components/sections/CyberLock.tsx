@@ -3,45 +3,46 @@
 import { useEffect, useRef } from "react";
 
 /* ============================================================
-   CyberLock — the Cyber Security centrepiece. A single 2D canvas
-   (no extra WebGL context) drives a cinematic padlock that lives
-   a continuous security story on a loop:
+   CyberLock — the Cyber Security centrepiece, reimagined as a
+   cosmic particle formation: thousands of points of light erupt
+   from a singularity in a big-bang burst and crystallise into the
+   silhouette of a padlock, hold shimmering, then implode back to
+   the seed and reform — on a loop.
 
-     SECURE   → concentric scanner rings turn, orbiting sentries
-                sweep, hex data rises through the body, the keyhole
-                breathes a soft beam.
-     BREACH   → an intrusion probe streaks in; the lock flares red,
-                the shackle springs open, glitch shards scatter.
-     RESEAL   → the shackle slams shut; on impact a white-hot
-                shockwave rings out and the field snaps back to azure.
-
-   Frame-driven, DPR-aware, IntersectionObserver-gated (pauses fully
-   offscreen). A static locked emblem is drawn once for reduced-motion
-   / perf mode. Purely decorative → aria-hidden by the caller.
+   The lock shape is sampled from an offscreen render, so the
+   particles land on a real padlock (body + shackle, hollow keyhole).
+   Additive blending + soft bokeh depth gives the glittering,
+   nebula-like light of the reference. Single 2D canvas (no WebGL),
+   DPR-aware, IntersectionObserver-gated. A static formed lock is
+   drawn for reduced-motion / perf. Decorative → aria-hidden.
    ============================================================ */
 
-type Spark = { x: number; y: number; vx: number; vy: number; life: number; hot: number };
-type Shard = { a: number; r: number; vr: number; life: number };
-type Ring = { r: number; life: number };
+const AZURE = 212;
+const CYAN = 188;
 
-const ACCENT = [79, 140, 255]; // azure
-const ICE = [180, 220, 255];
-const DANGER = [255, 74, 74];
+type Particle = {
+  hx: number; // home (lock target), screen space
+  hy: number;
+  ax: number; // current
+  ay: number;
+  px: number; // previous (for motion trails)
+  py: number;
+  ang: number; // burst direction bias
+  size: number;
+  bokeh: boolean;
+  hue: number;
+  light: number;
+  delay: number; // formation stagger 0..0.45
+  jitter: number;
+};
 
-/** phase machine */
-type Phase = "secure" | "breach" | "open" | "reseal";
-const T_SECURE = 6400;
-const T_BREACH = 820;
-const T_OPEN = 1150;
-const T_RESEAL = 560;
+type Phase = "seed" | "bang" | "hold" | "collapse";
+const T_SEED = 460;
+const T_BANG = 1700;
+const T_HOLD = 3600;
+const T_COLLAPSE = 1050;
 
-export function CyberLock({
-  className,
-  still = false,
-}: {
-  className?: string;
-  still?: boolean;
-}) {
+export function CyberLock({ className, still = false }: { className?: string; still?: boolean }) {
   const ref = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
@@ -54,7 +55,109 @@ export function CyberLock({
     let H = 0;
     let cx = 0;
     let cy = 0;
-    let unit = 1; // scale factor from the lock's design space
+    let particles: Particle[] = [];
+
+    /* ---- sample the padlock silhouette into target points ---- */
+    const sampleLock = (): { x: number; y: number }[] => {
+      const off = document.createElement("canvas");
+      off.width = Math.max(1, Math.round(W));
+      off.height = Math.max(1, Math.round(H));
+      const o = off.getContext("2d");
+      if (!o) return [];
+
+      const S = Math.min(W, H);
+      const lockH = S * 0.5;
+      const bodyW = lockH * 0.62;
+      const bodyH = lockH * 0.5;
+      const rad = bodyW * 0.18;
+      const bx = cx - bodyW / 2;
+      const by = cy - bodyH * 0.28;
+      const shR = bodyW * 0.32;
+      const shTop = by - lockH * 0.34;
+      const shW = lockH * 0.11;
+
+      o.fillStyle = "#fff";
+      o.strokeStyle = "#fff";
+      // body (rounded rect)
+      o.beginPath();
+      o.moveTo(bx + rad, by);
+      o.arcTo(bx + bodyW, by, bx + bodyW, by + bodyH, rad);
+      o.arcTo(bx + bodyW, by + bodyH, bx, by + bodyH, rad);
+      o.arcTo(bx, by + bodyH, bx, by, rad);
+      o.arcTo(bx, by, bx + bodyW, by, rad);
+      o.closePath();
+      o.fill();
+      // shackle (thick arc + posts)
+      o.lineCap = "round";
+      o.lineJoin = "round";
+      o.lineWidth = shW;
+      o.beginPath();
+      o.moveTo(cx - shR, by + 6);
+      o.lineTo(cx - shR, shTop);
+      o.arc(cx, shTop, shR, Math.PI, 0, false);
+      o.lineTo(cx + shR, by + 6);
+      o.stroke();
+      // hollow keyhole
+      o.globalCompositeOperation = "destination-out";
+      const khY = by + bodyH * 0.52;
+      o.beginPath();
+      o.arc(cx, khY, bodyW * 0.09, 0, Math.PI * 2);
+      o.fill();
+      o.beginPath();
+      o.moveTo(cx - bodyW * 0.05, khY);
+      o.lineTo(cx + bodyW * 0.05, khY);
+      o.lineTo(cx + bodyW * 0.08, khY + bodyH * 0.34);
+      o.lineTo(cx - bodyW * 0.08, khY + bodyH * 0.34);
+      o.closePath();
+      o.fill();
+      o.globalCompositeOperation = "source-over";
+
+      const img = o.getImageData(0, 0, off.width, off.height).data;
+      const gap = S < 420 ? 5 : 4;
+      const pts: { x: number; y: number }[] = [];
+      for (let y = 0; y < off.height; y += gap) {
+        for (let x = 0; x < off.width; x += gap) {
+          if (img[(y * off.width + x) * 4 + 3] > 128) {
+            // slight sub-cell jitter so it isn't a rigid grid
+            pts.push({ x: x + (Math.random() - 0.5) * gap, y: y + (Math.random() - 0.5) * gap });
+          }
+        }
+      }
+      // cap for perf — keep a random subset if very dense
+      const MAX = S < 420 ? 1500 : 2600;
+      if (pts.length > MAX) {
+        for (let i = pts.length - 1; i > 0; i--) {
+          const j = (Math.random() * (i + 1)) | 0;
+          [pts[i], pts[j]] = [pts[j], pts[i]];
+        }
+        pts.length = MAX;
+      }
+      return pts;
+    };
+
+    const build = () => {
+      const targets = sampleLock();
+      particles = targets.map((t) => {
+        const a = Math.atan2(t.y - cy, t.x - cx) + (Math.random() - 0.5) * 0.5;
+        const bokeh = Math.random() < 0.12;
+        const cyan = Math.random() < 0.28;
+        return {
+          hx: t.x,
+          hy: t.y,
+          ax: cx,
+          ay: cy,
+          px: cx,
+          py: cy,
+          ang: a,
+          size: bokeh ? 2.4 + Math.random() * 3.2 : 0.7 + Math.random() * 1.3,
+          bokeh,
+          hue: (cyan ? CYAN : AZURE) + (Math.random() - 0.5) * 14,
+          light: 62 + Math.random() * 30,
+          delay: Math.random() * 0.42,
+          jitter: Math.random() * Math.PI * 2,
+        };
+      });
+    };
 
     const resize = () => {
       const r = canvas.getBoundingClientRect();
@@ -64,201 +167,105 @@ export function CyberLock({
       canvas.height = Math.max(1, Math.round(H * dpr));
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       cx = W / 2;
-      cy = H / 2 + Math.min(W, H) * 0.03;
-      unit = Math.min(W, H) / 420; // design tuned around a 420px stage
+      cy = H / 2;
+      build();
     };
     resize();
     const ro = new ResizeObserver(resize);
     ro.observe(canvas);
 
-    const rgba = (c: number[], a: number) => `rgba(${c[0] | 0},${c[1] | 0},${c[2] | 0},${a})`;
-    const mix = (a: number[], b: number[], t: number) => [
-      a[0] + (b[0] - a[0]) * t,
-      a[1] + (b[1] - a[1]) * t,
-      a[2] + (b[2] - a[2]) * t,
-    ];
+    const easeOutBack = (x: number) => {
+      const c1 = 1.70158;
+      const c3 = c1 + 1;
+      return 1 + c3 * Math.pow(x - 1, 3) + c1 * Math.pow(x - 1, 2);
+    };
+    const easeIn = (x: number) => x * x * x;
+    const clamp01 = (x: number) => Math.max(0, Math.min(1, x));
 
-    /* ---- draw the padlock in design space, centred at (0,0) ---- */
-    const drawLock = (
-      shackleLift: number, // 0 = closed, 1 = fully open
-      tint: number[],
-      glow: number,
-      hexScroll: number,
-      alive: boolean,
-      sweep = -1 // 0..1 position of a luminous sweep across the body (‑1 = none)
-    ) => {
-      const bodyW = 150;
-      const bodyH = 118;
-      const bodyTop = 6;
-      const bodyBottom = bodyTop + bodyH;
-      const rad = 26;
+    /* faint nebula backdrop for cosmic depth */
+    const nebula = (t: number, energy: number) => {
+      const blobs = [
+        { x: 0.3, y: 0.32, r: 0.6, h: AZURE, a: 0.09 },
+        { x: 0.72, y: 0.68, r: 0.55, h: CYAN, a: 0.07 },
+        { x: 0.5, y: 0.5, r: 0.42, h: AZURE, a: 0.05 + energy * 0.12 },
+      ];
+      for (const b of blobs) {
+        const dx = Math.sin(t * 0.12 + b.x * 6) * 12;
+        const dy = Math.cos(t * 0.1 + b.y * 6) * 12;
+        const g = ctx.createRadialGradient(
+          W * b.x + dx,
+          H * b.y + dy,
+          0,
+          W * b.x + dx,
+          H * b.y + dy,
+          Math.min(W, H) * b.r
+        );
+        g.addColorStop(0, `hsla(${b.h}, 90%, 60%, ${b.a})`);
+        g.addColorStop(1, "hsla(0,0%,0%,0)");
+        ctx.fillStyle = g;
+        ctx.fillRect(0, 0, W, H);
+      }
+    };
 
-      // ---- shackle (behind the body) ----
-      const shR = 46;
-      const shTopBase = bodyTop - 20;
-      const lift = shackleLift * 46;
-      ctx.save();
-      ctx.lineCap = "round";
-      ctx.shadowBlur = 24 * glow;
-      ctx.shadowColor = rgba(tint, 0.9);
-      ctx.strokeStyle = rgba(mix(tint, ICE, 0.35), 0.95);
-      ctx.lineWidth = 15;
-      ctx.beginPath();
-      // left post
-      ctx.moveTo(-shR, bodyTop + 6);
-      ctx.lineTo(-shR, shTopBase - lift);
-      // arc over the top
-      ctx.arc(0, shTopBase - lift, shR, Math.PI, 0, false);
-      // right post (lifts less → the open lock swings on the right)
-      const rightPostLen = bodyTop + 6 - (shTopBase - lift);
-      ctx.lineTo(shR, (shTopBase - lift) + rightPostLen * (1 - shackleLift * 0.65));
-      ctx.stroke();
-      ctx.restore();
-
-      // ---- body ----
-      ctx.save();
-      const bodyGrad = ctx.createLinearGradient(0, bodyTop, 0, bodyBottom);
-      bodyGrad.addColorStop(0, rgba(mix([10, 14, 22], tint, 0.22 + 0.2 * glow), 1));
-      bodyGrad.addColorStop(1, rgba([8, 10, 16], 1));
-      ctx.shadowBlur = 40 * glow;
-      ctx.shadowColor = rgba(tint, 0.7);
-      ctx.fillStyle = bodyGrad;
-      roundRect(-bodyW / 2, bodyTop, bodyW, bodyH, rad);
-      ctx.fill();
-      ctx.restore();
-
-      // body edge
-      ctx.save();
-      ctx.lineWidth = 2;
-      ctx.strokeStyle = rgba(mix(tint, ICE, 0.4), 0.85);
-      ctx.shadowBlur = 16 * glow;
-      ctx.shadowColor = rgba(tint, 0.8);
-      roundRect(-bodyW / 2, bodyTop, bodyW, bodyH, rad);
-      ctx.stroke();
-      ctx.restore();
-
-      // ---- brushed-metal sheen: a soft top-lit highlight so the body reads
-      //      as a crafted object rather than a flat panel ----
-      ctx.save();
-      roundRect(-bodyW / 2, bodyTop, bodyW, bodyH, rad);
-      ctx.clip();
-      const sheen = ctx.createLinearGradient(0, bodyTop, 0, bodyTop + bodyH * 0.62);
-      sheen.addColorStop(0, rgba(mix(tint, ICE, 0.7), 0.16));
-      sheen.addColorStop(1, rgba(tint, 0));
-      ctx.fillStyle = sheen;
-      ctx.fillRect(-bodyW / 2, bodyTop, bodyW, bodyH * 0.62);
-      // crisp inner top edge
-      ctx.strokeStyle = rgba(mix(tint, ICE, 0.75), 0.35);
-      ctx.lineWidth = 1;
-      ctx.beginPath();
-      ctx.moveTo(-bodyW / 2 + rad, bodyTop + 2.5);
-      ctx.lineTo(bodyW / 2 - rad, bodyTop + 2.5);
-      ctx.stroke();
-      ctx.restore();
-
-      // ---- hex data streaming inside the body (clipped) ----
-      if (alive) {
-        ctx.save();
-        roundRect(-bodyW / 2 + 3, bodyTop + 3, bodyW - 6, bodyH - 6, rad - 3);
-        ctx.clip();
-        ctx.font = "11px 'Geist Mono', monospace";
-        ctx.textAlign = "center";
-        const cols = 5;
-        for (let i = 0; i < cols; i++) {
-          const x = -bodyW / 2 + 22 + (i * (bodyW - 40)) / (cols - 1);
-          for (let j = 0; j < 7; j++) {
-            const y =
-              bodyTop +
-              ((j * 20 + hexScroll * (30 + i * 8)) % (bodyH + 20)) -
-              4;
-            const ch = HEX[(((i * 7 + j) * 131 + ((hexScroll * 6) | 0)) % HEX.length + HEX.length) % HEX.length];
-            const fade = 0.10 + 0.22 * (1 - Math.abs((y - bodyTop) / bodyH - 0.5) * 1.6);
-            ctx.fillStyle = rgba(mix(tint, ICE, 0.5), Math.max(0, fade));
-            ctx.fillText(ch, x, y);
+    const drawParticles = (assembleFor: (p: Particle) => { x: number; y: number }, coreFlash: number, shimmer: number) => {
+      ctx.globalCompositeOperation = "lighter";
+      // trails first (thin additive lines from previous position)
+      for (const p of particles) {
+        const pos = assembleFor(p);
+        if (!p.bokeh) {
+          const dx = pos.x - p.px;
+          const dy = pos.y - p.py;
+          const sp = dx * dx + dy * dy;
+          if (sp > 6) {
+            ctx.strokeStyle = `hsla(${p.hue}, 95%, ${p.light}%, 0.22)`;
+            ctx.lineWidth = p.size * 0.8;
+            ctx.beginPath();
+            ctx.moveTo(p.px, p.py);
+            ctx.lineTo(pos.x, pos.y);
+            ctx.stroke();
           }
         }
-        ctx.restore();
+        p.px = pos.x;
+        p.py = pos.y;
       }
-
-      // ---- luminous sweep — the studio's « Compile » signature glide ----
-      if (sweep >= 0 && sweep <= 1) {
-        ctx.save();
-        roundRect(-bodyW / 2, bodyTop, bodyW, bodyH, rad);
-        ctx.clip();
-        const bx = -bodyW * 0.75 + sweep * (bodyW * 1.5);
-        const band = ctx.createLinearGradient(bx - 34, 0, bx + 34, 0);
-        band.addColorStop(0, rgba(ICE, 0));
-        band.addColorStop(0.5, rgba(mix(ICE, [255, 255, 255], 0.4), 0.2));
-        band.addColorStop(1, rgba(ICE, 0));
-        ctx.fillStyle = band;
-        ctx.fillRect(-bodyW / 2, bodyTop, bodyW, bodyH);
-        ctx.restore();
+      // heads
+      for (const p of particles) {
+        const x = p.px;
+        const y = p.py;
+        const s = p.size * (p.bokeh ? 1 : 1 + shimmer * 0.3);
+        const alpha = p.bokeh ? 0.16 : 0.85;
+        // soft halo
+        ctx.fillStyle = `hsla(${p.hue}, 95%, ${p.light}%, ${alpha * 0.4})`;
+        ctx.beginPath();
+        ctx.arc(x, y, s * 2.2, 0, 6.2831853);
+        ctx.fill();
+        // bright core
+        ctx.fillStyle = `hsla(${p.hue}, 90%, ${Math.min(96, p.light + 25)}%, ${alpha})`;
+        ctx.beginPath();
+        ctx.arc(x, y, s, 0, 6.2831853);
+        ctx.fill();
       }
-
-      // ---- keyhole + a soft downward light beam ----
-      const khY = bodyTop + bodyH * 0.5;
-      ctx.save();
-      // beam
-      ctx.beginPath();
-      roundRect(-bodyW / 2, bodyTop, bodyW, bodyH, rad);
-      ctx.clip();
-      const beam = ctx.createLinearGradient(0, khY, 0, bodyBottom);
-      beam.addColorStop(0, rgba(mix(tint, ICE, 0.6), 0.18 * (0.6 + glow * 0.4)));
-      beam.addColorStop(1, rgba(tint, 0));
-      ctx.fillStyle = beam;
-      ctx.beginPath();
-      ctx.moveTo(-7, khY);
-      ctx.lineTo(7, khY);
-      ctx.lineTo(20, bodyBottom);
-      ctx.lineTo(-20, bodyBottom);
-      ctx.closePath();
-      ctx.fill();
-      ctx.restore();
-
-      ctx.save();
-      ctx.shadowBlur = 18 * glow;
-      ctx.shadowColor = rgba(mix(tint, ICE, 0.5), 0.95);
-      ctx.fillStyle = rgba(mix(tint, ICE, 0.6), 0.95);
-      ctx.beginPath();
-      ctx.arc(0, khY, 12, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.beginPath();
-      ctx.moveTo(-6, khY + 2);
-      ctx.lineTo(6, khY + 2);
-      ctx.lineTo(11, khY + 34);
-      ctx.lineTo(-11, khY + 34);
-      ctx.closePath();
-      ctx.fill();
-      ctx.restore();
+      // singularity core flash
+      if (coreFlash > 0.001) {
+        const g = ctx.createRadialGradient(cx, cy, 0, cx, cy, Math.min(W, H) * 0.4 * coreFlash);
+        g.addColorStop(0, `hsla(200, 100%, 92%, ${0.9 * coreFlash})`);
+        g.addColorStop(0.4, `hsla(${AZURE}, 100%, 70%, ${0.4 * coreFlash})`);
+        g.addColorStop(1, "hsla(0,0%,0%,0)");
+        ctx.fillStyle = g;
+        ctx.beginPath();
+        ctx.arc(cx, cy, Math.min(W, H) * 0.4 * coreFlash, 0, 6.2831853);
+        ctx.fill();
+      }
+      ctx.globalCompositeOperation = "source-over";
     };
 
-    const roundRect = (x: number, y: number, w: number, h: number, r: number) => {
-      ctx.beginPath();
-      ctx.moveTo(x + r, y);
-      ctx.arcTo(x + w, y, x + w, y + h, r);
-      ctx.arcTo(x + w, y + h, x, y + h, r);
-      ctx.arcTo(x, y + h, x, y, r);
-      ctx.arcTo(x, y, x + w, y, r);
-      ctx.closePath();
-    };
-
-    /* ---------------- static (reduced-motion) ---------------- */
+    /* ---------------- static (reduced motion / perf) ---------------- */
     if (still) {
       const paint = () => {
         ctx.clearRect(0, 0, W, H);
-        ctx.save();
-        ctx.translate(cx, cy);
-        ctx.scale(unit, unit);
-        // one calm ring
-        ctx.strokeStyle = rgba(ACCENT, 0.25);
-        ctx.lineWidth = 1.5;
-        ctx.beginPath();
-        ctx.arc(0, 0, 150, 0, Math.PI * 2);
-        ctx.stroke();
-        drawLock(0, ACCENT, 0.7, 0, false);
-        ctx.restore();
+        nebula(0, 0.2);
+        drawParticles((p) => ({ x: p.hx, y: p.hy }), 0, 0);
       };
-      // repaint on resize so it stays crisp
       const ro2 = new ResizeObserver(() => {
         resize();
         paint();
@@ -272,17 +279,73 @@ export function CyberLock({
     }
 
     /* ---------------- animated ---------------- */
-    const sparks: Spark[] = [];
-    const shards: Shard[] = [];
-    const rings: Ring[] = [];
-    let probe = -1; // breach probe progress 0..1 (‑1 = inactive)
-    let flash = 0;
-
-    let phase: Phase = "secure";
+    let phase: Phase = "seed";
     let phaseT = 0;
     let last = performance.now();
     let raf = 0;
     let running = false;
+
+    const durFor = { seed: T_SEED, bang: T_BANG, hold: T_HOLD, collapse: T_COLLAPSE };
+
+    const loop = (now: number) => {
+      raf = 0;
+      if (!running) return;
+      const dt = Math.min(0.05, (now - last) / 1000);
+      last = now;
+      phaseT += dt * 1000;
+      const t = now / 1000;
+
+      const p = clamp01(phaseT / durFor[phase]);
+      if (phaseT >= durFor[phase]) {
+        phase = phase === "seed" ? "bang" : phase === "bang" ? "hold" : phase === "hold" ? "collapse" : "seed";
+        phaseT = 0;
+      }
+
+      // energy drives the nebula brightness (peaks at the bang)
+      const energy = phase === "bang" ? 1 - p * 0.6 : phase === "seed" ? p : phase === "collapse" ? p * 0.4 : 0.2;
+      let coreFlash = 0;
+      let shimmer = 0;
+
+      // per-phase particle position function
+      let assembleFor: (pt: Particle) => { x: number; y: number };
+      if (phase === "seed") {
+        // collapsed near centre, tightening — a bright seed of light
+        coreFlash = 0.2 + p * 0.7;
+        const spread = (1 - p) * 26 + 3;
+        assembleFor = (pt) => ({
+          x: cx + Math.cos(pt.ang + t) * spread * (0.3 + pt.jitter * 0.1),
+          y: cy + Math.sin(pt.ang + t) * spread * (0.3 + pt.jitter * 0.1),
+        });
+      } else if (phase === "bang") {
+        // explode outward and rush to the lock targets (staggered, overshoot)
+        coreFlash = Math.max(0, 0.9 - p * 3);
+        assembleFor = (pt) => {
+          const local = clamp01((p - pt.delay) / (1 - pt.delay));
+          const a = easeOutBack(local);
+          return { x: cx + (pt.hx - cx) * a, y: cy + (pt.hy - cy) * a };
+        };
+      } else if (phase === "hold") {
+        // formed lock, shimmering; a slow luminous breath
+        shimmer = 0.5 + 0.5 * Math.sin(t * 2.2);
+        assembleFor = (pt) => {
+          const j = 1.2;
+          return {
+            x: pt.hx + Math.sin(t * 1.6 + pt.jitter) * j,
+            y: pt.hy + Math.cos(t * 1.4 + pt.jitter) * j,
+          };
+        };
+      } else {
+        // implode back toward the seed
+        const a = 1 - easeIn(p);
+        assembleFor = (pt) => ({ x: cx + (pt.hx - cx) * a, y: cy + (pt.hy - cy) * a });
+      }
+
+      ctx.clearRect(0, 0, W, H);
+      nebula(t, energy);
+      drawParticles(assembleFor, coreFlash, shimmer);
+
+      raf = requestAnimationFrame(loop);
+    };
 
     const io = new IntersectionObserver(
       ([e]) => {
@@ -296,248 +359,6 @@ export function CyberLock({
     );
     io.observe(canvas);
 
-    const nextPhase = () => {
-      if (phase === "secure") {
-        phase = "breach";
-        probe = 0;
-      } else if (phase === "breach") {
-        phase = "open";
-        // glitch shards burst
-        for (let i = 0; i < 26; i++) {
-          shards.push({
-            a: Math.random() * Math.PI * 2,
-            r: 60 + Math.random() * 30,
-            vr: 120 + Math.random() * 220,
-            life: 1,
-          });
-        }
-      } else if (phase === "open") {
-        phase = "reseal";
-      } else {
-        phase = "secure";
-      }
-      phaseT = 0;
-    };
-
-    const easeOutBack = (x: number) => {
-      const c1 = 1.70158;
-      const c3 = c1 + 1;
-      return 1 + c3 * Math.pow(x - 1, 3) + c1 * Math.pow(x - 1, 2);
-    };
-    const easeInCubic = (x: number) => x * x * x;
-    const easeOutCubic = (x: number) => 1 - Math.pow(1 - x, 3);
-
-    const loop = (now: number) => {
-      raf = 0;
-      if (!running) return;
-      const dt = Math.min(0.05, (now - last) / 1000);
-      last = now;
-      phaseT += dt * 1000;
-
-      const t = now / 1000;
-      ctx.clearRect(0, 0, W, H);
-
-      // phase-driven state
-      let shackle = 0;
-      let tint = ACCENT.slice();
-      let glow = 0.85;
-
-      const durFor = { secure: T_SECURE, breach: T_BREACH, open: T_OPEN, reseal: T_RESEAL }[phase];
-      const p = Math.min(1, phaseT / durFor);
-
-      if (phase === "secure") {
-        glow = 0.8 + 0.18 * Math.sin(t * 2.2);
-      } else if (phase === "breach") {
-        probe = p;
-        // ramp toward danger as the probe reaches the core
-        tint = mix(ACCENT, DANGER, Math.min(1, p * 1.15));
-        glow = 0.9 + 0.5 * p;
-        shackle = easeInCubic(Math.max(0, p - 0.55) / 0.45) * 0.15;
-      } else if (phase === "open") {
-        tint = mix(DANGER, ACCENT, easeOutCubic(p) * 0.35);
-        shackle = 0.6 + 0.4 * easeOutBack(Math.min(1, p * 1.3));
-        // a calm alarm breath rather than a harsh flicker
-        glow = 1.05 - 0.15 * p + 0.07 * Math.sin(t * 7);
-      } else if (phase === "reseal") {
-        const e = easeInCubic(p);
-        shackle = 1 - e;
-        tint = mix(DANGER, ACCENT, e);
-        glow = 0.9;
-        if (p >= 1) {
-          // IMPACT — shockwave + sparks + flash
-          rings.push({ r: 60, life: 1 }, { r: 30, life: 1 });
-          flash = 1;
-          for (let i = 0; i < 40; i++) {
-            const a = Math.random() * Math.PI * 2;
-            const sp = 120 + Math.random() * 340;
-            sparks.push({
-              x: cx,
-              y: cy - 30 * unit,
-              vx: Math.cos(a) * sp,
-              vy: Math.sin(a) * sp - 40,
-              life: 1,
-              hot: Math.random(),
-            });
-          }
-        }
-      }
-
-      if (phaseT >= durFor) nextPhase();
-
-      // ---------- background vignette bloom ----------
-      const bloom = ctx.createRadialGradient(cx, cy, 0, cx, cy, Math.min(W, H) * 0.6);
-      bloom.addColorStop(0, rgba(tint, 0.10 + 0.06 * glow));
-      bloom.addColorStop(1, rgba(tint, 0));
-      ctx.fillStyle = bloom;
-      ctx.fillRect(0, 0, W, H);
-
-      ctx.save();
-      ctx.translate(cx, cy);
-      ctx.scale(unit, unit);
-
-      // ---------- concentric scanner rings + orbiting sentries ----------
-      const ringDefs = [
-        { r: 150, w: 1.4, seg: 5, speed: 0.25, gap: 0.55 },
-        { r: 186, w: 1.1, seg: 3, speed: -0.17, gap: 0.85 },
-        { r: 224, w: 1.0, seg: 7, speed: 0.12, gap: 0.4 },
-      ];
-      for (const rd of ringDefs) {
-        ctx.strokeStyle = rgba(tint, 0.22);
-        ctx.lineWidth = rd.w;
-        for (let s = 0; s < rd.seg; s++) {
-          const a0 = (s / rd.seg) * Math.PI * 2 + t * rd.speed;
-          const a1 = a0 + ((Math.PI * 2) / rd.seg) * rd.gap;
-          ctx.beginPath();
-          ctx.arc(0, 0, rd.r, a0, a1);
-          ctx.stroke();
-        }
-        // sentry node riding the ring
-        const sa = t * rd.speed * 2.4;
-        const sx = Math.cos(sa) * rd.r;
-        const sy = Math.sin(sa) * rd.r;
-        ctx.save();
-        ctx.shadowBlur = 12;
-        ctx.shadowColor = rgba(mix(tint, ICE, 0.5), 1);
-        ctx.fillStyle = rgba(mix(tint, ICE, 0.6), 0.95);
-        ctx.beginPath();
-        ctx.arc(sx, sy, 3, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.restore();
-      }
-
-      // radar sweep line (secure only)
-      if (phase === "secure") {
-        const sweep = t * 0.9;
-        const grad = ctx.createConicGradient ? ctx.createConicGradient(sweep, 0, 0) : null;
-        if (grad) {
-          grad.addColorStop(0, rgba(tint, 0.16));
-          grad.addColorStop(0.07, rgba(tint, 0));
-          grad.addColorStop(1, rgba(tint, 0));
-          ctx.fillStyle = grad;
-          ctx.beginPath();
-          ctx.arc(0, 0, 232, 0, Math.PI * 2);
-          ctx.fill();
-        }
-      }
-
-      // ---------- breach probe streak ----------
-      if (probe >= 0 && phase === "breach") {
-        const from = 300;
-        const px = Math.cos(-0.7) * from * (1 - probe);
-        const py = Math.sin(-0.7) * from * (1 - probe) - 30;
-        const tailN = 8;
-        for (let i = 0; i < tailN; i++) {
-          const tp = Math.max(0, probe - i * 0.02);
-          const tx = Math.cos(-0.7) * from * (1 - tp);
-          const ty = Math.sin(-0.7) * from * (1 - tp) - 30;
-          ctx.fillStyle = rgba(DANGER, (0.9 * (1 - i / tailN)));
-          ctx.beginPath();
-          ctx.arc(tx, ty, 3.2 * (1 - i / tailN) + 0.6, 0, Math.PI * 2);
-          ctx.fill();
-        }
-        ctx.save();
-        ctx.shadowBlur = 20;
-        ctx.shadowColor = rgba(DANGER, 1);
-        ctx.fillStyle = rgba([255, 210, 210], 1);
-        ctx.beginPath();
-        ctx.arc(px, py, 4.5, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.restore();
-      }
-
-      // ---------- shock rings ----------
-      for (let i = rings.length - 1; i >= 0; i--) {
-        const rg = rings[i];
-        rg.r += 520 * dt;
-        rg.life -= dt * 1.6;
-        if (rg.life <= 0) {
-          rings.splice(i, 1);
-          continue;
-        }
-        ctx.strokeStyle = rgba(mix(ICE, ACCENT, 0.3), rg.life * 0.8);
-        ctx.lineWidth = 2.5 * rg.life + 0.5;
-        ctx.beginPath();
-        ctx.arc(0, 0, rg.r, 0, Math.PI * 2);
-        ctx.stroke();
-      }
-
-      // ---------- glitch shards (open) ----------
-      for (let i = shards.length - 1; i >= 0; i--) {
-        const sh = shards[i];
-        sh.r += sh.vr * dt;
-        sh.life -= dt * 1.1;
-        if (sh.life <= 0) {
-          shards.splice(i, 1);
-          continue;
-        }
-        const x = Math.cos(sh.a) * sh.r;
-        const y = Math.sin(sh.a) * sh.r - 30;
-        ctx.fillStyle = rgba(DANGER, sh.life * 0.8);
-        ctx.fillRect(x, y, 3 + sh.life * 3, 1.5);
-      }
-
-      // ---------- the padlock ----------
-      // a luminous sweep glides across the body every few seconds while calm
-      let sweep = -1;
-      if (phase === "secure") {
-        const sp = (phaseT % 3400) / 1200;
-        if (sp <= 1) sweep = sp;
-      }
-      // gentle float so the emblem breathes
-      const bob = Math.sin(t * 1.1) * 3;
-      ctx.save();
-      ctx.translate(0, bob);
-      drawLock(shackle, tint, glow, t * 0.4, true, sweep);
-      ctx.restore();
-
-      ctx.restore();
-
-      // ---------- sparks (screen space) ----------
-      for (let i = sparks.length - 1; i >= 0; i--) {
-        const s = sparks[i];
-        s.x += s.vx * dt;
-        s.y += s.vy * dt;
-        s.vy += 260 * dt; // gravity
-        s.life -= dt * 1.5;
-        if (s.life <= 0) {
-          sparks.splice(i, 1);
-          continue;
-        }
-        const col = mix(ICE, [255, 255, 255], s.hot);
-        ctx.fillStyle = rgba(col, s.life);
-        ctx.fillRect(s.x, s.y, 2, 2);
-      }
-
-      // ---------- impact flash ----------
-      if (flash > 0) {
-        ctx.fillStyle = rgba([255, 255, 255], flash * 0.14);
-        ctx.fillRect(0, 0, W, H);
-        flash -= dt * 2.2;
-      }
-
-      raf = requestAnimationFrame(loop);
-    };
-
     return () => {
       cancelAnimationFrame(raf);
       io.disconnect();
@@ -547,5 +368,3 @@ export function CyberLock({
 
   return <canvas ref={ref} className={className} aria-hidden />;
 }
-
-const HEX = "0123456789ABCDEF<>/{}[]#$".split("");
