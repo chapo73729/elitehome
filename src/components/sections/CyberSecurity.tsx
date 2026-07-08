@@ -1,50 +1,18 @@
 "use client";
 
-import dynamic from "next/dynamic";
-import { useEffect, useRef, useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import { useContent } from "@/lib/content";
 import { usePerf } from "@/lib/perf";
-import { useLang } from "@/lib/lang";
 import { audio } from "@/lib/audio";
 import { Reveal } from "@/components/ui/Reveal";
 import { SectionHeading } from "@/components/ui/Section";
 import { Compile } from "@/components/ui/Compile";
 import { ChapterNumeral } from "@/components/ui/ChapterNumeral";
-import { CyberDefense } from "./CyberDefense";
-import { SceneBoundary } from "@/components/three/SceneBoundary";
-import { useSceneVisibility } from "@/hooks/useSceneVisibility";
-import type { ShieldCtrl } from "@/components/three/CyberShield";
-
-const CyberShield = dynamic(() => import("@/components/three/CyberShield"), {
-  ssr: false,
-  loading: () => <div className="absolute inset-0" />,
-});
+import { CyberLock } from "./CyberLock";
 
 type Item = { id: string; title: string; tag: string; blurb: string };
 
 const EASE = [0.16, 1, 0.3, 1] as const;
-
-/** One-word stage captions + counter label for the animated explainer. */
-const STAGE_LABELS = {
-  en: { monitor: "monitor", detect: "detect", intercept: "intercept", respond: "respond", secured: "secured", counter: "threats neutralised" },
-  fr: { monitor: "surveillance", detect: "détection", intercept: "interception", respond: "réponse", secured: "sécurisé", counter: "menaces neutralisées" },
-} as const;
-type StageKey = keyof (typeof STAGE_LABELS)["en"];
-
-// narration timeline (drives the DOM caption + the shield's alert/pulse)
-const TIMELINE: { key: Exclude<StageKey, "counter">; dur: number }[] = [
-  { key: "monitor", dur: 3000 },
-  { key: "detect", dur: 3000 },
-  { key: "intercept", dur: 3600 },
-  { key: "respond", dur: 4200 },
-  { key: "secured", dur: 2600 },
-];
-
-const fmt = (n: number) =>
-  Math.floor(n)
-    .toString()
-    .replace(/\B(?=(\d{3})+(?!\d))/g, " ");
 
 /** Blueprint corner bracket, matched to the « Compile » idiom. */
 const STAGE_CORNERS = [
@@ -54,133 +22,39 @@ const STAGE_CORNERS = [
   "bottom-4 right-4 border-b border-r",
 ] as const;
 
-/**
- * The defence-in-depth centrepiece. A real Three.js shield-dome scene when
- * WebGL is available and motion is allowed; the 2D CyberDefense canvas is the
- * fallback (reduced motion, perf mode, no WebGL, or a lost context). A single
- * rAF timeline narrates the phases — driving the DOM caption + counter and,
- * for the 3D path, the shield's alert/pulse via a shared ref.
- */
-function DefenseStage({ reducedPref, perf }: { reducedPref: boolean; perf: boolean }) {
-  const labels = STAGE_LABELS[useLang()];
-  const [webgl, setWebgl] = useState(true);
-  const use3D = !reducedPref && !perf && webgl;
-  const scene = useSceneVisibility<HTMLDivElement>({ mountMargin: "600px 0px" });
-
-  const ctrl = useRef<ShieldCtrl>({ alert: 0, pulse: 0 });
-  const counterRef = useRef<HTMLSpanElement>(null);
-  const [phase, setPhase] = useState<Exclude<StageKey, "counter">>("monitor");
-
-  useEffect(() => {
-    // detect WebGL once on the client so SSR stays deterministic
-    import("@/hooks/useSceneVisibility").then((m) => setWebgl(m.webglSupported()));
-  }, []);
-
-  // narration timeline — only needed on the 3D path (the 2D canvas narrates itself)
-  useEffect(() => {
-    if (!use3D) return;
-    const total = TIMELINE.reduce((a, s) => a + s.dur, 0);
-    let raf = 0;
-    let cycleStart = performance.now();
-    let curIdx = -1;
-    let count = 1284507 + Math.floor(Math.random() * 60000);
-    let lastWrite = 0;
-    let prev = performance.now();
-
-    const tick = (now: number) => {
-      const dt = Math.min(0.05, (now - prev) / 1000);
-      prev = now;
-      let el = now - cycleStart;
-      if (el >= total) {
-        cycleStart = now;
-        el = 0;
-      }
-      let acc = 0;
-      let idx = 0;
-      for (let i = 0; i < TIMELINE.length; i++) {
-        if (el < acc + TIMELINE[i].dur) {
-          idx = i;
-          break;
-        }
-        acc += TIMELINE[i].dur;
-      }
-      const key = TIMELINE[idx].key;
-      if (idx !== curIdx) {
-        curIdx = idx;
-        setPhase(key);
-        if (key === "secured") ctrl.current.pulse = 1;
-      }
-      const targetAlert = key === "respond" ? 1 : key === "intercept" ? 0.18 : 0;
-      ctrl.current.alert += (targetAlert - ctrl.current.alert) * Math.min(1, dt * 3);
-      ctrl.current.pulse *= 0.94;
-      count += dt * (key === "intercept" ? 300 : 80);
-      if (now - lastWrite > 100 && counterRef.current) {
-        counterRef.current.textContent = fmt(count);
-        lastWrite = now;
-      }
-      raf = requestAnimationFrame(tick);
-    };
-    raf = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(raf);
-  }, [use3D]);
-
-  const capColor = phase === "respond" ? "text-[#ffd0d0]" : "text-[#bcd6ff]";
-
+/** The animated-padlock centrepiece — a framed SOC stage. */
+function LockStage({ reduced }: { reduced: boolean }) {
   return (
     <Reveal delay={0.12}>
-      <div
-        ref={scene.ref}
-        className="relative mx-auto h-[clamp(340px,52vh,540px)] w-full max-w-4xl overflow-hidden rounded-2xl border border-chalk/10 bg-[radial-gradient(120%_120%_at_50%_35%,#0b0e14_0%,#050608_70%)]"
-      >
-        {use3D ? (
-          <SceneBoundary fallback={<CyberDefense labels={labels} className="absolute inset-0 h-full w-full" />}>
-            {scene.mounted && <CyberShield frameloop={scene.frameloop} ctrl={ctrl} />}
-          </SceneBoundary>
-        ) : (
-          <CyberDefense still={reducedPref} labels={labels} className="absolute inset-0 h-full w-full" />
-        )}
+      <div className="relative mx-auto h-[clamp(320px,44vh,500px)] w-full max-w-4xl overflow-hidden rounded-2xl border border-chalk/10 bg-[radial-gradient(120%_120%_at_50%_35%,#0b0e14_0%,#050608_70%)]">
+        <CyberLock still={reduced} className="absolute inset-0 h-full w-full" />
 
         {/* blueprint corner brackets */}
         {STAGE_CORNERS.map((cls) => (
-          <span key={cls} aria-hidden className={`pointer-events-none absolute h-5 w-5 border-accent/50 ${cls}`} />
+          <span
+            key={cls}
+            aria-hidden
+            className={`pointer-events-none absolute h-5 w-5 border-accent/50 ${cls}`}
+          />
         ))}
 
-        {/* static HUD readouts */}
+        {/* HUD readouts — the studio's mono idiom */}
         <span aria-hidden className="pointer-events-none absolute left-6 top-5 font-mono text-[0.55rem] uppercase tracking-[0.28em] text-fog/80">
-          {"// defence.in.depth"}
+          {"// perimeter.secure"}
         </span>
         <span aria-hidden className="pointer-events-none absolute right-6 top-5 flex items-center gap-2 font-mono text-[0.55rem] uppercase tracking-[0.28em] text-accent/85">
           <span className="relative flex h-1.5 w-1.5">
             <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent/70" />
             <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-accent" />
           </span>
-          live
+          secured
         </span>
-        <span aria-hidden className="pointer-events-none absolute bottom-5 left-6 hidden font-mono text-[0.55rem] uppercase tracking-[0.28em] text-fog/70 sm:block">
+        <span aria-hidden className="pointer-events-none absolute bottom-5 left-6 font-mono text-[0.55rem] uppercase tracking-[0.28em] text-fog/70">
           {"AES-256 · zero-trust"}
         </span>
-
-        {/* dynamic HUD (3D path only — the 2D canvas draws its own) */}
-        {use3D && (
-          <>
-            <span
-              aria-hidden
-              className={`pointer-events-none absolute bottom-5 left-1/2 -translate-x-1/2 font-mono text-[0.62rem] font-semibold uppercase tracking-[0.42em] transition-colors duration-500 ${capColor}`}
-            >
-              {labels[phase]}
-            </span>
-            <span
-              aria-hidden
-              className="pointer-events-none absolute bottom-5 right-6 hidden text-right font-mono text-[0.6rem] uppercase tracking-[0.18em] text-fog/70 sm:block"
-            >
-              {labels.counter}
-              {"  "}
-              <span ref={counterRef} className="tabular-nums text-[#bcd6ff]">
-                1 284 507
-              </span>
-            </span>
-          </>
-        )}
+        <span aria-hidden className="pointer-events-none absolute bottom-5 right-6 font-mono text-[0.55rem] uppercase tracking-[0.28em] text-fog/70">
+          {"SOC · 24 / 7"}
+        </span>
       </div>
     </Reveal>
   );
@@ -233,9 +107,9 @@ function DomainCard({ item, index }: { item: Item; index: number }) {
 
 export function CyberSecurity() {
   const c = useContent().security;
-  const reducedPref = !!useReducedMotion();
+  const reducedPref = useReducedMotion();
   const perf = usePerf();
-  const reduced = reducedPref || perf;
+  const reduced = !!reducedPref || perf;
   const items = c.items as unknown as Item[];
 
   return (
@@ -250,9 +124,9 @@ export function CyberSecurity() {
         </Compile>
       </div>
 
-      {/* the animated defence-in-depth explainer */}
+      {/* the animated-padlock centrepiece */}
       <div className="container-x relative mt-14">
-        <DefenseStage reducedPref={reducedPref} perf={perf} />
+        <LockStage reduced={reduced} />
       </div>
 
       <div className="container-x relative mt-14">
