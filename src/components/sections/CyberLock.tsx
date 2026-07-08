@@ -30,10 +30,10 @@ const DANGER = [255, 74, 74];
 
 /** phase machine */
 type Phase = "secure" | "breach" | "open" | "reseal";
-const T_SECURE = 5200;
-const T_BREACH = 620;
-const T_OPEN = 1000;
-const T_RESEAL = 460;
+const T_SECURE = 6400;
+const T_BREACH = 820;
+const T_OPEN = 1150;
+const T_RESEAL = 560;
 
 export function CyberLock({
   className,
@@ -84,7 +84,8 @@ export function CyberLock({
       tint: number[],
       glow: number,
       hexScroll: number,
-      alive: boolean
+      alive: boolean,
+      sweep = -1 // 0..1 position of a luminous sweep across the body (‑1 = none)
     ) => {
       const bodyW = 150;
       const bodyH = 118;
@@ -136,6 +137,25 @@ export function CyberLock({
       ctx.stroke();
       ctx.restore();
 
+      // ---- brushed-metal sheen: a soft top-lit highlight so the body reads
+      //      as a crafted object rather than a flat panel ----
+      ctx.save();
+      roundRect(-bodyW / 2, bodyTop, bodyW, bodyH, rad);
+      ctx.clip();
+      const sheen = ctx.createLinearGradient(0, bodyTop, 0, bodyTop + bodyH * 0.62);
+      sheen.addColorStop(0, rgba(mix(tint, ICE, 0.7), 0.16));
+      sheen.addColorStop(1, rgba(tint, 0));
+      ctx.fillStyle = sheen;
+      ctx.fillRect(-bodyW / 2, bodyTop, bodyW, bodyH * 0.62);
+      // crisp inner top edge
+      ctx.strokeStyle = rgba(mix(tint, ICE, 0.75), 0.35);
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(-bodyW / 2 + rad, bodyTop + 2.5);
+      ctx.lineTo(bodyW / 2 - rad, bodyTop + 2.5);
+      ctx.stroke();
+      ctx.restore();
+
       // ---- hex data streaming inside the body (clipped) ----
       if (alive) {
         ctx.save();
@@ -160,8 +180,41 @@ export function CyberLock({
         ctx.restore();
       }
 
-      // ---- keyhole ----
+      // ---- luminous sweep — the studio's « Compile » signature glide ----
+      if (sweep >= 0 && sweep <= 1) {
+        ctx.save();
+        roundRect(-bodyW / 2, bodyTop, bodyW, bodyH, rad);
+        ctx.clip();
+        const bx = -bodyW * 0.75 + sweep * (bodyW * 1.5);
+        const band = ctx.createLinearGradient(bx - 34, 0, bx + 34, 0);
+        band.addColorStop(0, rgba(ICE, 0));
+        band.addColorStop(0.5, rgba(mix(ICE, [255, 255, 255], 0.4), 0.2));
+        band.addColorStop(1, rgba(ICE, 0));
+        ctx.fillStyle = band;
+        ctx.fillRect(-bodyW / 2, bodyTop, bodyW, bodyH);
+        ctx.restore();
+      }
+
+      // ---- keyhole + a soft downward light beam ----
       const khY = bodyTop + bodyH * 0.5;
+      ctx.save();
+      // beam
+      ctx.beginPath();
+      roundRect(-bodyW / 2, bodyTop, bodyW, bodyH, rad);
+      ctx.clip();
+      const beam = ctx.createLinearGradient(0, khY, 0, bodyBottom);
+      beam.addColorStop(0, rgba(mix(tint, ICE, 0.6), 0.18 * (0.6 + glow * 0.4)));
+      beam.addColorStop(1, rgba(tint, 0));
+      ctx.fillStyle = beam;
+      ctx.beginPath();
+      ctx.moveTo(-7, khY);
+      ctx.lineTo(7, khY);
+      ctx.lineTo(20, bodyBottom);
+      ctx.lineTo(-20, bodyBottom);
+      ctx.closePath();
+      ctx.fill();
+      ctx.restore();
+
       ctx.save();
       ctx.shadowBlur = 18 * glow;
       ctx.shadowColor = rgba(mix(tint, ICE, 0.5), 0.95);
@@ -303,9 +356,8 @@ export function CyberLock({
       } else if (phase === "open") {
         tint = mix(DANGER, ACCENT, easeOutCubic(p) * 0.35);
         shackle = 0.6 + 0.4 * easeOutBack(Math.min(1, p * 1.3));
-        glow = 1.1 - 0.2 * p;
-        // scanning red alarm shimmer
-        glow += 0.15 * Math.sin(t * 22);
+        // a calm alarm breath rather than a harsh flicker
+        glow = 1.05 - 0.15 * p + 0.07 * Math.sin(t * 7);
       } else if (phase === "reseal") {
         const e = easeInCubic(p);
         shackle = 1 - e;
@@ -445,7 +497,18 @@ export function CyberLock({
       }
 
       // ---------- the padlock ----------
-      drawLock(shackle, tint, glow, t * 0.4, true);
+      // a luminous sweep glides across the body every few seconds while calm
+      let sweep = -1;
+      if (phase === "secure") {
+        const sp = (phaseT % 3400) / 1200;
+        if (sp <= 1) sweep = sp;
+      }
+      // gentle float so the emblem breathes
+      const bob = Math.sin(t * 1.1) * 3;
+      ctx.save();
+      ctx.translate(0, bob);
+      drawLock(shackle, tint, glow, t * 0.4, true, sweep);
+      ctx.restore();
 
       ctx.restore();
 
