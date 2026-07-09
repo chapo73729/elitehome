@@ -29,8 +29,7 @@ const en = {
   hero: {
     eyebrow: "Digital Engineering Studio · Prague",
     headline: "Complex ideas, engineered into precise products.",
-    subtitle:
-      "ARDLABS is a digital engineering studio. We design and build software, platforms and AI systems that are fast, reliable, and refined to the detail.",
+    subtitle: "Software, platforms and AI — fast, reliable, refined.",
     explore: "See our work",
     engage: "Start a project",
     scroll: "SCROLL",
@@ -49,12 +48,11 @@ const en = {
   core: {
     eyebrow: "Interactive AI Core",
     title: "Intelligence, put to work.",
-    intro:
-      "Move your cursor — the field responds. The same way the AI and automation we build respond to real operations.",
+    intro: "Move your cursor — the field responds.",
     points: [
-      { k: "Applied AI", v: "Models and agents wired into real workflows, not demos." },
-      { k: "Automation", v: "Process automation that removes the manual grind." },
-      { k: "Data", v: "Pipelines and dashboards that turn operations into decisions." },
+      { k: "Applied AI", v: "Wired into real workflows." },
+      { k: "Automation", v: "The manual grind, removed." },
+      { k: "Data", v: "Operations, turned into decisions." },
     ],
     cta: "Have an operation that should run like this?",
     ctaButton: "Start a project",
@@ -62,16 +60,14 @@ const en = {
   network: {
     eyebrow: "Global Network",
     title: "One studio. Prague-based. Working worldwide.",
-    intro:
-      "We work with founders and teams across timezones — async by default, precise in delivery.",
+    intro: "Async by default. Precise in delivery.",
     routesLabel: "Connected routes",
     returnHint: "Click the sea or press Esc to return",
   },
   industries: {
     eyebrow: "Services",
     title: "Four poles. One standard.",
-    intro:
-      "Digital engineering is the umbrella. Under it, four poles cover an idea end to end.",
+    intro: "Four poles cover an idea end to end.",
     explore: "EXPLORE →",
     viewAll: "View all services",
     indexEyebrow: "Four poles.",
@@ -84,8 +80,7 @@ const en = {
         accent: "#4f8cff",
         motif: "ai" as MotifVariant,
         title: "Strategy & Consulting",
-        blurb:
-          "Technology consulting, R&D and product prototyping that turn an idea into a validated plan.",
+        blurb: "From idea to validated plan.",
         tagline: "Clarity before code.",
         overview:
           "Before a line of code, the hard questions: what to build, why, and how it will hold up. We bring technology consulting, applied R&D and rapid prototyping to de-risk the idea and chart the path to a product.",
@@ -130,8 +125,7 @@ const en = {
         accent: "#6b9dff",
         motif: "code" as MotifVariant,
         title: "Design & Development",
-        blurb:
-          "Custom software, web, mobile, SaaS and internal platforms — designed and engineered end to end.",
+        blurb: "Web, mobile, SaaS — end to end.",
         tagline: "Built to the detail.",
         overview:
           "The core of the studio. We design and build custom software — web, mobile, SaaS, platforms and internal systems — with interfaces that are clear and code that stays fast, secure and legible for years.",
@@ -176,8 +170,7 @@ const en = {
         accent: "#3d6fe0",
         motif: "ai" as MotifVariant,
         title: "Data & AI",
-        blurb:
-          "AI, intelligent automation, data solutions and the dashboards that turn operations into decisions.",
+        blurb: "Automation, data and AI at work.",
         tagline: "Operations, made legible.",
         overview:
           "We put data and AI to work where it pays off: intelligent automation, process automation (workflow, RPA), data pipelines and the dashboards and internal tools that turn raw operations into decisions.",
@@ -222,8 +215,7 @@ const en = {
         accent: "#5ea2ff",
         motif: "code" as MotifVariant,
         title: "Cloud & Infrastructure",
-        blurb:
-          "Cloud architecture, deployment, APIs and integrations engineered for uptime and scale.",
+        blurb: "Foundations built for uptime.",
         tagline: "Foundations that hold.",
         overview:
           "Software is only as reliable as what it runs on. We architect cloud infrastructure, set up deployment and observability, and build the APIs and integrations that connect your systems — engineered for uptime and scale.",
@@ -284,48 +276,46 @@ const en = {
   security: {
     eyebrow: "Cyber Security",
     title: "Defence, engineered in.",
-    intro:
-      "Security is a discipline we build with, not a layer we bolt on. From the SOC floor to the red-team edge, we operate across the full spectrum of offensive and defensive engineering.",
+    intro: "Built with security. Never bolted on.",
     registry: "10 domains · offensive + defensive",
     items: [
-      { id: "soc", title: "Security Operations", tag: "SOC", blurb: "Round-the-clock monitoring, detection engineering and triage across your estate." },
-      { id: "pentest", title: "Penetration Testing", tag: "OFFENSE", blurb: "Goal-driven exploitation that proves what an attacker could really reach." },
-      { id: "redteam", title: "Red Team Operations", tag: "ADVERSARY", blurb: "Full-scope adversary emulation against people, process and technology." },
-      { id: "blueteam", title: "Blue Team Defense", tag: "DEFENSE", blurb: "Hardening, detection and response tuned to your real threat model." },
-      { id: "threatintel", title: "Threat Intelligence", tag: "INTEL", blurb: "Actor tracking and IOC enrichment that turns noise into decisions." },
-      { id: "forensics", title: "Digital Forensics", tag: "DFIR", blurb: "Evidence-grade investigation and root-cause reconstruction." },
-      { id: "ir", title: "Incident Response", tag: "RESPONSE", blurb: "Contain, eradicate and recover — with a calm, rehearsed playbook." },
-      { id: "cloudsec", title: "Cloud Security", tag: "CLOUD", blurb: "Identity, posture and workload protection across AWS, Azure and GCP." },
-      { id: "infrasec", title: "Infrastructure Security", tag: "INFRA", blurb: "Zero-trust networks, segmentation and hardened baselines." },
-      { id: "vulnassess", title: "Vulnerability Assessment", tag: "ASSESS", blurb: "Continuous discovery and prioritised remediation at scale." },
+      { id: "soc", title: "Security Operations", tag: "SOC" },
+      { id: "pentest", title: "Penetration Testing", tag: "OFFENSE" },
+      { id: "redteam", title: "Red Team Operations", tag: "ADVERSARY" },
+      { id: "blueteam", title: "Blue Team Defense", tag: "DEFENSE" },
+      { id: "threatintel", title: "Threat Intelligence", tag: "INTEL" },
+      { id: "forensics", title: "Digital Forensics", tag: "DFIR" },
+      { id: "ir", title: "Incident Response", tag: "RESPONSE" },
+      { id: "cloudsec", title: "Cloud Security", tag: "CLOUD" },
+      { id: "infrasec", title: "Infrastructure Security", tag: "INFRA" },
+      { id: "vulnassess", title: "Vulnerability Assessment", tag: "ASSESS" },
     ],
   },
   team: {
     eyebrow: "The Team",
     title: "The people behind the work.",
-    intro:
-      "A small, senior team — engineers who have shipped and defended systems in production. Every project runs through the same hands.",
+    intro: "Small. Senior. Accountable.",
     stackLabel: "Core stack",
     members: [
       {
         id: "jakub",
         name: "Jakub Novák",
         role: "Senior Software Engineer",
-        bio: "Systems and platform engineering — software that holds up under load and over time.",
+        bio: "Systems that hold under load.",
         stack: ["Rust", "Go", "C++", "TypeScript", "React", "PostgreSQL"],
       },
       {
         id: "tomas",
         name: "Tomáš Dvořák",
         role: "Cybersecurity Specialist",
-        bio: "Offensive and defensive security — from red-team operations to hardened production defence.",
+        bio: "Red team to blue team.",
         stack: ["Pentest", "Red Team", "Blue Team", "Threat Intel", "DevSecOps", "Linux"],
       },
       {
         id: "samir",
         name: "Samir Gojani",
         role: "AI & Cloud Engineer",
-        bio: "Dependable AI in production and the cloud platforms that carry it.",
+        bio: "AI and cloud, in production.",
         stack: ["Python", "Kubernetes", "Docker", "AWS", "Azure", "Terraform", "Machine Learning"],
       },
     ],
@@ -333,14 +323,13 @@ const en = {
   cta: {
     eyebrow: "Engage",
     title: "Got something worth building?",
-    body: "We take on a small number of projects at a time, for teams who care about software that holds up. Tell us what you're trying to build.",
+    body: "Tell us what you're building.",
     button: "Start a conversation",
   },
   contact: {
     eyebrow: "Contact · 06",
     title: "Let's build it.",
-    intro:
-      "We take on a small number of projects at a time. Tell us what you're building — we'll tell you how we'd approach it.",
+    intro: "A few lines. A fast reply.",
     name: "Name",
     namePlaceholder: "Ada Lovelace",
     email: "Email",
@@ -352,7 +341,7 @@ const en = {
     transmit: "Transmit",
     transmitting: "Transmitting…",
     sentTitle: "Transmission received.",
-    sentBody: "Thank you — your message is on its way to our team. We respond to every signal worth answering.",
+    sentBody: "On its way. We'll reply soon.",
     sendAnother: "Send another",
     errorPrefix: "Couldn't send — please email",
     step: "You are here · 04 / 04",
@@ -371,7 +360,7 @@ const en = {
     messageError: "Tell us a few words about the project.",
   },
   footer: {
-    tagline: "A digital engineering studio designing and building software, platforms and AI systems, refined to the detail.",
+    tagline: "Software, platforms and AI — refined to the detail.",
     index: "Index",
     contact: "Contact",
     copyHint: "Click to copy",
@@ -433,8 +422,7 @@ const fr: DeepPartial<Content> = {
   hero: {
     eyebrow: "Studio d'ingénierie numérique · Prague",
     headline: "Des idées complexes, transformées en produits précis.",
-    subtitle:
-      "ARDLABS est un studio d'ingénierie numérique. Nous concevons et développons des logiciels, plateformes et systèmes d'IA rapides, fiables et soignés jusqu'au détail.",
+    subtitle: "Logiciels, plateformes et IA — rapides, fiables, soignés.",
     explore: "Voir nos projets",
     engage: "Démarrer un projet",
     scroll: "DÉFILER",
@@ -453,12 +441,11 @@ const fr: DeepPartial<Content> = {
   core: {
     eyebrow: "Cœur IA interactif",
     title: "L'intelligence, à l'œuvre.",
-    intro:
-      "Bougez le curseur — le champ réagit. Comme l'IA et l'automatisation que nous construisons réagissent aux opérations réelles.",
+    intro: "Bougez le curseur — le champ réagit.",
     points: [
-      { k: "IA appliquée", v: "Modèles et agents branchés sur de vrais workflows, pas des démos." },
-      { k: "Automatisation", v: "Une automatisation des processus qui supprime le travail manuel." },
-      { k: "Données", v: "Pipelines et tableaux de bord qui transforment l'opérationnel en décisions." },
+      { k: "IA appliquée", v: "Branchée sur de vrais workflows." },
+      { k: "Automatisation", v: "Le travail manuel, supprimé." },
+      { k: "Données", v: "L'opérationnel, transformé en décisions." },
     ],
     cta: "Une opération qui devrait tourner comme ça ?",
     ctaButton: "Démarrer un projet",
@@ -466,16 +453,14 @@ const fr: DeepPartial<Content> = {
   network: {
     eyebrow: "Réseau mondial",
     title: "Un studio. Basé à Prague. Présent dans le monde entier.",
-    intro:
-      "Nous travaillons avec des fondateurs et des équipes sur tous les fuseaux horaires — en asynchrone par défaut, précis à la livraison.",
+    intro: "Asynchrone par défaut. Précis à la livraison.",
     routesLabel: "Routes connectées",
     returnHint: "Cliquez sur la mer ou appuyez sur Échap pour revenir",
   },
   industries: {
     eyebrow: "Services",
     title: "Quatre pôles. Un seul standard.",
-    intro:
-      "L'ingénierie numérique chapeaute l'ensemble. Dessous, quatre pôles couvrent une idée de bout en bout.",
+    intro: "Quatre pôles couvrent une idée de bout en bout.",
     explore: "EXPLORER →",
     viewAll: "Voir tous les services",
     indexEyebrow: "Quatre pôles.",
@@ -484,8 +469,7 @@ const fr: DeepPartial<Content> = {
     items: [
       {
         title: "Conseil & stratégie",
-        blurb:
-          "Conseil technologique, R&D et prototypage qui transforment une idée en plan validé.",
+        blurb: "De l'idée au plan validé.",
         tagline: "La clarté avant le code.",
         overview:
           "Avant la moindre ligne de code, les vraies questions : quoi construire, pourquoi, et comment cela tiendra. Conseil technologique, R&D appliquée et prototypage rapide pour réduire le risque et tracer le chemin vers le produit.",
@@ -525,8 +509,7 @@ const fr: DeepPartial<Content> = {
       },
       {
         title: "Conception & développement",
-        blurb:
-          "Logiciels sur mesure, web, mobile, SaaS et plateformes internes — conçus et développés de bout en bout.",
+        blurb: "Web, mobile, SaaS — de bout en bout.",
         tagline: "Soigné jusqu'au détail.",
         overview:
           "Le cœur du studio. Nous concevons et développons des logiciels sur mesure — web, mobile, SaaS, plateformes et systèmes internes — avec des interfaces claires et un code qui reste rapide, sûr et lisible des années durant.",
@@ -566,8 +549,7 @@ const fr: DeepPartial<Content> = {
       },
       {
         title: "Données & IA",
-        blurb:
-          "IA, automatisation intelligente, solutions data et tableaux de bord qui transforment l'opérationnel en décisions.",
+        blurb: "Automatisation, données et IA à l'œuvre.",
         tagline: "Des opérations enfin lisibles.",
         overview:
           "Nous mettons la donnée et l'IA là où elles rapportent : automatisation intelligente, automatisation des processus (workflow, RPA), pipelines de données, et les tableaux de bord et outils métier qui transforment l'opérationnel en décisions.",
@@ -607,8 +589,7 @@ const fr: DeepPartial<Content> = {
       },
       {
         title: "Cloud & infrastructure",
-        blurb:
-          "Architecture cloud, déploiement, APIs et intégrations pensés pour la disponibilité et l'échelle.",
+        blurb: "Des fondations faites pour durer.",
         tagline: "Des fondations qui tiennent.",
         overview:
           "Un logiciel ne vaut que ce sur quoi il tourne. Nous architecturons l'infrastructure cloud, mettons en place déploiement et observabilité, et construisons les APIs et intégrations qui relient vos systèmes — pensés pour la disponibilité et l'échelle.",
@@ -668,45 +649,42 @@ const fr: DeepPartial<Content> = {
   security: {
     eyebrow: "Cybersécurité",
     title: "La défense, intégrée dès la conception.",
-    intro:
-      "La sécurité est une discipline avec laquelle nous construisons, pas une couche qu'on ajoute après coup. Du plateau SOC jusqu'à la ligne de front red team, nous couvrons tout le spectre de l'ingénierie offensive et défensive.",
+    intro: "La sécurité se construit. Elle ne se rajoute pas.",
     registry: "10 domaines · offensif + défensif",
     items: [
-      { title: "Security Operations", blurb: "Surveillance continue, ingénierie de détection et triage sur l'ensemble du parc." },
-      { title: "Tests d'intrusion", blurb: "Exploitation orientée objectif qui prouve ce qu'un attaquant pourrait réellement atteindre." },
-      { title: "Opérations Red Team", blurb: "Émulation d'adversaire complète contre les personnes, les processus et la technologie." },
-      { title: "Défense Blue Team", blurb: "Durcissement, détection et réponse calibrés sur votre modèle de menace réel." },
-      { title: "Renseignement sur les menaces", blurb: "Suivi d'acteurs et enrichissement d'IOC qui transforment le bruit en décisions." },
-      { title: "Investigation numérique", blurb: "Investigation à valeur probante et reconstruction des causes racines." },
-      { title: "Réponse à incident", blurb: "Contenir, éradiquer et rétablir — avec un playbook calme et répété." },
-      { title: "Sécurité du cloud", blurb: "Identité, posture et protection des charges sur AWS, Azure et GCP." },
-      { title: "Sécurité des infrastructures", blurb: "Réseaux zero-trust, segmentation et socles durcis." },
-      { title: "Évaluation des vulnérabilités", blurb: "Découverte continue et remédiation priorisée à grande échelle." },
+      { title: "Security Operations" },
+      { title: "Tests d'intrusion" },
+      { title: "Opérations Red Team" },
+      { title: "Défense Blue Team" },
+      { title: "Renseignement menaces" },
+      { title: "Investigation numérique" },
+      { title: "Réponse à incident" },
+      { title: "Sécurité du cloud" },
+      { title: "Sécurité des infrastructures" },
+      { title: "Évaluation des vulnérabilités" },
     ],
   },
   team: {
     eyebrow: "L'équipe",
     title: "Les personnes derrière le travail.",
-    intro:
-      "Une équipe réduite et senior — des ingénieurs qui ont livré et défendu des systèmes en production. Chaque projet passe entre les mêmes mains.",
+    intro: "Réduite. Senior. Responsable.",
     stackLabel: "Stack principale",
     members: [
-      { role: "Ingénieur logiciel senior", bio: "Ingénierie systèmes et plateforme — un logiciel qui tient sous la charge et dans le temps." },
-      { role: "Spécialiste cybersécurité", bio: "Sécurité offensive et défensive — des opérations red team à la défense durcie en production." },
-      { role: "Ingénieur IA & Cloud", bio: "Une IA fiable en production et les plateformes cloud qui la portent." },
+      { role: "Ingénieur logiciel senior", bio: "Des systèmes qui tiennent la charge." },
+      { role: "Spécialiste cybersécurité", bio: "Du red team au blue team." },
+      { role: "Ingénieur IA & Cloud", bio: "IA et cloud, en production." },
     ],
   },
   cta: {
     eyebrow: "Collaborer",
     title: "Quelque chose qui mérite d'être construit ?",
-    body: "Nous menons un petit nombre de projets à la fois, pour des équipes attachées à un logiciel qui tient. Dites-nous ce que vous cherchez à construire.",
+    body: "Dites-nous ce que vous construisez.",
     button: "Démarrer la conversation",
   },
   contact: {
     eyebrow: "Contact · 06",
     title: "Construisons-le.",
-    intro:
-      "Nous menons un petit nombre de projets à la fois. Dites-nous ce que vous construisez — nous vous dirons comment nous l'aborderions.",
+    intro: "Quelques lignes. Une réponse rapide.",
     name: "Nom",
     namePlaceholder: "Ada Lovelace",
     email: "E-mail",
@@ -718,7 +696,7 @@ const fr: DeepPartial<Content> = {
     transmit: "Transmettre",
     transmitting: "Transmission…",
     sentTitle: "Transmission reçue.",
-    sentBody: "Merci — votre message est en route vers notre équipe. Nous répondons à chaque signal qui le mérite.",
+    sentBody: "C'est parti. Réponse rapide.",
     sendAnother: "Envoyer un autre message",
     errorPrefix: "Échec de l'envoi — écrivez à",
     step: "Vous êtes ici · 04 / 04",
@@ -737,7 +715,7 @@ const fr: DeepPartial<Content> = {
     messageError: "Dites-nous quelques mots sur le projet.",
   },
   footer: {
-    tagline: "Un studio d'ingénierie numérique qui conçoit et développe logiciels, plateformes et systèmes d'IA, soignés jusqu'au détail.",
+    tagline: "Logiciels, plateformes et IA — soignés jusqu'au détail.",
     index: "Index",
     contact: "Contact",
     copyHint: "Cliquer pour copier",

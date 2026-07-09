@@ -18,7 +18,7 @@ const CyberSingularity = dynamic(() => import("@/components/three/CyberSingulari
   loading: () => <div className="absolute inset-0" />,
 });
 
-type Item = { id: string; title: string; tag: string; blurb: string };
+type Item = { id: string; title: string; tag: string };
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 
@@ -100,36 +100,36 @@ function LockStage({ reduced }: { reduced: boolean }) {
    static wall.
    ============================================================ */
 
+/** Compact visual chip — tag + title, brackets that ignite. No paragraphs. */
 function DomainCard({ item, index }: { item: Item; index: number }) {
   return (
-    <Reveal delay={Math.min(index * 0.05, 0.3)}>
+    <Reveal delay={Math.min(index * 0.04, 0.24)}>
       <div
         tabIndex={0}
         onMouseEnter={() => audio.hover()}
-        className="group relative h-full overflow-hidden rounded-lg border border-chalk/10 bg-chalk/[0.02] p-6 transition-colors duration-500 hover:border-accent/40 hover:bg-accent/[0.04] focus:outline-none focus-visible:border-accent/60 focus-visible:ring-1 focus-visible:ring-accent/50 md:p-7"
+        className="group relative h-full overflow-hidden rounded-lg border border-chalk/10 bg-chalk/[0.02] px-4 py-4 transition-colors duration-500 hover:border-accent/40 hover:bg-accent/[0.05] focus:outline-none focus-visible:border-accent/60 focus-visible:ring-1 focus-visible:ring-accent/50 md:px-5 md:py-5"
       >
         {/* blueprint corner brackets — ignite on hover/focus */}
-        <span aria-hidden className="pointer-events-none absolute left-3 top-3 h-3 w-3 border-l border-t border-accent/0 transition-colors duration-500 group-hover:border-accent/70 group-focus-visible:border-accent/70" />
-        <span aria-hidden className="pointer-events-none absolute bottom-3 right-3 h-3 w-3 border-b border-r border-accent/0 transition-colors duration-500 group-hover:border-accent/70 group-focus-visible:border-accent/70" />
+        <span aria-hidden className="pointer-events-none absolute left-2 top-2 h-2.5 w-2.5 border-l border-t border-accent/0 transition-colors duration-500 group-hover:border-accent/70 group-focus-visible:border-accent/70" />
+        <span aria-hidden className="pointer-events-none absolute bottom-2 right-2 h-2.5 w-2.5 border-b border-r border-accent/0 transition-colors duration-500 group-hover:border-accent/70 group-focus-visible:border-accent/70" />
 
-        <div className="flex items-center justify-between gap-3">
-          <span className="font-mono text-[0.58rem] uppercase tracking-[0.22em] text-accent/80">
+        <div className="flex items-center justify-between gap-2">
+          <span className="font-mono text-[0.55rem] uppercase tracking-[0.2em] text-accent/80">
             {item.tag}
           </span>
-          <span aria-hidden className="font-mono text-[0.58rem] tabular-nums text-fog">
+          <span aria-hidden className="font-mono text-[0.55rem] tabular-nums text-fog">
             {String(index + 1).padStart(2, "0")}
           </span>
         </div>
 
-        <h3 className="mt-5 font-display text-lg font-semibold tracking-tight text-chalk md:text-xl">
+        <h3 className="mt-3 font-display text-[0.95rem] font-semibold leading-snug tracking-tight text-chalk md:text-base">
           {item.title}
         </h3>
-        <p className="mt-3 text-sm leading-relaxed text-mist">{item.blurb}</p>
 
         {/* baseline trace that draws across on hover */}
         <span
           aria-hidden
-          className="mt-6 block h-px w-full origin-left scale-x-0 bg-gradient-to-r from-accent/70 to-transparent transition-transform duration-500 group-hover:scale-x-100 group-focus-visible:scale-x-100"
+          className="mt-3 block h-px w-full origin-left scale-x-0 bg-gradient-to-r from-accent/70 to-transparent transition-transform duration-500 group-hover:scale-x-100 group-focus-visible:scale-x-100"
         />
       </div>
     </Reveal>
@@ -161,7 +161,7 @@ export function CyberSecurity() {
       </div>
 
       <div className="container-x relative mt-14">
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        <div className="grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-5">
           {items.map((item, i) => (
             <DomainCard key={item.id} item={item} index={i} />
           ))}
