@@ -1,5 +1,7 @@
 "use client";
 
+import dynamic from "next/dynamic";
+import { useEffect, useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import { useContent } from "@/lib/content";
 import { usePerf } from "@/lib/perf";
@@ -8,7 +10,13 @@ import { Reveal } from "@/components/ui/Reveal";
 import { SectionHeading } from "@/components/ui/Section";
 import { Compile } from "@/components/ui/Compile";
 import { ChapterNumeral } from "@/components/ui/ChapterNumeral";
-import { CyberLock } from "./CyberLock";
+import { SceneBoundary } from "@/components/three/SceneBoundary";
+import { useSceneVisibility, webglSupported } from "@/hooks/useSceneVisibility";
+
+const CyberSingularity = dynamic(() => import("@/components/three/CyberSingularity"), {
+  ssr: false,
+  loading: () => <div className="absolute inset-0" />,
+});
 
 type Item = { id: string; title: string; tag: string; blurb: string };
 
@@ -22,38 +30,61 @@ const STAGE_CORNERS = [
   "bottom-4 right-4 border-b border-r",
 ] as const;
 
-/** The animated-padlock centrepiece — a framed SOC stage. */
+/** Calm static emblem — reduced motion / perf / no-WebGL / lost context. */
+function StaticLock() {
+  return (
+    <div className="absolute inset-0 flex items-center justify-center bg-[radial-gradient(60%_60%_at_50%_50%,rgba(34,224,255,0.12),transparent_70%)]">
+      <svg width="132" height="150" viewBox="0 0 132 150" fill="none" className="text-[#22e0ff] [filter:drop-shadow(0_0_16px_rgba(34,224,255,0.55))]">
+        <path d="M38 62 V44 a28 28 0 0 1 56 0 V62" stroke="currentColor" strokeWidth="7" strokeLinecap="round" fill="none" />
+        <rect x="26" y="62" width="80" height="70" rx="14" stroke="currentColor" strokeWidth="5" fill="rgba(34,224,255,0.06)" />
+        <circle cx="66" cy="92" r="9" fill="currentColor" />
+        <path d="M62 98 h8 l3 22 h-14 z" fill="currentColor" />
+      </svg>
+    </div>
+  );
+}
+
+/**
+ * The cyber-protection centrepiece — a living Three.js system
+ * (singularity → big-bang → padlock formation → protection → implosion).
+ * Falls back to a calm static emblem when WebGL is unavailable or motion
+ * is reduced.
+ */
 function LockStage({ reduced }: { reduced: boolean }) {
+  const [webgl, setWebgl] = useState(true);
+  useEffect(() => setWebgl(webglSupported()), []);
+  const use3D = !reduced && webgl;
+  const scene = useSceneVisibility<HTMLDivElement>({ mountMargin: "600px 0px" });
+
   return (
     <Reveal delay={0.12}>
-      <div className="relative mx-auto h-[clamp(320px,44vh,500px)] w-full max-w-4xl overflow-hidden rounded-2xl border border-chalk/10 bg-[radial-gradient(120%_120%_at_50%_35%,#0b0e14_0%,#050608_70%)]">
-        <CyberLock still={reduced} className="absolute inset-0 h-full w-full" />
+      <div
+        ref={scene.ref}
+        className="relative mx-auto h-[clamp(360px,56vh,560px)] w-full max-w-4xl overflow-hidden rounded-2xl border border-chalk/10 bg-[radial-gradient(130%_130%_at_50%_45%,#080b12_0%,#030406_72%)]"
+      >
+        {use3D ? (
+          <SceneBoundary fallback={<StaticLock />}>
+            {scene.mounted && <CyberSingularity frameloop={scene.frameloop} />}
+          </SceneBoundary>
+        ) : (
+          <StaticLock />
+        )}
 
         {/* blueprint corner brackets */}
         {STAGE_CORNERS.map((cls) => (
-          <span
-            key={cls}
-            aria-hidden
-            className={`pointer-events-none absolute h-5 w-5 border-accent/50 ${cls}`}
-          />
+          <span key={cls} aria-hidden className={`pointer-events-none absolute h-5 w-5 border-[#22e0ff]/40 ${cls}`} />
         ))}
 
-        {/* HUD readouts — the studio's mono idiom */}
-        <span aria-hidden className="pointer-events-none absolute left-6 top-5 font-mono text-[0.55rem] uppercase tracking-[0.28em] text-fog/80">
-          {"// perimeter.secure"}
+        {/* minimal HUD — premium restraint */}
+        <span aria-hidden className="pointer-events-none absolute left-6 top-5 font-mono text-[0.55rem] uppercase tracking-[0.3em] text-fog/70">
+          {"// secure.core"}
         </span>
-        <span aria-hidden className="pointer-events-none absolute right-6 top-5 flex items-center gap-2 font-mono text-[0.55rem] uppercase tracking-[0.28em] text-accent/85">
+        <span aria-hidden className="pointer-events-none absolute right-6 top-5 flex items-center gap-2 font-mono text-[0.55rem] uppercase tracking-[0.3em] text-[#22e0ff]/85">
           <span className="relative flex h-1.5 w-1.5">
-            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent/70" />
-            <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-accent" />
+            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#22e0ff]/70" />
+            <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-[#22e0ff]" />
           </span>
-          secured
-        </span>
-        <span aria-hidden className="pointer-events-none absolute bottom-5 left-6 font-mono text-[0.55rem] uppercase tracking-[0.28em] text-fog/70">
-          {"AES-256 · zero-trust"}
-        </span>
-        <span aria-hidden className="pointer-events-none absolute bottom-5 right-6 font-mono text-[0.55rem] uppercase tracking-[0.28em] text-fog/70">
-          {"SOC · 24 / 7"}
+          active
         </span>
       </div>
     </Reveal>
