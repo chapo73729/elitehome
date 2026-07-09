@@ -13,7 +13,7 @@ import { ChapterNumeral } from "@/components/ui/ChapterNumeral";
 import { SceneBoundary } from "@/components/three/SceneBoundary";
 import { useSceneVisibility, webglSupported } from "@/hooks/useSceneVisibility";
 
-const CyberSingularity = dynamic(() => import("@/components/three/CyberSingularity"), {
+const CyberVault = dynamic(() => import("@/components/three/CyberVault"), {
   ssr: false,
   loading: () => <div className="absolute inset-0" />,
 });
@@ -64,7 +64,7 @@ function LockStage({ reduced }: { reduced: boolean }) {
       >
         {use3D ? (
           <SceneBoundary fallback={<StaticLock />}>
-            {scene.mounted && <CyberSingularity frameloop={scene.frameloop} />}
+            {scene.mounted && <CyberVault frameloop={scene.frameloop} />}
           </SceneBoundary>
         ) : (
           <StaticLock />
