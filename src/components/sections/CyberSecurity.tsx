@@ -10,7 +10,7 @@ import { Reveal } from "@/components/ui/Reveal";
 import { SceneBoundary } from "@/components/three/SceneBoundary";
 import { useSceneVisibility, webglSupported } from "@/hooks/useSceneVisibility";
 
-const CyberVault = dynamic(() => import("@/components/three/CyberVault"), {
+const CyberField = dynamic(() => import("@/components/three/CyberField"), {
   ssr: false,
   loading: () => <div className="absolute inset-0" />,
 });
@@ -51,7 +51,7 @@ function VaultStage({ reduced, c }: { reduced: boolean; c: { eyebrow: string; ti
       <div className="absolute inset-0">
         {use3D ? (
           <SceneBoundary fallback={<StaticLock />}>
-            {scene.mounted && <CyberVault frameloop={scene.frameloop} />}
+            {scene.mounted && <CyberField frameloop={scene.frameloop} />}
           </SceneBoundary>
         ) : (
           <StaticLock />
