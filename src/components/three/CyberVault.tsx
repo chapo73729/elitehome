@@ -300,6 +300,11 @@ function Vault({ sparkAge }: { sparkAge: React.MutableRefObject<number> }) {
       lock.current.rotation.y = t * 0.35;
       lock.current.rotation.x = Math.sin(t * 0.4) * 0.06;
       lock.current.position.y = Math.sin(t * 0.8) * 0.06 - 0.15;
+      // full-bleed composition: drift right on wide stages so the section
+      // title breathes on the left; centred on narrow (portrait) stages
+      const aspect = state.size.width / Math.max(1, state.size.height);
+      const tx = aspect > 1.35 ? 1.6 : 0;
+      lock.current.position.x += (tx - lock.current.position.x) * 0.04;
     }
 
     // ---- scanner ring sweep ----

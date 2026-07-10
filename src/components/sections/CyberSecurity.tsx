@@ -2,14 +2,11 @@
 
 import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
-import { motion, useReducedMotion } from "framer-motion";
+import { useReducedMotion } from "framer-motion";
 import { useContent } from "@/lib/content";
 import { usePerf } from "@/lib/perf";
 import { audio } from "@/lib/audio";
 import { Reveal } from "@/components/ui/Reveal";
-import { SectionHeading } from "@/components/ui/Section";
-import { Compile } from "@/components/ui/Compile";
-import { ChapterNumeral } from "@/components/ui/ChapterNumeral";
 import { SceneBoundary } from "@/components/three/SceneBoundary";
 import { useSceneVisibility, webglSupported } from "@/hooks/useSceneVisibility";
 
@@ -19,16 +16,6 @@ const CyberVault = dynamic(() => import("@/components/three/CyberVault"), {
 });
 
 type Item = { id: string; title: string; tag: string };
-
-const EASE = [0.16, 1, 0.3, 1] as const;
-
-/** Blueprint corner bracket, matched to the « Compile » idiom. */
-const STAGE_CORNERS = [
-  "left-4 top-4 border-l border-t",
-  "right-4 top-4 border-r border-t",
-  "bottom-4 left-4 border-b border-l",
-  "bottom-4 right-4 border-b border-r",
-] as const;
 
 /** Calm static emblem — reduced motion / perf / no-WebGL / lost context. */
 function StaticLock() {
@@ -45,23 +32,23 @@ function StaticLock() {
 }
 
 /**
- * The cyber-protection centrepiece — a living Three.js system
- * (singularity → big-bang → padlock formation → protection → implosion).
- * Falls back to a calm static emblem when WebGL is unavailable or motion
- * is reduced.
+ * Full-bleed immersive stage — the scene owns the entire viewport of the
+ * section and the title lives INSIDE it (no framed card, no widget). The
+ * lock drifts right on wide screens so the type breathes on the left.
  */
-function LockStage({ reduced }: { reduced: boolean }) {
+function VaultStage({ reduced, c }: { reduced: boolean; c: { eyebrow: string; title: string; intro: string; registry: string } }) {
   const [webgl, setWebgl] = useState(true);
   useEffect(() => setWebgl(webglSupported()), []);
   const use3D = !reduced && webgl;
   const scene = useSceneVisibility<HTMLDivElement>({ mountMargin: "600px 0px" });
 
   return (
-    <Reveal delay={0.12}>
-      <div
-        ref={scene.ref}
-        className="relative mx-auto h-[clamp(360px,56vh,560px)] w-full max-w-4xl overflow-hidden rounded-2xl border border-chalk/10 bg-[radial-gradient(130%_130%_at_50%_45%,#080b12_0%,#030406_72%)]"
-      >
+    <div
+      ref={scene.ref}
+      className="relative min-h-[92svh] w-full overflow-hidden bg-[radial-gradient(120%_100%_at_70%_45%,#0a0e17_0%,#030406_70%)]"
+    >
+      {/* the scene — full bleed */}
+      <div className="absolute inset-0">
         {use3D ? (
           <SceneBoundary fallback={<StaticLock />}>
             {scene.mounted && <CyberVault frameloop={scene.frameloop} />}
@@ -69,25 +56,40 @@ function LockStage({ reduced }: { reduced: boolean }) {
         ) : (
           <StaticLock />
         )}
-
-        {/* blueprint corner brackets */}
-        {STAGE_CORNERS.map((cls) => (
-          <span key={cls} aria-hidden className={`pointer-events-none absolute h-5 w-5 border-[#22e0ff]/40 ${cls}`} />
-        ))}
-
-        {/* minimal HUD — premium restraint */}
-        <span aria-hidden className="pointer-events-none absolute left-6 top-5 font-mono text-[0.55rem] uppercase tracking-[0.3em] text-fog/70">
-          {"// secure.core"}
-        </span>
-        <span aria-hidden className="pointer-events-none absolute right-6 top-5 flex items-center gap-2 font-mono text-[0.55rem] uppercase tracking-[0.3em] text-[#22e0ff]/85">
-          <span className="relative flex h-1.5 w-1.5">
-            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#22e0ff]/70" />
-            <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-[#22e0ff]" />
-          </span>
-          active
-        </span>
       </div>
-    </Reveal>
+
+      {/* legibility scrims — light-handed, the scene stays the hero */}
+      <div aria-hidden className="pointer-events-none absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-void via-void/50 to-transparent" />
+      <div aria-hidden className="pointer-events-none absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-void via-void/50 to-transparent" />
+
+      {/* type lives in the scene */}
+      <div className="container-x pointer-events-none relative z-10 flex min-h-[92svh] flex-col justify-between py-24 md:py-28">
+        <div className="max-w-xl">
+          <Reveal>
+            <span className="eyebrow">{c.eyebrow}</span>
+          </Reveal>
+          <Reveal delay={0.08}>
+            <h2 className="text-section-title text-gradient mt-5">{c.title}</h2>
+          </Reveal>
+          <Reveal delay={0.16}>
+            <p className="mt-5 text-mist md:text-lg">{c.intro}</p>
+          </Reveal>
+        </div>
+
+        <div className="flex items-end justify-between gap-6">
+          <span aria-hidden className="flex items-center gap-2 font-mono text-[0.58rem] uppercase tracking-[0.3em] text-[#22e0ff]/85">
+            <span className="relative flex h-1.5 w-1.5">
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#22e0ff]/70" />
+              <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-[#22e0ff]" />
+            </span>
+            {"secure.core · active"}
+          </span>
+          <span aria-hidden className="hidden font-mono text-[0.58rem] uppercase tracking-[0.25em] text-fog/70 sm:block">
+            {c.registry}
+          </span>
+        </div>
+      </div>
+    </div>
   );
 }
 
@@ -144,41 +146,17 @@ export function CyberSecurity() {
   const items = c.items as unknown as Item[];
 
   return (
-    <section id="security" className="relative z-10 scroll-mt-24 overflow-hidden bg-void py-28 md:py-40">
-      <div className="container-x relative">
-        <ChapterNumeral n="04" label="SECURITY" />
-      </div>
+    <section id="security" className="relative z-10 scroll-mt-24 overflow-hidden bg-void">
+      {/* full-bleed immersive stage — the scene IS the section */}
+      <VaultStage reduced={reduced} c={c} />
 
-      <div className="container-x relative">
-        <Compile label="security" index="04" disabled={perf}>
-          <SectionHeading flush index="04" eyebrow={c.eyebrow} title={c.title} intro={c.intro} />
-        </Compile>
-      </div>
-
-      {/* the animated-padlock centrepiece */}
-      <div className="container-x relative mt-14">
-        <LockStage reduced={reduced} />
-      </div>
-
-      <div className="container-x relative mt-14">
+      {/* domain chips, a slim band under the stage */}
+      <div className="container-x relative py-16 md:py-20">
         <div className="grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-5">
           {items.map((item, i) => (
             <DomainCard key={item.id} item={item} index={i} />
           ))}
         </div>
-
-        {/* registry line — the studio's mono idiom */}
-        <Reveal delay={0.1}>
-          <motion.p
-            className="mt-8 text-right font-mono text-[0.6rem] uppercase tracking-[0.25em] text-fog"
-            initial={reduced ? false : { opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, ease: EASE }}
-          >
-            {c.registry}
-          </motion.p>
-        </Reveal>
       </div>
     </section>
   );
