@@ -166,9 +166,9 @@ export function CanvasMotif({
         for (let i = 0; i < count; i++) {
           const x = i * fs;
           const y = cols[i];
-          ctx.fillStyle = "rgba(150,185,255,0.95)";
+          ctx.fillStyle = `rgba(${L.r},${L.g},${L.b},0.95)`;
           ctx.fillText(glyphs[(Math.random() * glyphs.length) | 0], x, y);
-          ctx.fillStyle = "rgba(120,165,255,0.45)";
+          ctx.fillStyle = `rgba(${A.r},${A.g},${A.b},0.45)`;
           ctx.fillText(glyphs[(Math.random() * glyphs.length) | 0], x, y - fs * 4);
           cols[i] = y > H + Math.random() * 200 ? Math.random() * -60 : y + fs;
         }
@@ -263,7 +263,7 @@ export function CanvasMotif({
         for (let ring = 0; ring < 3; ring++) {
           const rad = 40 + ring * 36;
           const teeth = 18 + ring * 6;
-          ctx.strokeStyle = `rgba(107,157,255,${0.75 - ring * 0.14})`;
+          ctx.strokeStyle = `rgba(${A.r},${A.g},${A.b},${0.75 - ring * 0.14})`;
           ctx.lineWidth = 1.6;
           ctx.beginPath();
           for (let i = 0; i <= teeth; i++) {
@@ -285,20 +285,20 @@ export function CanvasMotif({
           s.y += s.vy;
           s.vy += 0.12;
           s.life -= 0.02;
-          ctx.fillStyle = `rgba(150,185,255,${s.life})`;
+          ctx.fillStyle = `rgba(${L.r},${L.g},${L.b},${s.life})`;
           ctx.fillRect(s.x, s.y, 2, 2);
           if (s.life <= 0) sparks.splice(i, 1);
         }
       } else if (variant === "ocean") {
         const glow = ctx.createLinearGradient(0, 0, 0, H);
-        glow.addColorStop(0, "rgba(150,185,255,0.18)");
-        glow.addColorStop(0.5, "rgba(107,157,255,0.07)");
+        glow.addColorStop(0, `rgba(${L.r},${L.g},${L.b},0.18)`);
+        glow.addColorStop(0.5, `rgba(${A.r},${A.g},${A.b},0.07)`);
         glow.addColorStop(1, "rgba(5,5,5,0)");
         ctx.fillStyle = glow;
         ctx.fillRect(0, 0, W, H);
         for (let layer = 0; layer < 6; layer++) {
           ctx.beginPath();
-          ctx.strokeStyle = `rgba(107,157,255,${0.12 + layer * 0.05})`;
+          ctx.strokeStyle = `rgba(${A.r},${A.g},${A.b},${0.12 + layer * 0.05})`;
           ctx.lineWidth = 1.4;
           const yBase = H * (0.45 + layer * 0.1);
           for (let x = 0; x <= W; x += 6) {
@@ -311,7 +311,7 @@ export function CanvasMotif({
       } else if (variant === "cyber") {
         if (!cyberInit || nodes.length === 0) initCyber();
         // faint blueprint grid
-        ctx.strokeStyle = "rgba(79,140,255,0.06)";
+        ctx.strokeStyle = `rgba(${A.r},${A.g},${A.b},0.06)`;
         ctx.lineWidth = 1;
         const step = 34;
         for (let x = (t * 6) % step; x < W; x += step) {
@@ -333,16 +333,16 @@ export function CanvasMotif({
         const rMax = Math.hypot(W, H) / 2;
         const grad = ctx.createConicGradient ? ctx.createConicGradient(sweep, cx, cy) : null;
         if (grad) {
-          grad.addColorStop(0, "rgba(79,140,255,0.14)");
-          grad.addColorStop(0.08, "rgba(79,140,255,0)");
-          grad.addColorStop(1, "rgba(79,140,255,0)");
+          grad.addColorStop(0, `rgba(${A.r},${A.g},${A.b},0.14)`);
+          grad.addColorStop(0.08, `rgba(${A.r},${A.g},${A.b},0)`);
+          grad.addColorStop(1, `rgba(${A.r},${A.g},${A.b},0)`);
           ctx.fillStyle = grad;
           ctx.beginPath();
           ctx.arc(cx, cy, rMax, 0, Math.PI * 2);
           ctx.fill();
         }
         // links
-        ctx.strokeStyle = "rgba(107,157,255,0.22)";
+        ctx.strokeStyle = `rgba(${A.r},${A.g},${A.b},0.22)`;
         ctx.lineWidth = 1;
         for (const [a, b] of links) {
           ctx.beginPath();
@@ -361,7 +361,7 @@ export function CanvasMotif({
           const [a, b] = links[pk.l] ?? [0, 0];
           const x = nodes[a].x + (nodes[b].x - nodes[a].x) * pk.p;
           const y = nodes[a].y + (nodes[b].y - nodes[a].y) * pk.p;
-          ctx.fillStyle = "rgba(180,220,255,0.95)";
+          ctx.fillStyle = `rgba(${L.r},${L.g},${L.b},0.95)`;
           ctx.beginPath();
           ctx.arc(x, y, 1.8, 0, Math.PI * 2);
           ctx.fill();
@@ -369,11 +369,11 @@ export function CanvasMotif({
         // nodes
         for (const nd of nodes) {
           const pulse = 0.6 + 0.4 * Math.sin(t * 2 + nd.phase);
-          ctx.fillStyle = `rgba(150,190,255,${0.5 + 0.4 * pulse})`;
+          ctx.fillStyle = `rgba(${L.r},${L.g},${L.b},${0.5 + 0.4 * pulse})`;
           ctx.beginPath();
           ctx.arc(nd.x, nd.y, 2.2, 0, Math.PI * 2);
           ctx.fill();
-          ctx.strokeStyle = `rgba(79,140,255,${0.25 * pulse})`;
+          ctx.strokeStyle = `rgba(${A.r},${A.g},${A.b},${0.25 * pulse})`;
           ctx.lineWidth = 1;
           ctx.beginPath();
           ctx.arc(nd.x, nd.y, 5 + pulse * 3, 0, Math.PI * 2);

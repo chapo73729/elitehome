@@ -5,6 +5,7 @@ import { CITIES } from "@/lib/site";
 import { WORLD_DOTS } from "@/lib/worldDots";
 import { audio } from "@/lib/audio";
 import { useLite } from "@/hooks/useDeviceTier";
+import { onAccent, accentRGB } from "@/lib/accent";
 
 /* ------------------------------------------------------------------ *
  * Equirectangular projection shared by the dot map AND the city pins, *
@@ -177,13 +178,39 @@ const SWEEP_DUR = 4.5;
 const SWEEP_MAX = 340; // world units — reaches Tokyo/Singapore before fading
 const SWEEP_BAND = 24;
 
-// Canvas ink. Hardcoded like the existing dot tint because canvas can't read
-// CSS custom properties per frame — these mirror --color-accent / -2.
-const INK_ACCENT = "#4f8cff";
-const INK_ACCENT_2 = "#6b9dff";
-const INK_DOT = "rgb(120, 150, 220)";
-const INK_GRID = "rgba(107, 157, 255, 0.05)";
+// Canvas ink — canvas can't read CSS variables per frame, so we mirror the
+// live site accent into a mutable object and refresh it when the footer
+// switcher changes (see refreshInk / onAccent wiring in the render effect).
 const DOT_BASE_A = 0.45;
+const ink = {
+  accent: "#4f8cff",
+  accent2: "#6b9dff",
+  dot: "rgb(120, 150, 220)",
+  dot0: "rgba(120, 150, 220, 0)",
+  grid: "rgba(107, 157, 255, 0.05)",
+  rgb: { r: 79, g: 140, b: 255 },
+};
+function refreshInk() {
+  const a = accentRGB();
+  ink.rgb = a;
+  ink.accent = `rgb(${a.r},${a.g},${a.b})`;
+  // lighter hover tint — lifted toward white
+  const l = {
+    r: Math.round(a.r * 0.55 + 255 * 0.45),
+    g: Math.round(a.g * 0.55 + 255 * 0.45),
+    b: Math.round(a.b * 0.55 + 255 * 0.45),
+  };
+  ink.accent2 = `rgb(${l.r},${l.g},${l.b})`;
+  // land dots: a desaturated, dimmer shade of the accent
+  const d = {
+    r: Math.round(a.r * 0.6 + 150 * 0.4),
+    g: Math.round(a.g * 0.6 + 160 * 0.4),
+    b: Math.round(a.b * 0.6 + 200 * 0.4),
+  };
+  ink.dot = `rgb(${d.r},${d.g},${d.b})`;
+  ink.dot0 = `rgba(${d.r},${d.g},${d.b},0)`;
+  ink.grid = `rgba(${a.r},${a.g},${a.b},0.05)`;
+}
 
 // Tiny offscreen sprites (a soft dot, a radial hub glow) so the per-frame
 // hot loop is pure drawImage — far cheaper than 3.9k arc/fill pairs.
@@ -192,9 +219,9 @@ function makeDotSprite() {
   s.width = s.height = 16;
   const g = s.getContext("2d")!;
   const grad = g.createRadialGradient(8, 8, 0, 8, 8, 8);
-  grad.addColorStop(0, INK_DOT);
-  grad.addColorStop(0.7, INK_DOT);
-  grad.addColorStop(1, "rgba(120, 150, 220, 0)");
+  grad.addColorStop(0, ink.dot);
+  grad.addColorStop(0.7, ink.dot);
+  grad.addColorStop(1, ink.dot0);
   g.fillStyle = grad;
   g.fillRect(0, 0, 16, 16);
   return s;
@@ -203,10 +230,11 @@ function makeGlowSprite() {
   const s = document.createElement("canvas");
   s.width = s.height = 64;
   const g = s.getContext("2d")!;
+  const { r, g: gg, b } = ink.rgb;
   const grad = g.createRadialGradient(32, 32, 0, 32, 32, 32);
-  grad.addColorStop(0, "rgba(79, 140, 255, 0.4)");
-  grad.addColorStop(0.4, "rgba(79, 140, 255, 0.13)");
-  grad.addColorStop(1, "rgba(79, 140, 255, 0)");
+  grad.addColorStop(0, `rgba(${r}, ${gg}, ${b}, 0.4)`);
+  grad.addColorStop(0.4, `rgba(${r}, ${gg}, ${b}, 0.13)`);
+  grad.addColorStop(1, `rgba(${r}, ${gg}, ${b}, 0)`);
   g.fillStyle = grad;
   g.fillRect(0, 0, 64, 64);
   return s;
@@ -246,7 +274,7 @@ export function WorldMap({ onFocus }: { onFocus?: (info: FocusInfo) => void }) {
   const reducedRef = useRef(false);
   const loopRef = useRef<number | null>(null); // the ONE canvas rAF loop
   const redrawRef = useRef<() => void>(() => {}); // one static frame on demand
-  const routeA = useRef(new Float32Array(ROUTES.length).fill(0.32)); // eased arc alpha
+  const routeA = useRef(new Float32Array(ROUTES.length).fill(0.42)); // eased arc alpha
   const hubA = useRef(new Float32Array(cityPts.length).fill(1)); // eased hub dim
 
   useEffect(() => {
@@ -363,8 +391,17 @@ export function WorldMap({ onFocus }: { onFocus?: (info: FocusInfo) => void }) {
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    const dotSprite = makeDotSprite();
-    const glowSprite = makeGlowSprite();
+    refreshInk();
+    let dotSprite = makeDotSprite();
+    let glowSprite = makeGlowSprite();
+    // repaint the accent into the sprites + a fresh frame when the footer
+    // switcher changes the site colour
+    const unsubAccent = onAccent(() => {
+      refreshInk();
+      dotSprite = makeDotSprite();
+      glowSprite = makeGlowSprite();
+      if (loopRef.current == null) redrawRef.current();
+    });
     const hq = byName(HQ);
 
     let visible = false;
@@ -385,7 +422,7 @@ export function WorldMap({ onFocus }: { onFocus?: (info: FocusInfo) => void }) {
       ctx.clearRect(0, 0, w, h);
 
       // --- graticule: whisper-quiet engineering grid ---
-      ctx.strokeStyle = INK_GRID;
+      ctx.strokeStyle = ink.grid;
       ctx.lineWidth = 1;
       ctx.globalAlpha = 1;
       ctx.beginPath();
@@ -456,7 +493,7 @@ export function WorldMap({ onFocus }: { onFocus?: (info: FocusInfo) => void }) {
 
       // --- sweep wavefront ring (an ellipse: the view scale is anisotropic) ---
       if (sweepR > 0) {
-        ctx.strokeStyle = INK_ACCENT_2;
+        ctx.strokeStyle = ink.accent2;
         ctx.globalAlpha = 0.1 * sweepFade;
         ctx.lineWidth = 1;
         ctx.beginPath();
@@ -471,7 +508,7 @@ export function WorldMap({ onFocus }: { onFocus?: (info: FocusInfo) => void }) {
       for (let i = 0; i < ROUTES.length; i++) {
         const pts = ROUTE_PTS[i];
         const a = ra[i];
-        ctx.strokeStyle = INK_ACCENT;
+        ctx.strokeStyle = ink.accent;
         ctx.globalAlpha = a;
         ctx.lineWidth = 0.6 + a * 0.9;
         ctx.beginPath();
@@ -486,7 +523,7 @@ export function WorldMap({ onFocus }: { onFocus?: (info: FocusInfo) => void }) {
         const dur = PULSE_DUR[i] * (touches ? 0.6 : 1); // focused routes run hot
         const p = (tSec / dur + PULSE_OFF[i]) % 1;
         const endFade = Math.min(1, p * 6, (1 - p) * 6);
-        const headA = Math.min(1, a * 1.7) * endFade;
+        const headA = Math.min(1, a * 2.2) * endFade;
         if (headA < 0.04) continue;
         const fi = p * (ARC_SAMPLES - 1);
         const i0 = Math.floor(fi);
@@ -495,8 +532,8 @@ export function WorldMap({ onFocus }: { onFocus?: (info: FocusInfo) => void }) {
         const hx = (pts[i0 * 2] + (pts[i1 * 2] - pts[i0 * 2]) * fr) * sx + ox;
         const hy = (pts[i0 * 2 + 1] + (pts[i1 * 2 + 1] - pts[i0 * 2 + 1]) * fr) * sy + oy;
         // tail: segments behind the head with quadratic falloff
-        const TAIL = 9;
-        ctx.strokeStyle = INK_ACCENT_2;
+        const TAIL = 12;
+        ctx.strokeStyle = ink.accent2;
         for (let t = 0; t < TAIL; t++) {
           const j1 = i0 - t;
           const j0 = j1 - 1;
@@ -511,12 +548,12 @@ export function WorldMap({ onFocus }: { onFocus?: (info: FocusInfo) => void }) {
         }
         // head: soft halo + hot core
         const hr = (touches ? 2.4 : 1.9) * pw;
-        ctx.fillStyle = INK_ACCENT;
+        ctx.fillStyle = ink.accent;
         ctx.globalAlpha = headA * 0.25;
         ctx.beginPath();
         ctx.arc(hx, hy, hr * 2.4, 0, TAU);
         ctx.fill();
-        ctx.fillStyle = INK_ACCENT_2;
+        ctx.fillStyle = ink.accent2;
         ctx.globalAlpha = headA;
         ctx.beginPath();
         ctx.arc(hx, hy, hr, 0, TAU);
@@ -538,7 +575,7 @@ export function WorldMap({ onFocus }: { onFocus?: (info: FocusInfo) => void }) {
         const period = isHq ? 3.2 : 4.0; // HQ breathes stronger and faster
         const ph = (tSec / period + HUB_PH[i]) % 1;
         const rr = 3 + ph * (isHq ? 24 : 16);
-        ctx.strokeStyle = INK_ACCENT_2;
+        ctx.strokeStyle = ink.accent2;
         ctx.globalAlpha = Math.pow(1 - ph, 1.8) * (isHq ? 0.5 : 0.3) * m;
         ctx.lineWidth = 1;
         ctx.beginPath();
@@ -620,6 +657,7 @@ export function WorldMap({ onFocus }: { onFocus?: (info: FocusInfo) => void }) {
       io.disconnect();
       mq.removeEventListener("change", onMq);
       document.removeEventListener("visibilitychange", onVis);
+      unsubAccent();
       redrawRef.current = () => {};
     };
   }, []);
