@@ -228,9 +228,24 @@ function CraftFilm() {
   useEffect(() => {
     const v = ref.current;
     if (!v) return;
+    let onScreen = false;
+    const attempt = () => {
+      if (!onScreen) return;
+      v.play().catch(() => {
+        if (v.readyState < 2) {
+          const onCanPlay = () => {
+            v.removeEventListener("canplay", onCanPlay);
+            attempt();
+          };
+          v.addEventListener("canplay", onCanPlay);
+          v.load();
+        }
+      });
+    };
     const io = new IntersectionObserver(
       ([e]) => {
-        if (e.isIntersecting) v.play().catch(() => {});
+        onScreen = e.isIntersecting;
+        if (onScreen) attempt();
         else v.pause();
       },
       { threshold: 0.2 }
@@ -246,7 +261,7 @@ function CraftFilm() {
       muted
       loop
       playsInline
-      preload="none"
+      preload="metadata"
       poster="/media/craft-poster.jpg"
     >
       <source src="/media/craft.mp4" type="video/mp4" />
