@@ -93,6 +93,26 @@ export function PageTransition() {
         if (phase === "reveal") setPhase("idle");
       }}
     >
+      {/* faint blueprint grid under the cover — the studio's build language */}
+      <div
+        aria-hidden
+        className="absolute inset-0 opacity-[0.6]"
+        style={{
+          backgroundImage:
+            "linear-gradient(color-mix(in oklab, var(--color-accent) 6%, transparent) 1px, transparent 1px), linear-gradient(90deg, color-mix(in oklab, var(--color-accent) 6%, transparent) 1px, transparent 1px)",
+          backgroundSize: "44px 44px",
+        }}
+      />
+      {/* accent scanner sweeping across while the route compiles */}
+      {phase === "cover" && (
+        <motion.div
+          aria-hidden
+          className="absolute inset-y-0 w-40 bg-[linear-gradient(90deg,transparent,color-mix(in_oklab,var(--color-accent)_45%,transparent),transparent)] blur-md"
+          initial={{ x: "-10rem" }}
+          animate={{ x: "100vw" }}
+          transition={{ duration: 0.5, ease: "easeInOut" }}
+        />
+      )}
       {/* thin azure leading edge — the line that passes over the content
           as the cover sweeps up */}
       <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-accent/70 to-transparent" />

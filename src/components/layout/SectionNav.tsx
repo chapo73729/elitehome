@@ -64,7 +64,7 @@ export function SectionNav() {
             <span
               className={`block rounded-full transition-all duration-300 ${
                 on
-                  ? "h-2 w-2 bg-accent shadow-[0_0_10px_2px_rgba(79,140,255,0.5)]"
+                  ? "h-2 w-2 bg-accent shadow-[0_0_10px_2px_color-mix(in_oklab,var(--color-accent)_55%,transparent)]"
                   : "h-1.5 w-1.5 bg-white/25 group-hover:bg-white/60"
               }`}
             />

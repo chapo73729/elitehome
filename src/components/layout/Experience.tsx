@@ -12,6 +12,7 @@ import { CyberSecurity } from "@/components/sections/CyberSecurity";
 import { Team } from "@/components/sections/Team";
 import { Contact } from "@/components/sections/Contact";
 import { GutterRuler } from "@/components/layout/GutterRuler";
+import { Seam } from "@/components/layout/Seam";
 
 /**
  * Homepage experience — a tight, cinematic flow over one continuous world.
@@ -28,12 +29,18 @@ export function Experience() {
       <main className="relative">
         <Hero ready={ready} />
         <Cinematic />
+        <Seam />
         <AICore />
+        <Seam />
         <GlobalNetwork />
+        <Seam />
         <Partners />
         <Industries />
+        <Seam />
         <CyberSecurity />
+        <Seam />
         <Team />
+        <Seam />
         <Contact />
       </main>
     </>
