@@ -3,7 +3,41 @@
 import { useEffect, useRef } from "react";
 import { useReducedMotion } from "framer-motion";
 import { useContent } from "@/lib/content";
+import { useLang } from "@/lib/lang";
 import { Reveal } from "@/components/ui/Reveal";
+import { CountUp } from "@/components/ui/CountUp";
+
+/* Proof stats — every figure is a fact already stated elsewhere on the
+   site (6 network hubs, 10 security domains, 4 service poles, 3 senior
+   engineers). Nothing fabricated. */
+const STATS: { to: number; en: string; fr: string; suffix?: string }[] = [
+  { to: 4, en: "Service poles", fr: "Pôles de service" },
+  { to: 10, en: "Security domains", fr: "Domaines sécurité" },
+  { to: 6, en: "Global hubs", fr: "Hubs mondiaux" },
+  { to: 3, en: "Senior engineers", fr: "Ingénieurs seniors" },
+];
+
+function ProofStats() {
+  const lang = useLang();
+  return (
+    <div className="container-x mt-16">
+      <div className="grid grid-cols-2 gap-x-6 gap-y-10 md:grid-cols-4">
+        {STATS.map((s, i) => (
+          <Reveal key={s.en} delay={Math.min(i * 0.08, 0.3)}>
+            <div className="border-l border-white/10 pl-5">
+              <div className="font-display text-4xl font-semibold tracking-tight text-chalk md:text-6xl">
+                <CountUp to={s.to} />
+              </div>
+              <p className="mt-3 font-mono text-[0.6rem] uppercase tracking-[0.22em] text-fog">
+                {lang === "fr" ? s.fr : s.en}
+              </p>
+            </div>
+          </Reveal>
+        ))}
+      </div>
+    </div>
+  );
+}
 
 /* ============================================================
    Partners — a cinematic full-bleed reference band.
@@ -222,10 +256,13 @@ export function Partners() {
           <div className="hairline-t" />
         </Reveal>
 
+        {/* proof stats — real, animated on first view */}
+        <ProofStats />
+
         {/* registry line — the studio's mono idiom */}
         <div className="container-x">
           <Reveal delay={0.22}>
-            <p className="mt-6 text-right font-mono text-[0.6rem] uppercase tracking-[0.25em] text-fog">
+            <p className="mt-10 text-right font-mono text-[0.6rem] uppercase tracking-[0.25em] text-fog">
               {"10 · KOSOVO — ALBANIA — CZ"}
             </p>
           </Reveal>
