@@ -4,6 +4,7 @@ import dynamic from "next/dynamic";
 import { useEffect } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import { Button } from "@/components/ui/Button";
+import { Decode } from "@/components/ui/Decode";
 import { HeroHud } from "./HeroHud";
 import { SceneBoundary } from "@/components/three/SceneBoundary";
 import { useSceneVisibility } from "@/hooks/useSceneVisibility";
@@ -51,7 +52,7 @@ export function Hero({ ready }: { ready: boolean }) {
           transition={{ duration: 0.7, ease: EASE, delay: 0.12 }}
           className="eyebrow mb-8 [@media(max-height:680px)]:mb-3"
         >
-          {c.eyebrow}
+          <Decode text={c.eyebrow} duration={1200} />
         </motion.span>
 
         <Wordmark ready={ready} />

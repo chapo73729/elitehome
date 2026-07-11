@@ -8,6 +8,7 @@ import { usePerf } from "@/lib/perf";
 import { audio } from "@/lib/audio";
 import { Reveal } from "@/components/ui/Reveal";
 import { SpotlightGroup } from "@/components/ui/SpotlightGroup";
+import { Decode } from "@/components/ui/Decode";
 import { SceneBoundary } from "@/components/three/SceneBoundary";
 import { useSceneVisibility, webglSupported } from "@/hooks/useSceneVisibility";
 
@@ -67,7 +68,7 @@ function VaultStage({ reduced, c }: { reduced: boolean; c: { eyebrow: string; ti
       <div className="container-x pointer-events-none relative z-10 flex min-h-[92svh] flex-col justify-between py-24 md:py-28">
         <div className="max-w-xl">
           <Reveal>
-            <span className="eyebrow">{c.eyebrow}</span>
+            <Decode text={c.eyebrow} className="eyebrow" />
           </Reveal>
           <Reveal delay={0.08}>
             <h2 className="text-section-title text-gradient mt-5">{c.title}</h2>

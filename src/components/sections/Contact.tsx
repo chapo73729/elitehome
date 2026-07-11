@@ -10,6 +10,8 @@ import {
 import { Reveal } from "@/components/ui/Reveal";
 import { ChapterNumeral } from "@/components/ui/ChapterNumeral";
 import { Compile } from "@/components/ui/Compile";
+import { RollingText } from "@/components/ui/RollingText";
+import { Decode } from "@/components/ui/Decode";
 import { SITE } from "@/lib/site";
 import { useContent } from "@/lib/content";
 import { track } from "@vercel/analytics";
@@ -197,7 +199,7 @@ export function Contact() {
         <Compile label="engage" index="06" className="relative z-10">
           {/* Oversized payoff statement — the one white→mist gradient headline. */}
           <Reveal>
-            <span className="eyebrow">{t.eyebrow}</span>
+            <Decode text={t.eyebrow} className="eyebrow" />
           </Reveal>
           <Reveal delay={0.08}>
             <h2 className="text-giant text-gradient mt-6 max-w-4xl text-balance">
@@ -219,9 +221,10 @@ export function Contact() {
                 if (await copyText(SITE.email)) toast(t.copied, "✓");
                 else window.location.href = `mailto:${SITE.email}`;
               }}
-              className="link-underline mt-10 inline-block text-left font-display text-2xl text-chalk md:text-3xl"
+              className="group link-underline mt-10 inline-block text-left font-display text-2xl text-chalk md:text-3xl"
             >
-              {SITE.email}
+              <span className="sr-only">{SITE.email}</span>
+              <RollingText text={SITE.email} />
             </button>
           </Reveal>
 

@@ -4,6 +4,7 @@ import { type ReactNode } from "react";
 import clsx from "clsx";
 import { Reveal } from "./Reveal";
 import { SkewText } from "./SkewText";
+import { Decode } from "./Decode";
 
 export function Section({
   id,
@@ -49,7 +50,7 @@ export function SectionHeading({
           {index && (
             <span className="font-mono text-xs text-accent">{index}</span>
           )}
-          <span className="eyebrow">{eyebrow}</span>
+          <Decode text={eyebrow} className="eyebrow" />
           <span className="h-px flex-1 bg-gradient-to-r from-white/15 to-transparent" />
         </div>
       </Reveal>
