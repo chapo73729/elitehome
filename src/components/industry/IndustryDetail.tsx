@@ -1,28 +1,15 @@
 "use client";
 
 import { LocaleLink } from "@/components/ui/LocaleLink";
-import dynamic from "next/dynamic";
 import { motion, useReducedMotion } from "framer-motion";
 import { Reveal } from "@/components/ui/Reveal";
 import { ChapterNumeral } from "@/components/ui/ChapterNumeral";
 import { Compile } from "@/components/ui/Compile";
 import { CanvasMotif } from "@/components/ui/CanvasMotif";
-import { SceneBoundary } from "@/components/three/SceneBoundary";
-import { useSceneVisibility } from "@/hooks/useSceneVisibility";
 import { useContent } from "@/lib/content";
 import { useLang } from "@/lib/lang";
 import { usePerf } from "@/lib/perf";
 import { WORK, localizeCase } from "@/lib/work";
-
-const NeuralFlow = dynamic(() => import("@/components/three/NeuralFlow"), { ssr: false });
-const DataStream3D = dynamic(() => import("@/components/three/DataStream3D"), { ssr: false });
-
-const SCENE_BY_ID: Record<string, any> = {
-  ai: NeuralFlow,
-  strategy: NeuralFlow,
-  software: DataStream3D,
-  cloud: DataStream3D,
-};
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 
@@ -55,8 +42,6 @@ export function IndustryDetail({
 
   const reduce = useReducedMotion() ?? false;
   const perf = usePerf();
-  const scene = useSceneVisibility<HTMLDivElement>({ mountMargin: "600px 0px" });
-  const Scene3D = SCENE_BY_ID[industry.id] ?? null;
   const poleCount = String(items.length).padStart(2, "0");
 
   const lang = useLang();
@@ -70,17 +55,9 @@ export function IndustryDetail({
     <main className="relative">
       {/* ---------- HERO — full-bleed scene, left-anchored reading column ---------- */}
       <section className="relative flex min-h-[92svh] flex-col overflow-hidden pb-16 pt-32 [@media(max-height:680px)]:pt-24">
-        {/* the pole's own field, edge to edge */}
-        <div ref={scene.ref} aria-hidden className="absolute inset-0">
-          {Scene3D ? (
-            <SceneBoundary
-              fallback={<CanvasMotif variant={industry.motif} className="h-full w-full" />}
-            >
-              {scene.mounted && <Scene3D frameloop={scene.frameloop} />}
-            </SceneBoundary>
-          ) : (
-            <CanvasMotif variant={industry.motif} className="h-full w-full" />
-          )}
+        {/* the pole's own field, edge to edge — 2D canvas, IO-gated */}
+        <div aria-hidden className="absolute inset-0">
+          <CanvasMotif variant={industry.motif} className="h-full w-full" />
         </div>
 
         {/* left scrim keeps the reading column legible without burying the

@@ -2,14 +2,7 @@
 
 import { useRef } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import {
-  EffectComposer,
-  Bloom,
-  Vignette,
-  ChromaticAberration,
-  Noise,
-} from "@react-three/postprocessing";
-import { BlendFunction } from "postprocessing";
+import { EffectComposer, Bloom, Vignette } from "@react-three/postprocessing";
 import * as THREE from "three";
 import { ParticlePlanet } from "./ParticlePlanet";
 import { Starfield } from "./Starfield";
@@ -51,33 +44,16 @@ function CameraRig({ ready }: { ready: boolean }) {
 }
 
 function Effects({ tier, lite }: { tier: Tier; lite: boolean }) {
+  // 60fps budget: bloom + vignette only — no MSAA, no chromatic, no grain.
   return (
-    <EffectComposer multisampling={tier === "high" && !lite ? 4 : 0}>
+    <EffectComposer multisampling={0}>
       <Bloom
-        intensity={lite ? 0.55 : tier === "low" ? 0.6 : 1.0}
+        intensity={lite ? 0.55 : tier === "low" ? 0.6 : 0.9}
         luminanceThreshold={0.15}
         luminanceSmoothing={0.9}
         mipmapBlur
       />
       <Vignette eskil={false} offset={0.25} darkness={0.85} />
-      {/* drop the most expensive grain + chromatic passes on lite devices */}
-      {lite ? (
-        <></>
-      ) : (
-        <>
-          <ChromaticAberration
-            offset={[0.0006, 0.0009]}
-            radialModulation={false}
-            modulationOffset={0}
-            blendFunction={BlendFunction.NORMAL}
-          />
-          <Noise
-            premultiply
-            blendFunction={BlendFunction.SOFT_LIGHT}
-            opacity={tier === "low" ? 0 : 0.18}
-          />
-        </>
-      )}
     </EffectComposer>
   );
 }
@@ -94,17 +70,17 @@ export default function HeroScene({
   const mult = lite ? LITE_FACTOR : 1;
   // keep the planet recognizable — just fewer points and a tighter DPR cap
   const planetCount = Math.round(
-    (tier === "low" ? 5500 : tier === "mid" ? 9000 : 15000) * mult
+    (tier === "low" ? 5000 : tier === "mid" ? 7500 : 10000) * mult
   );
   const starCount = Math.round(
-    (tier === "low" ? 700 : tier === "mid" ? 1300 : 2000) * mult
+    (tier === "low" ? 600 : tier === "mid" ? 1000 : 1400) * mult
   );
 
   return (
     <Canvas
       className="!absolute inset-0"
       frameloop={frameloop}
-      dpr={lite ? [1, 1] : tier === "low" ? [1, 1.25] : [1, 1.8]}
+      dpr={lite ? [1, 1] : tier === "low" ? [1, 1.25] : [1, 1.6]}
       gl={{
         antialias: false,
         alpha: true,

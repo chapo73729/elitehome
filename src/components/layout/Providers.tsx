@@ -8,8 +8,6 @@ import { AnchorAlign } from "./AnchorAlign";
 import { MusicGate } from "./MusicGate";
 import { PageTransition } from "./PageTransition";
 import { AmbientBackdrop } from "./AmbientBackdrop";
-import { Atmosphere } from "./Atmosphere";
-import { Cursor } from "./Cursor";
 import { Navbar } from "./Navbar";
 import { Footer } from "./Footer";
 import { SectionNav } from "./SectionNav";
@@ -57,9 +55,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
         {skip}
       </a>
       <AmbientBackdrop />
-      <Atmosphere />
       <div className="scanlines" aria-hidden />
-      <Cursor />
       <PageTransition />
       <ScrollProgress />
       <SoundSystem />

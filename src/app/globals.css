@@ -94,17 +94,7 @@ body {
   overflow-x: hidden;
 }
 
-/* hide the native cursor only while the custom cursor is mounted & active */
-html.hide-cursor,
-html.hide-cursor * {
-  cursor: none;
-}
-
 @media (hover: none), (pointer: coarse) {
-  html.hide-cursor,
-  html.hide-cursor * {
-    cursor: auto;
-  }
   /* touch taps shouldn't flash the keyboard focus ring */
   :focus-visible {
     outline: none;

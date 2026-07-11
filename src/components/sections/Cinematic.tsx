@@ -1,6 +1,5 @@
 "use client";
 
-import dynamic from "next/dynamic";
 import { useRef, useState } from "react";
 import {
   motion,
@@ -10,15 +9,8 @@ import {
   type MotionValue,
 } from "framer-motion";
 import { useContent } from "@/lib/content";
-import { SceneBoundary } from "@/components/three/SceneBoundary";
-import { useSceneVisibility } from "@/hooks/useSceneVisibility";
 import { useScrollScrub } from "@/hooks/useScrollScrub";
 import { ChapterNumeral } from "@/components/ui/ChapterNumeral";
-
-const WarpField = dynamic(() => import("@/components/three/WarpField"), {
-  ssr: false,
-  loading: () => null,
-});
 
 const EASE = cubicBezier(0.16, 1, 0.3, 1);
 
@@ -123,15 +115,8 @@ export function Cinematic() {
   const n = lines.length;
 
   const trackRef = useRef<HTMLDivElement>(null);
-  const progressRef = useRef(0);
-  const scene = useSceneVisibility<HTMLDivElement>();
 
   const { progress, reduced } = useScrollScrub(trackRef);
-
-  // feed the raw MotionValue into the WarpField's ref-based plumbing
-  useMotionValueEvent(progress, "change", (v) => {
-    progressRef.current = v;
-  });
 
   // per-line progress bands inside [LEAD_IN, TYPE_END]
   const typeSpan = TYPE_END - LEAD_IN;
@@ -159,18 +144,12 @@ export function Cinematic() {
       aria-label="Manifesto"
       className="relative z-10 h-[320vh] bg-void"
     >
-      <div
-        ref={scene.ref}
-        className="sticky top-0 flex h-screen items-center overflow-hidden"
-      >
-        {/* warp backdrop */}
-        <div aria-hidden className="pointer-events-none absolute inset-0">
-          <SceneBoundary>
-            {scene.mounted && (
-              <WarpField progress={progressRef} frameloop={scene.frameloop} />
-            )}
-          </SceneBoundary>
-        </div>
+      <div className="sticky top-0 flex h-screen items-center overflow-hidden">
+        {/* deep-space backdrop — pure CSS, zero GPU budget */}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0 bg-[radial-gradient(90%_70%_at_75%_40%,rgba(79,140,255,0.14),transparent_65%),radial-gradient(60%_50%_at_85%_70%,rgba(107,157,255,0.08),transparent_70%)]"
+        />
         {/* left-anchored scrim: solid void behind the (left-aligned) type so the
             white headline reads crisp, fading to transparent on the right where
             the spark field is the clean feature — same idiom as the AI Core. */}
@@ -198,11 +177,13 @@ export function Cinematic() {
         <div className="container-x relative z-10">
           <span className="eyebrow mb-10 block pl-[3.2em] lg:pl-0">{c.tag}</span>
 
-          <div className="max-w-4xl">
+          <div className="max-w-5xl">
             {reduced ? (
               <StaticManifesto lines={lines} />
             ) : (
-              <h2 className="text-giant font-display text-chalk">
+              /* sized against BOTH axes so four lines always fit the sticky
+                 screen — no more clipped type on short/narrow viewports */
+              <h2 className="font-display text-[clamp(1.7rem,2.4vw+2.6vh,4.4rem)] font-semibold leading-[1.04] tracking-[-0.03em] text-chalk">
                 {lines.map((line, i) => {
                   const [s, e] = bandFor(i);
                   return (
@@ -241,7 +222,7 @@ export function Cinematic() {
  *  in azure, no scrub. */
 function StaticManifesto({ lines }: { lines: string[] }) {
   return (
-    <h2 className="text-giant font-display tracking-[-0.035em] text-chalk">
+    <h2 className="font-display text-[clamp(1.7rem,2.4vw+2.6vh,4.4rem)] font-semibold leading-[1.04] tracking-[-0.03em] text-chalk">
       {lines.map((line, i) => {
         const words = line.split(" ");
         const last = i === lines.length - 1;

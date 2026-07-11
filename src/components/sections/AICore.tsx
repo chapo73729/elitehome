@@ -1,20 +1,12 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import dynamic from "next/dynamic";
 import { motion, useInView, useReducedMotion } from "framer-motion";
 import { Reveal } from "@/components/ui/Reveal";
 import { ChapterNumeral } from "@/components/ui/ChapterNumeral";
 import { Compile } from "@/components/ui/Compile";
-import { SceneBoundary } from "@/components/three/SceneBoundary";
-import { useSceneVisibility } from "@/hooks/useSceneVisibility";
+import { CanvasMotif } from "@/components/ui/CanvasMotif";
 import { useContent } from "@/lib/content";
-import { MODES } from "@/components/three/NeuralFlow";
-
-const NeuralFlow = dynamic(() => import("@/components/three/NeuralFlow"), {
-  ssr: false,
-  loading: () => null,
-});
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 
@@ -85,29 +77,22 @@ function CapabilityRow({
 }
 
 export function AICore() {
-  const scene = useSceneVisibility<HTMLDivElement>();
   const c = useContent().core;
   const POINTS = c.points;
   const reduce = useReducedMotion() ?? false;
 
   const [activeMode, setActiveMode] = useState(0);
-  const m = MODES[activeMode] ?? MODES[0];
 
   const [titleHead, titleTail] = splitTitle(c.title);
 
   return (
     <section id="core" className="relative z-10 overflow-hidden py-28 md:py-36">
-      {/* full-bleed neural field — reactive to the active capability row */}
-      <div ref={scene.ref} aria-hidden className="absolute inset-0">
-        <SceneBoundary>
-          {scene.mounted && (
-            <NeuralFlow
-              frameloop={scene.frameloop}
-              activeMode={reduce ? 0 : activeMode}
-            />
-          )}
-        </SceneBoundary>
-      </div>
+      {/* full-bleed neural motif — a cheap 2D canvas, IO-gated */}
+      {!reduce && (
+        <div aria-hidden className="absolute inset-0 opacity-70">
+          <CanvasMotif variant="ai" className="h-full w-full" />
+        </div>
+      )}
 
       {/* single soft left-to-transparent scrim — keeps the reading column
           legible without burying the field across the whole width */}
@@ -152,15 +137,14 @@ export function AICore() {
                   ))}
                 </div>
 
-                {/* live instrument readout — reflects the field's current
-                    targets; hardcoded mono, non-translatable */}
+                {/* live instrument readout — mono idiom, driven by the
+                    active reading row */}
                 <div
                   aria-hidden
                   className="mt-5 font-mono text-[0.68rem] tracking-wider text-fog tabular-nums"
                 >
-                  <span className="text-accent">▮</span> freq{" "}
-                  {m.uFreq.toFixed(2)} · speed {m.uSpeed.toFixed(2)} · drift{" "}
-                  {m.uDrift.toFixed(3)}
+                  <span className="text-accent">▮</span>{" "}
+                  {`mode 0${activeMode + 1} · field live`}
                 </div>
 
                 {/* CTA — a single mono → display line, not a card */}

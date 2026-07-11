@@ -2,11 +2,10 @@
 
 import { useMemo, useRef } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { EffectComposer, Bloom, Vignette, ChromaticAberration, Noise } from "@react-three/postprocessing";
-import { BlendFunction } from "postprocessing";
+import { EffectComposer, Bloom, Vignette } from "@react-three/postprocessing";
 import * as THREE from "three";
 import { simplexNoise } from "./noise.glsl";
-import { useDeviceTier, useLite, LITE_FACTOR, type Tier } from "@/hooks/useDeviceTier";
+import { useDeviceTier, useLite, LITE_FACTOR } from "@/hooks/useDeviceTier";
 
 /* ============================================================
    CyberField — the security section's full-bleed scene, with no
@@ -319,19 +318,12 @@ function Rig() {
   return null;
 }
 
-function Effects({ tier, lite }: { tier: Tier; lite: boolean }) {
+function Effects({ lite }: { lite: boolean }) {
+  // 60fps budget: bloom + vignette only.
   return (
     <EffectComposer multisampling={0}>
-      <Bloom intensity={lite ? 0.85 : 1.15} luminanceThreshold={0.25} luminanceSmoothing={0.85} mipmapBlur radius={0.75} />
+      <Bloom intensity={lite ? 0.85 : 1.1} luminanceThreshold={0.25} luminanceSmoothing={0.85} mipmapBlur radius={0.75} />
       <Vignette eskil={false} offset={0.18} darkness={0.9} />
-      {lite ? (
-        <></>
-      ) : (
-        <>
-          <ChromaticAberration offset={[0.0005, 0.0009]} radialModulation={false} modulationOffset={0} blendFunction={BlendFunction.NORMAL} />
-          <Noise premultiply blendFunction={BlendFunction.SOFT_LIGHT} opacity={tier === "low" ? 0 : 0.1} />
-        </>
-      )}
     </EffectComposer>
   );
 }
@@ -352,7 +344,7 @@ export default function CyberField({ frameloop = "always" }: { frameloop?: "alwa
     <Canvas
       className="!absolute inset-0"
       frameloop={frameloop}
-      dpr={lite ? [1, 1.25] : tier === "low" ? [1, 1.5] : [1, 2]}
+      dpr={lite ? [1, 1.25] : tier === "low" ? [1, 1.4] : [1, 1.6]}
       gl={{ antialias: false, alpha: true, powerPreference: "high-performance", stencil: false, depth: false }}
       camera={{ position: [0, 4.6, 8.5], fov: 50, near: 0.1, far: 160 }}
     >
@@ -360,7 +352,7 @@ export default function CyberField({ frameloop = "always" }: { frameloop?: "alwa
       <Horizon />
       <Ocean cols={cols} rows={rows} ripplesRef={ripplesRef} />
       <Intrusions ripplesRef={ripplesRef} maxMeteors={maxMeteors} />
-      <Effects tier={tier} lite={lite} />
+      <Effects lite={lite} />
     </Canvas>
   );
 }
