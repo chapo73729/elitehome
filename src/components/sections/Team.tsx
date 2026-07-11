@@ -8,6 +8,7 @@ import { Reveal } from "@/components/ui/Reveal";
 import { SectionHeading } from "@/components/ui/Section";
 import { Compile } from "@/components/ui/Compile";
 import { ChapterNumeral } from "@/components/ui/ChapterNumeral";
+import { SpotlightGroup } from "@/components/ui/SpotlightGroup";
 
 type Member = { id: string; name: string; role: string; bio: string; stack: string[] };
 
@@ -35,7 +36,7 @@ function initials(name: string) {
 function Portrait({ member }: { member: Member }) {
   const src = PORTRAIT_SRC[member.id] ?? null;
   return (
-    <div className="relative aspect-[4/5] w-full overflow-hidden rounded-xl border border-chalk/10 bg-[#0a0b0d]">
+    <div className="spot-card lit-top relative aspect-[4/5] w-full overflow-hidden rounded-xl border border-chalk/10 bg-[#0a0b0d]">
       {src ? (
         // eslint-disable-next-line @next/next/no-img-element
         <img
@@ -45,7 +46,7 @@ function Portrait({ member }: { member: Member }) {
           height={600}
           loading="lazy"
           decoding="async"
-          className="h-full w-full object-cover object-top grayscale transition-all duration-700 group-hover:grayscale-0"
+          className="h-full w-full object-cover object-top grayscale transition-[filter,transform] duration-700 ease-[cubic-bezier(0.23,1,0.32,1)] group-hover:scale-[1.035] group-hover:grayscale-0"
         />
       ) : (
         <>
@@ -93,7 +94,7 @@ function MemberCard({ member, index, stackLabel }: { member: Member; index: numb
   const reduced = useReducedMotion();
   return (
     <Reveal delay={Math.min(index * 0.08, 0.24)}>
-      <div className="group" onMouseEnter={() => audio.hover()}>
+      <div onMouseEnter={() => audio.hover()} className="group rack-item">
         <Portrait member={member} />
 
         <div className="mt-6">
@@ -148,11 +149,12 @@ export function Team() {
       </div>
 
       <div className="container-x mt-16">
-        <div className="grid gap-x-8 gap-y-14 md:grid-cols-3">
+        {/* rack focus: the hovered member sharpens while neighbours recede */}
+        <SpotlightGroup className="rack-focus grid gap-x-8 gap-y-14 md:grid-cols-3">
           {members.map((m, i) => (
             <MemberCard key={m.id} member={m} index={i} stackLabel={c.stackLabel} />
           ))}
-        </div>
+        </SpotlightGroup>
       </div>
     </section>
   );

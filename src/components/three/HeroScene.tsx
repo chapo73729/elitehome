@@ -5,6 +5,7 @@ import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { EffectComposer, Bloom, Vignette } from "@react-three/postprocessing";
 import * as THREE from "three";
 import { ParticlePlanet } from "./ParticlePlanet";
+import { AtmosphereRim } from "./AtmosphereRim";
 import { Starfield } from "./Starfield";
 import { getJourney } from "@/lib/journey";
 import { useDeviceTier, useLite, LITE_FACTOR, type Tier } from "@/hooks/useDeviceTier";
@@ -97,6 +98,7 @@ export default function HeroScene({
       <CameraRig ready={ready} />
       <Starfield count={starCount} />
       <ParticlePlanet count={planetCount} radius={2.05} />
+      <AtmosphereRim radius={2.05} />
 
       <Effects tier={tier} lite={lite} />
     </Canvas>

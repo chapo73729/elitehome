@@ -28,7 +28,9 @@ export function Button({
     href && !href.startsWith("#") ? localizePath(href, locale) : href;
 
   const base =
-    "group relative inline-flex items-center justify-center gap-2 overflow-hidden rounded-full px-5 py-2.5 text-sm font-medium tracking-wide transition-colors duration-500 md:px-7 md:py-3.5";
+    "group relative inline-flex items-center justify-center gap-2 overflow-hidden rounded-full px-5 py-2.5 text-sm font-medium tracking-wide transition-[color,transform] duration-500 active:scale-[0.97] active:duration-100 md:px-7 md:py-3.5 " +
+    // arrow glyphs passed as children nudge along on hover
+    "[&_span[aria-hidden]]:transition-transform [&_span[aria-hidden]]:duration-200 [&_span[aria-hidden]]:ease-[cubic-bezier(0.23,1,0.32,1)] hover:[&_span[aria-hidden]]:translate-x-[3px]";
   const styles =
     variant === "primary"
       ? "bg-chalk text-void hover:text-void"
@@ -46,7 +48,14 @@ export function Button({
     <>
       <span className="relative z-10 flex items-center gap-2">{children}</span>
       {variant === "primary" && (
-        <span className="absolute inset-0 -z-0 translate-y-full bg-gradient-to-r from-accent-2 via-accent to-accent-3 transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:translate-y-0" />
+        <>
+          <span className="absolute inset-0 -z-0 translate-y-full bg-gradient-to-r from-accent-2 via-accent to-accent-3 transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:translate-y-0" />
+          {/* sheen: one light sweep across the face on hover-in, never looping */}
+          <span
+            aria-hidden
+            className="absolute inset-0 z-10 -translate-x-[130%] bg-[linear-gradient(105deg,transparent_40%,rgba(255,255,255,0.35)_50%,transparent_60%)] group-hover:translate-x-[130%] group-hover:transition-transform group-hover:duration-700 group-hover:ease-[cubic-bezier(0.77,0,0.175,1)]"
+          />
+        </>
       )}
       {variant === "ghost" && (
         <span className="absolute inset-0 -z-0 scale-x-0 origin-left bg-white/5 transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-x-100" />

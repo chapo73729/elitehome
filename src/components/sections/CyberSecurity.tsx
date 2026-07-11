@@ -7,6 +7,7 @@ import { useContent } from "@/lib/content";
 import { usePerf } from "@/lib/perf";
 import { audio } from "@/lib/audio";
 import { Reveal } from "@/components/ui/Reveal";
+import { SpotlightGroup } from "@/components/ui/SpotlightGroup";
 import { SceneBoundary } from "@/components/three/SceneBoundary";
 import { useSceneVisibility, webglSupported } from "@/hooks/useSceneVisibility";
 
@@ -109,7 +110,7 @@ function DomainCard({ item, index }: { item: Item; index: number }) {
       <div
         tabIndex={0}
         onMouseEnter={() => audio.hover()}
-        className="group relative h-full overflow-hidden rounded-lg border border-chalk/10 bg-chalk/[0.02] px-4 py-4 transition-colors duration-500 hover:border-accent/40 hover:bg-accent/[0.05] focus:outline-none focus-visible:border-accent/60 focus-visible:ring-1 focus-visible:ring-accent/50 md:px-5 md:py-5"
+        className="spot-card lit-top group relative h-full rounded-lg border border-chalk/10 bg-chalk/[0.02] px-4 py-4 transition-colors duration-500 hover:bg-accent/[0.04] focus:outline-none focus-visible:border-accent/60 focus-visible:ring-1 focus-visible:ring-accent/50 md:px-5 md:py-5"
       >
         {/* blueprint corner brackets — ignite on hover/focus */}
         <span aria-hidden className="pointer-events-none absolute left-2 top-2 h-2.5 w-2.5 border-l border-t border-accent/0 transition-colors duration-500 group-hover:border-accent/70 group-focus-visible:border-accent/70" />
@@ -152,11 +153,11 @@ export function CyberSecurity() {
 
       {/* domain chips, a slim band under the stage */}
       <div className="container-x relative py-16 md:py-20">
-        <div className="grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-5">
+        <SpotlightGroup className="grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-5">
           {items.map((item, i) => (
             <DomainCard key={item.id} item={item} index={i} />
           ))}
-        </div>
+        </SpotlightGroup>
       </div>
     </section>
   );

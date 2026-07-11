@@ -33,6 +33,7 @@ const surfaceVert = /* glsl */ `
   varying float vGlow;    // ripple brightness
   varying float vCrest;   // wave height factor
   varying float vDepth;   // 0 near → 1 far
+  varying float vSheen;   // caustic web × analysis sweep — colour only
   ${simplexNoise}
   void main() {
     vec3 p = position;
@@ -65,6 +66,18 @@ const surfaceVert = /* glsl */ `
     vCrest = smoothstep(-1.2, 2.2, w);
     vGlow = glow;
 
+    // caustic filament web: folded noise octaves multiply into thin bright
+    // veins that crawl across the surface
+    float c1 = 1.0 - abs(snoise(vec3(p.x * 0.20 + t * 0.10, p.z * 0.20, t * 0.16)));
+    float c2 = 1.0 - abs(snoise(vec3(p.x * 0.38 - t * 0.12, p.z * 0.38, t * 0.24)));
+    float caustic = pow(max(c1 * c2, 0.0), 3.0);
+
+    // analysis sweep: a slow scanning beam crossing the field, revealing the
+    // caustic web as it passes — the ocean being continuously inspected
+    float scanX = sin(t * 0.13) * 38.0;
+    float scan = exp(-pow((p.x - scanX) * 0.11, 2.0));
+    vSheen = caustic * (0.22 + scan * 0.85) + scan * 0.10;
+
     vec4 mv = modelViewMatrix * vec4(p, 1.0);
     vDepth = clamp((-mv.z - 6.0) / 70.0, 0.0, 1.0);
     gl_Position = projectionMatrix * mv;
@@ -78,6 +91,7 @@ const surfaceFrag = /* glsl */ `
   varying float vGlow;
   varying float vCrest;
   varying float vDepth;
+  varying float vSheen;
   void main() {
     vec2 uv = gl_PointCoord - 0.5;
     float d = length(uv);
@@ -87,13 +101,16 @@ const surfaceFrag = /* glsl */ `
     vec3 deep  = vec3(0.055, 0.10, 0.20);
     vec3 crest = vec3(0.31, 0.55, 1.0);
     vec3 flash = vec3(0.55, 0.95, 1.0);
+    vec3 sheen = vec3(0.35, 0.85, 1.0);
     vec3 col = mix(deep, crest, vCrest * 0.85);
     col = mix(col, flash, clamp(vGlow, 0.0, 1.0));
-    col *= 0.75 + vGlow * 2.4;
+    // caustic veins + the passing analysis sweep tint toward cyan
+    col = mix(col, sheen, clamp(vSheen, 0.0, 0.75));
+    col *= 0.75 + vGlow * 2.4 + vSheen * 0.9;
 
     // recede into the dark horizon
     float fog = 1.0 - vDepth * 0.9;
-    gl_FragColor = vec4(col, a * fog * (0.55 + vGlow));
+    gl_FragColor = vec4(col, a * fog * (0.55 + vGlow + vSheen * 0.25));
   }
 `;
 

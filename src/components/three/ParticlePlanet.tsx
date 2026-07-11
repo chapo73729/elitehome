@@ -10,16 +10,20 @@ const vertex = /* glsl */ `
   uniform float uSize;
   uniform vec3 uMouse;
   uniform float uScroll;
-  uniform float uVel;   // eased scroll velocity, 0..1 — energizes the core
+  uniform float uVel;     // eased scroll velocity, 0..1 — energizes the core
+  uniform float uScatter; // 0..1 leaving the hero — the planet exhales apart
   attribute float aScale;
   attribute float aType; // 0 = surface, 1 = data ring
   varying float vNoise;
   varying float vType;
+  varying float vFade;
+  varying float vSeed;
 
   ${simplexNoise}
 
   void main() {
     vType = aType;
+    vSeed = aScale;
     vec3 p = position;
 
     // organic breathing displacement along the normal
@@ -42,6 +46,12 @@ const vertex = /* glsl */ `
     float vwave = sin(dir.y * 6.0 - uTime * 3.0) * 0.5 + 0.5;
     p += dir * uVel * (0.18 + vwave * 0.16);
 
+    // handoff: leaving the hero, each particle drifts off along its normal at
+    // its own noise-staggered pace — the planet dissolves rather than scrolls
+    float stagger = 0.6 + snoise(dir * 3.0) * 0.4 + aScale * 0.25;
+    p += dir * uScatter * stagger * 3.2;
+    vFade = 1.0 - uScatter * 0.85;
+
     vNoise = disp + ripple + uVel * 0.5;
 
     vec4 mv = modelViewMatrix * vec4(p, 1.0);
@@ -56,11 +66,14 @@ const vertex = /* glsl */ `
 
 const fragment = /* glsl */ `
   precision highp float;
+  uniform float uTime;
   uniform vec3 uColorA;
   uniform vec3 uColorB;
   uniform vec3 uColorC;
   varying float vNoise;
   varying float vType;
+  varying float vFade;
+  varying float vSeed;
 
   void main() {
     vec2 uv = gl_PointCoord - 0.5;
@@ -71,10 +84,14 @@ const fragment = /* glsl */ `
 
     vec3 col = mix(uColorA, uColorB, smoothstep(-0.1, 0.25, vNoise));
     col = mix(col, uColorC, smoothstep(0.15, 0.4, vNoise));
-    if (vType > 0.5) col = uColorC;
+    // data ring: slightly HDR so bloom picks these out as glints
+    if (vType > 0.5) col = uColorC * 1.35;
+
+    // per-particle twinkle — each glint on its own phase
+    float tw = 0.78 + 0.22 * sin(uTime * 2.4 + vSeed * 43.7);
 
     // soft core glow
-    alpha *= 0.5 + vNoise * 1.2;
+    alpha *= (0.5 + vNoise * 1.2) * tw * vFade;
     gl_FragColor = vec4(col, alpha);
   }
 `;
@@ -133,6 +150,7 @@ export function ParticlePlanet({
       uSize: { value: 22 },
       uScroll: { value: 0 },
       uVel: { value: 0 },
+      uScatter: { value: 0 },
       uMouse: { value: new THREE.Vector3(0, 0, 1) },
       uColorA: { value: new THREE.Color("#2a4a8f") },
       uColorB: { value: new THREE.Color("#4f8cff") },
@@ -157,6 +175,16 @@ export function ParticlePlanet({
       const targetVel = Math.min(1, raw * 0.025);
       vel.current += (targetVel - vel.current) * 0.08;
       matRef.current.uniforms.uVel.value = vel.current;
+
+      // dispersal progress: 0 at top, 1 one screen down — damped so the
+      // dissolve trails the scroll like a camera operator, never snaps
+      const goal = Math.min(1, Math.max(0, window.scrollY / (window.innerHeight * 0.9)));
+      matRef.current.uniforms.uScatter.value = THREE.MathUtils.damp(
+        matRef.current.uniforms.uScatter.value,
+        goal,
+        4,
+        Math.min(delta, 0.05)
+      );
     }
     if (pointsRef.current) {
       pointsRef.current.rotation.y += delta * 0.045;
