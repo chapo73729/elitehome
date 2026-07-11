@@ -1,8 +1,13 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { useEffect, useState } from "react";
-import { useReducedMotion } from "framer-motion";
+import { useEffect, useRef, useState } from "react";
+import {
+  motion,
+  useMotionValueEvent,
+  useReducedMotion,
+  useTransform,
+} from "framer-motion";
 import { useContent } from "@/lib/content";
 import { usePerf } from "@/lib/perf";
 import { audio } from "@/lib/audio";
@@ -11,100 +16,157 @@ import { SpotlightGroup } from "@/components/ui/SpotlightGroup";
 import { Decode } from "@/components/ui/Decode";
 import { SceneBoundary } from "@/components/three/SceneBoundary";
 import { useSceneVisibility, webglSupported } from "@/hooks/useSceneVisibility";
+import { useScrollScrub } from "@/hooks/useScrollScrub";
 
-const CyberField = dynamic(() => import("@/components/three/CyberField"), {
+const CyberSiege = dynamic(() => import("@/components/three/CyberSiege"), {
   ssr: false,
   loading: () => <div className="absolute inset-0" />,
 });
 
 type Item = { id: string; title: string; tag: string };
 
-/** Calm static emblem — reduced motion / perf / no-WebGL / lost context. */
-function StaticLock() {
+/** Calm static emblem — reduced motion / perf / no-WebGL / lost context:
+ *  the shield dome in its final, formed state. */
+function StaticShield() {
   return (
-    <div className="absolute inset-0 flex items-center justify-center bg-[radial-gradient(60%_60%_at_50%_50%,rgba(34,224,255,0.12),transparent_70%)]">
-      <svg width="132" height="150" viewBox="0 0 132 150" fill="none" className="text-[#22e0ff] [filter:drop-shadow(0_0_16px_rgba(34,224,255,0.55))]">
-        <path d="M38 62 V44 a28 28 0 0 1 56 0 V62" stroke="currentColor" strokeWidth="7" strokeLinecap="round" fill="none" />
-        <rect x="26" y="62" width="80" height="70" rx="14" stroke="currentColor" strokeWidth="5" fill="rgba(34,224,255,0.06)" />
-        <circle cx="66" cy="92" r="9" fill="currentColor" />
-        <path d="M62 98 h8 l3 22 h-14 z" fill="currentColor" />
+    <div className="absolute inset-0 flex items-center justify-center bg-[radial-gradient(60%_60%_at_50%_50%,rgba(34,224,255,0.10),transparent_70%)]">
+      <svg
+        width="220"
+        height="220"
+        viewBox="0 0 220 220"
+        fill="none"
+        className="text-[#22e0ff] [filter:drop-shadow(0_0_18px_rgba(34,224,255,0.45))]"
+      >
+        <circle cx="110" cy="110" r="86" stroke="currentColor" strokeOpacity="0.75" strokeWidth="1.4" />
+        <ellipse cx="110" cy="110" rx="86" ry="34" stroke="currentColor" strokeOpacity="0.45" strokeWidth="1" />
+        <ellipse cx="110" cy="110" rx="34" ry="86" stroke="currentColor" strokeOpacity="0.45" strokeWidth="1" />
+        <ellipse cx="110" cy="110" rx="66" ry="66" stroke="currentColor" strokeOpacity="0.2" strokeWidth="1" transform="rotate(45 110 110)" />
+        <circle cx="110" cy="110" r="14" fill="currentColor" fillOpacity="0.8" />
       </svg>
     </div>
   );
 }
 
 /**
- * Full-bleed immersive stage — the scene owns the entire viewport of the
- * section and the title lives INSIDE it (no framed card, no widget). The
- * lock drifts right on wide screens so the type breathes on the left.
+ * The siege stage: a 300vh scroll track pinning a full-viewport stage.
+ * Scroll drives the three-act story (swarm → analysis → capture); the
+ * title holds the left, act captions relay bottom-left, and a progress
+ * rail mirrors the page's gutter idiom.
  */
-function VaultStage({ reduced, c }: { reduced: boolean; c: { eyebrow: string; title: string; intro: string; registry: string } }) {
+function SiegeStage({
+  reduced,
+  c,
+}: {
+  reduced: boolean;
+  c: { eyebrow: string; title: string; intro: string; registry: string; acts: string[] };
+}) {
   const [webgl, setWebgl] = useState(true);
   useEffect(() => setWebgl(webglSupported()), []);
   const use3D = !reduced && webgl;
+
+  const trackRef = useRef<HTMLDivElement>(null);
+  const { progress } = useScrollScrub(trackRef);
+  const progressRef = useRef(0);
+  useMotionValueEvent(progress, "change", (v) => {
+    progressRef.current = v;
+  });
   const scene = useSceneVisibility<HTMLDivElement>({ mountMargin: "600px 0px" });
 
-  return (
-    <div
-      ref={scene.ref}
-      className="relative min-h-[92svh] w-full overflow-hidden bg-[radial-gradient(120%_100%_at_70%_45%,#0a0e17_0%,#030406_70%)]"
-    >
-      {/* the scene — full bleed */}
-      <div className="absolute inset-0">
-        {use3D ? (
-          <SceneBoundary fallback={<StaticLock />}>
-            {scene.mounted && <CyberField frameloop={scene.frameloop} />}
-          </SceneBoundary>
-        ) : (
-          <StaticLock />
-        )}
-      </div>
+  // act captions relay as the story advances
+  const act1 = useTransform(progress, [0.0, 0.05, 0.24, 0.31], [0, 1, 1, 0]);
+  const act2 = useTransform(progress, [0.31, 0.38, 0.52, 0.6], [0, 1, 1, 0]);
+  const act3 = useTransform(progress, [0.62, 0.72, 1, 1], [0, 1, 1, 1]);
+  const rail = progress;
 
-      {/* legibility scrims — light-handed, the scene stays the hero */}
-      <div aria-hidden className="pointer-events-none absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-void via-void/50 to-transparent" />
-      <div aria-hidden className="pointer-events-none absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-void via-void/50 to-transparent" />
-
-      {/* type lives in the scene */}
-      <div className="container-x pointer-events-none relative z-10 flex min-h-[92svh] flex-col justify-between py-24 md:py-28">
-        <div className="max-w-xl">
-          <Reveal>
-            <Decode text={c.eyebrow} className="eyebrow" />
-          </Reveal>
-          <Reveal delay={0.08}>
+  if (!use3D) {
+    // static, unpinned rendition — same words, final frame
+    return (
+      <div className="relative min-h-[92svh] w-full overflow-hidden bg-[radial-gradient(120%_100%_at_70%_45%,#0a0e17_0%,#030406_70%)]">
+        <StaticShield />
+        <div className="container-x relative z-10 flex min-h-[92svh] flex-col justify-between py-24 md:py-28">
+          <div className="max-w-xl">
+            <span className="eyebrow">{c.eyebrow}</span>
             <h2 className="text-section-title text-gradient mt-5">{c.title}</h2>
-          </Reveal>
-          <Reveal delay={0.16}>
             <p className="mt-5 text-mist md:text-lg">{c.intro}</p>
-          </Reveal>
-        </div>
-
-        <div className="flex items-end justify-between gap-6">
-          <span aria-hidden className="flex items-center gap-2 font-mono text-[0.58rem] uppercase tracking-[0.3em] text-[#22e0ff]/85">
-            <span className="relative flex h-1.5 w-1.5">
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#22e0ff]/70" />
-              <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-[#22e0ff]" />
-            </span>
-            {"secure.core · active"}
-          </span>
-          <span aria-hidden className="hidden font-mono text-[0.58rem] uppercase tracking-[0.25em] text-fog/70 sm:block">
+          </div>
+          <span className="font-mono text-[0.58rem] uppercase tracking-[0.25em] text-fog/70">
             {c.registry}
           </span>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div ref={trackRef} className="relative h-[300vh]">
+      <div className="sticky top-0 h-screen overflow-hidden bg-[radial-gradient(120%_100%_at_60%_40%,#070a12_0%,#030406_72%)]">
+        {/* the stage */}
+        <div ref={scene.ref} className="absolute inset-0">
+          <SceneBoundary fallback={<StaticShield />}>
+            {scene.mounted && (
+              <CyberSiege frameloop={scene.frameloop} progressRef={progressRef} />
+            )}
+          </SceneBoundary>
+        </div>
+
+        {/* legibility scrims */}
+        <div aria-hidden className="pointer-events-none absolute inset-x-0 top-0 h-36 bg-gradient-to-b from-void via-void/40 to-transparent" />
+        <div aria-hidden className="pointer-events-none absolute inset-x-0 bottom-0 h-36 bg-gradient-to-t from-void via-void/40 to-transparent" />
+        <div aria-hidden className="pointer-events-none absolute inset-y-0 left-0 w-1/2 bg-gradient-to-r from-[#030406]/85 via-transparent to-transparent" />
+
+        {/* persistent title, in-scene */}
+        <div className="container-x pointer-events-none relative z-10 flex h-screen flex-col justify-between py-24 md:py-28">
+          <div className="max-w-xl">
+            <Reveal>
+              <Decode text={c.eyebrow} className="eyebrow" />
+            </Reveal>
+            <Reveal delay={0.08}>
+              <h2 className="text-section-title text-gradient mt-5">{c.title}</h2>
+            </Reveal>
+            <Reveal delay={0.16}>
+              <p className="mt-5 text-mist md:text-lg">{c.intro}</p>
+            </Reveal>
+          </div>
+
+          <div className="flex items-end justify-between gap-6">
+            {/* act captions — one live line, relayed by scroll */}
+            <div className="relative h-10 min-w-0 flex-1">
+              {[act1, act2, act3].map((op, i) => (
+                <motion.span
+                  key={i}
+                  style={{ opacity: op }}
+                  className={`absolute bottom-0 left-0 flex items-center gap-2 font-mono text-[0.6rem] uppercase tracking-[0.24em] md:text-[0.66rem] ${
+                    i === 0 ? "text-[#ff5040]" : "text-[#22e0ff]"
+                  }`}
+                >
+                  <span
+                    className={`inline-block h-1.5 w-1.5 rounded-full ${
+                      i === 0 ? "bg-[#ff5040]" : "bg-[#22e0ff]"
+                    } ${i < 2 ? "animate-pulse" : ""}`}
+                  />
+                  {c.acts[i]}
+                </motion.span>
+              ))}
+            </div>
+            <span aria-hidden className="hidden shrink-0 font-mono text-[0.58rem] uppercase tracking-[0.25em] text-fog/70 sm:block">
+              {c.registry}
+            </span>
+          </div>
+        </div>
+
+        {/* story progress rail — right edge, echoes the page gutter */}
+        <div aria-hidden className="pointer-events-none absolute right-6 top-1/2 hidden h-[30vh] w-px -translate-y-1/2 overflow-hidden bg-white/10 lg:block">
+          <motion.div
+            style={{ scaleY: rail, transformOrigin: "top" }}
+            className="absolute inset-0 bg-[#22e0ff]/80"
+          />
         </div>
       </div>
     </div>
   );
 }
 
-/* ============================================================
-   Cyber Security — a SOC-floor section. A live network/radar
-   canvas breathes behind a grid of ten domain cards spanning the
-   offensive→defensive spectrum. Each card is a real focusable
-   surface with blueprint corner brackets that ignite on hover /
-   focus. Reduced motion / perf mode drops the canvas for a calm
-   static wall.
-   ============================================================ */
-
-/** Compact visual chip — tag + title, brackets that ignite. No paragraphs. */
+/** Compact visual chip — tag + title, brackets that ignite. */
 function DomainCard({ item, index }: { item: Item; index: number }) {
   return (
     <Reveal delay={Math.min(index * 0.04, 0.24)}>
@@ -113,7 +175,6 @@ function DomainCard({ item, index }: { item: Item; index: number }) {
         onMouseEnter={() => audio.hover()}
         className="spot-card lit-top group relative h-full rounded-lg border border-chalk/10 bg-chalk/[0.02] px-4 py-4 transition-colors duration-500 hover:bg-accent/[0.04] focus:outline-none focus-visible:border-accent/60 focus-visible:ring-1 focus-visible:ring-accent/50 md:px-5 md:py-5"
       >
-        {/* blueprint corner brackets — ignite on hover/focus */}
         <span aria-hidden className="pointer-events-none absolute left-2 top-2 h-2.5 w-2.5 border-l border-t border-accent/0 transition-colors duration-500 group-hover:border-accent/70 group-focus-visible:border-accent/70" />
         <span aria-hidden className="pointer-events-none absolute bottom-2 right-2 h-2.5 w-2.5 border-b border-r border-accent/0 transition-colors duration-500 group-hover:border-accent/70 group-focus-visible:border-accent/70" />
 
@@ -130,7 +191,6 @@ function DomainCard({ item, index }: { item: Item; index: number }) {
           {item.title}
         </h3>
 
-        {/* baseline trace that draws across on hover */}
         <span
           aria-hidden
           className="mt-3 block h-px w-full origin-left scale-x-0 bg-gradient-to-r from-accent/70 to-transparent transition-transform duration-500 group-hover:scale-x-100 group-focus-visible:scale-x-100"
@@ -148,9 +208,10 @@ export function CyberSecurity() {
   const items = c.items as unknown as Item[];
 
   return (
-    <section id="security" className="relative z-10 scroll-mt-24 overflow-hidden bg-void">
-      {/* full-bleed immersive stage — the scene IS the section */}
-      <VaultStage reduced={reduced} c={c} />
+    // no overflow-hidden on the section — it would unstick the pinned stage
+    <section id="security" className="relative z-10 scroll-mt-24 bg-void">
+      {/* the siege — a scroll-driven three-act story */}
+      <SiegeStage reduced={reduced} c={c} />
 
       {/* domain chips, a slim band under the stage */}
       <div className="container-x relative py-16 md:py-20">

@@ -278,6 +278,11 @@ const en = {
     title: "Defence, engineered in.",
     intro: "Built with security. Never bolted on.",
     registry: "10 domains · offensive + defensive",
+    acts: [
+      "01 · intrusion detected — 4 812 hostile signatures",
+      "02 · live analysis — every vector traced",
+      "03 · threat absorbed — the attack becomes the armour",
+    ],
     items: [
       { id: "soc", title: "Security Operations", tag: "SOC" },
       { id: "pentest", title: "Penetration Testing", tag: "OFFENSE" },
@@ -651,6 +656,11 @@ const fr: DeepPartial<Content> = {
     title: "La défense, intégrée dès la conception.",
     intro: "La sécurité se construit. Elle ne se rajoute pas.",
     registry: "10 domaines · offensif + défensif",
+    acts: [
+      "01 · intrusion détectée — 4 812 signatures hostiles",
+      "02 · analyse en direct — chaque vecteur tracé",
+      "03 · menace absorbée — l'attaque devient l'armure",
+    ],
     items: [
       { title: "Security Operations" },
       { title: "Tests d'intrusion" },
