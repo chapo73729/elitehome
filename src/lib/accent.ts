@@ -26,6 +26,22 @@ export function getAccent() {
   return current;
 }
 
+/** The full colour set of the active accent (for canvas/WebGL scenes that
+ *  can't read CSS variables per-frame). */
+export function accentColors(): Accent {
+  return ACCENTS.find((x) => x.id === current) ?? ACCENTS[0];
+}
+
+/** Active accent base as an {r,g,b} triplet in 0–255 (for Canvas2D). */
+export function accentRGB(): { r: number; g: number; b: number } {
+  const hex = accentColors().a.replace("#", "");
+  return {
+    r: parseInt(hex.slice(0, 2), 16),
+    g: parseInt(hex.slice(2, 4), 16),
+    b: parseInt(hex.slice(4, 6), 16),
+  };
+}
+
 export function onAccent(fn: (id: string) => void) {
   subs.add(fn);
   fn(current);

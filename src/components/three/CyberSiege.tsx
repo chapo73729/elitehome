@@ -1,11 +1,12 @@
 "use client";
 
-import { useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { EffectComposer, Bloom, Vignette } from "@react-three/postprocessing";
 import * as THREE from "three";
 import { simplexNoise } from "./noise.glsl";
 import { useDeviceTier, useLite, LITE_FACTOR } from "@/hooks/useDeviceTier";
+import { onAccent, accentColors } from "@/lib/accent";
 
 /* ============================================================
    CYBER SIEGE — a three-act story the visitor scrubs with scroll.
@@ -240,6 +241,22 @@ function Siege({
       },
     };
   }, []);
+
+  // follow the live site accent (footer switcher)
+  useEffect(() => {
+    return onAccent(() => {
+      const base = new THREE.Color(accentColors().a);
+      uniforms.uIce.value.copy(base);
+      uniforms.uCore.value
+        .copy(base)
+        .lerp(new THREE.Color("#ffffff"), 0.72)
+        .multiplyScalar(1.55);
+      uniforms.uHostile.value
+        .copy(base)
+        .lerp(new THREE.Color("#141826"), 0.55)
+        .multiplyScalar(0.9);
+    });
+  }, [uniforms]);
 
   useFrame((state, delta) => {
     if (!mat.current) return;

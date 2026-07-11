@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import { onAccent, accentRGB } from "@/lib/accent";
 
 type Variant = "code" | "ai" | "industrial" | "ocean" | "cyber";
 
@@ -29,6 +30,20 @@ export function CanvasMotif({
     let H = 0;
     let raf = 0;
     let running = false;
+
+    // live site accent (footer switcher) — base and a lifted-toward-white tint
+    let A = accentRGB();
+    let L = { r: 0, g: 0, b: 0 };
+    const deriveAccent = () => {
+      A = accentRGB();
+      L = {
+        r: Math.round(A.r * 0.35 + 255 * 0.65),
+        g: Math.round(A.g * 0.35 + 255 * 0.65),
+        b: Math.round(A.b * 0.35 + 255 * 0.65),
+      };
+    };
+    deriveAccent();
+    const unsubAccent = onAccent(deriveAccent);
 
     const resize = () => {
       const r = canvas.getBoundingClientRect();
@@ -187,7 +202,7 @@ export function CanvasMotif({
         for (let li = 0; li < aiLinks.length; li++) {
           const [a, b] = aiLinks[li];
           const heat = Math.max(aiNodes[a].act, aiNodes[b].act);
-          ctx.strokeStyle = `rgba(130,180,255,${0.17 + heat * 0.33})`;
+          ctx.strokeStyle = `rgba(${A.r},${A.g},${A.b},${0.2 + heat * 0.36})`;
           ctx.beginPath();
           ctx.moveTo(px[a], py[a]);
           ctx.lineTo(px[b], py[b]);
@@ -203,7 +218,7 @@ export function CanvasMotif({
           const fr = pu.from;
           const x = px[fr] + (px[to] - px[fr]) * Math.min(1, pu.p);
           const y = py[fr] + (py[to] - py[fr]) * Math.min(1, pu.p);
-          ctx.fillStyle = "rgba(190,240,255,0.95)";
+          ctx.fillStyle = `rgba(${L.r},${L.g},${L.b},0.95)`;
           ctx.beginPath();
           ctx.arc(x, y, 1.8, 0, Math.PI * 2);
           ctx.fill();
@@ -228,12 +243,13 @@ export function CanvasMotif({
           const act = aiNodes[i].act;
           const rr = 1.9 + act * 2.6;
           if (act > 0.12) {
-            ctx.fillStyle = `rgba(200,235,255,${act * 0.22})`;
+            ctx.fillStyle = `rgba(${L.r},${L.g},${L.b},${act * 0.22})`;
             ctx.beginPath();
             ctx.arc(px[i], py[i], rr * 3.4, 0, Math.PI * 2);
             ctx.fill();
           }
-          ctx.fillStyle = `rgba(${170 + act * 85},${215 + act * 40},255,${0.55 + act * 0.45})`;
+          // resting neuron in the accent, flaring toward white as it fires
+          ctx.fillStyle = `rgba(${Math.round(A.r + (255 - A.r) * act)},${Math.round(A.g + (255 - A.g) * act)},${Math.round(A.b + (255 - A.b) * act)},${0.55 + act * 0.45})`;
           ctx.beginPath();
           ctx.arc(px[i], py[i], rr, 0, Math.PI * 2);
           ctx.fill();
@@ -373,6 +389,7 @@ export function CanvasMotif({
       cancelAnimationFrame(raf);
       ro.disconnect();
       io.disconnect();
+      unsubAccent();
     };
   }, [variant]);
 

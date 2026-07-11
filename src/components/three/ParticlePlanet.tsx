@@ -1,9 +1,10 @@
 "use client";
 
-import { useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { useFrame, useThree } from "@react-three/fiber";
 import * as THREE from "three";
 import { simplexNoise } from "./noise.glsl";
+import { onAccent, accentColors } from "@/lib/accent";
 
 const vertex = /* glsl */ `
   uniform float uTime;
@@ -158,6 +159,21 @@ export function ParticlePlanet({
     }),
     []
   );
+
+  // recolour from the live site accent (footer switcher) — the planet's
+  // three tones derive from the accent: deep, base, and lifted toward white
+  useEffect(() => {
+    return onAccent(() => {
+      const m = matRef.current;
+      if (!m) return;
+      const base = new THREE.Color(accentColors().a);
+      m.uniforms.uColorA.value.copy(base).multiplyScalar(0.5);
+      m.uniforms.uColorB.value.copy(base);
+      m.uniforms.uColorC.value
+        .copy(base)
+        .lerp(new THREE.Color("#ffffff"), 0.62);
+    });
+  }, []);
 
   useFrame((state, delta) => {
     const t = state.clock.elapsedTime;
