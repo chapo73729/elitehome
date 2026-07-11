@@ -144,12 +144,12 @@ function SiegeStage({
                   key={i}
                   style={{ opacity: op }}
                   className={`absolute bottom-0 left-0 flex items-center gap-2 font-mono text-[0.6rem] uppercase tracking-[0.24em] md:text-[0.66rem] ${
-                    i === 0 ? "text-[#ff5040]" : "text-accent"
+                    i === 0 ? "text-mist" : "text-accent"
                   }`}
                 >
                   <span
                     className={`inline-block h-1.5 w-1.5 rounded-full ${
-                      i === 0 ? "bg-[#ff5040]" : "bg-accent"
+                      i === 0 ? "bg-mist" : "bg-accent"
                     } ${i < 2 ? "animate-pulse" : ""}`}
                   />
                   {c.acts[i]}

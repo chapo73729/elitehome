@@ -87,8 +87,9 @@ const vert = /* glsl */ `
 const frag = /* glsl */ `
   precision highp float;
   uniform float uTime;
-  uniform vec3 uIce;   // defence colour — the site's live accent
-  uniform vec3 uCore;  // nucleus colour — accent lifted toward white, HDR
+  uniform vec3 uIce;      // defence colour — the site's live accent
+  uniform vec3 uCore;     // nucleus colour — accent lifted toward white, HDR
+  uniform vec3 uHostile;  // threat colour — a dim, cold shade of the accent
   varying float vT;
   varying float vScan;
   varying float vSeed;
@@ -101,13 +102,14 @@ const frag = /* glsl */ `
     if (d > 0.5) discard;
     float a = smoothstep(0.5, 0.1, d);
 
-    // hostile: ember reds, nervous flicker. captured: the site accent, calm.
-    vec3 ember = mix(vec3(1.0, 0.16, 0.10), vec3(1.0, 0.45, 0.20), vSeed);
+    // hostile: a dim, nervous, cold shade of the accent — chaotic but
+    // in-palette. captured: the bright site accent, calm.
+    vec3 hostile = mix(uHostile * 0.75, uHostile * 1.15, vSeed);
 
     float flicker = 0.62 + 0.38 * sin(uTime * 9.0 + vSeed * 55.0);
     flicker = mix(flicker, 1.0, vT); // the nerves settle once captured
 
-    vec3 col = mix(ember, uIce, vT);
+    vec3 col = mix(hostile, uIce, vT);
     if (vCore > 0.5) col = uCore;
 
     // white-hot flash mid-flight — the moment of capture
@@ -227,6 +229,14 @@ function Siege({
           .clone()
           .lerp(new THREE.Color("#ffffff"), 0.72)
           .multiplyScalar(1.55),
+      },
+      // threat: the accent pulled cold and dark — desaturated toward a
+      // steely indigo so the swarm reads as menace, still in-palette
+      uHostile: {
+        value: accent
+          .clone()
+          .lerp(new THREE.Color("#141826"), 0.55)
+          .multiplyScalar(0.9),
       },
     };
   }, []);
