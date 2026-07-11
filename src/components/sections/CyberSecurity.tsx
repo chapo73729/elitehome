@@ -36,7 +36,7 @@ function StaticShield() {
         height="220"
         viewBox="0 0 220 220"
         fill="none"
-        className="text-[#22e0ff] [filter:drop-shadow(0_0_18px_rgba(34,224,255,0.45))]"
+        className="text-accent [filter:drop-shadow(0_0_18px_color-mix(in_oklab,var(--color-accent)_45%,transparent))]"
       >
         <circle cx="110" cy="110" r="86" stroke="currentColor" strokeOpacity="0.75" strokeWidth="1.4" />
         <ellipse cx="110" cy="110" rx="86" ry="34" stroke="currentColor" strokeOpacity="0.45" strokeWidth="1" />
@@ -144,12 +144,12 @@ function SiegeStage({
                   key={i}
                   style={{ opacity: op }}
                   className={`absolute bottom-0 left-0 flex items-center gap-2 font-mono text-[0.6rem] uppercase tracking-[0.24em] md:text-[0.66rem] ${
-                    i === 0 ? "text-[#ff5040]" : "text-[#22e0ff]"
+                    i === 0 ? "text-[#ff5040]" : "text-accent"
                   }`}
                 >
                   <span
                     className={`inline-block h-1.5 w-1.5 rounded-full ${
-                      i === 0 ? "bg-[#ff5040]" : "bg-[#22e0ff]"
+                      i === 0 ? "bg-[#ff5040]" : "bg-accent"
                     } ${i < 2 ? "animate-pulse" : ""}`}
                   />
                   {c.acts[i]}
@@ -166,7 +166,7 @@ function SiegeStage({
         <div aria-hidden className="pointer-events-none absolute right-6 top-1/2 hidden h-[30vh] w-px -translate-y-1/2 overflow-hidden bg-white/10 lg:block">
           <motion.div
             style={{ scaleY: rail, transformOrigin: "top" }}
-            className="absolute inset-0 bg-[#22e0ff]/80"
+            className="absolute inset-0 bg-accent/80"
           />
         </div>
       </div>

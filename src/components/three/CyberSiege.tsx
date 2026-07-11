@@ -87,6 +87,8 @@ const vert = /* glsl */ `
 const frag = /* glsl */ `
   precision highp float;
   uniform float uTime;
+  uniform vec3 uIce;   // defence colour — the site's live accent
+  uniform vec3 uCore;  // nucleus colour — accent lifted toward white, HDR
   varying float vT;
   varying float vScan;
   varying float vSeed;
@@ -99,27 +101,37 @@ const frag = /* glsl */ `
     if (d > 0.5) discard;
     float a = smoothstep(0.5, 0.1, d);
 
-    // hostile: ember reds, nervous flicker. captured: crystalline cyan, calm.
+    // hostile: ember reds, nervous flicker. captured: the site accent, calm.
     vec3 ember = mix(vec3(1.0, 0.16, 0.10), vec3(1.0, 0.45, 0.20), vSeed);
-    vec3 ice   = vec3(0.13, 0.88, 1.0);
-    vec3 core  = vec3(0.75, 0.96, 1.0) * ${HOT};
 
     float flicker = 0.62 + 0.38 * sin(uTime * 9.0 + vSeed * 55.0);
     flicker = mix(flicker, 1.0, vT); // the nerves settle once captured
 
-    vec3 col = mix(ember, ice, vT);
-    if (vCore > 0.5) col = core;
+    vec3 col = mix(ember, uIce, vT);
+    if (vCore > 0.5) col = uCore;
 
     // white-hot flash mid-flight — the moment of capture
     float flash = smoothstep(0.05, 0.35, vT) * smoothstep(0.75, 0.45, vT);
     col += vec3(1.0) * flash * 0.9;
     // the analysis plane paints what it touches
-    col += vec3(0.25, 0.9, 1.0) * vScan * 1.1;
+    col += uIce * vScan * 1.2;
 
     float fog = 1.0 - vDepth * 0.55;
     gl_FragColor = vec4(col, a * fog * (0.5 + 0.5 * flicker + vScan * 0.4));
   }
 `;
+
+/** The site's live accent (respects the footer accent switcher). */
+function readAccent(): THREE.Color {
+  try {
+    const v = getComputedStyle(document.documentElement)
+      .getPropertyValue("--color-accent")
+      .trim();
+    return new THREE.Color(v || "#4f8cff");
+  } catch {
+    return new THREE.Color("#4f8cff");
+  }
+}
 
 /* ---------------- particle system ---------------- */
 function Siege({
@@ -201,15 +213,23 @@ function Siege({
     return { positions, targets, seeds, cores };
   }, [count]);
 
-  const uniforms = useMemo(
-    () => ({
+  const uniforms = useMemo(() => {
+    const accent = readAccent();
+    return {
       uTime: { value: 0 },
       uProgress: { value: 0 },
       uScanY: { value: 8 },
       uScanOn: { value: 0 },
-    }),
-    []
-  );
+      uIce: { value: accent },
+      // nucleus: accent lifted toward white, pushed past 1.0 for bloom
+      uCore: {
+        value: accent
+          .clone()
+          .lerp(new THREE.Color("#ffffff"), 0.72)
+          .multiplyScalar(1.55),
+      },
+    };
+  }, []);
 
   useFrame((state, delta) => {
     if (!mat.current) return;
@@ -277,6 +297,8 @@ function ScanPlane({ progressRef }: { progressRef: React.MutableRefObject<number
   const ref = useRef<THREE.Mesh>(null);
   const matRef = useRef<THREE.MeshBasicMaterial>(null);
   const smooth = useRef(0);
+  // accent pushed past 1.0 so bloom halos the beam
+  const beam = useMemo(() => readAccent().multiplyScalar(2.2), []);
 
   useFrame((_, delta) => {
     const dt = Math.min(delta, 0.05);
@@ -295,7 +317,7 @@ function ScanPlane({ progressRef }: { progressRef: React.MutableRefObject<number
       <planeGeometry args={[34, 0.05]} />
       <meshBasicMaterial
         ref={matRef}
-        color={new THREE.Color(0.3, 1.6, 2.0)}
+        color={beam}
         transparent
         opacity={0}
         blending={THREE.AdditiveBlending}

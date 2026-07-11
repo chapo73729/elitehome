@@ -66,7 +66,7 @@ export function FilmPanel({
         </div>
         <figcaption className="mt-3 flex items-center justify-between gap-4">
           <span className="flex items-center gap-2 font-mono text-[0.58rem] uppercase tracking-[0.28em] text-fog">
-            <span className="inline-block h-1.5 w-1.5 rounded-full bg-[#22e0ff]" />
+            <span className="inline-block h-1.5 w-1.5 rounded-full bg-accent" />
             {`// ${label}`}
           </span>
           <span className="text-right text-xs text-mist">{caption}</span>

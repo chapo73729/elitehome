@@ -144,10 +144,13 @@ export function Navbar({ ready = true }: { ready?: boolean }) {
                   }`}
                 >
                   {isActive && (
+                    /* per-item fade — a shared layoutId pill morphs across
+                       neighbouring items during fast scrolls and tangles */
                     <motion.span
-                      layoutId="nav-pill"
+                      initial={{ opacity: 0, scale: 0.85 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{ duration: 0.25, ease: [0.23, 1, 0.32, 1] }}
                       className="absolute inset-0 -z-0 rounded-full bg-chalk"
-                      transition={{ type: "spring", stiffness: 380, damping: 32 }}
                     />
                   )}
                   <span className="relative z-10">{item.label}</span>

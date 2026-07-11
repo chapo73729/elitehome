@@ -242,11 +242,7 @@ function CraftFilm() {
     <video
       ref={ref}
       aria-hidden
-      className="pointer-events-none absolute right-0 top-0 hidden h-full w-[54%] object-cover opacity-55 md:block"
-      style={{
-        maskImage: "linear-gradient(to left, black 45%, transparent 98%)",
-        WebkitMaskImage: "linear-gradient(to left, black 45%, transparent 98%)",
-      }}
+      className="pointer-events-none absolute right-0 top-0 h-full w-full object-cover opacity-40 [-webkit-mask-image:linear-gradient(to_top,black_35%,transparent_96%)] [mask-image:linear-gradient(to_top,black_35%,transparent_96%)] md:w-[54%] md:opacity-55 md:[-webkit-mask-image:linear-gradient(to_left,black_45%,transparent_98%)] md:[mask-image:linear-gradient(to_left,black_45%,transparent_98%)]"
       muted
       loop
       playsInline
