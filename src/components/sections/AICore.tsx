@@ -6,6 +6,7 @@ import { Reveal } from "@/components/ui/Reveal";
 import { ChapterNumeral } from "@/components/ui/ChapterNumeral";
 import { Compile } from "@/components/ui/Compile";
 import { CanvasMotif } from "@/components/ui/CanvasMotif";
+import { FilmPanel } from "@/components/ui/FilmPanel";
 import { useContent } from "@/lib/content";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
@@ -172,9 +173,18 @@ export function AICore() {
           </div>
         </div>
 
-        {/* RIGHT — the field lives here; the scrim above already gives it air.
-            This spacer column reserves the 60% track in the split layout. */}
-        <div aria-hidden className="hidden lg:block" />
+        {/* RIGHT — the interface reel floats inside the living field, the
+            cortex firing around it */}
+        <div className="relative mt-14 flex items-center lg:mt-0 lg:py-24">
+          <div className="mx-auto w-full lg:max-w-[560px]">
+            <FilmPanel
+              base="/media/interface"
+              label={c.reel.label}
+              caption={c.reel.caption}
+              reduced={reduce}
+            />
+          </div>
+        </div>
       </div>
     </section>
   );

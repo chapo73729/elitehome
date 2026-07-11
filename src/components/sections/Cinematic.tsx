@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   motion,
   useTransform,
@@ -150,6 +150,9 @@ export function Cinematic() {
           aria-hidden
           className="pointer-events-none absolute inset-0 bg-[radial-gradient(90%_70%_at_75%_40%,rgba(79,140,255,0.14),transparent_65%),radial-gradient(60%_50%_at_85%_70%,rgba(107,157,255,0.08),transparent_70%)]"
         />
+        {/* the craft, filmed — a masked ambient layer on the stage's right,
+            under the scrims so the manifesto type always owns the left */}
+        {!reduced && <CraftFilm />}
         {/* left-anchored scrim: solid void behind the (left-aligned) type so the
             white headline reads crisp, fading to transparent on the right where
             the spark field is the clean feature — same idiom as the AI Core. */}
@@ -215,6 +218,44 @@ export function Cinematic() {
         </div>
       </div>
     </section>
+  );
+}
+
+/** The craft footage, masked into the right of the manifesto stage — plays
+ *  only while the stage is on screen. Decorative; hidden from AT. */
+function CraftFilm() {
+  const ref = useRef<HTMLVideoElement>(null);
+  useEffect(() => {
+    const v = ref.current;
+    if (!v) return;
+    const io = new IntersectionObserver(
+      ([e]) => {
+        if (e.isIntersecting) v.play().catch(() => {});
+        else v.pause();
+      },
+      { threshold: 0.2 }
+    );
+    io.observe(v);
+    return () => io.disconnect();
+  }, []);
+  return (
+    <video
+      ref={ref}
+      aria-hidden
+      className="pointer-events-none absolute right-0 top-0 hidden h-full w-[54%] object-cover opacity-55 md:block"
+      style={{
+        maskImage: "linear-gradient(to left, black 45%, transparent 98%)",
+        WebkitMaskImage: "linear-gradient(to left, black 45%, transparent 98%)",
+      }}
+      muted
+      loop
+      playsInline
+      preload="none"
+      poster="/media/craft-poster.jpg"
+    >
+      <source src="/media/craft.mp4" type="video/mp4" />
+      <source src="/media/craft.webm" type="video/webm" />
+    </video>
   );
 }
 

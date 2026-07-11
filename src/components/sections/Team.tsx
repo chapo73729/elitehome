@@ -9,6 +9,7 @@ import { SectionHeading } from "@/components/ui/Section";
 import { Compile } from "@/components/ui/Compile";
 import { ChapterNumeral } from "@/components/ui/ChapterNumeral";
 import { SpotlightGroup } from "@/components/ui/SpotlightGroup";
+import { FilmPanel } from "@/components/ui/FilmPanel";
 
 type Member = { id: string; name: string; role: string; bio: string; stack: string[] };
 
@@ -134,6 +135,7 @@ function MemberCard({ member, index, stackLabel }: { member: Member; index: numb
 export function Team() {
   const c = useContent().team;
   const perf = usePerf();
+  const reduced = !!useReducedMotion() || perf;
   const members = c.members as unknown as Member[];
 
   return (
@@ -155,6 +157,17 @@ export function Team() {
             <MemberCard key={m.id} member={m} index={i} stackLabel={c.stackLabel} />
           ))}
         </SpotlightGroup>
+
+        {/* after hours — a cinematic beat of the studio at work */}
+        <div className="mt-16 md:mt-20">
+          <FilmPanel
+            base="/media/studio-life"
+            label={c.reel.label}
+            caption={c.reel.caption}
+            aspect="aspect-[21/9]"
+            reduced={reduced}
+          />
+        </div>
       </div>
     </section>
   );
