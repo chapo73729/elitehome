@@ -112,7 +112,10 @@ function SiegeStage({
         {/* legibility scrims */}
         <div aria-hidden className="pointer-events-none absolute inset-x-0 top-0 h-36 bg-gradient-to-b from-void via-void/40 to-transparent" />
         <div aria-hidden className="pointer-events-none absolute inset-x-0 bottom-0 h-36 bg-gradient-to-t from-void via-void/40 to-transparent" />
-        <div aria-hidden className="pointer-events-none absolute inset-y-0 left-0 w-1/2 bg-gradient-to-r from-[#030406]/85 via-transparent to-transparent" />
+        {/* the storm is bright — the headline column gets a firm scrim plus a
+            corner well so white type stays readable at every act */}
+        <div aria-hidden className="pointer-events-none absolute inset-y-0 left-0 w-[62%] bg-gradient-to-r from-[#030406]/95 via-[#030406]/60 to-transparent" />
+        <div aria-hidden className="pointer-events-none absolute left-0 top-0 h-[70%] w-[55%] bg-[radial-gradient(80%_80%_at_18%_28%,rgba(3,4,6,0.9),transparent_70%)]" />
 
         {/* persistent title, in-scene */}
         <div className="container-x pointer-events-none relative z-10 flex h-screen flex-col justify-between py-24 md:py-28">
@@ -121,10 +124,14 @@ function SiegeStage({
               <Decode text={c.eyebrow} className="eyebrow" />
             </Reveal>
             <Reveal delay={0.08}>
-              <h2 className="text-section-title text-gradient mt-5">{c.title}</h2>
+              <h2 className="text-section-title text-gradient mt-5 [filter:drop-shadow(0_2px_16px_rgba(3,4,6,0.95))_drop-shadow(0_0_36px_rgba(3,4,6,0.8))]">
+                {c.title}
+              </h2>
             </Reveal>
             <Reveal delay={0.16}>
-              <p className="mt-5 text-mist md:text-lg">{c.intro}</p>
+              <p className="mt-5 text-mist [filter:drop-shadow(0_1px_10px_rgba(3,4,6,0.95))] md:text-lg">
+                {c.intro}
+              </p>
             </Reveal>
           </div>
 
