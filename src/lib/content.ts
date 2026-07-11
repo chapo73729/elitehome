@@ -283,6 +283,10 @@ const en = {
       "02 · live analysis — every vector traced",
       "03 · threat absorbed — the attack becomes the armour",
     ],
+    reel: {
+      label: "field footage",
+      caption: "AI threat response — hunted, neutralised.",
+    },
     items: [
       { id: "soc", title: "Security Operations", tag: "SOC" },
       { id: "pentest", title: "Penetration Testing", tag: "OFFENSE" },
@@ -661,6 +665,10 @@ const fr: DeepPartial<Content> = {
       "02 · analyse en direct — chaque vecteur tracé",
       "03 · menace absorbée — l'attaque devient l'armure",
     ],
+    reel: {
+      label: "séquence terrain",
+      caption: "Réponse IA à la menace — traquée, neutralisée.",
+    },
     items: [
       { title: "Security Operations" },
       { title: "Tests d'intrusion" },
