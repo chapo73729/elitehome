@@ -97,6 +97,43 @@ export function CanvasMotif({
       cyberInit = true;
     };
 
+    // ai: an organic cortex — drifting neurons, thoughts cascading node to node
+    const aiNodes: { bx: number; by: number; ph: number; act: number }[] = [];
+    const aiLinks: [number, number][] = [];
+    const aiPulses: { l: number; p: number; speed: number; from: number }[] = [];
+    let aiInit = false;
+    let aiLastFire = 0;
+    let aiPrevT = 0;
+    const initAi = () => {
+      aiNodes.length = 0;
+      aiLinks.length = 0;
+      aiPulses.length = 0;
+      const n = Math.max(26, Math.min(48, Math.round((W * H) / 16000)));
+      for (let i = 0; i < n; i++) {
+        aiNodes.push({
+          bx: 30 + Math.random() * Math.max(1, W - 60),
+          by: 26 + Math.random() * Math.max(1, H - 52),
+          ph: Math.random() * Math.PI * 2,
+          act: 0,
+        });
+      }
+      // each neuron reaches its 3 nearest peers
+      for (let i = 0; i < aiNodes.length; i++) {
+        const d = aiNodes
+          .map((m, j) => ({ j, dist: (m.bx - aiNodes[i].bx) ** 2 + (m.by - aiNodes[i].by) ** 2 }))
+          .filter((o) => o.j !== i)
+          .sort((a, b) => a.dist - b.dist);
+        for (let k = 0; k < 3 && k < d.length; k++) {
+          const a = i;
+          const b = d[k].j;
+          if (!aiLinks.some(([x, y]) => (x === a && y === b) || (x === b && y === a))) {
+            aiLinks.push([a, b]);
+          }
+        }
+      }
+      aiInit = true;
+    };
+
     const startT = performance.now();
     const loop = (now: number) => {
       raf = 0;
@@ -121,35 +158,86 @@ export function CanvasMotif({
           cols[i] = y > H + Math.random() * 200 ? Math.random() * -60 : y + fs;
         }
       } else if (variant === "ai") {
-        const cx = W / 2;
-        const cy = H / 2;
-        const nodeCount = 38;
+        if (!aiInit || aiNodes.length === 0) initAi();
+        // real frame delta so pulse speed is framerate-independent
+        const dtl = Math.min(0.08, Math.max(0.001, t - aiPrevT));
+        aiPrevT = t;
         ctx.globalCompositeOperation = "lighter";
-        for (let i = 0; i < nodeCount; i++) {
-          const a = (i / nodeCount) * Math.PI * 2 + t * 0.15;
-          const r = (Math.min(W, H) / 2) * (0.32 + 0.55 * (0.5 + 0.5 * Math.sin(t + i)));
-          const x = cx + Math.cos(a) * r;
-          const y = cy + Math.sin(a) * r * 0.72;
-          ctx.strokeStyle = "rgba(120,170,255,0.3)";
-          ctx.lineWidth = 1;
+
+        // live positions: each neuron wanders gently around its seat
+        const px: number[] = [];
+        const py: number[] = [];
+        for (let i = 0; i < aiNodes.length; i++) {
+          const nd = aiNodes[i];
+          px[i] = nd.bx + Math.sin(t * 0.4 + nd.ph) * 9;
+          py[i] = nd.by + Math.cos(t * 0.33 + nd.ph * 1.7) * 7;
+          nd.act *= 0.955; // afterglow decays
+        }
+
+        // a thought fires every ~0.5s from a random neuron
+        if (t - aiLastFire > 0.5 && aiLinks.length) {
+          aiLastFire = t;
+          const l = (Math.random() * aiLinks.length) | 0;
+          aiPulses.push({ l, p: 0, speed: 0.9 + Math.random() * 0.9, from: aiLinks[l][0] });
+          if (aiPulses.length > 14) aiPulses.shift();
+        }
+
+        // synapses — brightened briefly where a pulse recently passed
+        ctx.lineWidth = 1;
+        for (let li = 0; li < aiLinks.length; li++) {
+          const [a, b] = aiLinks[li];
+          const heat = Math.max(aiNodes[a].act, aiNodes[b].act);
+          ctx.strokeStyle = `rgba(130,180,255,${0.17 + heat * 0.33})`;
           ctx.beginPath();
-          ctx.moveTo(cx, cy);
-          ctx.lineTo(x, y);
+          ctx.moveTo(px[a], py[a]);
+          ctx.lineTo(px[b], py[b]);
           ctx.stroke();
-          const sp = (t * 0.6 + i * 0.13) % 1;
-          ctx.fillStyle = "rgba(180,240,255,0.9)";
+        }
+
+        // travelling pulses — thoughts hopping neuron to neuron in cascades
+        for (let k = aiPulses.length - 1; k >= 0; k--) {
+          const pu = aiPulses[k];
+          pu.p += pu.speed * dtl;
+          const [a, b] = aiLinks[pu.l];
+          const to = pu.from === a ? b : a;
+          const fr = pu.from;
+          const x = px[fr] + (px[to] - px[fr]) * Math.min(1, pu.p);
+          const y = py[fr] + (py[to] - py[fr]) * Math.min(1, pu.p);
+          ctx.fillStyle = "rgba(190,240,255,0.95)";
           ctx.beginPath();
-          ctx.arc(cx + (x - cx) * sp, cy + (y - cy) * sp, 1.4, 0, Math.PI * 2);
+          ctx.arc(x, y, 1.8, 0, Math.PI * 2);
           ctx.fill();
-          ctx.fillStyle = "rgba(180,238,255,0.95)";
+          if (pu.p >= 1) {
+            aiNodes[to].act = 1; // the neuron fires…
+            aiPulses.splice(k, 1);
+            if (Math.random() < 0.65) {
+              // …and the thought cascades onward
+              const nexts = aiLinks
+                .map((lk, idx) => ({ lk, idx }))
+                .filter(({ lk }) => (lk[0] === to || lk[1] === to) && lk[0] !== fr && lk[1] !== fr);
+              if (nexts.length) {
+                const nx = nexts[(Math.random() * nexts.length) | 0];
+                aiPulses.push({ l: nx.idx, p: 0, speed: 0.9 + Math.random() * 0.9, from: to });
+              }
+            }
+          }
+        }
+
+        // neurons — resting glow, flaring white as a thought arrives
+        for (let i = 0; i < aiNodes.length; i++) {
+          const act = aiNodes[i].act;
+          const rr = 1.9 + act * 2.6;
+          if (act > 0.12) {
+            ctx.fillStyle = `rgba(200,235,255,${act * 0.22})`;
+            ctx.beginPath();
+            ctx.arc(px[i], py[i], rr * 3.4, 0, Math.PI * 2);
+            ctx.fill();
+          }
+          ctx.fillStyle = `rgba(${170 + act * 85},${215 + act * 40},255,${0.55 + act * 0.45})`;
           ctx.beginPath();
-          ctx.arc(x, y, 2.0 + Math.sin(t * 2 + i) * 1.0, 0, Math.PI * 2);
+          ctx.arc(px[i], py[i], rr, 0, Math.PI * 2);
           ctx.fill();
         }
-        ctx.fillStyle = "rgba(255,255,255,1.0)";
-        ctx.beginPath();
-        ctx.arc(cx, cy, 4 + Math.sin(t * 3) * 1.8, 0, Math.PI * 2);
-        ctx.fill();
         ctx.globalCompositeOperation = "source-over";
       } else if (variant === "industrial") {
         const cx = W * 0.5;
