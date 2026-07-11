@@ -76,6 +76,14 @@ html {
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
   scroll-behavior: auto; /* Lenis controls scroll */
+  /* typographic finish: explicit kerning, contextual + common ligatures,
+     proportional lining figures by default, optical sizing where the face
+     supports it, and hung punctuation on engines that honour it */
+  font-kerning: normal;
+  font-optical-sizing: auto;
+  font-feature-settings: "kern", "liga", "calt";
+  font-variant-numeric: proportional-nums lining-nums;
+  hanging-punctuation: first last;
 }
 
 html.lenis,
@@ -151,15 +159,22 @@ html {
 }
 .font-mono {
   font-family: var(--font-mono);
+  /* technical labels: tabular figures so changing numbers never jitter, and
+     NO ligatures so `//`, `->`, `==` stay literal in the console idiom */
+  font-variant-numeric: tabular-nums;
+  font-variant-ligatures: none;
+  font-feature-settings: "tnum", "kern";
 }
 
 .text-mega {
   font-family: var(--font-display);
   font-weight: 700;
-  line-height: 0.92;
-  letter-spacing: -0.04em;
+  line-height: 0.9;
+  letter-spacing: -0.045em;
   font-size: clamp(2.6rem, 12vw, 16rem);
   overflow-wrap: break-word;
+  text-wrap: balance;
+  hyphens: none;
 }
 
 .text-giant {
@@ -170,6 +185,7 @@ html {
   font-size: clamp(2.4rem, 7vw, 6.5rem);
   /* no widows/orphans on display headlines — the award-tier typographic tell */
   text-wrap: balance;
+  hyphens: none;
 }
 
 .text-section-title {
@@ -179,6 +195,7 @@ html {
   letter-spacing: -0.03em;
   font-size: clamp(2rem, 5vw, 4.5rem);
   text-wrap: balance;
+  hyphens: none;
 }
 
 .eyebrow {
@@ -525,6 +542,13 @@ html {
   [role="button"],
   [data-cursor] {
     touch-action: manipulation;
+  }
+
+  /* body copy: pretty wrapping kills last-line widows across paragraphs
+     (progressive — engines without it fall back to normal wrapping). Any
+     component `text-balance`/`text-pretty` utility still wins. */
+  p {
+    text-wrap: pretty;
   }
 
   /* bare text links get a softly-rounded focus ring; any rounded-*
