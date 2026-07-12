@@ -63,7 +63,7 @@ function lockScroll() {
 
 /**
  * Ouverture — the official BLACKFIRST wordmark, nothing else. The logotype
- * reveals itself left to right behind a passing champagne light, the byline
+ * reveals itself left to right behind a passing white light, the byline
  * settles beneath it, a fine line draws — then the veil lifts.
  */
 export function Loader({ onComplete }: { onComplete: () => void }) {
@@ -142,7 +142,7 @@ export function Loader({ onComplete }: { onComplete: () => void }) {
           {/* soupçon de lumière chaude derrière le logo */}
           <div
             aria-hidden
-            className="absolute inset-0 [background:radial-gradient(46%_30%_at_50%_50%,rgba(198,161,91,0.10),transparent_70%)]"
+            className="absolute inset-0 [background:radial-gradient(46%_30%_at_50%_50%,rgba(255,255,255,0.06),transparent_70%)]"
           />
 
           {/* le logotype officiel, révélé de gauche à droite */}
@@ -158,14 +158,14 @@ export function Loader({ onComplete }: { onComplete: () => void }) {
             >
               <Wordmark className="w-full" priority />
             </motion.div>
-            {/* balayage de lumière champagne qui accompagne la révélation */}
+            {/* balayage de lumière qui accompagne la révélation */}
             {!reduce && (
               <motion.span
                 aria-hidden
                 initial={{ left: "-12%" }}
                 animate={{ left: "104%" }}
                 transition={{ duration: 1.45, ease: [0.65, 0, 0.35, 1], delay: 0.15 }}
-                className="absolute top-1/2 h-[300%] w-16 -translate-y-1/2 bg-[linear-gradient(90deg,transparent,rgba(228,200,138,0.35),transparent)] blur-md"
+                className="absolute top-1/2 h-[300%] w-16 -translate-y-1/2 bg-[linear-gradient(90deg,transparent,rgba(255,255,255,0.38),transparent)] blur-md"
               />
             )}
           </div>

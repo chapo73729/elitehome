@@ -24,13 +24,13 @@
   /* Platinum — metallic silver for numerals & fine rules */
   --color-platinum: #c7cbd1;
 
-  /* Accent — a single discreet champagne signal, ≤10% of any screen. The
-     -2/-3 tokens stay in the champagne family so the system reads as one
-     restrained metallic voice, never a rainbow. */
-  --color-accent: #c6a15b;      /* accent/base — champagne gold */
-  --color-accent-2: #e4c88a;    /* accent/hover — light champagne */
-  --color-accent-3: #a8843f;    /* accent/deep — antique gold */
-  --color-glow: #c6a15b;
+  /* Accent — pure monochrome: the house speaks in black and white only.
+     The -2/-3 tokens step down into platinum so the system reads as one
+     silver-white voice, never a colour. */
+  --color-accent: #ffffff;      /* accent/base — pure white */
+  --color-accent-2: #e6e8ec;    /* accent/hover — light platinum */
+  --color-accent-3: #b9bec6;    /* accent/deep — platinum grey */
+  --color-glow: #ffffff;
 
   /* Display: luxury serif. Body + labels: refined geometric sans (Jost) —
      the "mono" slot intentionally maps to Jost: labels read as letterspaced
@@ -142,18 +142,18 @@ body {
   }
 }
 
-/* branded selection — azure wash, pure-white text (≥9:1 on the mix) */
+/* branded selection — inverted monochrome: ivory wash, black text */
 ::selection {
-  background: color-mix(in oklab, var(--color-accent) 35%, transparent);
-  color: var(--color-white-pure);
+  background: rgba(248, 245, 238, 0.92);
+  color: #050505;
 }
 
 /* explicit rules for fields — engines don't reliably cascade ::selection
-   into form controls (the contact Brief, terminal, command palette) */
+   into form controls (the booking form) */
 input::selection,
 textarea::selection {
-  background: color-mix(in oklab, var(--color-accent) 35%, transparent);
-  color: var(--color-white-pure);
+  background: rgba(248, 245, 238, 0.92);
+  color: #050505;
 }
 
 /* Custom scrollbar (visible when Lenis disabled / native) —

@@ -25,7 +25,7 @@ type Phase = "idle" | "cover" | "reveal";
  * we play the robust "reveal" variant: on pathname change a full-screen void
  * overlay appears INSTANTLY (already fully covering the freshly swapped
  * route), holds ~250ms while the page paints — signed by the wordmark and a
- * thin champagne leading edge — then sweeps up to reveal the new page.
+ * thin light leading edge — then sweeps up to reveal the new page.
  *
  * Skipped entirely on first mount and under prefers-reduced-motion
  * (instant swap). While covered the window is snapped to top (unless a
@@ -86,12 +86,12 @@ export function PageTransition() {
         if (phase === "reveal") setPhase("idle");
       }}
     >
-      {/* a whisper of warm light in the black — no grids, no scanners */}
+      {/* a whisper of light in the black — no grids, no scanners */}
       <div
         aria-hidden
-        className="absolute inset-0 [background:radial-gradient(70%_50%_at_50%_100%,rgba(198,161,91,0.08),transparent_70%)]"
+        className="absolute inset-0 [background:radial-gradient(70%_50%_at_50%_100%,rgba(255,255,255,0.05),transparent_70%)]"
       />
-      {/* thin champagne leading edge — the line that passes over the content
+      {/* thin light leading edge — the line that passes over the content
           as the cover sweeps up */}
       <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-accent/70 to-transparent" />
       {/* the house signs the passage — the official wordmark, centered */}

@@ -17,17 +17,17 @@ export function BookingCTA() {
   return (
     <section
       id="booking"
-      className="relative z-10 scroll-mt-24 overflow-hidden bg-gradient-to-b from-[#f8f5ee] via-[#f3eee2] to-[#ece5d4] py-28 text-void md:py-40"
+      className="relative z-10 scroll-mt-24 overflow-hidden bg-gradient-to-b from-[#fafaf8] via-[#f4f4f1] to-[#eaeae6] py-28 text-void md:py-40"
     >
-      {/* lumière champagne dans l'ivoire */}
+      {/* modelé doux dans l'ivoire — ombres neutres, aucune couleur */}
       <div aria-hidden className="pointer-events-none absolute inset-0">
-        <div className="absolute left-1/2 top-0 h-[460px] w-[900px] -translate-x-1/2 rounded-full bg-[radial-gradient(circle,rgba(198,161,91,0.28),transparent_70%)] blur-3xl" />
-        <div className="absolute -bottom-24 right-[10%] h-[320px] w-[520px] rounded-full bg-[radial-gradient(circle,rgba(198,161,91,0.18),transparent_70%)] blur-3xl" />
+        <div className="absolute left-1/2 top-0 h-[460px] w-[900px] -translate-x-1/2 rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.65),transparent_70%)] blur-3xl" />
+        <div className="absolute -bottom-24 right-[10%] h-[320px] w-[520px] rounded-full bg-[radial-gradient(circle,rgba(5,5,5,0.05),transparent_70%)] blur-3xl" />
       </div>
 
       <div className="container-x relative text-center">
         <Reveal>
-          <p className="font-mono text-[0.68rem] font-medium uppercase tracking-[0.4em] text-[#a8843f]">
+          <p className="font-mono text-[0.68rem] font-medium uppercase tracking-[0.4em] text-[#55524b]">
             {b.eyebrow}
           </p>
         </Reveal>
@@ -46,8 +46,8 @@ export function BookingCTA() {
               data-cursor
               className="group relative inline-flex items-center justify-center overflow-hidden rounded-full bg-[#141210] px-8 py-4 text-[0.72rem] font-medium uppercase tracking-[0.22em] text-chalk transition-transform duration-300 hover:scale-[1.03] active:scale-[0.97]"
             >
-              <span className="relative z-10">{c.book}</span>
-              <span className="absolute inset-0 -z-0 translate-y-full bg-gradient-to-r from-accent-3 via-accent to-accent-2 transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:translate-y-0" />
+              <span className="relative z-10 transition-colors duration-300 group-hover:text-void">{c.book}</span>
+              <span className="absolute inset-0 -z-0 translate-y-full bg-chalk transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:translate-y-0" />
             </LocaleLink>
             <a
               href={`tel:${SITE.phoneHref}`}

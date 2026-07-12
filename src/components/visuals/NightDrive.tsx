@@ -32,8 +32,8 @@ export function NightDrive() {
     resize();
     window.addEventListener("resize", resize, { passive: true });
 
-    // champagne / platinum / cool-street palette for the bokeh
-    const COLORS = ["198,161,91", "228,200,138", "199,203,209", "150,170,200"];
+    // monochrome bokeh — whites and platinums only
+    const COLORS = ["255,255,255", "230,232,236", "199,203,209", "168,173,180"];
     type Bokeh = { x: number; y: number; r: number; vx: number; vy: number; a: number; c: string };
     type Drop = { x: number; y: number; len: number; v: number };
 
@@ -66,8 +66,8 @@ export function NightDrive() {
 
       // wet-road glow near the bottom
       const grad = ctx.createRadialGradient(w * 0.5, h * 1.02, 0, w * 0.5, h * 1.02, h * 0.9);
-      grad.addColorStop(0, "rgba(198,161,91,0.10)");
-      grad.addColorStop(1, "rgba(198,161,91,0)");
+      grad.addColorStop(0, "rgba(255,255,255,0.08)");
+      grad.addColorStop(1, "rgba(255,255,255,0)");
       ctx.fillStyle = grad;
       ctx.fillRect(0, 0, w, h);
 

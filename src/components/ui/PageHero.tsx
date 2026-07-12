@@ -15,7 +15,7 @@ export function PageHero({
   eyebrow,
   title,
   intro,
-  accent = "#c6a15b",
+  accent = "#ffffff",
   backHref = "/",
   image,
   imagePosition = "center",

@@ -29,10 +29,10 @@ export const SITE = {
 /* ---- Services (structural: slug + index + accent) ------------------------
    Localized titles/copy live in content.services.items, keyed by slug. */
 export const SERVICES = [
-  { slug: "airport-transfer", index: "01", accent: "#c6a15b" },
-  { slug: "business-chauffeur", index: "02", accent: "#d9c08a" },
-  { slug: "events", index: "03", accent: "#b8934d" },
-  { slug: "long-distance", index: "04", accent: "#c7cbd1" },
+  { slug: "airport-transfer", index: "01", accent: "#ffffff" },
+  { slug: "business-chauffeur", index: "02", accent: "#e6e8ec" },
+  { slug: "events", index: "03", accent: "#c7cbd1" },
+  { slug: "long-distance", index: "04", accent: "#f5f5f5" },
 ] as const;
 
 export type ServiceSlug = (typeof SERVICES)[number]["slug"];
@@ -49,7 +49,7 @@ export const FLEET = [
     line: "Berline · Flagship",
     seats: 3,
     luggage: 3,
-    accent: "#c6a15b",
+    accent: "#ffffff",
     electric: false,
   },
   {
@@ -58,7 +58,7 @@ export const FLEET = [
     line: "Van · Cabine première classe",
     seats: 7,
     luggage: 7,
-    accent: "#d9c08a",
+    accent: "#c7cbd1",
     electric: false,
   },
 ] as const;

@@ -24,7 +24,7 @@ export default async function Og() {
           justifyContent: "center",
           background: "#050505",
           backgroundImage:
-            "radial-gradient(60% 60% at 50% 120%, rgba(198,161,91,0.30), transparent 70%)",
+            "radial-gradient(60% 60% at 50% 120%, rgba(255,255,255,0.10), transparent 70%)",
           color: "#f6f3ec",
           fontFamily: "sans-serif",
         }}
@@ -42,10 +42,10 @@ export default async function Og() {
           }}
         />
         {[
-          { top: 28, left: 28, borderTop: "3px solid rgba(198,161,91,0.9)", borderLeft: "3px solid rgba(198,161,91,0.9)" },
-          { top: 28, right: 28, borderTop: "3px solid rgba(198,161,91,0.9)", borderRight: "3px solid rgba(198,161,91,0.9)" },
-          { bottom: 28, left: 28, borderBottom: "3px solid rgba(198,161,91,0.9)", borderLeft: "3px solid rgba(198,161,91,0.9)" },
-          { bottom: 28, right: 28, borderBottom: "3px solid rgba(198,161,91,0.9)", borderRight: "3px solid rgba(198,161,91,0.9)" },
+          { top: 28, left: 28, borderTop: "3px solid rgba(255,255,255,0.85)", borderLeft: "3px solid rgba(255,255,255,0.85)" },
+          { top: 28, right: 28, borderTop: "3px solid rgba(255,255,255,0.85)", borderRight: "3px solid rgba(255,255,255,0.85)" },
+          { bottom: 28, left: 28, borderBottom: "3px solid rgba(255,255,255,0.85)", borderLeft: "3px solid rgba(255,255,255,0.85)" },
+          { bottom: 28, right: 28, borderBottom: "3px solid rgba(255,255,255,0.85)", borderRight: "3px solid rgba(255,255,255,0.85)" },
         ].map((s, i) => (
           <div key={i} style={{ position: "absolute", width: 34, height: 34, display: "flex", ...s }} />
         ))}

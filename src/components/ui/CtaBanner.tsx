@@ -19,7 +19,7 @@ export function CtaBanner({
   return (
     <section className="relative z-10 overflow-hidden bg-void py-24 md:py-32">
       <div aria-hidden className="pointer-events-none absolute inset-0">
-        <div className="absolute left-1/2 top-1/2 h-[360px] w-[720px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle,rgba(198,161,91,0.12),transparent_70%)] blur-3xl" />
+        <div className="absolute left-1/2 top-1/2 h-[360px] w-[720px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.07),transparent_70%)] blur-3xl" />
       </div>
       <div className="container-x relative text-center">
         <Reveal>

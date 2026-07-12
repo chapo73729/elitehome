@@ -112,7 +112,7 @@ const toPath = (pts: [number, number][]) =>
 /**
  * Genève & Europe — la vraie carte de la maison : frontières réelles
  * (Natural Earth 10 m), lacs alpins, relief suggéré, et les liaisons
- * BLACKFIRST qui rayonnent depuis Genève en lumière champagne.
+ * BLACKFIRST qui rayonnent depuis Genève en lumière blanche.
  */
 export function RouteMap() {
   const r = useContent().routes;
@@ -163,8 +163,8 @@ export function RouteMap() {
                   <stop offset="100%" stopColor="#0b1722" />
                 </linearGradient>
                 <radialGradient id="hub-glow" cx="50%" cy="50%" r="50%">
-                  <stop offset="0%" stopColor="rgba(198,161,91,0.35)" />
-                  <stop offset="100%" stopColor="rgba(198,161,91,0)" />
+                  <stop offset="0%" stopColor="rgba(255,255,255,0.30)" />
+                  <stop offset="100%" stopColor="rgba(255,255,255,0)" />
                 </radialGradient>
                 <filter id="route-glow" x="-30%" y="-30%" width="160%" height="160%">
                   <feGaussianBlur stdDeviation="2.2" result="b" />
@@ -253,12 +253,12 @@ export function RouteMap() {
                   const d = `M ${hub.x} ${hub.y} Q ${mx} ${my} ${n.x} ${n.y}`;
                   return (
                     <g key={n.id}>
-                      <path d={d} fill="none" stroke="rgba(198,161,91,0.25)" strokeWidth="1.5" />
+                      <path d={d} fill="none" stroke="rgba(255,255,255,0.22)" strokeWidth="1.5" />
                       {!reduced && (
                         <motion.path
                           d={d}
                           fill="none"
-                          stroke="#e4c88a"
+                          stroke="#ffffff"
                           strokeWidth="2.2"
                           strokeLinecap="round"
                           strokeDasharray="12 260"
@@ -279,7 +279,7 @@ export function RouteMap() {
                 return (
                   <g key={n.id}>
                     {n.hub && (
-                      <circle cx={n.x} cy={n.y} r="14" fill="none" stroke="rgba(198,161,91,0.5)" strokeWidth="1.2">
+                      <circle cx={n.x} cy={n.y} r="14" fill="none" stroke="rgba(255,255,255,0.45)" strokeWidth="1.2">
                         {!reduced && (
                           <animate attributeName="r" values="9;20;9" dur="3.2s" repeatCount="indefinite" />
                         )}
@@ -289,7 +289,7 @@ export function RouteMap() {
                       cx={n.x}
                       cy={n.y}
                       r={n.hub ? 5.5 : 3.6}
-                      fill={n.hub ? "#e4c88a" : "#c7cbd1"}
+                      fill={n.hub ? "#ffffff" : "#c7cbd1"}
                       stroke="#07080b"
                       strokeWidth="1.5"
                     />

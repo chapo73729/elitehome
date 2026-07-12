@@ -9,7 +9,7 @@ import { useEffect, useRef } from "react";
  * prefers-reduced-motion. Purely decorative.
  */
 export function PageHeaderFX({
-  accent = "#c6a15b",
+  accent = "#ffffff",
   className,
 }: {
   accent?: string;

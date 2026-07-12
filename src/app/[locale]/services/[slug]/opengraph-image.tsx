@@ -23,7 +23,7 @@ export default async function Image({
   const svc = SERVICES.find((s) => s.slug === slug);
   const meta = SERVICE_META[slug]?.[locale] ?? SERVICE_META[slug]?.en;
   const title = meta?.title ?? SITE.legal;
-  const accent = svc?.accent ?? "#c6a15b";
+  const accent = svc?.accent ?? "#ffffff";
   const index = svc?.index ?? "";
   const wordmark = await readFile(join(process.cwd(), "public/brand/wordmark.png"));
   const wordmarkSrc = `data:image/png;base64,${wordmark.toString("base64")}`;
