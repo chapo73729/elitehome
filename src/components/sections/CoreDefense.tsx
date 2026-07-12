@@ -2,10 +2,13 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useReducedMotion } from "framer-motion";
+import { track } from "@vercel/analytics";
 import { useContent } from "@/lib/content";
 import { usePerf } from "@/lib/perf";
 import { audio } from "@/lib/audio";
 import { accentRGB, onAccent } from "@/lib/accent";
+import { toast, copyText } from "@/lib/toast";
+import { SITE } from "@/lib/site";
 import { Reveal } from "@/components/ui/Reveal";
 import { ChapterNumeral } from "@/components/ui/ChapterNumeral";
 import { scrollToTarget } from "@/components/layout/SmoothScroll";
@@ -42,6 +45,11 @@ type Star = { x: number; y: number; z: number };
 
 type Phase = "idle" | "playing" | "upgrade" | "over";
 
+/** Tiny haptic tap on supporting devices — no-op elsewhere. */
+const buzz = (pattern: number | number[]) => {
+  try { navigator.vibrate?.(pattern); } catch {}
+};
+
 const PULSE_CD = 6;
 const OC_CD = 12;
 const PURGE_CD = 26;
@@ -59,6 +67,7 @@ export function CoreDefense() {
   const [result, setResult] = useState({ score: 0, wave: 1, rank: 0 });
   const [best, setBest] = useState(0);
   const [bestWave, setBestWave] = useState(1);
+  const [runs, setRuns] = useState<{ s: number; w: number }[]>([]);
   const [choices, setChoices] = useState<number[]>([]);
   const [hard, setHard] = useState(false);
   const hardRef = useRef(false);
@@ -71,6 +80,10 @@ export function CoreDefense() {
   const pulseFillRef = useRef<HTMLSpanElement>(null);
   const ocFillRef = useRef<HTMLSpanElement>(null);
   const purgeFillRef = useRef<HTMLSpanElement>(null);
+  // duplicate cooldown gauges for the floating touch controls on the canvas
+  const pulseFillMRef = useRef<HTMLSpanElement>(null);
+  const ocFillMRef = useRef<HTMLSpanElement>(null);
+  const purgeFillMRef = useRef<HTMLSpanElement>(null);
   const phaseRef = useRef<Phase>("idle");
   const doPulseRef = useRef<() => void>(() => {});
   const doOcRef = useRef<() => void>(() => {});
@@ -83,6 +96,8 @@ export function CoreDefense() {
       if (!Number.isNaN(b)) setBest(b);
       const w = parseInt(localStorage.getItem("ardlabs-coredef-wave") || "1", 10);
       if (!Number.isNaN(w)) setBestWave(w);
+      const r = JSON.parse(localStorage.getItem("ardlabs-coredef-runs") || "[]");
+      if (Array.isArray(r)) setRuns(r.filter((x) => typeof x?.s === "number" && typeof x?.w === "number").slice(0, 5));
     } catch {}
   }, []);
 
@@ -172,6 +187,7 @@ export function CoreDefense() {
             banner = { t: 1.3, text: MILESTONES[i][1] };
             flashT = 0.5;
             audio.success();
+            buzz([15, 30, 15]);
             break;
           }
         }
@@ -225,6 +241,7 @@ export function CoreDefense() {
         burst(t.x, t.y, BOSSC, 60, 240);
         shake = 18;
         audio.success();
+        buzz([20, 40, 60]);
         threats.splice(i, 1);
         setHud();
         return;
@@ -241,12 +258,14 @@ export function CoreDefense() {
       threats.splice(i, 1);
     };
 
-    const hitAt = (px: number, py: number) => {
+    const hitAt = (px: number, py: number, touch = false) => {
       if (phaseRef.current !== "playing" || countdown > 0) return;
+      // fingers are less precise than cursors — widen every hit window
+      const TB = touch ? 14 : 0;
       // repair pickups first
       for (let i = pickups.length - 1; i >= 0; i--) {
         const p = pickups[i];
-        if ((p.x - px) ** 2 + (p.baseY - py) ** 2 < 28 * 28) {
+        if ((p.x - px) ** 2 + (p.baseY - py) ** 2 < (28 + TB) ** 2) {
           integrity = Math.min(P.maxInteg, integrity + 18);
           burst(p.x, p.baseY, REPAIR, 14);
           popups.push({ x: p.x, y: p.baseY, life: 1, text: "+REPAIR", big: true });
@@ -259,7 +278,7 @@ export function CoreDefense() {
       // shooter projectiles are clickable to shoot down
       for (let i = projs.length - 1; i >= 0; i--) {
         const q = projs[i];
-        if ((q.x - px) ** 2 + (q.y - py) ** 2 < 22 * 22) {
+        if ((q.x - px) ** 2 + (q.y - py) ** 2 < (22 + TB) ** 2) {
           burst(q.x, q.y, SHOOT, 6, 60);
           addScore(5, q.x, q.y, true);
           projs.splice(i, 1);
@@ -268,10 +287,11 @@ export function CoreDefense() {
           return;
         }
       }
-      let bi = -1, bd = P.hitR * P.hitR;
+      const HR = P.hitR + TB;
+      let bi = -1, bd = HR * HR;
       for (let i = 0; i < threats.length; i++) {
         const t = threats[i];
-        const rr = Math.max(t.r + 8, P.hitR);
+        const rr = Math.max(t.r + 8, HR);
         const d = (t.x - px) ** 2 + (t.y - py) ** 2;
         if (d < rr * rr && d < bd + t.r * t.r) { bd = d; bi = i; }
       }
@@ -286,6 +306,7 @@ export function CoreDefense() {
         } else {
           killThreat(bi);
           audio.click();
+          if (touch) buzz(8);
         }
         setHud();
       }
@@ -317,6 +338,7 @@ export function CoreDefense() {
       flashT = 0.7; shake = 12;
       banner = { t: 1.2, text: c.purge.toUpperCase() };
       audio.whoosh();
+      buzz(50);
       setHud();
     };
     doPulseRef.current = doPulse;
@@ -334,7 +356,7 @@ export function CoreDefense() {
 
     const onPointer = (e: PointerEvent) => {
       const r = canvas.getBoundingClientRect();
-      hitAt(e.clientX - r.left, e.clientY - r.top);
+      hitAt(e.clientX - r.left, e.clientY - r.top, e.pointerType === "touch");
     };
     const onMove = (e: PointerEvent) => {
       const r = canvas.getBoundingClientRect();
@@ -350,10 +372,17 @@ export function CoreDefense() {
     const endGame = () => {
       burst(cx, cy, RED, 50, 240);
       shake = 18;
+      buzz([60, 50, 120]);
+      track("game_over", { score, wave, hard: hardRef.current });
       const RANKS = [20, 55, 110, 190];
       let rank = 0;
       while (rank < RANKS.length && score >= RANKS[rank]) rank++;
       setResult({ score, wave, rank });
+      setRuns((prev) => {
+        const next = [...prev, { s: score, w: wave }].sort((a, b) => b.s - a.s).slice(0, 5);
+        try { localStorage.setItem("ardlabs-coredef-runs", JSON.stringify(next)); } catch {}
+        return next;
+      });
       setBest((prev) => {
         const nb = Math.max(prev, score);
         try { localStorage.setItem("ardlabs-coredef-best", String(nb)); } catch {}
@@ -412,10 +441,25 @@ export function CoreDefense() {
         pickups.push({ x: fromLeft ? -20 : W + 20, vx: (fromLeft ? 1 : -1) * (40 + Math.random() * 20), baseY: 40 + Math.random() * (H - 80) });
       }
 
-      // cooldowns
-      if (pulseCd > 0) { pulseCd = Math.max(0, pulseCd - dt); if (pulseFillRef.current) pulseFillRef.current.style.height = `${(1 - pulseCd / (PULSE_CD * P.cdMul)) * 100}%`; }
-      if (ocCd > 0) { ocCd = Math.max(0, ocCd - dt); if (ocFillRef.current) ocFillRef.current.style.height = `${(1 - ocCd / (OC_CD * P.cdMul)) * 100}%`; }
-      if (purgeCd > 0) { purgeCd = Math.max(0, purgeCd - dt); if (purgeFillRef.current) purgeFillRef.current.style.height = `${(1 - purgeCd / (PURGE_CD * P.cdMul)) * 100}%`; }
+      // cooldowns — mirror each gauge onto the floating touch controls
+      if (pulseCd > 0) {
+        pulseCd = Math.max(0, pulseCd - dt);
+        const h = `${(1 - pulseCd / (PULSE_CD * P.cdMul)) * 100}%`;
+        if (pulseFillRef.current) pulseFillRef.current.style.height = h;
+        if (pulseFillMRef.current) pulseFillMRef.current.style.height = h;
+      }
+      if (ocCd > 0) {
+        ocCd = Math.max(0, ocCd - dt);
+        const h = `${(1 - ocCd / (OC_CD * P.cdMul)) * 100}%`;
+        if (ocFillRef.current) ocFillRef.current.style.height = h;
+        if (ocFillMRef.current) ocFillMRef.current.style.height = h;
+      }
+      if (purgeCd > 0) {
+        purgeCd = Math.max(0, purgeCd - dt);
+        const h = `${(1 - purgeCd / (PURGE_CD * P.cdMul)) * 100}%`;
+        if (purgeFillRef.current) purgeFillRef.current.style.height = h;
+        if (purgeFillMRef.current) purgeFillMRef.current.style.height = h;
+      }
       if (slowT > 0) slowT -= dt;
       if (flashT > 0) flashT -= dt;
 
@@ -482,6 +526,7 @@ export function CoreDefense() {
           integrity -= dmg; combo = 0; comboT = 0; shake = t.kind === "boss" ? 20 : 13; coreFlash = 1; waveDmg = true;
           burst(t.x, t.y, RED, 12);
           audio.whoosh();
+          buzz(45);
           setHud();
           if (integrity <= 0) { endGame(); return; }
         }
@@ -495,6 +540,7 @@ export function CoreDefense() {
           integrity -= 6 * dmgMul; combo = 0; comboT = 0; shake = Math.max(shake, 8); coreFlash = 0.8; waveDmg = true;
           burst(cx, cy, SHOOT, 8, 80);
           audio.whoosh();
+          buzz(25);
           setHud();
           if (integrity <= 0) { endGame(); return; }
         } else if (q.x < -30 || q.x > W + 30 || q.y < -30 || q.y > H + 30) {
@@ -690,7 +736,12 @@ export function CoreDefense() {
       draw();
     };
 
-    (canvas as unknown as { __reset?: () => void }).__reset = () => { reset(); setHud(); if (pulseFillRef.current) pulseFillRef.current.style.height = "0%"; if (ocFillRef.current) ocFillRef.current.style.height = "0%"; if (purgeFillRef.current) purgeFillRef.current.style.height = "0%"; };
+    (canvas as unknown as { __reset?: () => void }).__reset = () => {
+      reset(); setHud();
+      for (const ref of [pulseFillRef, ocFillRef, purgeFillRef, pulseFillMRef, ocFillMRef, purgeFillMRef]) {
+        if (ref.current) ref.current.style.height = "0%";
+      }
+    };
 
     last = performance.now();
     raf = requestAnimationFrame(loop);
@@ -717,8 +768,23 @@ export function CoreDefense() {
     (canvasRef.current as unknown as { __reset?: () => void } | null)?.__reset?.();
     setPhase("playing");
     audio.whoosh();
+    track("game_start", { hard, replay: phase === "over" });
   };
   const pick = (i: number) => { applyUpgradeRef.current(i); setPhase("playing"); };
+
+  const shareChallenge = async () => {
+    const text = c.challengeText
+      .replace("{wave}", String(result.wave))
+      .replace("{score}", String(result.score))
+      .replace("{url}", `${SITE.url}/#arcade`);
+    const ok = await copyText(text);
+    if (ok) toast(c.challengeCopied, "⚔");
+    track("game_challenge", { score: result.score, wave: result.wave });
+  };
+  const goContact = () => {
+    track("game_cta", { from: phase });
+    scrollToTarget("#contact");
+  };
 
   const overlay = phase === "idle" || phase === "over" || disabled;
   const up = c.upgrades as unknown as { name: string; desc: string }[];
@@ -790,6 +856,15 @@ export function CoreDefense() {
 
             <canvas ref={canvasRef} className="block h-[clamp(360px,60vh,560px)] w-full touch-none [cursor:crosshair]" />
 
+            {/* floating touch controls — thumbs never leave the arena on mobile */}
+            {phase === "playing" && !disabled && (
+              <div className="absolute inset-x-0 bottom-3 z-10 flex justify-center gap-2 lg:hidden">
+                <TouchBtn label={c.pulse} fillRef={pulseFillMRef} onClick={() => doPulseRef.current()} />
+                <TouchBtn label={c.overclock} fillRef={ocFillMRef} onClick={() => doOcRef.current()} />
+                <TouchBtn label={c.purge} fillRef={purgeFillMRef} onClick={() => doPurgeRef.current()} />
+              </div>
+            )}
+
             {/* upgrade choice */}
             {phase === "upgrade" && !disabled && (
               <div className="absolute inset-0 z-20 flex flex-col items-center justify-center gap-6 bg-[#05070c]/85 p-6 text-center backdrop-blur-sm">
@@ -817,6 +892,16 @@ export function CoreDefense() {
                     <p className="font-mono text-[0.6rem] uppercase tracking-[0.24em] text-fog">
                       {c.rankLabel} · <span className="text-accent">{(c.ranks as string[])[result.rank]}</span> · {c.hudWave} {result.wave}
                     </p>
+                    {runs.length > 1 && (
+                      <div className="font-mono text-[0.58rem] uppercase tracking-[0.2em] text-fog">
+                        <p className="text-accent">{c.topRuns}</p>
+                        {runs.slice(0, 3).map((r, i) => (
+                          <p key={i} className="mt-1 tabular-nums">
+                            {String(i + 1).padStart(2, "0")} · {r.s} · {c.hudWave} {r.w}
+                          </p>
+                        ))}
+                      </div>
+                    )}
                   </>
                 )}
                 <p className="max-w-xs text-sm text-mist">{c.ctaLine}</p>
@@ -826,7 +911,12 @@ export function CoreDefense() {
                       {phase === "over" ? c.replay : c.play}
                     </button>
                   )}
-                  <button onClick={() => scrollToTarget("#contact")} className="rounded-full border border-white/15 px-6 py-2.5 text-sm text-chalk transition-colors duration-300 hover:border-accent/50 hover:text-accent-2">
+                  {phase === "over" && !disabled && (
+                    <button onClick={shareChallenge} className="rounded-full border border-accent/40 px-6 py-2.5 text-sm text-accent transition-colors duration-300 hover:border-accent hover:bg-accent/[0.08]">
+                      {c.challenge}
+                    </button>
+                  )}
+                  <button onClick={goContact} className="rounded-full border border-white/15 px-6 py-2.5 text-sm text-chalk transition-colors duration-300 hover:border-accent/50 hover:text-accent-2">
                     {c.cta}
                   </button>
                 </div>
@@ -848,6 +938,20 @@ function Stat({ label, accent, children }: { label: string; accent?: boolean; ch
       <div className={`font-display text-3xl font-semibold tabular-nums ${accent ? "text-accent" : "text-chalk"}`}>{children}</div>
       <p className="mt-1 font-mono text-[0.55rem] uppercase tracking-[0.22em] text-fog">{label}</p>
     </div>
+  );
+}
+
+/** Floating in-arena ability button for touch play — big target, translucent,
+ *  cooldown gauge mirrored from the engine. */
+function TouchBtn({ label, fillRef, onClick }: { label: string; fillRef: React.RefObject<HTMLSpanElement | null>; onClick: () => void }) {
+  return (
+    <button
+      onClick={onClick}
+      className="relative min-w-[5.2rem] overflow-hidden rounded-full border border-accent/40 bg-[#05070c]/70 px-4 py-2.5 backdrop-blur-sm transition-transform active:scale-95"
+    >
+      <span ref={fillRef} aria-hidden className="absolute inset-x-0 bottom-0 block bg-accent/25" style={{ height: "0%" }} />
+      <span className="relative font-mono text-[0.6rem] uppercase tracking-[0.16em] text-accent">{label}</span>
+    </button>
   );
 }
 

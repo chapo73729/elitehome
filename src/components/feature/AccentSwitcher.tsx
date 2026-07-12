@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { track } from "@vercel/analytics";
 import { ACCENTS, applyAccent, onAccent } from "@/lib/accent";
 import { unlock } from "@/lib/achievements";
 
@@ -18,6 +19,7 @@ export function AccentSwitcher() {
             onClick={() => {
               applyAccent(a.id);
               unlock("chameleon");
+              track("accent_change", { accent: a.id });
             }}
             data-cursor
             aria-label={a.name}
