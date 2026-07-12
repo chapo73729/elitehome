@@ -27,7 +27,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "monthly" as const,
       priority: 0.8,
     })),
-    ...["about", "approach", "work", "careers", "contact"].map((p) => ({
+    ...["about", "approach", "work", "careers", "contact", "security"].map((p) => ({
       path: `/${p}`,
       lastModified: now,
       changeFrequency: "monthly" as const,

@@ -39,6 +39,7 @@ export type CaseStudyL10n = Pick<
   | "field"
   | "summary"
   | "stage"
+  | "client"
   | "roles"
   | "challenge"
   | "approach"
@@ -55,9 +56,9 @@ export const WORK: CaseStudy[] = [
     accent: "#4f8cff",
     summary:
       "An AI decision-support engine for operations teams who can't afford a wrong call.",
-    stage: "Shipped · In production",
+    stage: "Method demonstration",
     pole: "ai",
-    client: "Vltava Energo",
+    client: "Energy sector",
     roles: ["Applied AI", "Backend engineering", "Evaluation & guardrails"],
     tech: ["Python", "OpenAI", "Postgres", "FastAPI"],
     challenge: [
@@ -92,9 +93,9 @@ export const WORK: CaseStudy[] = [
     accent: "#6b9dff",
     summary:
       "A logistics SaaS dashboard that turns scattered operational data into live, routable decisions.",
-    stage: "Shipped · Scaling",
+    stage: "Method demonstration",
     pole: "software",
-    client: "Hradek Logistika",
+    client: "Logistics sector",
     roles: ["Product design", "Full-stack engineering", "Data integration"],
     tech: ["React", "Next.js", "TypeScript", "Postgres"],
     challenge: [
@@ -129,9 +130,9 @@ export const WORK: CaseStudy[] = [
     accent: "#3d6fe0",
     summary:
       "A manufacturing operations dashboard and internal tooling suite that makes a plant floor legible.",
-    stage: "Shipped · In production",
+    stage: "Method demonstration",
     pole: "ai",
-    client: "Koruna Capital",
+    client: "Financial services",
     roles: ["Data engineering", "Internal tooling", "Dashboards & BI"],
     tech: ["Python", "dbt", "Postgres", "React"],
     challenge: [
@@ -166,9 +167,9 @@ export const WORK: CaseStudy[] = [
     accent: "#5ea2ff",
     summary:
       "A distributed runtime that places computation microseconds from the user.",
-    stage: "Shipped · In production",
+    stage: "Method demonstration",
     pole: "cloud",
-    client: "Orloj Systems",
+    client: "Platform engineering",
     roles: ["Systems engineering", "Cloud architecture", "Developer experience"],
     tech: ["Rust", "Kubernetes", "AWS", "Terraform"],
     challenge: [
@@ -207,7 +208,8 @@ export const WORK_FR: Record<string, CaseStudyL10n> = {
     field: "Données & IA",
     summary:
       "Un moteur d'aide à la décision par IA pour les équipes opérationnelles qui n'ont pas droit à l'erreur.",
-    stage: "Livré · En production",
+    stage: "Démonstration de méthode",
+    client: "Secteur énergie",
     roles: ["IA appliquée", "Ingénierie backend", "Évaluation & garde-fous"],
     challenge: [
       "Des décisions opérationnelles à fort enjeu ne peuvent pas être confiées à un modèle simplement précis en moyenne. L'équipe avait besoin d'un système fiable dans le pire des cas — et qui sait reconnaître ses incertitudes.",
@@ -237,7 +239,8 @@ export const WORK_FR: Record<string, CaseStudyL10n> = {
     field: "Plateforme SaaS",
     summary:
       "Un tableau de bord SaaS logistique qui transforme des données opérationnelles éparses en décisions de routage prises en temps réel.",
-    stage: "Livré · En montée en charge",
+    stage: "Démonstration de méthode",
+    client: "Secteur logistique",
     roles: ["Design produit", "Ingénierie full-stack", "Intégration de données"],
     challenge: [
       "L'activité logistique du client reposait sur de faibles marges et des informations obsolètes, dispersées dans une mosaïque d'outils déconnectés. Les décisions étaient souvent prises sur des données vieilles de plusieurs heures.",
@@ -267,7 +270,8 @@ export const WORK_FR: Record<string, CaseStudyL10n> = {
     field: "Outils internes",
     summary:
       "Un tableau de bord d'exploitation industrielle et une suite d'outils internes qui rendent un atelier de production lisible.",
-    stage: "Livré · En production",
+    stage: "Démonstration de méthode",
+    client: "Services financiers",
     roles: ["Ingénierie de données", "Outils internes", "Tableaux de bord & BI"],
     challenge: [
       "L'usine du client fonctionnait sur des savoirs informels et de la paperasse en fin de poste. Quand quelque chose dérapait, personne ne le voyait avant que cela ne devienne un problème.",
@@ -297,7 +301,8 @@ export const WORK_FR: Record<string, CaseStudyL10n> = {
     field: "Plateforme",
     summary:
       "Un environnement d'exécution distribué qui place le calcul à quelques microsecondes de l'utilisateur.",
-    stage: "Livré · En production",
+    stage: "Démonstration de méthode",
+    client: "Ingénierie de plateforme",
     roles: ["Ingénierie systèmes", "Architecture cloud", "Expérience développeur"],
     challenge: [
       "On attend des applications modernes qu'elles paraissent instantanées partout — mais l'infrastructure pour y parvenir a toujours été complexe, coûteuse et réservée aux plus grandes équipes d'ingénierie.",

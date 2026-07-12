@@ -21,6 +21,7 @@ const T = {
     approach: "Approach",
     careers: "Careers",
     contact: "Contact",
+    security: "Security",
   },
   fr: {
     cities: "Prague · Genève · Singapour",
@@ -31,6 +32,7 @@ const T = {
     approach: "Approche",
     careers: "Carrières",
     contact: "Contact",
+    security: "Sécurité",
   },
 } as const;
 
@@ -165,6 +167,9 @@ export function Footer() {
           </LocaleLink>
           <LocaleLink href="/insights" className="inline-block py-1 transition-colors hover:text-chalk">
             {f.insights ?? "Insights"}
+          </LocaleLink>
+          <LocaleLink href="/security" className="inline-block py-1 transition-colors hover:text-chalk">
+            {t.security}
           </LocaleLink>
           <LocaleLink href="/legal/imprint" className="inline-block py-1 transition-colors hover:text-chalk">
             {f.legalNotice}

@@ -16,8 +16,8 @@ const T = {
     h1: "Work, engineered to the detail.",
     intro:
       "A selection of what we build — software, platforms, data and cloud, each held to a shared standard of engineering.",
-    nda: "Representative projects, shown to illustrate how we work. Client names are withheld where engagements are under NDA.",
-    representative: "Representative project",
+    nda: "Demonstration cases — engagements written end to end, on representative briefs, to show exactly how we work. Sectors are real; names and figures are illustrative. For concrete references, get in touch.",
+    representative: "Demonstration case",
     caseStudy: "CASE STUDY",
     caseStudyAria: "case study",
     servicesLabel: "Services",
@@ -31,8 +31,8 @@ const T = {
     h1: "Des réalisations, soignées jusqu’au détail.",
     intro:
       "Une sélection de ce que nous construisons — logiciels, plateformes, données et cloud, tenus à un même standard d’ingénierie.",
-    nda: "Projets représentatifs, présentés pour illustrer notre façon de travailler. Les noms des clients sont omis lorsque l’engagement est couvert par un accord de confidentialité.",
-    representative: "Projet représentatif",
+    nda: "Études démonstratives — des engagements rédigés de bout en bout, sur des briefs représentatifs, pour montrer exactement notre façon de travailler. Les secteurs sont réels ; noms et chiffres sont illustratifs. Pour des références concrètes, écrivez-nous.",
+    representative: "Étude démonstrative",
     caseStudy: "ÉTUDE DE CAS",
     caseStudyAria: "étude de cas",
     servicesLabel: "Services",

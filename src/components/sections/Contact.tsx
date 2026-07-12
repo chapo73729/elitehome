@@ -227,6 +227,12 @@ export function Contact() {
               <RollingText text={SITE.email} />
             </button>
           </Reveal>
+          <Reveal delay={0.3}>
+            <p className="mt-4 font-mono text-[0.62rem] uppercase tracking-[0.28em] text-fog">
+              <span aria-hidden className="text-accent">↳ </span>
+              {t.promise}
+            </p>
+          </Reveal>
 
           {/* « The Brief » — a guided, one-question-at-a-time briefing flow.
               Bare on the void, numbered 01→04, compiled into a blueprint card. */}

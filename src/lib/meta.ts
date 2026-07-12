@@ -40,6 +40,18 @@ export const PAGE_META: Record<string, Record<AppLocale, PageMeta>> = {
         "La méthode ARDLABS® — une approche de studio qui transforme un problème en un logiciel fiable, livré et maintenu.",
     },
   },
+  security: {
+    en: {
+      title: "Security posture",
+      description:
+        "How ARDLABS® secures its own platform — transport security, response headers, data minimisation and a responsible disclosure policy. Every claim is verifiable from outside.",
+    },
+    fr: {
+      title: "Posture de sécurité",
+      description:
+        "Comment ARDLABS® sécurise sa propre plateforme — transport, en-têtes de réponse, minimisation des données et politique de divulgation responsable. Chaque affirmation est vérifiable de l'extérieur.",
+    },
+  },
   careers: {
     en: {
       title: "Careers",

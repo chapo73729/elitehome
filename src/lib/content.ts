@@ -261,9 +261,9 @@ const en = {
     ],
   },
   partners: {
-    eyebrow: "Selected Clients",
+    eyebrow: "Ecosystem",
     title: "In good company.",
-    note: "A representative selection",
+    note: "Frameworks, platforms and organisations we work with and build on",
     items: [
       { name: "MITRE ATT&CK", sector: "Threat intelligence framework" },
       { name: "LinkPlus IT", sector: "IT services & cloud \u00b7 Kosovo" },
@@ -347,6 +347,7 @@ const en = {
     eyebrow: "Contact · 06",
     title: "Let's build it.",
     intro: "A few lines. A fast reply.",
+    promise: "We reply within 24 business hours.",
     name: "Name",
     namePlaceholder: "Ada Lovelace",
     email: "Email",
@@ -651,9 +652,9 @@ const fr: DeepPartial<Content> = {
     ],
   },
   partners: {
-    eyebrow: "R\u00e9f\u00e9rences",
+    eyebrow: "\u00c9cosyst\u00e8me",
     title: "En bonne compagnie.",
-    note: "Une s\u00e9lection repr\u00e9sentative",
+    note: "Cadres, plateformes et organisations avec lesquels nous travaillons et sur lesquels nous construisons",
     items: [
       { sector: "Cadre de renseignement sur les menaces" },
       { sector: "Services IT & cloud \u00b7 Kosovo" },
@@ -719,6 +720,7 @@ const fr: DeepPartial<Content> = {
     eyebrow: "Contact · 06",
     title: "Construisons-le.",
     intro: "Quelques lignes. Une réponse rapide.",
+    promise: "Réponse sous 24 heures ouvrées.",
     name: "Nom",
     namePlaceholder: "Ada Lovelace",
     email: "E-mail",

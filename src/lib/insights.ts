@@ -118,6 +118,97 @@ export const INSIGHTS: Insight[] = [
       },
     ],
   },
+  {
+    slug: "hardening-a-public-web-platform",
+    category: "Security",
+    title: "The hardening checklist we apply to our own site",
+    excerpt:
+      "Most companies that sell security never show their own. Here is the exact checklist this site runs in production — headers, isolation, data minimisation — and how to verify every line from outside.",
+    date: "2026-06-24",
+    readingMinutes: 8,
+    accent: "#58a8ff",
+    body: [
+      {
+        heading: "Your public site is your first security reference",
+        paragraphs: [
+          "Before a prospective client ever asks for your certifications, they can run one command against your website and learn how seriously you take the basics. A marketing site is a small attack surface, but it is also the only system of yours the whole world can inspect — which makes it the cheapest credibility signal in security work, and the most commonly wasted one.",
+          "This article is the checklist we apply to our own platform. None of it is exotic. All of it is verifiable from the outside, which is precisely the point: a security claim you cannot check is marketing, not engineering.",
+        ],
+      },
+      {
+        heading: "Headers first: the cheap, verifiable layer",
+        paragraphs: [
+          "Response headers are the closest thing the web has to free security. Strict-Transport-Security with a long max-age, includeSubDomains and preload removes the HTTP downgrade path entirely. A Content-Security-Policy — even a pragmatic one — turns most injection attacks from incidents into log lines. X-Frame-Options: DENY ends clickjacking; X-Content-Type-Options: nosniff ends MIME confusion; Referrer-Policy: no-referrer means your visitors' journeys leak to no one.",
+          "The less-known pair is worth adopting too: Cross-Origin-Opener-Policy and Cross-Origin-Resource-Policy pinned to same-origin isolate your browsing context and resources from hostile pages. And a Permissions-Policy that denies camera, microphone, geolocation, payment, USB and their siblings costs one line and removes an entire class of abuse — a marketing site has no business touching any of that hardware.",
+          "Every header above is one entry in a config file. The whole layer takes an afternoon, survives redesigns, and is testable by anyone with curl.",
+        ],
+      },
+      {
+        heading: "Forms are the front door",
+        paragraphs: [
+          "The contact form is usually the only writable endpoint on a marketing site, and therefore the only one attackers care about. Two disciplines cover most of the risk. First, minimisation: the endpoint should accept exactly the fields the form shows, validated for shape and size, and nothing else — no hidden metadata, no echo of client state. Second, rate limiting: even a simple per-IP window turns automated abuse from a flood into a trickle.",
+          "The same minimisation logic applies to what you collect passively. Third-party trackers are not just a privacy question; every external script is a supply-chain grant of execution inside your origin. Cookieless, aggregate analytics answer the questions a studio actually has — did anyone read this? — without importing someone else's attack surface.",
+        ],
+      },
+      {
+        heading: "Verify from outside, always",
+        paragraphs: [
+          "A hardening pass is not finished when the config is written; it is finished when an outsider can confirm it. Three checks take under a minute: read the raw headers with curl -sI, grade the TLS configuration with SSL Labs, and score the header set with securityheaders.com. If those three disagree with what you believe you shipped, believe them.",
+          "Finally, publish a security.txt at /.well-known/security.txt with a real contact and an honest expiry date. It is nine lines, it is where researchers look first, and its absence tells them — accurately — that nobody thought about the question. Ours links to a disclosure policy that promises what we can keep: fast acknowledgement, no legal threats against good-faith research, credit if wanted.",
+          "Everything in this article is live on this site right now. The security page in the footer lists each measure alongside the command that proves it — which is exactly the standard we would ask of any vendor selling us security.",
+        ],
+      },
+      {
+        heading: "The checklist",
+        paragraphs: [
+          "Transport: HSTS (long max-age, includeSubDomains, preload). Injection: Content-Security-Policy on every response. Embedding: X-Frame-Options DENY. Sniffing: X-Content-Type-Options nosniff. Privacy: Referrer-Policy no-referrer, no third-party trackers, cookieless analytics. Isolation: COOP and CORP same-origin. Hardware: Permissions-Policy denying everything unused. Forms: strict validation plus rate limiting. Disclosure: security.txt plus a written policy.",
+          "None of these items is impressive alone. Together they are the difference between a site that claims security and one that demonstrates it — and they take less time than the average homepage animation.",
+        ],
+      },
+    ],
+  },
+  {
+    slug: "threat-modelling-for-small-teams",
+    category: "Security",
+    title: "Threat modelling for small teams: a 90-minute method",
+    excerpt:
+      "You don't need a security department to threat-model. A whiteboard, the right four questions and ninety minutes will find the risks that actually matter — and tell you what to fix first.",
+    date: "2026-07-08",
+    readingMinutes: 9,
+    accent: "#3d6fe0",
+    body: [
+      {
+        heading: "The four questions",
+        paragraphs: [
+          "Every threat-modelling framework, stripped of its ceremony, asks four questions: What are we building? What can go wrong? What are we going to do about it? Did we do a good job? A small team can answer all four usefully in a single ninety-minute session — if it resists the urge to be exhaustive and aims instead to be honest.",
+          "The prerequisite is a picture. Draw the system as boxes and arrows: users, services, data stores, third parties, and every place data crosses a boundary — network, privilege, organisation. Most of the value of threat modelling is in this drawing, because the risks live on the arrows, not in the boxes.",
+        ],
+      },
+      {
+        heading: "What can go wrong: follow the assets, not the headlines",
+        paragraphs: [
+          "Small teams over-index on the attacks they read about and under-index on the ones they will actually face. Start from assets instead: what do we hold that someone would want — credentials, customer data, money movement, compute, reputation? For each asset, walk the drawing and ask who touches it and through which boundary.",
+          "STRIDE is a serviceable checklist for the walk: spoofing, tampering, repudiation, information disclosure, denial of service, elevation of privilege. But the highest-yield question for a small company is blunter: 'What happens when a laptop is stolen, a token leaks, or one teammate is phished?' If the honest answer is 'everything falls', the model has already earned its ninety minutes.",
+          "Write threats down as scenarios with an actor and a path — 'a phished contractor account can reach the production database' — not as categories. Scenarios can be tested, priced and fixed; categories can only be nodded at.",
+        ],
+      },
+      {
+        heading: "What to do about it: the boring hierarchy",
+        paragraphs: [
+          "Rank what you found by damage times ease, then fix in the order that shortens the list fastest. In practice, the same handful of mitigations tops the list for nearly every small team: hardware-key or app-based MFA everywhere, short-lived credentials instead of long-lived API keys, least-privilege access reviewed on a calendar, offline or otherwise unreachable backups, and dependency updates on automation rather than memory.",
+          "Notice what is not on that list: products. Small teams buy tools to feel safer; attackers exploit the gaps between tools. Until identity, credentials and backups are disciplined, a new dashboard mostly adds another login to phish.",
+          "Each accepted risk deserves a sentence in writing — 'we accept X until Y because Z'. The sentence is not bureaucracy; it is what lets a future you distinguish a decision from an oversight.",
+        ],
+      },
+      {
+        heading: "Did we do a good job: make it a loop",
+        paragraphs: [
+          "A threat model is a snapshot, and systems move. The method only compounds if the session recurs — quarterly is enough for most small teams, or whenever an arrow changes: a new integration, a new data store, a new class of user. Re-walk the drawing, retire scenarios you have closed, add the ones the new arrows create.",
+          "The measure of success is not the document. It is that the next architectural decision gets made with the drawing in the room — that someone says 'that arrow crosses a boundary, what's the story there?' before the code is written rather than after the incident. Ninety minutes a quarter is the cheapest security budget a small company will ever approve, and the one with the highest return.",
+        ],
+      },
+    ],
+  },
 ];
 
 /**
@@ -202,6 +293,89 @@ export const INSIGHTS_FR: Record<string, InsightL10n> = {
         paragraphs: [
           "Chaque pôle est une discipline à part entière, mais tous partagent un même standard d'ingénierie. Le conseil écarte les risques de l'idée, la conception et le développement la construisent, les données et l'IA rendent l'exploitation lisible, et le cloud la maintient rapide et fiable.",
           "Traiter ces quatre pôles comme une seule pratique — plutôt que comme quatre prestataires — est ce qui permet à une idée de voyager d'une question précise jusqu'à un produit qui tient la route, sans rien perdre en chemin.",
+        ],
+      },
+    ],
+  },
+  "hardening-a-public-web-platform": {
+    category: "Sécurité",
+    title: "La checklist de durcissement que nous appliquons à notre propre site",
+    excerpt:
+      "La plupart des entreprises qui vendent de la sécurité ne montrent jamais la leur. Voici la checklist exacte que ce site exécute en production — en-têtes, isolation, minimisation des données — et comment vérifier chaque ligne de l'extérieur.",
+    body: [
+      {
+        heading: "Votre site public est votre première référence de sécurité",
+        paragraphs: [
+          "Avant même de demander vos certifications, un client potentiel peut lancer une seule commande contre votre site web et apprendre à quel point vous prenez les fondamentaux au sérieux. Un site vitrine est une petite surface d'attaque, mais c'est aussi le seul de vos systèmes que le monde entier peut inspecter — ce qui en fait le signal de crédibilité le moins cher du métier de la sécurité, et le plus souvent gaspillé.",
+          "Cet article est la checklist que nous appliquons à notre propre plateforme. Rien d'exotique. Tout est vérifiable de l'extérieur, et c'est précisément le but : une affirmation de sécurité que l'on ne peut pas contrôler relève du marketing, pas de l'ingénierie.",
+        ],
+      },
+      {
+        heading: "Les en-têtes d'abord : la couche bon marché et vérifiable",
+        paragraphs: [
+          "Les en-têtes de réponse sont ce que le web offre de plus proche d'une sécurité gratuite. Strict-Transport-Security avec un max-age long, includeSubDomains et preload supprime définitivement le chemin de rétrogradation HTTP. Une Content-Security-Policy — même pragmatique — transforme la plupart des attaques par injection en simples lignes de journal. X-Frame-Options : DENY met fin au clickjacking ; X-Content-Type-Options : nosniff met fin à la confusion MIME ; Referrer-Policy : no-referrer signifie que les parcours de vos visiteurs ne fuient vers personne.",
+          "La paire moins connue mérite aussi l'adoption : Cross-Origin-Opener-Policy et Cross-Origin-Resource-Policy verrouillés en same-origin isolent votre contexte de navigation et vos ressources des pages hostiles. Et une Permissions-Policy qui refuse caméra, micro, géolocalisation, paiement, USB et leurs semblables coûte une ligne et supprime une classe entière d'abus — un site vitrine n'a aucune raison de toucher à ce matériel.",
+          "Chaque en-tête ci-dessus est une entrée dans un fichier de configuration. La couche complète prend un après-midi, survit aux refontes, et se teste avec curl.",
+        ],
+      },
+      {
+        heading: "Les formulaires sont la porte d'entrée",
+        paragraphs: [
+          "Le formulaire de contact est généralement le seul point d'écriture d'un site vitrine, donc le seul qui intéresse les attaquants. Deux disciplines couvrent l'essentiel du risque. D'abord, la minimisation : le point d'entrée doit accepter exactement les champs que le formulaire affiche, validés en forme et en taille, et rien d'autre — pas de métadonnées cachées, pas d'écho de l'état du client. Ensuite, la limitation de débit : même une simple fenêtre par IP transforme l'abus automatisé d'un déluge en filet d'eau.",
+          "La même logique de minimisation s'applique à ce que vous collectez passivement. Les traqueurs tiers ne sont pas qu'une question de vie privée ; chaque script externe est une délégation d'exécution dans votre origine, au sens chaîne d'approvisionnement. Une mesure d'audience agrégée et sans cookie répond aux questions qu'un studio se pose réellement — quelqu'un a-t-il lu ceci ? — sans importer la surface d'attaque de quelqu'un d'autre.",
+        ],
+      },
+      {
+        heading: "Vérifier de l'extérieur, toujours",
+        paragraphs: [
+          "Une passe de durcissement n'est pas terminée quand la configuration est écrite ; elle est terminée quand un tiers peut la confirmer. Trois contrôles prennent moins d'une minute : lire les en-têtes bruts avec curl -sI, noter la configuration TLS avec SSL Labs, et évaluer le jeu d'en-têtes avec securityheaders.com. Si ces trois-là contredisent ce que vous croyez avoir livré, croyez-les.",
+          "Enfin, publiez un security.txt sous /.well-known/security.txt avec un vrai contact et une date d'expiration honnête. Cela tient en neuf lignes, c'est là que les chercheurs regardent en premier, et son absence leur dit — à juste titre — que personne ne s'est posé la question. Le nôtre renvoie vers une politique de divulgation qui promet ce que nous pouvons tenir : un accusé de réception rapide, aucune menace juridique contre la recherche de bonne foi, un crédit si souhaité.",
+          "Tout ce que décrit cet article est en production sur ce site, maintenant. La page sécurité du pied de page liste chaque mesure avec la commande qui la prouve — exactement le standard que nous exigerions de tout prestataire qui nous vendrait de la sécurité.",
+        ],
+      },
+      {
+        heading: "La checklist",
+        paragraphs: [
+          "Transport : HSTS (max-age long, includeSubDomains, preload). Injection : Content-Security-Policy sur chaque réponse. Intégration : X-Frame-Options DENY. Sniffing : X-Content-Type-Options nosniff. Vie privée : Referrer-Policy no-referrer, aucun traqueur tiers, mesure d'audience sans cookie. Isolation : COOP et CORP en same-origin. Matériel : Permissions-Policy refusant tout ce qui est inutilisé. Formulaires : validation stricte plus limitation de débit. Divulgation : security.txt plus une politique écrite.",
+          "Aucun de ces éléments n'impressionne isolément. Ensemble, ils font la différence entre un site qui affirme la sécurité et un site qui la démontre — et ils prennent moins de temps que l'animation moyenne d'une page d'accueil.",
+        ],
+      },
+    ],
+  },
+  "threat-modelling-for-small-teams": {
+    category: "Sécurité",
+    title: "Threat modelling pour petites équipes : une méthode en 90 minutes",
+    excerpt:
+      "Pas besoin d'un département sécurité pour modéliser les menaces. Un tableau blanc, les quatre bonnes questions et quatre-vingt-dix minutes suffisent à trouver les risques qui comptent vraiment — et à savoir quoi corriger en premier.",
+    body: [
+      {
+        heading: "Les quatre questions",
+        paragraphs: [
+          "Tout cadre de modélisation des menaces, débarrassé de son cérémonial, pose quatre questions : Que construisons-nous ? Qu'est-ce qui peut mal tourner ? Qu'allons-nous y faire ? Avons-nous bien travaillé ? Une petite équipe peut répondre utilement aux quatre en une seule session de quatre-vingt-dix minutes — à condition de résister à l'envie d'être exhaustive et de viser plutôt l'honnêteté.",
+          "Le prérequis est un dessin. Représentez le système en boîtes et en flèches : utilisateurs, services, bases de données, tiers, et chaque endroit où la donnée franchit une frontière — réseau, privilège, organisation. L'essentiel de la valeur du threat modelling tient dans ce dessin, car les risques vivent sur les flèches, pas dans les boîtes.",
+        ],
+      },
+      {
+        heading: "Ce qui peut mal tourner : suivre les actifs, pas les gros titres",
+        paragraphs: [
+          "Les petites équipes surestiment les attaques dont elles lisent le récit et sous-estiment celles qu'elles affronteront réellement. Partez plutôt des actifs : que détenons-nous que quelqu'un voudrait — identifiants, données clients, mouvements d'argent, capacité de calcul, réputation ? Pour chaque actif, parcourez le dessin et demandez qui le touche et par quelle frontière.",
+          "STRIDE est une checklist honorable pour ce parcours : usurpation, altération, répudiation, divulgation d'information, déni de service, élévation de privilège. Mais la question au meilleur rendement pour une petite structure est plus brutale : « Que se passe-t-il quand un portable est volé, qu'un jeton fuit, ou qu'un collègue se fait hameçonner ? » Si la réponse honnête est « tout s'effondre », le modèle a déjà rentabilisé ses quatre-vingt-dix minutes.",
+          "Notez les menaces comme des scénarios avec un acteur et un chemin — « un compte de prestataire hameçonné peut atteindre la base de production » — et non comme des catégories. Un scénario se teste, se chiffre et se corrige ; une catégorie ne fait que hocher la tête.",
+        ],
+      },
+      {
+        heading: "Quoi faire : la hiérarchie ennuyeuse",
+        paragraphs: [
+          "Classez ce que vous avez trouvé par dégâts multipliés par facilité, puis corrigez dans l'ordre qui raccourcit la liste le plus vite. En pratique, la même poignée de mesures arrive en tête pour presque toutes les petites équipes : MFA par clé matérielle ou application partout, identifiants à courte durée de vie plutôt que clés d'API éternelles, moindre privilège revu à date fixe, sauvegardes hors ligne ou autrement inaccessibles, et mises à jour de dépendances automatisées plutôt que mémorisées.",
+          "Remarquez ce qui ne figure pas dans cette liste : des produits. Les petites équipes achètent des outils pour se sentir plus sûres ; les attaquants exploitent les interstices entre les outils. Tant que l'identité, les identifiants et les sauvegardes ne sont pas disciplinés, un tableau de bord de plus ajoute surtout un login de plus à hameçonner.",
+          "Chaque risque accepté mérite une phrase écrite — « nous acceptons X jusqu'à Y parce que Z ». Cette phrase n'est pas de la bureaucratie ; c'est ce qui permettra à votre futur vous de distinguer une décision d'un oubli.",
+        ],
+      },
+      {
+        heading: "Avons-nous bien travaillé : en faire une boucle",
+        paragraphs: [
+          "Un modèle de menaces est un instantané, et les systèmes bougent. La méthode ne porte ses fruits que si la session se répète — un rythme trimestriel suffit à la plupart des petites équipes, ou dès qu'une flèche change : nouvelle intégration, nouvelle base, nouvelle catégorie d'utilisateurs. Reparcourez le dessin, retirez les scénarios clos, ajoutez ceux que créent les nouvelles flèches.",
+          "La mesure du succès n'est pas le document. C'est que la prochaine décision d'architecture se prenne avec le dessin dans la pièce — que quelqu'un dise « cette flèche franchit une frontière, quelle est l'histoire ici ? » avant que le code soit écrit plutôt qu'après l'incident. Quatre-vingt-dix minutes par trimestre : c'est le budget sécurité le moins cher qu'une petite entreprise validera jamais, et celui au meilleur rendement.",
         ],
       },
     ],

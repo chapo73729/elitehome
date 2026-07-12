@@ -13,7 +13,7 @@ import { usePerf } from "@/lib/perf";
 const T = {
   en: {
     back: "← Work",
-    representative: "Representative project",
+    representative: "Demonstration case",
     ourRole: "Our role",
     stack: "Stack",
     challenge: "The challenge",
@@ -35,7 +35,7 @@ const T = {
   },
   fr: {
     back: "← Réalisations",
-    representative: "Projet représentatif",
+    representative: "Étude démonstrative",
     ourRole: "Notre rôle",
     stack: "Stack",
     challenge: "Le défi",

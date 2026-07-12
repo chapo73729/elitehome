@@ -8,12 +8,12 @@ import { Reveal } from "@/components/ui/Reveal";
 import { CountUp } from "@/components/ui/CountUp";
 
 /* Proof stats — every figure is a fact already stated elsewhere on the
-   site (6 network hubs, 10 security domains, 4 service poles, 3 senior
-   engineers). Nothing fabricated. */
+   site (6 time zones on the network map, 10 security domains, 4 service
+   poles, 3 senior engineers). Nothing fabricated. */
 const STATS: { to: number; en: string; fr: string; suffix?: string }[] = [
   { to: 4, en: "Service poles", fr: "Pôles de service" },
   { to: 10, en: "Security domains", fr: "Domaines sécurité" },
-  { to: 6, en: "Global hubs", fr: "Hubs mondiaux" },
+  { to: 6, en: "Time zones covered", fr: "Fuseaux couverts" },
   { to: 3, en: "Senior engineers", fr: "Ingénieurs seniors" },
 ];
 
