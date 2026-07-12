@@ -23,7 +23,7 @@ export function JsonLd() {
         slogan: SITE.tagline,
         priceRange: "$$$$",
         image: `${SITE.url}/opengraph-image`,
-        logo: `${SITE.url}/icon.svg`,
+        logo: `${SITE.url}/icon-512.png`,
         openingHours: "Mo-Su 00:00-24:00",
         contactPoint: {
           "@type": "ContactPoint",

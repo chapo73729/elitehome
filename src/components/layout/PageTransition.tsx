@@ -4,6 +4,7 @@ import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { useSafeReducedMotion } from "@/lib/useSafeReducedMotion";
 import { usePathname } from "next/navigation";
+import { Wordmark } from "@/components/ui/Wordmark";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 /** How long the void holds fully covering while the new route paints. */
@@ -93,11 +94,9 @@ export function PageTransition() {
       {/* thin champagne leading edge — the line that passes over the content
           as the cover sweeps up */}
       <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-accent/70 to-transparent" />
-      {/* the house signs the passage — wordmark alone, centered */}
+      {/* the house signs the passage — the official wordmark, centered */}
       <div className="absolute inset-x-0 bottom-12 flex justify-center">
-        <span className="font-display text-lg font-semibold tracking-[0.22em] text-chalk/80">
-          BLACKFIRST<span className="text-accent">®</span>
-        </span>
+        <Wordmark className="h-3.5 w-auto opacity-80" alt="" />
       </div>
     </motion.div>
   );

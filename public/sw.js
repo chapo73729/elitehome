@@ -1,6 +1,6 @@
 /* BLACKFIRST® service worker — installable + basic offline shell. */
 const CACHE = "blackfirst-v1";
-const CORE = ["/", "/manifest.webmanifest", "/icon.svg"];
+const CORE = ["/", "/manifest.webmanifest", "/icon-192.png"];
 
 self.addEventListener("install", (event) => {
   event.waitUntil(

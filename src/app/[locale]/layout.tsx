@@ -36,11 +36,8 @@ export const metadata: Metadata = {
   alternates: {
     canonical: "/",
   },
-  // icon.svg, favicon.ico and apple-icon.png are auto-injected by Next's file
-  // conventions (src/app/*); only the Safari mask-icon needs explicit wiring.
-  icons: {
-    other: [{ rel: "mask-icon", url: "/safari-pinned-tab.svg", color: "#c6a15b" }],
-  },
+  // icon.png, favicon.ico and apple-icon.png are auto-injected by Next's file
+  // conventions (src/app/*) — all derived from the official wordmark master.
   openGraph: {
       images: [{ url: "/opengraph-image", width: 1200, height: 630 }],
     type: "website",

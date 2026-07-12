@@ -1,3 +1,5 @@
+import { readFile } from "node:fs/promises";
+import { join } from "node:path";
 import { ImageResponse } from "next/og";
 import { SERVICES, SITE } from "@/lib/site";
 import { SERVICE_META } from "@/lib/meta";
@@ -23,6 +25,8 @@ export default async function Image({
   const title = meta?.title ?? SITE.legal;
   const accent = svc?.accent ?? "#c6a15b";
   const index = svc?.index ?? "";
+  const wordmark = await readFile(join(process.cwd(), "public/brand/wordmark.png"));
+  const wordmarkSrc = `data:image/png;base64,${wordmark.toString("base64")}`;
 
   return new ImageResponse(
     (
@@ -40,10 +44,9 @@ export default async function Image({
           color: "#f6f3ec",
         }}
       >
-        <div style={{ display: "flex", justifyContent: "space-between", fontSize: 28, color: "#a8a49b" }}>
-          <span style={{ fontWeight: 700, letterSpacing: 1 }}>
-            BLACKFIRST<span style={{ color: accent }}>®</span>
-          </span>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: 28, color: "#a8a49b" }}>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={wordmarkSrc} width={315} height={28} alt="" />
           <span style={{ letterSpacing: 8, textTransform: "uppercase", fontSize: 22 }}>
             Service {index}
           </span>

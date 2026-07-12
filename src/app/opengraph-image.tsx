@@ -1,12 +1,17 @@
+import { readFile } from "node:fs/promises";
+import { join } from "node:path";
 import { ImageResponse } from "next/og";
 import { SITE } from "@/lib/site";
 
-export const runtime = "edge";
 export const alt = `${SITE.legal} — ${SITE.tagline}`;
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
-export default function Og() {
+export default async function Og() {
+  // the official wordmark, embedded as a data URI (node runtime)
+  const wordmark = await readFile(join(process.cwd(), "public/brand/wordmark.png"));
+  const wordmarkSrc = `data:image/png;base64,${wordmark.toString("base64")}`;
+
   return new ImageResponse(
     (
       <div
@@ -24,7 +29,7 @@ export default function Og() {
           fontFamily: "sans-serif",
         }}
       >
-        {/* thin crest frame */}
+        {/* thin frame */}
         <div
           style={{
             position: "absolute",
@@ -58,28 +63,12 @@ export default function Og() {
         >
           Geneva · Switzerland
         </div>
-        {/* brandmark glyph — matches the favicon / on-site logo */}
-        <svg width={96} height={96} viewBox="0 0 64 64" fill="none" style={{ marginBottom: 22 }}>
-          <path d="M32 8 L56 32 L32 56 L8 32 Z" fill="none" stroke="#c7cbd1" strokeWidth={2} strokeLinejoin="round" opacity={0.5} />
-          <path d="M18 42 L32 20 L46 42" fill="none" stroke="#c6a15b" strokeWidth={4} strokeLinecap="round" strokeLinejoin="round" />
-          <path d="M20 42 H44" fill="none" stroke="#f6f3ec" strokeWidth={2.8} strokeLinecap="round" />
-          <circle cx="32" cy="20" r="2.8" fill="#e4c88a" />
-        </svg>
+        {/* the official wordmark */}
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src={wordmarkSrc} width={880} height={78} alt="" />
         <div
           style={{
-            fontSize: 132,
-            fontWeight: 800,
-            letterSpacing: "-0.02em",
-            display: "flex",
-            alignItems: "flex-start",
-          }}
-        >
-          BLACKFIRST
-          <span style={{ fontSize: 44, color: "#c6a15b", marginTop: 14 }}>®</span>
-        </div>
-        <div
-          style={{
-            marginTop: 16,
+            marginTop: 44,
             fontSize: 30,
             letterSpacing: "0.35em",
             color: "#a8a49b",
