@@ -10,6 +10,7 @@ import { Partners } from "@/components/sections/Partners";
 import { Industries } from "@/components/sections/Industries";
 import { CyberSecurity } from "@/components/sections/CyberSecurity";
 import { Team } from "@/components/sections/Team";
+import { CoreDefense } from "@/components/sections/CoreDefense";
 import { Contact } from "@/components/sections/Contact";
 import { GutterRuler } from "@/components/layout/GutterRuler";
 import { Seam } from "@/components/layout/Seam";
@@ -40,6 +41,8 @@ export function Experience() {
         <CyberSecurity />
         <Seam />
         <Team />
+        <Seam />
+        <CoreDefense />
         <Seam />
         <Contact />
       </main>
