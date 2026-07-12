@@ -38,7 +38,7 @@ export function ChapterNumeral({
         // hidden below md: at mobile sizes the numeral is only ~3rem tall, so
         // this register mark lands right on the section eyebrow and reads as
         // text-on-text. Desktop has the room; phones keep just the ghost digit.
-        <span className="ml-[0.12em] hidden font-mono text-[0.6rem] uppercase tracking-[0.42em] text-fog/60 md:block">
+        <span className="ml-[0.12em] hidden font-mono text-[0.6rem] uppercase tracking-[0.42em] text-fog md:block">
           {label}
         </span>
       )}

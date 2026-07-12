@@ -338,10 +338,7 @@ const en = {
     ],
   },
   cta: {
-    eyebrow: "Engage",
     title: "Got something worth building?",
-    body: "Tell us what you're building.",
-    button: "Start a conversation",
   },
   contact: {
     eyebrow: "Contact · 06",
@@ -683,7 +680,7 @@ const fr: DeepPartial<Content> = {
       caption: "Réponse IA à la menace — traquée, neutralisée.",
     },
     items: [
-      { title: "Security Operations" },
+      { title: "Opérations de sécurité" },
       { title: "Tests d'intrusion" },
       { title: "Opérations Red Team" },
       { title: "Défense Blue Team" },
@@ -711,10 +708,7 @@ const fr: DeepPartial<Content> = {
     ],
   },
   cta: {
-    eyebrow: "Collaborer",
     title: "Quelque chose qui mérite d'être construit ?",
-    body: "Dites-nous ce que vous construisez.",
-    button: "Démarrer la conversation",
   },
   contact: {
     eyebrow: "Contact · 06",

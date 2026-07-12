@@ -1,7 +1,8 @@
 "use client";
 
 import { LocaleLink } from "@/components/ui/LocaleLink";
-import { motion, useReducedMotion } from "framer-motion";
+import { motion } from "framer-motion";
+import { useSafeReducedMotion } from "@/lib/useSafeReducedMotion";
 import { Reveal } from "@/components/ui/Reveal";
 import { ChapterNumeral } from "@/components/ui/ChapterNumeral";
 import { Compile } from "@/components/ui/Compile";
@@ -40,7 +41,7 @@ export function IndustryDetail({
   const prev = items.find((x) => x.id === prevId) ?? items[0];
   const next = items.find((x) => x.id === nextId) ?? items[0];
 
-  const reduce = useReducedMotion() ?? false;
+  const reduce = useSafeReducedMotion();
   const perf = usePerf();
   const poleCount = String(items.length).padStart(2, "0");
 

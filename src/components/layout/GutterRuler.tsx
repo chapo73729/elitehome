@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { motion, useScroll, useSpring, useReducedMotion } from "framer-motion";
+import { motion, useScroll, useSpring } from "framer-motion";
+import { useSafeReducedMotion } from "@/lib/useSafeReducedMotion";
 
 /** Home chapters, in document order. Index doubles as the readout number. */
 const CHAPTERS = ["hero", "manifesto", "core", "network", "services", "contact"] as const;
@@ -16,7 +17,7 @@ const LAST = CHAPTERS.length - 1; // "/ 04"-style denominator over chapters 00..
  * pointer events. Reduced-motion renders the segment statically.
  */
 export function GutterRuler() {
-  const reduced = useReducedMotion();
+  const reduced = useSafeReducedMotion();
   const { scrollYProgress } = useScroll();
   const fill = useSpring(scrollYProgress, {
     stiffness: 90,

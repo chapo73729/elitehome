@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { useReducedMotion } from "framer-motion";
+import { useSafeReducedMotion } from "@/lib/useSafeReducedMotion";
 import { useContent } from "@/lib/content";
 import { useLang } from "@/lib/lang";
 import { Reveal } from "@/components/ui/Reveal";
@@ -187,7 +187,7 @@ function Row({
   base: number;
   sectionRef: React.RefObject<HTMLElement | null>;
 }) {
-  const reduced = useReducedMotion();
+  const reduced = useSafeReducedMotion();
   const trackRef = useRef<HTMLDivElement>(null);
   useMarquee(trackRef, sectionRef, dir, base);
 

@@ -43,14 +43,27 @@ export default async function CaseStudyPage({
   const w = getCase(slug);
   if (!w) notFound();
 
+  const crumb = locale === "fr" ? { home: "Accueil", work: "Réalisations" } : { home: "Home", work: "Work" };
   const jsonLd = {
     "@context": "https://schema.org",
-    "@type": "CreativeWork",
-    name: w.name,
-    about: w.field,
-    description: w.summary,
-    creator: { "@type": "Organization", name: SITE.legal },
-    url: `${SITE.url}/${locale}/work/${w.slug}`,
+    "@graph": [
+      {
+        "@type": "CreativeWork",
+        name: w.name,
+        about: w.field,
+        description: w.summary,
+        creator: { "@type": "Organization", name: SITE.legal },
+        url: `${SITE.url}/${locale}/work/${w.slug}`,
+      },
+      {
+        "@type": "BreadcrumbList",
+        itemListElement: [
+          { "@type": "ListItem", position: 1, name: crumb.home, item: `${SITE.url}/${locale}` },
+          { "@type": "ListItem", position: 2, name: crumb.work, item: `${SITE.url}/${locale}/work` },
+          { "@type": "ListItem", position: 3, name: w.name, item: `${SITE.url}/${locale}/work/${w.slug}` },
+        ],
+      },
+    ],
   };
 
   return (

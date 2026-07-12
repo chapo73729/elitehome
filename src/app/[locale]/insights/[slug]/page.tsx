@@ -45,16 +45,36 @@ export default async function InsightArticle({
   const post = getInsight(slug);
   if (!post) notFound();
 
+  const crumb = locale === "fr" ? { home: "Accueil", insights: "Perspectives" } : { home: "Home", insights: "Insights" };
   const jsonLd = {
     "@context": "https://schema.org",
-    "@type": "Article",
-    headline: post.title,
-    description: post.excerpt,
-    datePublished: post.date,
-    articleSection: post.category,
-    author: { "@type": "Organization", name: SITE.legal },
-    publisher: { "@type": "Organization", name: SITE.legal },
-    mainEntityOfPage: `${SITE.url}/${locale}/insights/${post.slug}`,
+    "@graph": [
+      {
+        "@type": "Article",
+        headline: post.title,
+        description: post.excerpt,
+        datePublished: post.date,
+        dateModified: post.date,
+        inLanguage: locale,
+        articleSection: post.category,
+        image: [`${SITE.url}/opengraph-image`],
+        author: { "@type": "Organization", name: SITE.legal, url: SITE.url },
+        publisher: {
+          "@type": "Organization",
+          name: SITE.legal,
+          logo: { "@type": "ImageObject", url: `${SITE.url}/icon.svg` },
+        },
+        mainEntityOfPage: `${SITE.url}/${locale}/insights/${post.slug}`,
+      },
+      {
+        "@type": "BreadcrumbList",
+        itemListElement: [
+          { "@type": "ListItem", position: 1, name: crumb.home, item: `${SITE.url}/${locale}` },
+          { "@type": "ListItem", position: 2, name: crumb.insights, item: `${SITE.url}/${locale}/insights` },
+          { "@type": "ListItem", position: 3, name: post.title, item: `${SITE.url}/${locale}/insights/${post.slug}` },
+        ],
+      },
+    ],
   };
 
   return (

@@ -166,7 +166,7 @@ export function Cinematic() {
         <div className="pointer-events-none absolute left-6 top-1/2 hidden -translate-y-1/2 flex-col items-center gap-3 lg:flex">
           <span className="font-mono text-[0.6rem] tabular-nums tracking-[0.3em] text-chalk/70">
             {reduced ? "04" : readout}
-            <span className="text-fog/50"> / 04</span>
+            <span className="text-fog"> / 04</span>
           </span>
           <div className="relative h-[34vh] w-px overflow-hidden bg-white/10">
             <motion.div
@@ -192,7 +192,7 @@ export function Cinematic() {
                   return (
                     <span key={i} className="relative block">
                       {/* hanging mono micro-label in the gutter */}
-                      <span className="absolute -left-2 top-[0.35em] hidden -translate-x-full font-mono text-[0.6rem] tracking-[0.25em] text-fog/50 md:block">
+                      <span className="absolute -left-2 top-[0.35em] hidden -translate-x-full font-mono text-[0.6rem] tracking-[0.25em] text-fog md:block">
                         {`L0${i + 1}`}
                       </span>
                       <ScrubLine
@@ -280,7 +280,7 @@ function StaticManifesto({ lines }: { lines: string[] }) {
         const last = i === lines.length - 1;
         return (
           <span key={i} className="relative block">
-            <span className="absolute -left-2 top-[0.35em] hidden -translate-x-full font-mono text-[0.6rem] tracking-[0.25em] text-fog/50 md:block">
+            <span className="absolute -left-2 top-[0.35em] hidden -translate-x-full font-mono text-[0.6rem] tracking-[0.25em] text-fog md:block">
               {`L0${i + 1}`}
             </span>
             {words.map((w, j) => (

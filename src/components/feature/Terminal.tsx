@@ -117,6 +117,7 @@ export function Terminal() {
   const [value, setValue] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
   const bodyRef = useRef<HTMLDivElement>(null);
+  const returnFocusRef = useRef<HTMLElement | null>(null);
   const router = useLocaleRouter();
 
   useEffect(() => {
@@ -139,8 +140,12 @@ export function Terminal() {
 
   useEffect(() => {
     if (open) {
+      returnFocusRef.current = document.activeElement as HTMLElement | null;
       unlock("terminal");
       setTimeout(() => inputRef.current?.focus(), 40);
+    } else {
+      // return focus to whatever opened the console (e.g. command palette)
+      returnFocusRef.current?.focus?.();
     }
   }, [open]);
 
@@ -258,6 +263,9 @@ export function Terminal() {
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: 20 }}
           transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
+          role="dialog"
+          aria-modal="true"
+          aria-label={t.header}
           className="fixed bottom-4 left-1/2 z-[205] w-[min(92vw,640px)] -translate-x-1/2 overflow-hidden rounded-2xl glass font-mono text-xs"
         >
           <div className="flex items-center justify-between border-b border-white/10 px-4 py-2.5">

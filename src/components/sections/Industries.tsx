@@ -209,7 +209,12 @@ export function Industries() {
   const c = useContent().industries;
   const reducedPref = useReducedMotion();
   const perf = usePerf();
-  const reduced = !!reducedPref || perf;
+  // gate the motion preference behind mount so the row padding rendered on the
+  // server (reduced=false) matches the client's first paint — otherwise a
+  // reduced-motion visitor hydrates a different style attribute (#418).
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+  const reduced = mounted && (!!reducedPref || perf);
 
   const items = c.items as unknown as Item[];
   const [active, setActive] = useState(0);

@@ -144,7 +144,7 @@ export function SecurityView() {
       <section className="relative z-10 bg-void py-16 md:py-24">
         <div className="container-x">
           <Reveal>
-            <span className="eyebrow">{t.transportEyebrow}</span>
+            <h2 className="eyebrow">{t.transportEyebrow}</h2>
           </Reveal>
           <Compile label="headers" index="01" disabled={perf} className="mt-10">
             <div className="border-b border-white/[0.07]">
@@ -162,7 +162,7 @@ export function SecurityView() {
       <section className="relative z-10 bg-void pb-16 md:pb-24">
         <div className="container-x">
           <Reveal>
-            <span className="eyebrow">{t.dataEyebrow}</span>
+            <h2 className="eyebrow">{t.dataEyebrow}</h2>
           </Reveal>
           <Compile label="data" index="02" disabled={perf} className="mt-10">
             <div className="border-b border-white/[0.07]">
@@ -180,7 +180,7 @@ export function SecurityView() {
       <section className="relative z-10 bg-void pb-16 md:pb-24">
         <div className="container-x">
           <Reveal>
-            <span className="eyebrow">{t.verifyEyebrow}</span>
+            <h2 className="eyebrow">{t.verifyEyebrow}</h2>
           </Reveal>
           <Reveal delay={0.06}>
             <p className="mt-6 max-w-2xl text-mist">{t.verifyIntro}</p>
@@ -217,7 +217,7 @@ export function SecurityView() {
       <section className="relative z-10 bg-void pb-20 md:pb-28">
         <div className="container-x">
           <Reveal>
-            <span className="eyebrow">{t.disclosureEyebrow}</span>
+            <h2 className="eyebrow">{t.disclosureEyebrow}</h2>
           </Reveal>
           <Reveal delay={0.06}>
             <h2 className="text-section-title mt-6 max-w-2xl text-chalk">{t.disclosureTitle}</h2>

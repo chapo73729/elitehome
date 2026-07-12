@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
+import { useSafeReducedMotion } from "@/lib/useSafeReducedMotion";
 import { Reveal } from "@/components/ui/Reveal";
 import { ChapterNumeral } from "@/components/ui/ChapterNumeral";
 import { Compile } from "@/components/ui/Compile";
@@ -12,7 +13,7 @@ const EASE = [0.16, 1, 0.3, 1] as const;
 
 export function GlobalNetwork() {
   const c = useContent().network;
-  const reduce = useReducedMotion() ?? false;
+  const reduce = useSafeReducedMotion();
   const [focus, setFocus] = useState<FocusInfo>(null);
 
   return (
@@ -59,7 +60,7 @@ export function GlobalNetwork() {
                 {focus ? (
                   <span className="text-mist">{focus.coord}</span>
                 ) : (
-                  <span>WORLD · 06 HUBS</span>
+                  <span>WORLD · 06 TIME ZONES</span>
                 )}
               </div>
             </Compile>
@@ -118,7 +119,7 @@ export function GlobalNetwork() {
                     </ul>
                   </div>
 
-                  <p className="mt-4 font-mono text-[0.6rem] uppercase tracking-[0.25em] text-fog/70">
+                  <p className="mt-4 font-mono text-[0.6rem] uppercase tracking-[0.25em] text-fog">
                     {c.returnHint}
                   </p>
                 </div>

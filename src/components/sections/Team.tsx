@@ -1,7 +1,8 @@
 "use client";
 
-import { motion, useReducedMotion } from "framer-motion";
+import { motion } from "framer-motion";
 import { useContent } from "@/lib/content";
+import { useSafeReducedMotion } from "@/lib/useSafeReducedMotion";
 import { usePerf } from "@/lib/perf";
 import { audio } from "@/lib/audio";
 import { Reveal } from "@/components/ui/Reveal";
@@ -92,7 +93,7 @@ function Portrait({ member }: { member: Member }) {
 }
 
 function MemberCard({ member, index, stackLabel }: { member: Member; index: number; stackLabel: string }) {
-  const reduced = useReducedMotion();
+  const reduced = useSafeReducedMotion();
   return (
     <Reveal delay={Math.min(index * 0.08, 0.24)}>
       <div onMouseEnter={() => audio.hover()} className="group rack-item">
@@ -135,7 +136,7 @@ function MemberCard({ member, index, stackLabel }: { member: Member; index: numb
 export function Team() {
   const c = useContent().team;
   const perf = usePerf();
-  const reduced = !!useReducedMotion() || perf;
+  const reduced = useSafeReducedMotion() || perf;
   const members = c.members as unknown as Member[];
 
   return (

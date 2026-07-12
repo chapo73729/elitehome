@@ -1,8 +1,9 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { motion, useReducedMotion } from "framer-motion";
+import { motion } from "framer-motion";
 import { useLang } from "@/lib/lang";
+import { useSafeReducedMotion } from "@/lib/useSafeReducedMotion";
 
 const T = {
   en: { online: "SYSTEM ONLINE", wordmark: "ARDLABS // ENGINEERING STUDIO" },
@@ -16,7 +17,7 @@ const T = {
  */
 export function HeroHud({ ready }: { ready: boolean }) {
   const t = T[useLang()];
-  const reducedMotion = useReducedMotion();
+  const reducedMotion = useSafeReducedMotion();
   const [clock, setClock] = useState("00:00:00 UTC");
   const latRef = useRef<HTMLSpanElement>(null);
   const lonRef = useRef<HTMLSpanElement>(null);

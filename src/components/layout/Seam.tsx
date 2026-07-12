@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion, useScroll, useTransform, useReducedMotion } from "framer-motion";
 
 /**
@@ -15,7 +15,13 @@ import { motion, useScroll, useTransform, useReducedMotion } from "framer-motion
  */
 export function Seam() {
   const ref = useRef<HTMLDivElement>(null);
-  const reduced = useReducedMotion();
+  // useReducedMotion is null on the server but resolves on the client's first
+  // paint; returning a different element for reduced users would then mismatch
+  // the server HTML. Defer the branch until after mount so hydration is stable.
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+  const prefersReduce = useReducedMotion();
+  const reduced = mounted && prefersReduce;
   const { scrollYProgress } = useScroll({
     target: ref,
     offset: ["start end", "end start"],

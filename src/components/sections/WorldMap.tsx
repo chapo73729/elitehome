@@ -707,7 +707,7 @@ export function WorldMap({ onFocus }: { onFocus?: (info: FocusInfo) => void }) {
         viewBox={`0 ${Y_TOP} ${VB_W} ${VB_CROP_H}`}
         preserveAspectRatio="none"
         role="img"
-        aria-label="Map of ARDLABS global hubs"
+        aria-label="Map of the time zones ARDLABS works across"
       >
         {/* sea: clicking empty water returns to the world view */}
         <rect

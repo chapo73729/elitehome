@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import clsx from "clsx";
 import { motion, useInView, useReducedMotion } from "framer-motion";
 
@@ -55,7 +55,16 @@ export function Compile({
   disabled?: boolean;
 }) {
   const ref = useRef<HTMLDivElement>(null);
-  const reduce = useReducedMotion() ?? false;
+  // The server can't know the user's motion preference, so useReducedMotion()
+  // is null on the server (→ false) but resolves to the real value on the
+  // client's first paint. Reading it directly makes the `initial` prop — and
+  // thus the rendered style attribute — differ between the two, which is a
+  // hydration mismatch. Gate it behind a mount flag so the first client render
+  // matches the server, then apply the preference on the next tick.
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+  const prefersReduce = useReducedMotion() ?? false;
+  const reduce = mounted && prefersReduce;
   const play = !disabled && !reduce;
   const inView = useInView(ref, { once: true, margin: "-20% 0px" });
   /** true once the elements should sit at (or animate toward) final state */

@@ -2,12 +2,8 @@
 
 import dynamic from "next/dynamic";
 import { useEffect, useRef, useState } from "react";
-import {
-  motion,
-  useMotionValueEvent,
-  useReducedMotion,
-  useTransform,
-} from "framer-motion";
+import { motion, useMotionValueEvent, useTransform } from "framer-motion";
+import { useSafeReducedMotion } from "@/lib/useSafeReducedMotion";
 import { useContent } from "@/lib/content";
 import { usePerf } from "@/lib/perf";
 import { audio } from "@/lib/audio";
@@ -90,7 +86,7 @@ function SiegeStage({
             <h2 className="text-section-title text-gradient mt-5">{c.title}</h2>
             <p className="mt-5 text-mist md:text-lg">{c.intro}</p>
           </div>
-          <span className="font-mono text-[0.58rem] uppercase tracking-[0.25em] text-fog/70">
+          <span className="font-mono text-[0.58rem] uppercase tracking-[0.25em] text-fog">
             {c.registry}
           </span>
         </div>
@@ -210,7 +206,7 @@ function DomainCard({ item, index }: { item: Item; index: number }) {
 
 export function CyberSecurity() {
   const c = useContent().security;
-  const reducedPref = useReducedMotion();
+  const reducedPref = useSafeReducedMotion();
   const perf = usePerf();
   const reduced = !!reducedPref || perf;
   const items = c.items as unknown as Item[];

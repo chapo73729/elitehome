@@ -2,10 +2,11 @@
 
 import dynamic from "next/dynamic";
 import { useEffect } from "react";
-import { motion, useReducedMotion } from "framer-motion";
+import { motion } from "framer-motion";
 import { Button } from "@/components/ui/Button";
 import { Decode } from "@/components/ui/Decode";
 import { HeroHud } from "./HeroHud";
+import { useSafeReducedMotion } from "@/lib/useSafeReducedMotion";
 import { SceneBoundary } from "@/components/three/SceneBoundary";
 import { useSceneVisibility } from "@/hooks/useSceneVisibility";
 import { useContent } from "@/lib/content";
@@ -133,7 +134,7 @@ export function Hero({ ready }: { ready: boolean }) {
  * the previous wordmark rendered invisible.
  */
 function Wordmark({ ready }: { ready: boolean }) {
-  const reduced = useReducedMotion();
+  const reduced = useSafeReducedMotion();
   const letters = "ARDLABS".split("");
 
   if (reduced) {

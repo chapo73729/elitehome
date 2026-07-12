@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { usePathname } from "next/navigation";
 import { SITE } from "@/lib/site";
@@ -22,6 +22,7 @@ export function Navbar({ ready = true }: { ready?: boolean }) {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState<string>("");
+  const toggleRef = useRef<HTMLButtonElement>(null);
   const pathname = usePathname();
   const router = useLocaleRouter();
   const isHome = stripLocale(pathname).rest === "/";
@@ -79,7 +80,11 @@ export function Navbar({ ready = true }: { ready?: boolean }) {
     behind.forEach((el) => el.setAttribute("inert", ""));
     const first = document.querySelector<HTMLElement>("#mobile-menu button");
     first?.focus();
-    return () => behind.forEach((el) => el.removeAttribute("inert"));
+    return () => {
+      behind.forEach((el) => el.removeAttribute("inert"));
+      // return focus to the toggle so keyboard users aren't dropped at the top
+      toggleRef.current?.focus();
+    };
   }, [open]);
 
   const go = (href: string) => {
@@ -174,6 +179,7 @@ export function Navbar({ ready = true }: { ready?: boolean }) {
 
           {/* mobile toggle */}
           <button
+            ref={toggleRef}
             onClick={() => setOpen((o) => !o)}
             className="relative z-[130] flex h-10 w-10 flex-col items-center justify-center gap-1.5 lg:hidden"
             aria-label={open ? t.closeMenu : t.openMenu}

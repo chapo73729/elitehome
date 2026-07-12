@@ -68,6 +68,12 @@ export function SoundToggle({ className }: { className?: string }) {
             height: 15px;
           }
         }
+        @media (prefers-reduced-motion: reduce) {
+          span {
+            animation: none !important;
+            height: 9px !important;
+          }
+        }
       `}</style>
     </button>
   );

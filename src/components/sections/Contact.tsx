@@ -1,12 +1,8 @@
 "use client";
 
 import { useCallback, useId, useRef, useState } from "react";
-import {
-  motion,
-  AnimatePresence,
-  useReducedMotion,
-  type Variants,
-} from "framer-motion";
+import { motion, AnimatePresence, type Variants } from "framer-motion";
+import { useSafeReducedMotion } from "@/lib/useSafeReducedMotion";
 import { Reveal } from "@/components/ui/Reveal";
 import { ChapterNumeral } from "@/components/ui/ChapterNumeral";
 import { Compile } from "@/components/ui/Compile";
@@ -37,7 +33,7 @@ export function Contact() {
   const [field, setField] = useState<string>(FIELDS[0]);
   const [error, setError] = useState<string | null>(null);
   const sent = status === "sent";
-  const reduce = useReducedMotion() ?? false;
+  const reduce = useSafeReducedMotion();
   const uid = useId();
   const honeypotRef = useRef<HTMLInputElement>(null);
   const interactedRef = useRef(false);
@@ -229,7 +225,7 @@ export function Contact() {
               Bare on the void, numbered 01→04, compiled into a blueprint card. */}
           <div className="mt-20 max-w-3xl">
             <Reveal delay={0.1}>
-              <span className="font-mono text-[0.62rem] uppercase tracking-[0.42em] text-fog/70">
+              <span className="font-mono text-[0.62rem] uppercase tracking-[0.42em] text-fog">
                 {t.step}
               </span>
             </Reveal>
@@ -327,7 +323,7 @@ export function Contact() {
                                   ? "border-accent/70 text-accent shadow-[0_0_16px_rgba(79,140,255,0.25)]"
                                   : done
                                     ? "border-white/15 text-accent hover:border-accent/60"
-                                    : "border-white/8 text-fog/50"
+                                    : "border-white/8 text-fog"
                               }`}
                             >
                               {done ? (
@@ -526,7 +522,7 @@ export function Contact() {
                                       key={row.label}
                                       className="flex items-start gap-4"
                                     >
-                                      <dt className="w-20 shrink-0 pt-0.5 text-[0.6rem] uppercase tracking-[0.3em] text-fog/70 md:w-24">
+                                      <dt className="w-20 shrink-0 pt-0.5 text-[0.6rem] uppercase tracking-[0.3em] text-fog md:w-24">
                                         {row.label}
                                       </dt>
                                       <dd className="min-w-0 flex-1 break-words text-chalk">
@@ -540,7 +536,7 @@ export function Contact() {
                                         }}
                                         data-cursor
                                         aria-label={`${t.edit} — ${row.label}`}
-                                        className="link-underline -my-2 shrink-0 py-2 text-[0.6rem] uppercase tracking-[0.3em] text-fog/70 transition-colors hover:text-accent"
+                                        className="link-underline -my-2 shrink-0 py-2 text-[0.6rem] uppercase tracking-[0.3em] text-fog transition-colors hover:text-accent"
                                       >
                                         {t.edit}
                                       </button>
@@ -548,7 +544,7 @@ export function Contact() {
                                   ))}
                                 </dl>
                               </div>
-                              <p className="mt-4 font-mono text-[0.62rem] uppercase tracking-[0.3em] text-fog/60">
+                              <p className="mt-4 font-mono text-[0.62rem] uppercase tracking-[0.3em] text-fog">
                                 {t.briefHint}
                               </p>
 
@@ -621,7 +617,7 @@ export function Contact() {
                               >
                                 {t.continueLabel} <span aria-hidden>→</span>
                               </button>
-                              <span className="hidden font-mono text-[0.62rem] uppercase tracking-[0.3em] text-fog/60 md:inline">
+                              <span className="hidden font-mono text-[0.62rem] uppercase tracking-[0.3em] text-fog md:inline">
                                 {step === 3 ? t.cmdEnterHint : t.enterHint}
                               </span>
                             </div>

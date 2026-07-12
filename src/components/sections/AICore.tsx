@@ -1,13 +1,14 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { motion, useInView, useReducedMotion } from "framer-motion";
+import { motion, useInView } from "framer-motion";
 import { Reveal } from "@/components/ui/Reveal";
 import { ChapterNumeral } from "@/components/ui/ChapterNumeral";
 import { Compile } from "@/components/ui/Compile";
 import { CanvasMotif } from "@/components/ui/CanvasMotif";
 import { FilmPanel } from "@/components/ui/FilmPanel";
 import { useContent } from "@/lib/content";
+import { useSafeReducedMotion } from "@/lib/useSafeReducedMotion";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 
@@ -80,7 +81,7 @@ function CapabilityRow({
 export function AICore() {
   const c = useContent().core;
   const POINTS = c.points;
-  const reduce = useReducedMotion() ?? false;
+  const reduce = useSafeReducedMotion();
 
   const [activeMode, setActiveMode] = useState(0);
 

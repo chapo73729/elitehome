@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
-import { motion, useReducedMotion } from "framer-motion";
+import { motion } from "framer-motion";
+import { useSafeReducedMotion } from "@/lib/useSafeReducedMotion";
 import { usePathname } from "next/navigation";
 import { stripLocale } from "@/lib/i18n";
 import { audio } from "@/lib/audio";
@@ -36,7 +37,7 @@ type Phase = "idle" | "cover" | "reveal";
  */
 export function PageTransition() {
   const pathname = usePathname();
-  const reduce = useReducedMotion() ?? false;
+  const reduce = useSafeReducedMotion();
   const [phase, setPhase] = useState<Phase>("idle");
   const prevPath = useRef<string | null>(null);
   // freeze the annotation label for the whole sweep
