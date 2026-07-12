@@ -21,19 +21,17 @@ import { stripLocale } from "@/lib/i18n";
  */
 export function MobileCTA() {
   const pathname = usePathname();
-  const label = useContent().hero.engage;
+  const label = useContent().common.book;
   const rest = stripLocale(pathname).rest;
-  const isHome = rest === "/";
-  const href = isHome ? "#contact" : "/contact";
+  const href = "/booking";
   const [show, setShow] = useState(false);
-  // redundant on the contact page itself — and it covered the brief-flow's
-  // bottom hint on mobile
-  const onContact = rest === "/contact";
+  // redundant on the booking page itself
+  const onBooking = rest === "/booking";
 
   useEffect(() => {
     let consented = true;
     try {
-      consented = !!localStorage.getItem("ardlabs-consent");
+      consented = !!localStorage.getItem("blackfirst-consent");
     } catch {}
 
     // return visit (consent already stored): fade in after the hero settles.
@@ -45,11 +43,11 @@ export function MobileCTA() {
     // first visit: hold until the cookie banner is dismissed so the two
     // bottom-left elements never stack.
     const onConsent = () => setShow(true);
-    window.addEventListener("ardlabs-consent-set", onConsent);
-    return () => window.removeEventListener("ardlabs-consent-set", onConsent);
+    window.addEventListener("blackfirst-consent-set", onConsent);
+    return () => window.removeEventListener("blackfirst-consent-set", onConsent);
   }, []);
 
-  if (onContact) return null;
+  if (onBooking) return null;
 
   return (
     <motion.div
@@ -65,7 +63,7 @@ export function MobileCTA() {
       >
         <span
           aria-hidden
-          className="block h-1.5 w-1.5 rounded-full bg-accent shadow-[0_0_8px_2px_rgba(79,140,255,0.6)]"
+          className="block h-1.5 w-1.5 rounded-full bg-accent shadow-[0_0_8px_2px_rgba(198,161,91,0.6)]"
         />
         {label}
       </LocaleLink>

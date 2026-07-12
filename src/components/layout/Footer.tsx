@@ -1,42 +1,25 @@
 "use client";
 
-import { usePathname } from "next/navigation";
 import { LocaleLink } from "@/components/ui/LocaleLink";
 import { SITE } from "@/lib/site";
 import { useContent } from "@/lib/content";
-import { scrollToTarget } from "./SmoothScroll";
-import { AccentSwitcher } from "@/components/feature/AccentSwitcher";
 import { copyText, toast } from "@/lib/toast";
 import { useLang } from "@/lib/lang";
-import { useLocaleRouter } from "@/hooks/useLocaleRouter";
-import { stripLocale } from "@/lib/i18n";
 
 const T = {
   en: {
-    cities: "Prague · Geneva · Singapore",
-    cities2: "Dubai · Tokyo · New York",
+    cities: "Geneva · Lausanne · Montreux · Verbier",
+    cities2: "Courchevel · Lyon · Milan",
     sitemap: "Sitemap",
-    about: "About",
-    work: "Work",
-    approach: "Approach",
-    careers: "Careers",
-    contact: "Contact",
-    security: "Security",
   },
   fr: {
-    cities: "Prague · Genève · Singapour",
-    cities2: "Dubaï · Tokyo · New York",
+    cities: "Genève · Lausanne · Montreux · Verbier",
+    cities2: "Courchevel · Lyon · Milan",
     sitemap: "Plan du site",
-    about: "À propos",
-    work: "Réalisations",
-    approach: "Approche",
-    careers: "Carrières",
-    contact: "Contact",
-    security: "Sécurité",
   },
 } as const;
 
-/** [01]-style register mark — the homepage's numbered index idiom. */
+/** [01]-style register mark. */
 const num = (i: number) => `[${String(i + 1).padStart(2, "0")}]`;
 
 export function Footer() {
@@ -44,44 +27,29 @@ export function Footer() {
   const c = useContent();
   const f = c.footer;
   const t = T[useLang()];
-  const pathname = usePathname();
-  const router = useLocaleRouter();
-  const isHome = stripLocale(pathname).rest === "/";
 
-  // same rule as the header nav: the [0x] registers point at homepage
-  // anchors, so off the homepage they must navigate home first —
-  // scrollToTarget alone silently no-ops on a selector that isn't there
-  const goRegister = (href: string) => {
-    if (href.startsWith("#") && !isHome) {
-      router.push("/" + href);
-      return;
-    }
-    scrollToTarget(href);
-  };
   return (
     <footer className="relative z-10 hairline-t bg-void">
       <div className="container-x pb-14 pt-20 md:pb-16 md:pt-28">
-        {/* editorial masthead — the studio signs off at display scale */}
+        {/* editorial masthead */}
         <p className="text-giant select-none">
           <span className="text-gradient">{SITE.name}</span>
           <span className="text-accent">®</span>
         </p>
         <p className="mt-6 max-w-md text-mist md:text-lg">{f.tagline}</p>
 
-        {/* index + contact — hairline-ruled mono registers */}
         <div className="mt-16 grid gap-14 md:mt-24 md:grid-cols-12 md:gap-10">
-          <nav aria-label={f.index} className="md:col-span-6 lg:col-span-5">
-            <div className="eyebrow mb-6">{f.index}</div>
+          {/* explore */}
+          <nav aria-label={f.explore} className="md:col-span-6 lg:col-span-5">
+            <div className="eyebrow mb-6">{f.explore}</div>
             <ul>
               {c.nav.map((n, i) => (
                 <li key={n.href} className="hairline-t">
-                  <button
-                    onClick={() => goRegister(n.href)}
+                  <LocaleLink
+                    href={n.href}
                     className="group flex w-full items-baseline gap-5 py-3 text-left"
                   >
-                    <span className="font-mono text-xs text-accent tabular-nums">
-                      {num(i)}
-                    </span>
+                    <span className="font-mono text-xs text-accent tabular-nums">{num(i)}</span>
                     <span className="font-mono text-sm tracking-wider text-mist transition-colors group-hover:text-chalk">
                       {n.label}
                     </span>
@@ -91,12 +59,24 @@ export function Footer() {
                     >
                       →
                     </span>
-                  </button>
+                  </LocaleLink>
                 </li>
               ))}
+              <li className="hairline-t">
+                <LocaleLink
+                  href="/booking"
+                  className="group flex w-full items-baseline gap-5 py-3 text-left"
+                >
+                  <span className="font-mono text-xs text-accent tabular-nums">{num(c.nav.length)}</span>
+                  <span className="font-mono text-sm tracking-wider text-mist transition-colors group-hover:text-chalk">
+                    {c.common.book}
+                  </span>
+                </LocaleLink>
+              </li>
             </ul>
           </nav>
 
+          {/* contact */}
           <div className="md:col-span-6 md:col-start-7 md:border-l md:border-[color-mix(in_oklab,var(--color-chalk)_7%,transparent)] md:pl-10 lg:col-span-5 lg:col-start-8">
             <div className="eyebrow mb-6">{f.contact}</div>
             <ul>
@@ -109,40 +89,32 @@ export function Footer() {
                   className="group flex w-full items-baseline gap-5 py-3 text-left"
                   title={f.copyHint}
                 >
-                  <span className="font-mono text-xs text-accent tabular-nums">
-                    {num(c.nav.length)}
-                  </span>
+                  <span className="font-mono text-xs text-accent tabular-nums">{num(0)}</span>
                   <span className="font-mono text-sm tracking-wider text-mist transition-colors group-hover:text-chalk">
                     {SITE.email}
                   </span>
                 </button>
               </li>
-              <li className="hairline-t flex items-baseline gap-5 py-3">
-                <span
-                  aria-hidden
-                  className="font-mono text-xs text-accent tabular-nums"
+              <li className="hairline-t">
+                <a
+                  href={`tel:${SITE.phoneHref}`}
+                  className="group flex w-full items-baseline gap-5 py-3 text-left"
                 >
-                  {num(c.nav.length + 1)}
-                </span>
-                <span className="font-mono text-sm tracking-wider text-fog">
-                  {t.cities}
-                </span>
+                  <span className="font-mono text-xs text-accent tabular-nums">{num(1)}</span>
+                  <span className="font-mono text-sm tracking-wider text-mist transition-colors group-hover:text-chalk">
+                    {SITE.phone}
+                  </span>
+                </a>
               </li>
               <li className="hairline-t flex items-baseline gap-5 py-3">
-                <span
-                  aria-hidden
-                  className="font-mono text-xs text-accent tabular-nums"
-                >
-                  {num(c.nav.length + 2)}
-                </span>
-                <span className="font-mono text-sm tracking-wider text-fog">
-                  {t.cities2}
-                </span>
+                <span aria-hidden className="font-mono text-xs text-accent tabular-nums">{num(2)}</span>
+                <span className="font-mono text-sm tracking-wider text-fog">{t.cities}</span>
+              </li>
+              <li className="hairline-t flex items-baseline gap-5 py-3">
+                <span aria-hidden className="font-mono text-xs text-accent tabular-nums">{num(3)}</span>
+                <span className="font-mono text-sm tracking-wider text-fog">{t.cities2}</span>
               </li>
             </ul>
-            <div className="mt-10">
-              <AccentSwitcher />
-            </div>
           </div>
         </div>
 
@@ -150,26 +122,23 @@ export function Footer() {
           aria-label={t.sitemap}
           className="mt-16 flex flex-wrap items-center gap-x-6 gap-y-2 hairline-t pt-8 font-mono text-xs tracking-wider text-fog md:mt-24"
         >
+          <LocaleLink href="/services" className="inline-block py-1 transition-colors hover:text-chalk">
+            {c.nav[0].label}
+          </LocaleLink>
+          <LocaleLink href="/fleet" className="inline-block py-1 transition-colors hover:text-chalk">
+            {c.nav[1].label}
+          </LocaleLink>
+          <LocaleLink href="/locations" className="inline-block py-1 transition-colors hover:text-chalk">
+            {c.nav[2].label}
+          </LocaleLink>
           <LocaleLink href="/about" className="inline-block py-1 transition-colors hover:text-chalk">
-            {t.about}
-          </LocaleLink>
-          <LocaleLink href="/work" className="inline-block py-1 transition-colors hover:text-chalk">
-            {t.work}
-          </LocaleLink>
-          <LocaleLink href="/approach" className="inline-block py-1 transition-colors hover:text-chalk">
-            {t.approach}
-          </LocaleLink>
-          <LocaleLink href="/careers" className="inline-block py-1 transition-colors hover:text-chalk">
-            {t.careers}
+            {c.nav[3].label}
           </LocaleLink>
           <LocaleLink href="/contact" className="inline-block py-1 transition-colors hover:text-chalk">
-            {t.contact}
+            {c.nav[4].label}
           </LocaleLink>
-          <LocaleLink href="/insights" className="inline-block py-1 transition-colors hover:text-chalk">
-            {f.insights ?? "Insights"}
-          </LocaleLink>
-          <LocaleLink href="/security" className="inline-block py-1 transition-colors hover:text-chalk">
-            {t.security}
+          <LocaleLink href="/booking" className="inline-block py-1 transition-colors hover:text-chalk">
+            {c.common.book}
           </LocaleLink>
           <LocaleLink href="/legal/imprint" className="inline-block py-1 transition-colors hover:text-chalk">
             {f.legalNotice}
@@ -186,17 +155,9 @@ export function Footer() {
           <span>
             © {year} {SITE.legal} — {f.rights}
           </span>
-          <span className="flex items-center gap-4">
-            <span className="hidden items-center gap-1.5 sm:flex">
-              {f.press}
-              <kbd className="rounded border border-white/15 px-1.5 py-0.5 text-[0.65rem] text-mist">
-                ⌘K
-              </kbd>
-            </span>
-            <span className="flex items-center gap-2">
-              <span className="inline-block h-1.5 w-1.5 animate-pulse rounded-full bg-accent-2" />
-              {f.allSystems}
-            </span>
+          <span className="flex items-center gap-2">
+            <span className="inline-block h-1.5 w-1.5 animate-pulse rounded-full bg-accent-2" />
+            {f.availability}
           </span>
         </div>
       </div>

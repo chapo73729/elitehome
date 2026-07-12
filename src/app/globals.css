@@ -1,8 +1,9 @@
 @import "tailwindcss";
 
 /* ============================================================
-   ARDLABS® — Design System
-   Dark · Luxurious · Cinematic · Minimal
+   BLACKFIRST® — Design System
+   Black · Ivory · Platinum · Champagne
+   Executive · Cinematic · Minimal · Swiss
    ============================================================ */
 
 @theme {
@@ -13,19 +14,22 @@
   --color-smoke: #16181e;       /* bg/elev-2 — menus, fields */
   --color-elev-3: #1c1f27;      /* bg/elev-3 — hover, tooltips */
 
-  /* Text — spec Ch.05 §5.2 */
-  --color-fog: #8b93a0;         /* text/muted — ≥4.5:1 on the dark surfaces (WCAG 1.4.3) */
-  --color-mist: #9ba3af;        /* text/secondary */
-  --color-chalk: #f4f6f8;       /* text/primary */
+  /* Text — ivory whites + platinum greys, ≥4.5:1 on the dark surfaces */
+  --color-fog: #8d8a83;         /* text/muted — warm platinum grey */
+  --color-mist: #a8a49b;        /* text/secondary */
+  --color-chalk: #f6f3ec;       /* text/primary — luxury ivory white */
   --color-white-pure: #ffffff;
 
-  /* Accent — spec acté: ONE azure, ≤10% of any screen. The -2/-3 tokens
-     stay in the azure family so the system reads as a single signal,
-     never a rainbow. */
-  --color-accent: #4f8cff;      /* accent/base */
-  --color-accent-2: #6b9dff;    /* accent/hover (light azure) */
-  --color-accent-3: #3d6fe0;    /* deep azure */
-  --color-glow: #4f8cff;
+  /* Platinum — metallic silver for numerals & fine rules */
+  --color-platinum: #c7cbd1;
+
+  /* Accent — a single discreet champagne signal, ≤10% of any screen. The
+     -2/-3 tokens stay in the champagne family so the system reads as one
+     restrained metallic voice, never a rainbow. */
+  --color-accent: #c6a15b;      /* accent/base — champagne gold */
+  --color-accent-2: #e4c88a;    /* accent/hover — light champagne */
+  --color-accent-3: #a8843f;    /* accent/deep — antique gold */
+  --color-glow: #c6a15b;
 
   --font-display: var(--font-display), "Geist", system-ui, sans-serif;
   /* body shares the display face — one Geist load, one preload (perf) */
@@ -240,7 +244,7 @@ html {
 
 @media (max-width: 480px) {
   .eyebrow {
-    /* the longest eyebrow ("Digital Engineering Studio · Prague") must clear
+    /* the longest eyebrow ("Executive Chauffeur Service · Geneva") must clear
        the 24px gutters on a 390px viewport */
     font-size: 0.66rem;
     letter-spacing: 0.22em;

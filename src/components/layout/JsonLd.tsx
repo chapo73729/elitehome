@@ -1,41 +1,62 @@
-import { SITE, CITIES } from "@/lib/site";
+import { SITE, CITIES, SERVICES } from "@/lib/site";
+
+const SERVICE_NAMES: Record<string, string> = {
+  "airport-transfer": "Airport Executive Transfer",
+  "business-chauffeur": "Business Chauffeur",
+  events: "Luxury Event Chauffeur",
+  "long-distance": "International Long-Distance Chauffeur",
+};
 
 export function JsonLd() {
   const data = {
     "@context": "https://schema.org",
     "@graph": [
       {
-        "@type": ["Organization", "ProfessionalService"],
+        "@type": ["LimousineService", "LocalBusiness"],
         "@id": `${SITE.url}/#organization`,
         name: SITE.legal,
         legalName: SITE.legal,
         url: SITE.url,
         email: SITE.email,
+        telephone: SITE.phone,
         description: SITE.description,
         slogan: SITE.tagline,
-        foundingDate: "2019",
-        logo: `${SITE.url}/icon.svg`,
+        priceRange: "$$$$",
         image: `${SITE.url}/opengraph-image`,
+        logo: `${SITE.url}/icon.svg`,
+        openingHours: "Mo-Su 00:00-24:00",
         contactPoint: {
           "@type": "ContactPoint",
-          contactType: "sales",
+          contactType: "reservations",
           email: SITE.email,
-          availableLanguage: ["en", "fr"],
+          telephone: SITE.phone,
+          availableLanguage: ["fr", "en", "de"],
         },
         address: {
           "@type": "PostalAddress",
-          streetAddress: "Na Příkopě 21",
-          postalCode: "110 00",
-          addressLocality: "Praha 1",
-          addressCountry: "CZ",
+          addressLocality: "Geneva",
+          addressCountry: "CH",
         },
-        areaServed: CITIES.map((c) => c.name),
+        areaServed: CITIES.map((c) => ({ "@type": "City", name: c.name })),
         knowsAbout: [
-          "Strategy & Consulting",
-          "Design & Development",
-          "Data & AI",
-          "Cloud & Infrastructure",
+          "Executive chauffeur service",
+          "Airport transfers Geneva",
+          "Private mobility Switzerland",
+          "Business chauffeur",
+          "Long-distance chauffeur Europe",
         ],
+        hasOfferCatalog: {
+          "@type": "OfferCatalog",
+          name: "Chauffeur services",
+          itemListElement: SERVICES.map((s) => ({
+            "@type": "Offer",
+            itemOffered: {
+              "@type": "Service",
+              name: SERVICE_NAMES[s.slug],
+              url: `${SITE.url}/en/services/${s.slug}`,
+            },
+          })),
+        },
       },
       {
         "@type": "WebSite",

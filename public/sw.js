@@ -1,5 +1,5 @@
-/* ARDLABS® service worker — installable + basic offline shell. */
-const CACHE = "ardlabs-v2";
+/* BLACKFIRST® service worker — installable + basic offline shell. */
+const CACHE = "blackfirst-v1";
 const CORE = ["/", "/manifest.webmanifest", "/icon.svg"];
 
 self.addEventListener("install", (event) => {

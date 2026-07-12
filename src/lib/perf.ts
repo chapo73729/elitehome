@@ -13,7 +13,7 @@ export function setPerf(v: boolean) {
   if (v === perf) return;
   perf = v;
   try {
-    localStorage.setItem("ardlabs-perf", v ? "on" : "off");
+    localStorage.setItem("blackfirst-perf", v ? "on" : "off");
   } catch {}
   subs.forEach((fn) => fn());
 }
@@ -25,7 +25,7 @@ export function togglePerf() {
 export function initPerf() {
   if (typeof window === "undefined") return;
   try {
-    if (localStorage.getItem("ardlabs-perf") === "on") setPerf(true);
+    if (localStorage.getItem("blackfirst-perf") === "on") setPerf(true);
   } catch {}
 }
 

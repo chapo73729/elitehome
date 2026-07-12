@@ -3,21 +3,18 @@
 import { useState } from "react";
 import { Loader } from "@/components/loader/Loader";
 import { Hero } from "@/components/sections/Hero";
-import { Cinematic } from "@/components/sections/Cinematic";
-import { AICore } from "@/components/sections/AICore";
-import { GlobalNetwork } from "@/components/sections/GlobalNetwork";
-import { Partners } from "@/components/sections/Partners";
-import { Industries } from "@/components/sections/Industries";
-import { CyberSecurity } from "@/components/sections/CyberSecurity";
-import { Team } from "@/components/sections/Team";
-import { Contact } from "@/components/sections/Contact";
-import { GutterRuler } from "@/components/layout/GutterRuler";
+import { Manifesto } from "@/components/sections/Manifesto";
+import { ExperienceSection } from "@/components/sections/ExperienceSection";
+import { RouteMap } from "@/components/sections/RouteMap";
+import { ServicesSection } from "@/components/sections/ServicesSection";
+import { FleetSection } from "@/components/sections/FleetSection";
+import { BookingCTA } from "@/components/sections/BookingCTA";
 import { Seam } from "@/components/layout/Seam";
 
 /**
- * Homepage experience — a tight, cinematic flow over one continuous world.
- * Curated to a few strong beats: arrival, manifesto, intelligence, network,
- * industries, and the call to engage. Everything else lives on sub-pages.
+ * Homepage experience — a cinematic flow over one continuous night: arrival,
+ * manifesto, the cabin, the map, services, the fleet, and the invitation to
+ * reserve. Everything else lives on sub-pages.
  */
 export function Experience() {
   const [ready, setReady] = useState(false);
@@ -25,23 +22,19 @@ export function Experience() {
   return (
     <>
       <Loader onComplete={() => setReady(true)} />
-      <GutterRuler />
       <main className="relative">
         <Hero ready={ready} />
-        <Cinematic />
+        <Manifesto />
         <Seam />
-        <AICore />
+        <ExperienceSection />
         <Seam />
-        <GlobalNetwork />
+        <RouteMap />
         <Seam />
-        <Partners />
-        <Industries />
+        <ServicesSection />
         <Seam />
-        <CyberSecurity />
+        <FleetSection />
         <Seam />
-        <Team />
-        <Seam />
-        <Contact />
+        <BookingCTA />
       </main>
     </>
   );

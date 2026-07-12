@@ -35,7 +35,7 @@ export function setLang(l: Lang) {
   if (l === current) return;
   current = l;
   try {
-    localStorage.setItem("ardlabs-lang", l);
+    localStorage.setItem("blackfirst-lang", l);
     document.documentElement.lang = l;
   } catch {}
   emit();

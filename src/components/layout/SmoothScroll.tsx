@@ -18,7 +18,7 @@ export function SmoothScroll({ children }: { children: React.ReactNode }) {
   // Loader's lock and drag scrollY away from the top before it catches up.
   const [freshBoot] = useState(() => {
     try {
-      return !sessionStorage.getItem("ardlabs-booted");
+      return !sessionStorage.getItem("blackfirst-booted");
     } catch {
       return true;
     }

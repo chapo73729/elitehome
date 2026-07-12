@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { defaultLocale, isLocale, type AppLocale } from "@/lib/i18n";
 
-const COOKIE = "ardlabs-lang";
+const COOKIE = "blackfirst-lang";
 
 /* NOTE on CSP: a per-request nonce + 'strict-dynamic' policy was tried here
    and reverted — this site is statically generated (SSG), so Next cannot

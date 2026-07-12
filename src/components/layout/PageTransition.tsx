@@ -5,7 +5,6 @@ import { motion } from "framer-motion";
 import { useSafeReducedMotion } from "@/lib/useSafeReducedMotion";
 import { usePathname } from "next/navigation";
 import { stripLocale } from "@/lib/i18n";
-import { audio } from "@/lib/audio";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 /** How long the void holds fully covering while the new route paints. */
@@ -69,7 +68,6 @@ export function PageTransition() {
     const { rest } = stripLocale(pathname);
     setLabel(rest === "/" ? "/index" : rest);
     setPhase("cover"); // overlay appears instantly, fully covering
-    audio.whoosh(); // soft filtered sweep under the reveal (no-op when muted)
     const t = window.setTimeout(() => setPhase("reveal"), HOLD_MS);
     return () => window.clearTimeout(t);
   }, [pathname, reduce]);
@@ -114,14 +112,14 @@ export function PageTransition() {
           transition={{ duration: 0.5, ease: "easeInOut" }}
         />
       )}
-      {/* thin azure leading edge — the line that passes over the content
+      {/* thin champagne leading edge — the line that passes over the content
           as the cover sweeps up */}
       <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-accent/70 to-transparent" />
       {/* mono annotation, same register as the Loader's bottom strip */}
       <div className="absolute inset-x-0 bottom-10 flex items-end justify-between px-6 font-mono text-[0.7rem] tracking-[0.3em] text-fog md:px-14">
-        <span>{`// compile: route ${label} … ok`}</span>
+        <span>{`en route · ${label}`}</span>
         <span className="hidden uppercase text-accent-2/80 sm:inline">
-          ARDLABS®
+          BLACKFIRST®
         </span>
       </div>
     </motion.div>

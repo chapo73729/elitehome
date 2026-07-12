@@ -6,16 +6,16 @@ import { useLang } from "@/lib/lang";
 
 const T = {
   en: {
-    wordmark: "ARDLABS® · Digital Engineering Studio",
-    core: "core",
-    lattice: "lattice",
-    interface: "interface",
+    wordmark: "BLACKFIRST® · Executive Chauffeur · Geneva",
+    core: "ignition",
+    lattice: "route",
+    interface: "cabin",
   },
   fr: {
-    wordmark: "ARDLABS® · Studio d’ingénierie numérique",
-    core: "cœur",
-    lattice: "trame",
-    interface: "interface",
+    wordmark: "BLACKFIRST® · Chauffeur d’exception · Genève",
+    core: "démarrage",
+    lattice: "trajet",
+    interface: "cabine",
   },
 } as const;
 
@@ -116,7 +116,7 @@ function lockScroll() {
 /**
  * Cinematic boot sequence:
  *   ignite  — a light point blooms at centre
- *   form    — particles converge into the ARDLABS wordmark
+ *   form    — particles converge into the BLACKFIRST wordmark
  *   hold    — the logo breathes
  *   explode — particles burst outward, we pass through
  *   done    — overlay wipes away to reveal the hero
@@ -133,7 +133,7 @@ export function Loader({ onComplete }: { onComplete: () => void }) {
     let seen: string | null = null;
     try {
       reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-      seen = sessionStorage.getItem("ardlabs-booted");
+      seen = sessionStorage.getItem("blackfirst-booted");
     } catch {
       /* storage/media blocked — treat as a fresh, full-motion visit */
     }
@@ -145,7 +145,7 @@ export function Loader({ onComplete }: { onComplete: () => void }) {
       return;
     }
     try {
-      sessionStorage.setItem("ardlabs-booted", "1");
+      sessionStorage.setItem("blackfirst-booted", "1");
     } catch {
       /* non-fatal */
     }
@@ -205,12 +205,12 @@ export function Loader({ onComplete }: { onComplete: () => void }) {
       const octx = off.getContext("2d")!;
       off.width = W;
       off.height = H;
-      const fontSize = Math.min(W * 0.16, 220);
+      const fontSize = Math.min(W * 0.115, 150);
       octx.fillStyle = "#fff";
       octx.font = `700 ${fontSize}px "Geist", system-ui, sans-serif`;
       octx.textAlign = "center";
       octx.textBaseline = "middle";
-      octx.fillText("ARDLABS", W / 2, H / 2);
+      octx.fillText("BLACKFIRST", W / 2, H / 2);
 
       const img = octx.getImageData(0, 0, W, H).data;
       const pts: { x: number; y: number }[] = [];

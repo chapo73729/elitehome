@@ -1,140 +1,87 @@
-# ARDLABS® — Digital Engineering Studio
+# BLACKFIRST® — Executive Chauffeur & Private Mobility
 
-> The marketing site for ARDLABS®, a digital engineering studio (software,
-> platforms, data & AI, cloud) — bilingual EN/FR, built around a single visual
-> signature: **« Compile »** — the site draws its own blueprint, sweeps it, and
-> compiles into the final content.
+> The marketing site for BLACKFIRST®, a Geneva-based executive chauffeur and
+> private-mobility house — bilingual EN/FR, cinematic, built to feel closer to a
+> five-star hotel or private aviation than to a ride hail.
+>
+> Positioning: **Executive Mobility. Swiss Precision. Beyond the journey.**
 
-This document is the handoff reference: stack, architecture, conventions,
-verification workflow, and the known constraints a new team should not
-rediscover the hard way.
+This document is the handoff reference: stack, architecture, conventions and the
+constraints a new team should not rediscover the hard way.
 
 ## Tech stack
 
 - **Next.js 15** (App Router, static generation) · **React 19** · **TypeScript (strict)**
 - **Tailwind CSS v4** — design tokens live in `@theme` inside `src/app/globals.css`
-- **framer-motion 12** for UI motion, **Lenis** for smooth scroll (exposed as `window.__lenis`)
-- **React Three Fiber** + **drei** + **@react-three/postprocessing** for the 3D scenes
-- **@vercel/analytics** (page views + custom conversion events)
-- Contact relay via **Web3Forms** (`WEB3FORMS_ACCESS_KEY` env var, used server-side in `/api/contact`)
+- **framer-motion 12** for UI motion, **Lenis** for smooth scroll (`window.__lenis`)
+- Light **2D-canvas** visuals (`NightDrive`, `PageHeaderFX`, `RouteMap`) instead of
+  heavy WebGL — cheap, capped-DPR, paused off-screen, static under reduced motion
+- **@vercel/analytics** + **speed-insights**
+- Reservation / enquiry relay via **Web3Forms** (`WEB3FORMS_ACCESS_KEY`, server-side
+  in `/api/contact`)
 
 ## Architecture
 
 ### Routing & i18n
 
-- `src/app/[locale]/layout.tsx` **is the root layout** — it renders
-  `<html lang={locale}>` server-side. There is intentionally **no**
-  `src/app/layout.tsx`.
+- `src/app/[locale]/layout.tsx` **is the root layout** (renders `<html lang>`
+  server-side). There is intentionally **no** `src/app/layout.tsx`.
 - Locales: `en` (source of truth) and `fr`. `src/middleware.ts` redirects `/`
   to the visitor's locale (cookie → `Accept-Language` → `en`).
-- 404s are handled by the `[locale]/[...rest]` catch-all so the not-found page
-  is localized.
-- Copy lives in `src/lib/content.ts`: the `fr` object is deep-merged over `en`,
-  and a typographic transform (`frTypo`/`frDeep`) automatically applies French
-  micro-typography (thin no-break spaces before `; : ! ?`, inside « », curly
-  apostrophes) — **write plain FR strings; do not hand-place NBSPs**.
-- Server-side metadata (titles/descriptions per locale) lives in
-  `src/lib/meta.ts` so `generateMetadata()` never imports the client-side
-  content module.
+- Copy lives in `src/lib/content.ts`: the `fr` object is deep-merged over `en`
+  (arrays by index), and a typographic transform applies French micro-typography
+  (thin NBSP before `; : ! ?`, inside « », curly apostrophes) automatically —
+  **write plain FR strings; do not hand-place NBSPs**.
+- Language-neutral structural data (services, fleet specs, served locations,
+  brand + contact details) lives in `src/lib/site.ts`.
+- Server-side per-route metadata lives in `src/lib/meta.ts` so
+  `generateMetadata()` never imports the client-only content module.
 
-### The « Compile » signature
+### Routes
 
-`src/components/ui/Compile.tsx` wraps a section and plays the signature
-sequence on first reveal: blueprint corner brackets draw on, a dashed frame and
-dimension ticks appear, a mono annotation types (`// compile: {label} … ok`), a
-luminous sweep passes, and the ghosted content resolves to final. A faint
-blueprint residue remains at rest. It is applied to the homepage chapters, all
-inner pages, the loader chrome, the page transition, the 404, and the OG image
-— when extending the site, new sections should speak this language.
+`/` (home) · `/services` + `/services/[slug]` (airport-transfer,
+business-chauffeur, events, long-distance) · `/fleet` · `/locations` ·
+`/about` · `/booking` · `/contact` · `/legal/{imprint,privacy,terms}`.
 
-### 3D system
+### Homepage
 
-- Scenes: `HeroScene`, `NeuralFlow`, `WarpField` (+ the living `WorldMap`,
-  which is 2D canvas/SVG).
-- `src/hooks/useSceneVisibility.ts` governs every WebGL canvas: contexts mount
-  ~400px before the viewport through a **staggered idle queue** (never two
-  shader compilations in one burst) and **unmount again beyond a 1600px retain
-  band**, so a full-page scroll holds ~2 live contexts instead of
-  accumulating all of them. Frameloops stop entirely off-screen.
-- `src/lib/journey.ts` is a shared, smoothed page-scroll signal
-  (progress + velocity, single lerp). All scenes read it so the whole page
-  behaves as one continuous camera move. Reduced motion pins it to zero.
-
-### Sound
-
-`src/lib/audio.ts` is a lazy WebAudio engine (created only on user gesture,
-suspended when the tab hides): a quiet ambient pad plus `hover`, `click`,
-`whoosh` (page transitions) and `success` (brief submitted) cues. Off by
-default; toggled via the sound control in the header.
-
-### Contact — the « Brief » flow
-
-`src/components/sections/Contact.tsx` is a 4-step guided brief
-(name → email → domain → message) with per-step validation, Enter-to-advance,
-and a blueprint "compiled brief" review before submit. Submission posts to
-`/api/contact` (origin-checked, honeypot, input-hardened) which relays through
-Web3Forms. Conversion events: `brief_step` and `brief_transmitted`.
+`src/components/layout/Experience.tsx` composes the cinematic flow: Loader →
+Hero (Geneva night-drive backdrop + Executive HUD) → Manifesto → Cabin →
+RouteMap → Services → Fleet → Booking CTA.
 
 ## Development
 
 ```bash
 npm install
-npm run dev      # http://localhost:3000
-npm run build    # production build
-npm run start    # serve the production build
-npx tsc --noEmit # strict type check
+npm run dev       # http://localhost:3000
+npm run build     # production build
+npx tsc --noEmit  # strict type check
 ```
 
 Environment:
 
 | Variable | Purpose |
 |---|---|
-| `WEB3FORMS_ACCESS_KEY` | Server-side key for the contact relay (`/api/contact`) |
+| `WEB3FORMS_ACCESS_KEY` | Server-side key for the enquiry/booking relay (`/api/contact`) |
 
-> Tip: constrained machines may need
-> `NODE_OPTIONS="--max-old-space-size=3072" npm run build`.
+> Constrained machines: `NODE_OPTIONS="--max-old-space-size=3072" npm run build`.
 
-## Structure
+## Before going live
 
-```
-src/
-  app/
-    [locale]/          # ROOT layout (html lang), all pages, [...rest] 404
-    api/contact/       # hardened contact relay (origin check, honeypot)
-    opengraph-image.tsx# dynamic OG image in the Compile language
-    sitemap.ts, robots.ts, manifest.ts
-  components/
-    layout/            # Loader, PageTransition, Header, Footer, Cursor, overlays
-    sections/          # homepage chapters + Contact (Brief flow)
-    industry/          # service-detail pages (IndustryDetail)
-    views/             # inner-page views (work, about, insights, legal…)
-    three/             # R3F scenes + shaders
-    ui/                # Compile, Reveal, Magnetic, ChapterNumeral, WorldMap…
-  hooks/               # useSceneVisibility (WebGL lifecycle), device tier
-  lib/                 # content (EN + FR merge), meta, journey, audio, i18n, fonts
-```
+- **Legal**: the imprint / privacy / terms pages carry Swiss placeholders marked
+  with the `<Fill>` component (company name, UID/VAT, registered address). Replace
+  them with the real BLACKFIRST Sàrl details.
+- **Contact details**: `src/lib/site.ts` holds placeholder phone / WhatsApp
+  numbers and the `blackfirst.ch` domain — swap in the real ones.
+- **Imagery**: the hero and cabin visuals are lightweight canvas/CSS stand-ins for
+  the heavier 3D scenes in the brief; replace with real fleet / Geneva photography
+  or a WebGL scene when assets are ready.
 
-## Known constraints — read before "fixing"
+## Constraints — read before "fixing"
 
-- **CSP**: the Content-Security-Policy is set in `next.config.ts` and keeps
-  `script-src 'self' 'unsafe-inline'`. A per-request **nonce +
-  `strict-dynamic` CSP was tried and reverted**: the site is statically
-  generated, so HTML cannot carry per-request nonces — it blocked every
-  script. Do not reintroduce it without moving the affected pages to dynamic
-  rendering. (Documented in `src/middleware.ts` and `next.config.ts`.)
-- **Loader**: the full first-visit cinematic (~3.7s) is a deliberate product
-  decision, accepted with its LCP cost. Do not shorten or skip it without a
-  new decision from the owner.
-- **Fonts**: Geist is loaded once (`fontDisplay`); `--font-sans` aliases it in
-  `globals.css`. Don't add a second `next/font` load of the same family.
-- **Reduced motion** is honored everywhere (loader, scenes, journey, Compile,
-  transitions). Any new animation must have a reduced-motion path.
-- Case-study/partner content is representative placeholder copy — replace with
-  real client material before major marketing pushes.
-
-## Quality gates (what "done" means here)
-
-Every change should pass: `npx tsc --noEmit` clean → `npm run build` clean →
-all routes render in both locales → responsive intact (360px up) →
-reduced-motion path works → no console errors → Lighthouse/SEO unchanged
-or better.
+- **CSP** (in `next.config.ts`) keeps `script-src 'self' 'unsafe-inline'`. A
+  nonce + `strict-dynamic` policy was tried and reverted (SSG can't carry
+  per-request nonces). Everything the browser touches is same-origin.
+- **Loader**: the first-visit cinematic is a deliberate product decision.
+- **Reduced motion** is honored everywhere (loader, canvas visuals, transitions).
+  Any new animation must have a reduced-motion path.

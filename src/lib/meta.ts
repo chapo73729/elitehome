@@ -1,5 +1,5 @@
 /* ============================================================
-   ARDLABS® — Locale-aware page metadata (titles + descriptions)
+   BLACKFIRST® — Locale-aware page metadata (titles + descriptions)
    Server-safe: no "use client", no React hooks. Used by each
    page's generateMetadata() to localize the <title> segment and
    meta description per locale. Canonical/hreflang stay on the
@@ -11,213 +11,170 @@ import type { AppLocale } from "@/lib/i18n";
 export type PageMeta = { title: string; description: string };
 
 /**
- * Static-page title/description, keyed by locale. Titles are the
- * segment fed into the `%s — ARDLABS®` template (root layout), so
- * each value here is the bare page name / phrase, not the full title.
+ * Static-page title/description, keyed by locale. Titles are the segment
+ * fed into the `%s — BLACKFIRST®` template (root layout), so each value
+ * here is the bare page name / phrase, not the full title.
  */
 export const PAGE_META: Record<string, Record<AppLocale, PageMeta>> = {
   about: {
     en: {
       title: "About",
       description:
-        "ARDLABS® is a digital engineering studio. We design and build software, platforms and AI systems — refined to the detail.",
+        "BLACKFIRST® is a Geneva-based executive chauffeur house — Swiss precision, total discretion, one standard across Switzerland and Europe.",
     },
     fr: {
       title: "À propos",
       description:
-        "ARDLABS® est un studio d'ingénierie numérique. Nous concevons et développons des logiciels, plateformes et systèmes d'IA — soignés jusqu'au détail.",
-    },
-  },
-  approach: {
-    en: {
-      title: "Approach",
-      description:
-        "How ARDLABS® works — a studio method that turns a problem into reliable software, shipped and supported.",
-    },
-    fr: {
-      title: "Approche",
-      description:
-        "La méthode ARDLABS® — une approche de studio qui transforme un problème en un logiciel fiable, livré et maintenu.",
-    },
-  },
-  security: {
-    en: {
-      title: "Security posture",
-      description:
-        "How ARDLABS® secures its own platform — transport security, response headers, data minimisation and a responsible disclosure policy. Every claim is verifiable from outside.",
-    },
-    fr: {
-      title: "Posture de sécurité",
-      description:
-        "Comment ARDLABS® sécurise sa propre plateforme — transport, en-têtes de réponse, minimisation des données et politique de divulgation responsable. Chaque affirmation est vérifiable de l'extérieur.",
-    },
-  },
-  careers: {
-    en: {
-      title: "Careers",
-      description:
-        "Join ARDLABS® — a small, senior digital engineering studio building software, platforms and AI systems, refined to the detail.",
-    },
-    fr: {
-      title: "Carrières",
-      description:
-        "Rejoignez ARDLABS® — un studio d'ingénierie numérique, petit et senior, qui conçoit et développe logiciels, plateformes et systèmes d'IA, soignés jusqu'au détail.",
-    },
-  },
-  contact: {
-    en: {
-      title: "Contact",
-      description:
-        "Engage ARDLABS® — start a conversation about designing and building software, platforms, data & AI, and cloud.",
-    },
-    fr: {
-      title: "Contact",
-      description:
-        "Contactez ARDLABS® — démarrez la conversation sur la conception et le développement de logiciels, plateformes, données & IA et cloud.",
-    },
-  },
-  work: {
-    en: {
-      title: "Work",
-      description:
-        "Selected work from ARDLABS® — software, platforms, data and cloud projects, shipped end to end.",
-    },
-    fr: {
-      title: "Réalisations",
-      description:
-        "Une sélection de réalisations ARDLABS® — projets de logiciels, plateformes, données et cloud, livrés de bout en bout.",
-    },
-  },
-  insights: {
-    en: {
-      title: "Insights",
-      description:
-        "Notes from ARDLABS® on digital engineering — shipping reliable software, applied AI, and infrastructure refined to the detail.",
-    },
-    fr: {
-      title: "Perspectives",
-      description:
-        "Les notes d'ARDLABS® sur l'ingénierie numérique — logiciels fiables, IA appliquée et infrastructures soignées jusqu'au détail.",
+        "BLACKFIRST® est une maison de chauffeurs basée à Genève — précision suisse, discrétion totale, un seul standard à travers la Suisse et l'Europe.",
     },
   },
   services: {
     en: {
       title: "Services",
       description:
-        "Four poles, one standard — Strategy & Consulting, Design & Development, Data & AI, and Cloud & Infrastructure, engineered by ARDLABS®.",
+        "Airport transfers, business mobility, luxury events and international long-distance journeys — private chauffeur services by BLACKFIRST® in Geneva.",
     },
     fr: {
       title: "Services",
       description:
-        "Quatre pôles, un seul standard — Conseil & stratégie, Conception & développement, Données & IA, et Cloud & infrastructure, conçus par ARDLABS®.",
+        "Transferts aéroport, mobilité d'affaires, événements de prestige et longues distances internationales — services de chauffeur privé BLACKFIRST® à Genève.",
+    },
+  },
+  fleet: {
+    en: {
+      title: "The Fleet",
+      description:
+        "A quiet, immaculately kept fleet of recent Mercedes-Benz — S-Class, E-Class, V-Class VIP and electric EQS. Detailed before every journey.",
+    },
+    fr: {
+      title: "La flotte",
+      description:
+        "Une flotte silencieuse et impeccablement tenue de Mercedes-Benz récentes — Classe S, Classe E, V-Class VIP et EQS électrique. Soignée avant chaque trajet.",
+    },
+  },
+  locations: {
+    en: {
+      title: "Areas Served",
+      description:
+        "Based in Geneva, at home across the arc lémanique, the Alps and Europe — Lausanne, Montreux, Verbier, Courchevel, Lyon and Milan.",
+    },
+    fr: {
+      title: "Zones desservies",
+      description:
+        "Basés à Genève, chez nous sur l'arc lémanique, dans les Alpes et en Europe — Lausanne, Montreux, Verbier, Courchevel, Lyon et Milan.",
+    },
+  },
+  booking: {
+    en: {
+      title: "Book a Chauffeur",
+      description:
+        "Reserve your private chauffeur with BLACKFIRST®. Tell us where and when — we reply with a fixed, all-inclusive quote, fast.",
+    },
+    fr: {
+      title: "Réserver un chauffeur",
+      description:
+        "Réservez votre chauffeur privé avec BLACKFIRST®. Dites-nous où et quand — nous répondons avec un devis fixe et tout compris, vite.",
+    },
+  },
+  contact: {
+    en: {
+      title: "Contact",
+      description:
+        "Reach BLACKFIRST® by phone, WhatsApp or email — reservations answered 24/7, day and night, across Geneva, Switzerland and Europe.",
+    },
+    fr: {
+      title: "Contact",
+      description:
+        "Joignez BLACKFIRST® par téléphone, WhatsApp ou e-mail — réservations 24 h/24, jour et nuit, à Genève, en Suisse et en Europe.",
     },
   },
   "legal/imprint": {
-    en: {
-      title: "Legal Notice",
-      description: "Legal notice and company information for ARDLABS®.",
-    },
-    fr: {
-      title: "Mentions légales",
-      description: "Mentions légales et informations sur la société ARDLABS®.",
-    },
+    en: { title: "Legal Notice", description: "Legal notice and company information for BLACKFIRST®." },
+    fr: { title: "Mentions légales", description: "Mentions légales et informations sur la société BLACKFIRST®." },
   },
   "legal/privacy": {
-    en: {
-      title: "Privacy Policy",
-      description: "How ARDLABS® collects, uses and protects personal data.",
-    },
+    en: { title: "Privacy Policy", description: "How BLACKFIRST® collects, uses and protects personal data." },
     fr: {
       title: "Politique de confidentialité",
-      description:
-        "Comment ARDLABS® collecte, utilise et protège les données personnelles.",
+      description: "Comment BLACKFIRST® collecte, utilise et protège les données personnelles.",
     },
   },
   "legal/terms": {
-    en: {
-      title: "Terms of Use",
-      description: "Terms governing the use of the ARDLABS® website.",
-    },
+    en: { title: "Terms of Use", description: "Terms governing the use of the BLACKFIRST® website and services." },
     fr: {
       title: "Conditions d'utilisation",
-      description:
-        "Les conditions régissant l'utilisation du site web ARDLABS®.",
+      description: "Les conditions régissant l'utilisation du site web et des services BLACKFIRST®.",
     },
   },
 };
 
 /**
- * Per-service (INDUSTRIES id) localized title + overview, mirroring the
- * EN values in site.ts (INDUSTRIES) and the FR values in content.ts. Kept
- * here so server-side generateMetadata never imports the "use client"
- * content module. The `[slug]` page falls back to the English INDUSTRIES
- * entry if a slug is missing here.
+ * Per-service (slug) localized title + description. Kept here so server-side
+ * generateMetadata never imports the "use client" content module. The `[slug]`
+ * page falls back to the English entry if a locale value is missing.
  */
 export const SERVICE_META: Record<string, Record<AppLocale, PageMeta>> = {
-  strategy: {
+  "airport-transfer": {
     en: {
-      title: "Strategy & Consulting",
+      title: "Airport Executive Transfer",
       description:
-        "Before a line of code, the hard questions: what to build, why, and how it will hold up. We bring technology consulting, applied R&D and rapid prototyping to de-risk the idea and chart the path to a product.",
+        "Private airport transfers to and from Geneva, Zurich, Lausanne and the Alpine resorts — flight tracked, meet & greet, fixed fare.",
     },
     fr: {
-      title: "Conseil & stratégie",
+      title: "Transfert aéroport Executive",
       description:
-        "Avant la moindre ligne de code, les vraies questions : quoi construire, pourquoi, et comment cela tiendra. Conseil technologique, R&D appliquée et prototypage rapide pour réduire le risque et tracer le chemin vers le produit.",
+        "Transferts aéroport privés depuis et vers Genève, Zurich, Lausanne et les stations alpines — vol suivi, accueil personnalisé, tarif fixe.",
     },
   },
-  software: {
+  "business-chauffeur": {
     en: {
-      title: "Design & Development",
+      title: "Business Mobility",
       description:
-        "The core of the studio. We design and build custom software — web, mobile, SaaS, platforms and internal systems — with interfaces that are clear and code that stays fast, secure and legible for years.",
+        "A discreet, dedicated chauffeur for executives — by the hour, half-day or full day, with a signal-clear cabin for calls and documents.",
     },
     fr: {
-      title: "Conception & développement",
+      title: "Mobilité d'affaires",
       description:
-        "Le cœur du studio. Nous concevons et développons des logiciels sur mesure — web, mobile, SaaS, plateformes et systèmes internes — avec des interfaces claires et un code qui reste rapide, sûr et lisible des années durant.",
+        "Un chauffeur dédié et discret pour dirigeants — à l'heure, à la demi-journée ou à la journée, avec une cabine confidentielle pour vos appels.",
     },
   },
-  ai: {
+  events: {
     en: {
-      title: "Data & AI",
+      title: "Luxury Events",
       description:
-        "Data and AI where they pay off: intelligent automation, data pipelines, and the dashboards that turn raw operations into decisions.",
+        "Weddings, private galas and celebrations chauffeured with the choreography an occasion deserves — one car or a coordinated fleet.",
     },
     fr: {
-      title: "Données & IA",
+      title: "Événements de prestige",
       description:
-        "La donnée et l'IA là où elles rapportent : automatisation intelligente, pipelines de données et tableaux de bord qui éclairent les décisions.",
+        "Mariages, galas privés et célébrations avec chauffeur et la chorégraphie qu'une occasion mérite — une voiture ou une flotte coordonnée.",
     },
   },
-  cloud: {
+  "long-distance": {
     en: {
-      title: "Cloud & Infrastructure",
+      title: "International Chauffeur",
       description:
-        "Software is only as reliable as what it runs on. We architect cloud infrastructure, set up deployment and observability, and build the APIs and integrations that connect your systems — engineered for uptime and scale.",
+        "Long-distance journeys across Switzerland, France and Europe — Geneva to Courchevel, Milan or Lyon, door to door, tolls included.",
     },
     fr: {
-      title: "Cloud & infrastructure",
+      title: "Chauffeur international",
       description:
-        "Un logiciel ne vaut que ce sur quoi il tourne. Nous architecturons l'infrastructure cloud, mettons en place déploiement et observabilité, et construisons les APIs et intégrations qui relient vos systèmes — pensés pour la disponibilité et l'échelle.",
+        "Longues distances à travers la Suisse, la France et l'Europe — Genève vers Courchevel, Milan ou Lyon, de porte à porte, péages inclus.",
     },
   },
 };
 
-/**
- * Home / site default title + description, per locale. The FR wording
- * reuses the hero subtitle / SITE description already in content.ts.
- */
+/** Home / site default title + description, per locale. */
 export const HOME_META: Record<AppLocale, PageMeta> = {
   en: {
-    title: "ARDLABS® — Digital Engineering Studio",
+    title: "BLACKFIRST® — Executive Chauffeur Service Geneva",
     description:
-      "ARDLABS® is a digital engineering studio. We design and build software, platforms and AI systems that are fast, reliable, and refined to the detail.",
+      "BLACKFIRST® — executive chauffeur & private mobility in Geneva. Airport transfers, business travel and long-distance journeys with Swiss precision and total discretion.",
   },
   fr: {
-    title: "ARDLABS® — Studio d'ingénierie numérique",
+    title: "BLACKFIRST® — Service de chauffeur privé à Genève",
     description:
-      "Studio d'ingénierie numérique : logiciels, plateformes et systèmes d'IA rapides, fiables et soignés jusqu'au détail.",
+      "BLACKFIRST® — chauffeur d'exception & mobilité privée à Genève. Transferts aéroport, déplacements d'affaires et longues distances, avec la précision suisse et une discrétion totale.",
   },
 };
 

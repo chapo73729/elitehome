@@ -1,176 +1,109 @@
 /* ============================================================
-   ARDLABS® — Central content & configuration
+   BLACKFIRST® — Central brand configuration & structural data
+   Executive Chauffeur & Private Mobility · Geneva, Switzerland
+
+   This module holds language-NEUTRAL data only (ids, slugs, coordinates,
+   contact details, vehicle specs). All localized copy lives in
+   src/lib/content.ts. Server components import from here freely; the
+   content module is client-only.
    ============================================================ */
 
 export const SITE = {
-  name: "ARDLABS",
-  legal: "ARDLABS®",
-  tagline: "Digital Engineering Studio",
-  domain: "ardlabs.eu",
-  url: "https://ardlabs.eu",
-  email: "info@ardlabs.eu",
+  name: "BLACKFIRST",
+  legal: "BLACKFIRST®",
+  tagline: "Executive Mobility. Swiss Precision.",
+  domain: "blackfirst.ch",
+  url: "https://blackfirst.ch",
+  email: "reservations@blackfirst.ch",
+  phone: "+41 22 500 00 00",
+  phoneHref: "+41225000000",
+  whatsapp: "+41 79 500 00 00",
+  whatsappHref: "41795000000",
+  city: "Geneva",
+  country: "CH",
   description:
-    "ARDLABS® is a digital engineering studio. We design and build software, platforms and AI systems that are fast, reliable, and refined to the detail.",
+    "BLACKFIRST® is an executive chauffeur and private mobility house based in Geneva. Airport transfers, business travel, private events and long-distance journeys across Switzerland and Europe — with Swiss precision and total discretion.",
   locale: "en",
 } as const;
 
-export const STATS = [
-  { value: "2019", label: "Founded" },
-  { value: "Prague", label: "Based in" },
-  { value: "EN / FR", label: "Bilingual" },
-  { value: "Remote", label: "Working worldwide" },
+/* ---- Services (structural: slug + index + accent) ------------------------
+   Localized titles/copy live in content.services.items, keyed by slug. */
+export const SERVICES = [
+  { slug: "airport-transfer", index: "01", accent: "#c6a15b" },
+  { slug: "business-chauffeur", index: "02", accent: "#d9c08a" },
+  { slug: "events", index: "03", accent: "#b8934d" },
+  { slug: "long-distance", index: "04", accent: "#c7cbd1" },
 ] as const;
 
-export const CITIES = [
-  { name: "Prague", lat: 50.0755, lon: 14.4378, primary: true },
-  { name: "Geneva", lat: 46.2044, lon: 6.1432, primary: true },
-  { name: "Singapore", lat: 1.3521, lon: 103.8198, primary: true },
-  { name: "Dubai", lat: 25.2048, lon: 55.2708, primary: true },
-  { name: "Tokyo", lat: 35.6762, lon: 139.6503, primary: true },
-  { name: "New York", lat: 40.7128, lon: -74.006, primary: true },
-] as const;
+export type ServiceSlug = (typeof SERVICES)[number]["slug"];
 
-export type MotifVariant = "ai" | "code" | "industrial" | "ocean" | "cyber";
+export function isServiceSlug(x: string): x is ServiceSlug {
+  return SERVICES.some((s) => s.slug === x);
+}
 
-export const INDUSTRIES = [
+/* ---- Fleet (specs are language-neutral; copy keyed by id in content) ----- */
+export const FLEET = [
   {
-    id: "strategy",
-    index: "01",
-    title: "Strategy & Consulting",
-    blurb:
-      "Technology consulting, R&D and product prototyping that turn an idea into a validated plan.",
-    accent: "#4f8cff",
-    motif: "ai" as MotifVariant,
-    tagline: "Clarity before code.",
-    overview:
-      "Before a line of code, the hard questions: what to build, why, and how it will hold up. We bring technology consulting, applied R&D and rapid prototyping to de-risk the idea and chart the path to a product.",
-    capabilities: [
-      "Technology consulting",
-      "Applied R&D",
-      "Product prototyping",
-      "Technical due diligence",
-      "Architecture planning",
-      "Roadmapping",
-    ],
-    approach: [
-      { t: "Frame", d: "The real problem, the constraints, the bet." },
-      { t: "Explore", d: "Prototypes that test the riskiest assumptions first." },
-      { t: "Plan", d: "An architecture and roadmap you can build against." },
-      { t: "Hand off", d: "A plan the build team can execute without guesswork." },
-    ],
-    metrics: [
-      { value: "Week 1", label: "First prototype" },
-      { value: "Fixed scope", label: "Clear deliverables" },
-      { value: "Yours", label: "All IP & docs" },
-    ],
+    id: "s-class",
+    name: "Mercedes-Benz S-Class",
+    line: "Berline · Flagship",
+    seats: 3,
+    luggage: 3,
+    accent: "#c6a15b",
+    electric: false,
   },
   {
-    id: "software",
-    index: "02",
-    title: "Design & Development",
-    blurb:
-      "Custom software, web, mobile, SaaS and internal platforms — designed and engineered end to end.",
-    accent: "#6b9dff",
-    motif: "code" as MotifVariant,
-    tagline: "Built to the detail.",
-    overview:
-      "The core of the studio. We design and build custom software — web, mobile, SaaS, platforms and internal systems — with interfaces that are clear and code that stays fast, secure and legible for years.",
-    capabilities: [
-      "Custom software",
-      "Web & mobile apps",
-      "SaaS & platforms",
-      "Internal systems",
-      "UI/UX design",
-      "Design systems",
-    ],
-    approach: [
-      { t: "Design", d: "Interfaces that are obvious before they are pretty." },
-      { t: "Build", d: "Small fast team shipping production code continuously." },
-      { t: "Harden", d: "Tested, instrumented and secured before it ships." },
-      { t: "Maintain", d: "It keeps working long after launch." },
-    ],
-    metrics: [
-      { value: "End-to-end", label: "Design + build" },
-      { value: "Production", label: "Not just prototypes" },
-      { value: "Maintained", label: "Beyond launch" },
-    ],
+    id: "e-class",
+    name: "Mercedes-Benz E-Class",
+    line: "Berline · Business",
+    seats: 3,
+    luggage: 2,
+    accent: "#d9c08a",
+    electric: false,
   },
   {
-    id: "ai",
-    index: "03",
-    title: "Data & AI",
-    blurb:
-      "AI, intelligent automation, data solutions and the dashboards that turn operations into decisions.",
-    accent: "#3d6fe0",
-    motif: "ai" as MotifVariant,
-    tagline: "Operations, made legible.",
-    overview:
-      "We put data and AI to work where it pays off: intelligent automation, process automation (workflow, RPA), data pipelines and the dashboards and internal tools that turn raw operations into decisions.",
-    capabilities: [
-      "Applied AI",
-      "AI automation",
-      "Process automation (RPA)",
-      "Data solutions",
-      "Dashboards & BI",
-      "Internal tools",
-    ],
-    approach: [
-      { t: "Map", d: "Where the manual work and the data actually are." },
-      { t: "Automate", d: "Pipelines and agents that absorb the repetitive load." },
-      { t: "Surface", d: "Dashboards that make the state of things obvious." },
-      { t: "Improve", d: "Systems that get sharper as they run." },
-    ],
-    metrics: [
-      { value: "Less manual", label: "Work removed" },
-      { value: "Live", label: "Dashboards" },
-      { value: "Decisions", label: "From raw data" },
-    ],
+    id: "v-class",
+    name: "Mercedes-Benz V-Class VIP",
+    line: "Van · First-class cabin",
+    seats: 7,
+    luggage: 7,
+    accent: "#b8934d",
+    electric: false,
   },
   {
-    id: "cloud",
-    index: "04",
-    title: "Cloud & Infrastructure",
-    blurb:
-      "Cloud architecture, deployment, APIs and integrations engineered for uptime and scale.",
-    accent: "#5ea2ff",
-    motif: "code" as MotifVariant,
-    tagline: "Foundations that hold.",
-    overview:
-      "Software is only as reliable as what it runs on. We architect cloud infrastructure, set up deployment and observability, and build the APIs and integrations that connect your systems — engineered for uptime and scale.",
-    capabilities: [
-      "Cloud architecture",
-      "Infrastructure & deployment",
-      "APIs & integrations",
-      "CI/CD pipelines",
-      "Observability & SRE",
-      "Security & compliance",
-    ],
-    approach: [
-      { t: "Architect", d: "Infrastructure sized for the load it will carry." },
-      { t: "Deploy", d: "Repeatable pipelines, no manual releases." },
-      { t: "Observe", d: "You can see what's happening in production." },
-      { t: "Scale", d: "It grows without a rewrite." },
-    ],
-    metrics: [
-      { value: "Uptime", label: "Engineered for" },
-      { value: "Automated", label: "Deploys" },
-      { value: "Connected", label: "APIs & systems" },
-    ],
+    id: "eqs",
+    name: "Mercedes-Benz EQS",
+    line: "Electric · Zero-emission",
+    seats: 3,
+    luggage: 2,
+    accent: "#c7cbd1",
+    electric: true,
   },
 ] as const;
 
-export const TECH = [
-  "React",
-  "Next.js",
-  "Rust",
-  "Python",
-  "TensorFlow",
-  "OpenAI",
-  "CUDA",
-  "Docker",
-  "Kubernetes",
-  "AWS",
-  "Three.js",
-  "WebGPU",
+export type FleetId = (typeof FLEET)[number]["id"];
+
+/* ---- Served zones / map nodes -------------------------------------------
+   `hub` marks the operating base (Geneva). Coordinates drive the RouteMap. */
+export const LOCATIONS = [
+  { id: "geneva", name: "Geneva", country: "Switzerland", lat: 46.2044, lon: 6.1432, hub: true },
+  { id: "lausanne", name: "Lausanne", country: "Switzerland", lat: 46.5197, lon: 6.6323, hub: false },
+  { id: "montreux", name: "Montreux", country: "Switzerland", lat: 46.4312, lon: 6.9107, hub: false },
+  { id: "verbier", name: "Verbier", country: "Switzerland", lat: 46.0964, lon: 7.2286, hub: false },
+  { id: "zurich", name: "Zurich", country: "Switzerland", lat: 47.3769, lon: 8.5417, hub: false },
+  { id: "courchevel", name: "Courchevel", country: "France", lat: 45.4154, lon: 6.6349, hub: false },
+  { id: "lyon", name: "Lyon", country: "France", lat: 45.764, lon: 4.8357, hub: false },
+  { id: "milan", name: "Milan", country: "Italy", lat: 45.4642, lon: 9.19, hub: false },
 ] as const;
 
+/** Alias kept for JsonLd / areaServed. */
+export const CITIES = LOCATIONS;
+
+/* ---- Trust markers shown on the homepage --------------------------------
+   Neutral, non-fabricated statements — labels are localized in content. */
+export const HALLMARKS = [
+  { id: "since", value: "24/7" },
+  { id: "based", value: "Geneva" },
+  { id: "reach", value: "CH · FR · EU" },
+  { id: "languages", value: "FR / EN / DE" },
+] as const;

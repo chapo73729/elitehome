@@ -141,13 +141,13 @@ export function TermsView() {
               {lang === "fr" ? (
                 <p>
                   Les présentes conditions régissent votre utilisation de ce site,
-                  exploité par <Fill>ARDLABS s.r.o.</Fill> ({SITE.legal}). En
+                  exploité par <Fill>BLACKFIRST Sàrl</Fill> ({SITE.legal}). En
                   utilisant le site, vous les acceptez.
                 </p>
               ) : (
                 <p>
                   These terms govern your use of this website, operated by{" "}
-                  <Fill>ARDLABS s.r.o.</Fill> ({SITE.legal}). By using the site
+                  <Fill>BLACKFIRST Sàrl</Fill> ({SITE.legal}). By using the site
                   you agree to them.
                 </p>
               )}
@@ -229,15 +229,15 @@ export function TermsView() {
             <Clause index="05" id="governing-law" title={t.governingLaw}>
               {lang === "fr" ? (
                 <p>
-                  Les présentes conditions sont régies par le droit de la République
-                  tchèque, et tout litige en découlant relève de la compétence
-                  exclusive des tribunaux compétents de Prague.
+                  Les présentes conditions sont régies par le droit suisse, et tout
+                  litige en découlant relève de la compétence exclusive des tribunaux
+                  compétents de Genève, Suisse.
                 </p>
               ) : (
                 <p>
-                  These terms are governed by the laws of the Czech Republic, and any
+                  These terms are governed by the laws of Switzerland, and any
                   disputes arising from them are subject to the exclusive jurisdiction
-                  of the competent courts of Prague.
+                  of the competent courts of Geneva, Switzerland.
                 </p>
               )}
             </Clause>

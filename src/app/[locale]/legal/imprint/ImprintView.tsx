@@ -139,36 +139,34 @@ export function ImprintView() {
             <Clause index="01" id="company" title={t.company}>
               {lang === "fr" ? (
                 <p>
-                  Ce site est exploité par <Fill>ARDLABS s.r.o.</Fill>, exerçant sous
+                  Ce site est exploité par <Fill>BLACKFIRST Sàrl</Fill>, exerçant sous
                   la dénomination {SITE.legal} — une société à responsabilité limitée
-                  (s.r.o.) de droit tchèque.
+                  (Sàrl) de droit suisse.
                 </p>
               ) : (
                 <p>
-                  This website is operated by <Fill>ARDLABS s.r.o.</Fill>, trading as{" "}
-                  {SITE.legal} — a limited liability company (s.r.o.) under Czech law.
+                  This website is operated by <Fill>BLACKFIRST Sàrl</Fill>, trading as{" "}
+                  {SITE.legal} — a limited liability company (Sàrl) under Swiss law.
                 </p>
               )}
               {lang === "fr" ? (
                 <p>
-                  Siège social :{" "}
-                  <Fill>Na Příkopě 21, 110 00 Praha 1, Czech Republic</Fill>
+                  Siège social : <Fill>Rue du Rhône, 1204 Genève, Suisse</Fill>
                   <br />
-                  Numéro d&rsquo;identification (IČO) : <Fill>19341698</Fill>, inscrite
-                  au Registre du commerce tchèque (Městský soud v Praze, sp. zn. C
-                  163956)
+                  Numéro d&rsquo;identification des entreprises (IDE) :{" "}
+                  <Fill>CHE-000.000.000</Fill>, inscrite au Registre du commerce du
+                  canton de Genève
                   <br />
-                  Capital social : <Fill>500 000 CZK</Fill>
+                  Numéro de TVA : <Fill>CHE-000.000.000 TVA</Fill>
                 </p>
               ) : (
                 <p>
-                  Registered office:{" "}
-                  <Fill>Na Příkopě 21, 110 00 Praha 1, Czech Republic</Fill>
+                  Registered office: <Fill>Rue du Rhône, 1204 Geneva, Switzerland</Fill>
                   <br />
-                  Company ID (IČO): <Fill>19341698</Fill>, registered in the Czech
-                  Commercial Register (Městský soud v Praze, sp. zn. C 163956)
+                  Business identification number (UID): <Fill>CHE-000.000.000</Fill>,
+                  registered in the Commercial Register of the Canton of Geneva
                   <br />
-                  Share capital: <Fill>500 000 CZK</Fill>
+                  VAT number: <Fill>CHE-000.000.000 TVA</Fill>
                 </p>
               )}
             </Clause>
@@ -178,13 +176,17 @@ export function ImprintView() {
                 <p>
                   E-mail : <a href={`mailto:${SITE.email}`}>{SITE.email}</a>
                   <br />
-                  Représentée par : <Fill>Metaforbs</Fill>
+                  Téléphone : <a href={`tel:${SITE.phoneHref}`}>{SITE.phone}</a>
+                  <br />
+                  Représentée par : <Fill>la direction</Fill>
                 </p>
               ) : (
                 <p>
                   Email: <a href={`mailto:${SITE.email}`}>{SITE.email}</a>
                   <br />
-                  Represented by: <Fill>Metaforbs</Fill>
+                  Phone: <a href={`tel:${SITE.phoneHref}`}>{SITE.phone}</a>
+                  <br />
+                  Represented by: <Fill>the management</Fill>
                 </p>
               )}
             </Clause>

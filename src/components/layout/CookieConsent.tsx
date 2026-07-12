@@ -27,7 +27,7 @@ export function CookieConsent() {
 
   useEffect(() => {
     try {
-      if (!localStorage.getItem("ardlabs-consent")) {
+      if (!localStorage.getItem("blackfirst-consent")) {
         const t = setTimeout(() => setShow(true), 1600);
         return () => clearTimeout(t);
       }
@@ -36,12 +36,12 @@ export function CookieConsent() {
 
   const choose = (v: "accepted" | "essential") => {
     try {
-      localStorage.setItem("ardlabs-consent", v);
+      localStorage.setItem("blackfirst-consent", v);
     } catch {}
     setShow(false);
     // let the bottom-left mobile CTA know it can appear now (no overlap)
     try {
-      window.dispatchEvent(new Event("ardlabs-consent-set"));
+      window.dispatchEvent(new Event("blackfirst-consent-set"));
     } catch {}
   };
 

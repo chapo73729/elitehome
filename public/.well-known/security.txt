@@ -1,6 +1,5 @@
-# ARDLABS security contact — https://securitytxt.org
-Contact: mailto:info@ardlabs.eu
-Expires: 2027-07-06T00:00:00.000Z
-Preferred-Languages: en, fr
-Canonical: https://ardlabs.eu/.well-known/security.txt
-Policy: https://ardlabs.eu/en/security
+# BLACKFIRST security contact — https://securitytxt.org
+Contact: mailto:reservations@blackfirst.ch
+Preferred-Languages: fr, en
+Canonical: https://blackfirst.ch/.well-known/security.txt
+Expires: 2027-01-01T00:00:00.000Z

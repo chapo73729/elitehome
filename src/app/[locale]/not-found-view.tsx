@@ -9,12 +9,12 @@ const T = {
   en: {
     eyebrow: "Error · Signal lost",
     body: "This coordinate lies beyond the mapped network. The page you seek was never charted — or has since dissolved into the void.",
-    home: "Return to ARDLABS",
+    home: "Return to BLACKFIRST",
   },
   fr: {
     eyebrow: "Erreur · Signal perdu",
     body: "Cette coordonnée se situe au-delà du réseau cartographié. La page que vous cherchez n'a jamais été répertoriée — ou s'est depuis dissoute dans le néant.",
-    home: "Retour vers ARDLABS",
+    home: "Retour vers BLACKFIRST",
   },
 };
 
@@ -88,7 +88,7 @@ export function NotFoundView() {
               animate={{ clipPath: "inset(0 0% 0 0)" }}
               transition={{ delay: 0.15, duration: 0.55, ease: "linear" }}
             >
-              {"// compile: route …"}
+              {"route ·"}
             </motion.span>
             <motion.span
               className="inline-block"
@@ -96,7 +96,7 @@ export function NotFoundView() {
               animate={{ opacity: 1 }}
               transition={{ delay: 0.9, duration: 0.2, ease: "linear" }}
             >
-              &nbsp;failed
+              &nbsp;not found
             </motion.span>
           </motion.span>
         </div>

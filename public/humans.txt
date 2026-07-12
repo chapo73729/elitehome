@@ -1,8 +1,7 @@
-/* ARDLABS® — Digital Engineering Studio */
-Site: https://ardlabs.eu
-Location: Prague, Czech Republic
-Languages: English / Français
-Contact: info@ardlabs.eu
+/* BLACKFIRST® — Executive Chauffeur & Private Mobility */
+Site: https://blackfirst.ch
+Location: Geneva, Switzerland
+Contact: reservations@blackfirst.ch
 
-/* Stack */
-Next.js · React · TypeScript · Tailwind CSS · React Three Fiber · WebGL
+/* Built with */
+Next.js · React · TypeScript · Tailwind CSS · Framer Motion

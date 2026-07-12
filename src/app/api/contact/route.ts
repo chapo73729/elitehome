@@ -8,7 +8,7 @@ import { NextResponse } from "next/server";
  * environment variable. The visitor only ever talks to this route.
  *
  * Required env: WEB3FORMS_ACCESS_KEY  (free key from https://web3forms.com,
- * created against contact@ardmupro.ch)
+ * created against the BLACKFIRST reservations inbox)
  */
 export const runtime = "nodejs";
 
@@ -99,8 +99,8 @@ export async function POST(req: Request) {
       headers: { "Content-Type": "application/json", Accept: "application/json" },
       body: JSON.stringify({
         access_key: key,
-        subject: `ARDLABS enquiry — ${domain || "General"}`,
-        from_name: "ARDLABS Website",
+        subject: `BLACKFIRST — ${domain || "Enquiry"}`,
+        from_name: "BLACKFIRST Website",
         name,
         email,
         domain,

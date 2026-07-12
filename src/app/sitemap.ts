@@ -1,7 +1,5 @@
 import type { MetadataRoute } from "next";
-import { SITE, INDUSTRIES } from "@/lib/site";
-import { INSIGHTS } from "@/lib/insights";
-import { WORK } from "@/lib/work";
+import { SITE, SERVICES } from "@/lib/site";
 import { locales } from "@/lib/i18n";
 
 /**
@@ -21,30 +19,18 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const entries: Entry[] = [
     { path: "", lastModified: now, changeFrequency: "monthly", priority: 1 },
     { path: "/services", lastModified: now, changeFrequency: "monthly", priority: 0.9 },
-    ...INDUSTRIES.map((i) => ({
-      path: `/services/${i.id}`,
+    ...SERVICES.map((s) => ({
+      path: `/services/${s.slug}`,
       lastModified: now,
       changeFrequency: "monthly" as const,
       priority: 0.8,
     })),
-    ...["about", "approach", "work", "careers", "contact", "security"].map((p) => ({
+    { path: "/booking", lastModified: now, changeFrequency: "monthly", priority: 0.9 },
+    ...["fleet", "locations", "about", "contact"].map((p) => ({
       path: `/${p}`,
       lastModified: now,
       changeFrequency: "monthly" as const,
       priority: 0.7,
-    })),
-    ...WORK.map((w) => ({
-      path: `/work/${w.slug}`,
-      lastModified: now,
-      changeFrequency: "monthly" as const,
-      priority: 0.6,
-    })),
-    { path: "/insights", lastModified: now, changeFrequency: "weekly", priority: 0.7 },
-    ...INSIGHTS.map((i) => ({
-      path: `/insights/${i.slug}`,
-      lastModified: new Date(i.date),
-      changeFrequency: "monthly" as const,
-      priority: 0.6,
     })),
     ...["imprint", "privacy", "terms"].map((p) => ({
       path: `/legal/${p}`,
@@ -62,10 +48,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: e.priority,
       alternates: {
         languages: {
-          ...Object.fromEntries(
-            locales.map((l) => [l, `${SITE.url}/${l}${e.path}`])
-          ),
-          // mirror the page-level x-default (points at the English locale)
+          ...Object.fromEntries(locales.map((l) => [l, `${SITE.url}/${l}${e.path}`])),
           "x-default": `${SITE.url}/en${e.path}`,
         },
       },

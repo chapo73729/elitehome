@@ -7,25 +7,25 @@ import { SITE } from "@/lib/site";
 import { useContent } from "@/lib/content";
 import { scrollToTarget } from "./SmoothScroll";
 import { Magnetic } from "@/components/ui/Magnetic";
-import { SoundToggle } from "./SoundToggle";
+import { Brandmark } from "@/components/ui/Brandmark";
 import { LanguageToggle } from "@/components/feature/LanguageToggle";
 import { useLang } from "@/lib/lang";
 import { useLocaleRouter } from "@/hooks/useLocaleRouter";
 import { stripLocale } from "@/lib/i18n";
 
 const T = {
-  en: { openMenu: "Open menu", closeMenu: "Close menu", sound: "SOUND", primary: "Primary" },
-  fr: { openMenu: "Ouvrir le menu", closeMenu: "Fermer le menu", sound: "SON", primary: "Navigation principale" },
+  en: { openMenu: "Open menu", closeMenu: "Close menu", primary: "Primary" },
+  fr: { openMenu: "Ouvrir le menu", closeMenu: "Fermer le menu", primary: "Navigation principale" },
 } as const;
 
 export function Navbar({ ready = true }: { ready?: boolean }) {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
-  const [active, setActive] = useState<string>("");
   const toggleRef = useRef<HTMLButtonElement>(null);
   const pathname = usePathname();
   const router = useLocaleRouter();
-  const isHome = stripLocale(pathname).rest === "/";
+  const currentPath = stripLocale(pathname).rest;
+  const isHome = currentPath === "/";
   const c = useContent();
   const NAV = c.nav;
   const t = T[useLang()];
@@ -37,31 +37,6 @@ export function Navbar({ ready = true }: { ready?: boolean }) {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // track the section currently in view to light up the matching nav item;
-  // clear it off the homepage — the navbar persists across client navigations,
-  // so a stale highlight would otherwise survive onto inner pages
-  useEffect(() => {
-    if (!isHome) {
-      setActive("");
-      return;
-    }
-    const ids = NAV.map((n) => n.href.replace("#", ""));
-    const els = ids
-      .map((id) => document.getElementById(id))
-      .filter(Boolean) as HTMLElement[];
-    if (!els.length) return;
-    const io = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((e) => {
-          if (e.isIntersecting) setActive("#" + e.target.id);
-        });
-      },
-      { rootMargin: "-45% 0px -50% 0px", threshold: 0 }
-    );
-    els.forEach((el) => io.observe(el));
-    return () => io.disconnect();
-  }, [ready, NAV, isHome]);
-
   // close the mobile menu on Escape
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -71,30 +46,27 @@ export function Navbar({ ready = true }: { ready?: boolean }) {
     return () => window.removeEventListener("keydown", onKey);
   }, []);
 
-  // while the full-screen menu is open, the page behind it must be inert —
-  // otherwise Tab walks out of the menu into obscured content. Also move
-  // focus onto the first menu item so keyboard users land inside it.
+  // while the full-screen menu is open, the page behind it must be inert
   useEffect(() => {
     if (!open) return;
     const behind = document.querySelectorAll<HTMLElement>("main, footer");
     behind.forEach((el) => el.setAttribute("inert", ""));
-    const first = document.querySelector<HTMLElement>("#mobile-menu button");
+    const first = document.querySelector<HTMLElement>("#mobile-menu a, #mobile-menu button");
     first?.focus();
     return () => {
       behind.forEach((el) => el.removeAttribute("inert"));
-      // return focus to the toggle so keyboard users aren't dropped at the top
       toggleRef.current?.focus();
     };
   }, [open]);
 
   const go = (href: string) => {
     setOpen(false);
-    // when off the homepage, navigate home (with hash) instead of scrolling
-    if (href.startsWith("#") && !isHome) {
-      router.push("/" + href);
+    if (href.startsWith("#")) {
+      if (!isHome) router.push("/" + href);
+      else scrollToTarget(href);
       return;
     }
-    scrollToTarget(href);
+    router.push(href);
   };
 
   const goHome = () => {
@@ -102,6 +74,9 @@ export function Navbar({ ready = true }: { ready?: boolean }) {
     if (!isHome) router.push("/");
     else scrollToTarget(0);
   };
+
+  const isActive = (href: string) =>
+    href !== "/" && !href.startsWith("#") && currentPath.startsWith(href);
 
   return (
     <>
@@ -120,14 +95,15 @@ export function Navbar({ ready = true }: { ready?: boolean }) {
             scrolled ? "py-4" : "py-7"
           }`}
         >
-          {/* wordmark */}
+          {/* wordmark + emblem */}
           <Magnetic strength={0.25}>
             <button
               onClick={goHome}
-              className="flex items-center gap-2.5 font-display text-lg font-bold tracking-tight text-chalk"
+              className="flex items-center gap-2.5 font-display text-lg font-semibold tracking-[0.02em] text-chalk"
               data-cursor
               aria-label={SITE.name}
             >
+              <Brandmark size={26} className="text-chalk" />
               <span>
                 {SITE.name}
                 <span className="text-accent">®</span>
@@ -138,23 +114,20 @@ export function Navbar({ ready = true }: { ready?: boolean }) {
           {/* desktop nav pill */}
           <nav aria-label={t.primary} className="hidden items-center gap-1 rounded-full px-2 py-2 lg:flex glass">
             {NAV.map((item) => {
-              const isActive = active === item.href;
+              const activeNow = isActive(item.href);
               return (
                 <button
                   key={item.href}
                   onClick={() => go(item.href)}
-                  aria-current={isActive ? "true" : undefined}
+                  aria-current={activeNow ? "page" : undefined}
                   className={`relative rounded-full px-4 py-1.5 text-sm transition-colors duration-300 ${
-                    isActive ? "text-void" : "text-mist hover:text-chalk"
+                    activeNow ? "text-void" : "text-mist hover:text-chalk"
                   }`}
                 >
-                  {isActive && (
-                    /* per-item fade — a shared layoutId pill morphs across
-                       neighbouring items during fast scrolls and tangles */
+                  {activeNow && (
                     <motion.span
-                      initial={{ opacity: 0, scale: 0.85 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      transition={{ duration: 0.25, ease: [0.23, 1, 0.32, 1] }}
+                      layoutId="nav-active-pill"
+                      transition={{ duration: 0.35, ease: [0.23, 1, 0.32, 1] }}
                       className="absolute inset-0 -z-0 rounded-full bg-chalk"
                     />
                   )}
@@ -164,15 +137,14 @@ export function Navbar({ ready = true }: { ready?: boolean }) {
             })}
           </nav>
 
-          <div className="hidden items-center gap-2 lg:flex">
+          <div className="hidden items-center gap-3 lg:flex">
             <LanguageToggle />
-            <SoundToggle />
             <Magnetic strength={0.3}>
               <button
-                onClick={() => go("#contact")}
+                onClick={() => go("/booking")}
                 className="rounded-full bg-chalk px-5 py-2.5 text-sm font-medium text-void transition-transform duration-300 hover:scale-[1.03]"
               >
-                {c.common.engage}
+                {c.common.book}
               </button>
             </Magnetic>
           </div>
@@ -210,7 +182,7 @@ export function Navbar({ ready = true }: { ready?: boolean }) {
             exit={{ opacity: 0 }}
             className="fixed inset-0 z-[115] flex flex-col items-center justify-center gap-2 overflow-y-auto bg-void/95 py-24 backdrop-blur-xl lg:hidden"
           >
-            <div className="flex max-h-[80vh] w-full flex-col items-center gap-2 overflow-y-auto">
+            <div className="flex max-h-[70vh] w-full flex-col items-center gap-2 overflow-y-auto">
               {NAV.map((item, i) => (
                 <motion.button
                   key={item.href}
@@ -224,16 +196,21 @@ export function Navbar({ ready = true }: { ready?: boolean }) {
                 </motion.button>
               ))}
             </div>
+            <motion.button
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.05 * NAV.length }}
+              onClick={() => go("/booking")}
+              className="mt-6 rounded-full bg-chalk px-8 py-3.5 text-base font-medium text-void"
+            >
+              {c.common.book}
+            </motion.button>
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.35 }}
               className="mt-8 flex items-center gap-6 font-mono text-xs tracking-widest text-fog"
             >
-              <span className="flex items-center gap-3">
-                <span>{t.sound}</span>
-                <SoundToggle />
-              </span>
               <LanguageToggle />
             </motion.div>
           </motion.div>

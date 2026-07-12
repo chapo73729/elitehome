@@ -147,13 +147,13 @@ export function PrivacyView() {
               {lang === "fr" ? (
                 <p>
                   La présente politique explique comment{" "}
-                  <Fill>ARDLABS s.r.o.</Fill> ({SITE.legal}) traite les données à
+                  <Fill>BLACKFIRST Sàrl</Fill> ({SITE.legal}) traite les données à
                   caractère personnel lorsque vous visitez ce site ou nous contactez.
                   Nous agissons en qualité de responsable du traitement.
                 </p>
               ) : (
                 <p>
-                  This policy explains how <Fill>ARDLABS s.r.o.</Fill> (
+                  This policy explains how <Fill>BLACKFIRST Sàrl</Fill> (
                   {SITE.legal}) processes personal data when you visit this website or
                   contact us. We act as the data controller.
                 </p>
@@ -250,9 +250,9 @@ export function PrivacyView() {
                   portabilité de vos données, ainsi que vous opposer à leur
                   traitement. Pour exercer ces droits, contactez{" "}
                   <a href={`mailto:${SITE.email}`}>{SITE.email}</a>. Vous disposez
-                  également du droit d&rsquo;introduire une réclamation auprès de
-                  l&rsquo;autorité tchèque de protection des données (Úřad pro ochranu
-                  osobních údajů).
+                  également du droit d&rsquo;introduire une réclamation auprès du
+                  Préposé fédéral à la protection des données et à la transparence
+                  (PFPDT).
                 </p>
               ) : (
                 <p>
@@ -260,8 +260,8 @@ export function PrivacyView() {
                   deletion, restriction or portability of your data, and object to its
                   processing. To exercise these rights, contact{" "}
                   <a href={`mailto:${SITE.email}`}>{SITE.email}</a>. You also have the
-                  right to lodge a complaint with the Czech Data Protection Authority
-                  (Úřad pro ochranu osobních údajů).
+                  right to lodge a complaint with the Swiss Federal Data Protection
+                  and Information Commissioner (FDPIC).
                 </p>
               )}
             </Clause>

@@ -6,8 +6,8 @@ import { useLang } from "@/lib/lang";
 import { useSafeReducedMotion } from "@/lib/useSafeReducedMotion";
 
 const T = {
-  en: { online: "SYSTEM ONLINE", wordmark: "ARDLABS // ENGINEERING STUDIO" },
-  fr: { online: "SYSTÈME EN LIGNE", wordmark: "ARDLABS // STUDIO D’INGÉNIERIE" },
+  en: { online: "CHAUFFEUR ON CALL", wordmark: "BLACKFIRST // EXECUTIVE MOBILITY" },
+  fr: { online: "CHAUFFEUR DISPONIBLE", wordmark: "BLACKFIRST // MOBILITÉ D’EXCEPTION" },
 } as const;
 
 /**
@@ -25,15 +25,15 @@ export function HeroHud({ ready }: { ready: boolean }) {
   useEffect(() => {
     // write the decorative LAT/LON straight to the DOM via refs, throttled to
     // one rAF — no React re-render on a pointer storm (protects INP).
-    // Anchored at the studio's real coordinates (Prague) with a small
+    // Anchored at the base's real coordinates (Geneva) with a small
     // pointer-driven drift, so the readout stays truthful at rest and on touch.
     let frame = 0;
     const onMove = (e: PointerEvent) => {
       if (frame) return;
       frame = requestAnimationFrame(() => {
         frame = 0;
-        const lat = (50.0755 + (e.clientY / window.innerHeight - 0.5) * 1.2).toFixed(4);
-        const lon = (14.4378 + (e.clientX / window.innerWidth - 0.5) * 2.4).toFixed(4);
+        const lat = (46.2044 + (e.clientY / window.innerHeight - 0.5) * 1.2).toFixed(4);
+        const lon = (6.1432 + (e.clientX / window.innerWidth - 0.5) * 2.4).toFixed(4);
         if (latRef.current) latRef.current.textContent = `LAT ${lat}`;
         if (lonRef.current) lonRef.current.textContent = `LON ${lon}`;
       });
@@ -89,8 +89,8 @@ export function HeroHud({ ready }: { ready: boolean }) {
           <span className="inline-block h-1.5 w-1.5 animate-pulse rounded-full bg-accent-2" />
           {t.online}
         </div>
-        <div><span ref={latRef}>LAT 50.0755</span></div>
-        <div><span ref={lonRef}>LON 14.4378</span></div>
+        <div><span ref={latRef}>LAT 46.2044</span></div>
+        <div><span ref={lonRef}>LON 6.1432</span></div>
       </motion.div>
 
       {/* top-right readout */}

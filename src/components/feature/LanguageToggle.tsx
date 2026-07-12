@@ -3,7 +3,6 @@
 import { usePathname } from "next/navigation";
 import { useRouter } from "next/navigation";
 import { useLang } from "@/lib/lang";
-import { unlock } from "@/lib/achievements";
 import { stripLocale, localizePath, locales, type AppLocale } from "@/lib/i18n";
 
 const NAMES: Record<AppLocale, string> = { en: "English", fr: "Français" };
@@ -17,8 +16,7 @@ export function LanguageToggle({ className }: { className?: string }) {
   const switchTo = (l: AppLocale) => {
     if (l === lang) return;
     // remember the choice so the middleware honours it on bare-path visits
-    document.cookie = `ardlabs-lang=${l}; path=/; max-age=31536000`;
-    unlock("polyglot");
+    document.cookie = `blackfirst-lang=${l}; path=/; max-age=31536000`;
     const { rest } = stripLocale(pathname ?? "/");
     // preserve hash + query from the live location
     const suffix =

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { SITE } from "@/lib/site";
 import { i18nAlternates, isLocale, ogLocale, defaultLocale, type AppLocale } from "@/lib/i18n";
 import { pageMeta } from "@/lib/meta";
-import { IndustriesIndexView } from "@/components/industry/IndustriesIndexView";
+import { ServicesIndexView } from "@/components/views/ServicesIndexView";
 
 export async function generateMetadata({
   params,
@@ -26,6 +26,6 @@ export async function generateMetadata({
   };
 }
 
-export default function IndustriesIndex() {
-  return <IndustriesIndexView />;
+export default function ServicesIndex() {
+  return <ServicesIndexView />;
 }

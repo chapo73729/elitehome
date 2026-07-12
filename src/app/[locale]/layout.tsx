@@ -19,28 +19,27 @@ export const metadata: Metadata = {
   description: SITE.description,
   applicationName: SITE.legal,
   keywords: [
-    "ARDLABS",
-    "digital engineering studio",
-    "software development",
-    "web development",
-    "mobile apps",
-    "SaaS",
-    "AI",
-    "data",
-    "cloud",
-    "Prague",
+    "BLACKFIRST",
+    "chauffeur privé Genève",
+    "executive chauffeur Geneva",
+    "VTC Genève aéroport",
+    "airport transfer Geneva",
+    "chauffeur entreprise Genève",
+    "private mobility Switzerland",
+    "transport VIP Suisse",
+    "limousine service Geneva",
+    "long distance chauffeur Europe",
   ],
   authors: [{ name: SITE.legal }],
   creator: SITE.legal,
   publisher: SITE.legal,
   alternates: {
     canonical: "/",
-    types: { "application/rss+xml": `${SITE.url}/feed.xml` },
   },
   // icon.svg, favicon.ico and apple-icon.png are auto-injected by Next's file
   // conventions (src/app/*); only the Safari mask-icon needs explicit wiring.
   icons: {
-    other: [{ rel: "mask-icon", url: "/safari-pinned-tab.svg", color: "#4f8cff" }],
+    other: [{ rel: "mask-icon", url: "/safari-pinned-tab.svg", color: "#c6a15b" }],
   },
   openGraph: {
       images: [{ url: "/opengraph-image", width: 1200, height: 630 }],
@@ -56,7 +55,7 @@ export const metadata: Metadata = {
   // inheriting this English default on every route.
   twitter: {
     card: "summary_large_image",
-    creator: "@ardlabs",
+    creator: "@blackfirst",
   },
   robots: {
     index: true,
@@ -69,7 +68,7 @@ export const metadata: Metadata = {
       "max-video-preview": -1,
     },
   },
-  category: "technology",
+  category: "travel",
 };
 
 export const viewport: Viewport = {
