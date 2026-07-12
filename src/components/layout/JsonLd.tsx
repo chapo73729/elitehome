@@ -53,7 +53,7 @@ export function JsonLd() {
             itemOffered: {
               "@type": "Service",
               name: SERVICE_NAMES[s.slug],
-              url: `${SITE.url}/en/services/${s.slug}`,
+              url: `${SITE.url}/fr/services/${s.slug}`,
             },
           })),
         },

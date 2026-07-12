@@ -7,8 +7,8 @@ import { Wordmark } from "@/components/ui/Wordmark";
 import { useLang } from "@/lib/lang";
 
 const T = {
-  en: { sub: "Executive Chauffeur · Geneva" },
   fr: { sub: "Chauffeur d’exception · Genève" },
+  en: { sub: "Executive Chauffeur · Geneva" },
 } as const;
 
 const EASE = [0.16, 1, 0.3, 1] as const;
@@ -19,12 +19,8 @@ type LenisLike = {
   scrollTo: (y: number, o?: object) => void;
 };
 
-/** Locks the page from scrolling under the fixed opening overlay. `overflow:
- *  hidden` + blocking wheel/touchmove closes the input side, but two gaps
- *  remain: the brief pre-hydration window before this effect can even run,
- *  and Lenis's own eased momentum still carrying scrollY forward from
- *  whatever it read before `.stop()` took effect. A per-frame pin closes
- *  both: for as long as the lock is held, scrollY is snapped back to 0. */
+/** Locks the page from scrolling under the fixed opening overlay (input
+ *  block + per-frame pin — see the note on Lenis momentum). */
 function lockScroll() {
   const html = document.documentElement;
   const prevHtml = html.style.overflow;
@@ -65,28 +61,19 @@ function lockScroll() {
   };
 }
 
-/* « Black Motion » — the opening signature from the brief: a luminous line
-   crosses the black screen and becomes the silhouette of a car, drawn in one
-   champagne stroke; the wordmark settles beneath it; the veil lifts. */
-
-/* One continuous saloon profile, rear bumper → roof → nose (viewBox 560×150). */
-const CAR_PROFILE =
-  "M18 118 C36 116 52 112 64 104 L96 76 C112 62 140 52 178 48 C232 41 300 42 342 52 C372 59 396 72 420 88 L446 104 C468 112 500 114 542 118";
-/* Glasshouse line — drawn after the body. */
-const CAR_GLASS =
-  "M116 76 C132 64 158 56 190 53 L300 54 C324 56 344 62 360 72 L382 86";
-/* Ground line between and around the wheels. */
-const CAR_GROUND = "M10 118 H98 M206 118 H384 M492 118 H550";
-
+/**
+ * Ouverture — the official BLACKFIRST wordmark, nothing else. The logotype
+ * reveals itself left to right behind a passing champagne light, the byline
+ * settles beneath it, a fine line draws — then the veil lifts.
+ */
 export function Loader({ onComplete }: { onComplete: () => void }) {
   const t = T[useLang()];
-  const [phase, setPhase] = useState<"draw" | "brand" | "done">("draw");
+  const [phase, setPhase] = useState<"reveal" | "hold" | "done">("reveal");
   const [hidden, setHidden] = useState(false);
   const [reduce, setReduce] = useState(false);
   // The route template animates transform/filter on a wrapper, which turns it
-  // into the containing block for any position:fixed inside — a fixed veil
-  // rendered in place would size itself to the whole document, not the
-  // viewport. Portal the veil to <body> so it truly pins to the screen.
+  // into the containing block for any position:fixed inside. Portal the veil
+  // to <body> so it truly pins to the screen.
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
 
@@ -101,7 +88,6 @@ export function Loader({ onComplete }: { onComplete: () => void }) {
     }
     setReduce(reduced);
 
-    // Repeat visit this session: reveal at once, don't replay every nav.
     if (seen) {
       setHidden(true);
       onComplete();
@@ -118,22 +104,21 @@ export function Loader({ onComplete }: { onComplete: () => void }) {
     const at = (fn: () => void, ms: number) => timers.push(setTimeout(fn, ms));
 
     if (reduced) {
-      // A brief brand beat, then reveal — no drawing choreography.
-      setPhase("brand");
-      at(() => setPhase("done"), 1100);
+      setPhase("hold");
+      at(() => setPhase("done"), 1200);
       at(() => {
         unlockScroll();
         setHidden(true);
         onComplete();
-      }, 1900);
+      }, 2000);
     } else {
-      at(() => setPhase("brand"), 1900); // silhouette finished drawing
-      at(() => setPhase("done"), 3300); // hold the mark, then lift the veil
+      at(() => setPhase("hold"), 1750); // logo révélé
+      at(() => setPhase("done"), 3050); // on tient le regard, puis on lève
       at(() => {
         unlockScroll();
         setHidden(true);
         onComplete();
-      }, 4100);
+      }, 3850);
     }
 
     return () => {
@@ -154,80 +139,51 @@ export function Loader({ onComplete }: { onComplete: () => void }) {
           exit={{ y: "-100%" }}
           transition={{ duration: 0.75, ease: EASE }}
         >
-          {/* the luminous line → car silhouette */}
-          {!reduce && (
-            <svg
-              viewBox="0 0 560 150"
-              className="w-[min(78vw,540px)]"
-              fill="none"
-              aria-hidden
-            >
-              <defs>
-                <linearGradient id="bf-stroke" x1="0" y1="0" x2="1" y2="0">
-                  <stop offset="0" stopColor="#e4c88a" />
-                  <stop offset="0.5" stopColor="#c6a15b" />
-                  <stop offset="1" stopColor="#a8843f" />
-                </linearGradient>
-              </defs>
-              <motion.path
-                d={CAR_PROFILE}
-                stroke="url(#bf-stroke)"
-                strokeWidth={2.2}
-                strokeLinecap="round"
-                initial={{ pathLength: 0, opacity: 0.9 }}
-                animate={{ pathLength: 1 }}
-                transition={{ duration: 1.35, ease: [0.65, 0, 0.35, 1] }}
-              />
-              <motion.path
-                d={CAR_GLASS}
-                stroke="rgba(199,203,209,0.55)"
-                strokeWidth={1.4}
-                strokeLinecap="round"
-                initial={{ pathLength: 0 }}
-                animate={{ pathLength: 1 }}
-                transition={{ duration: 0.7, delay: 0.9, ease: "easeOut" }}
-              />
-              <motion.path
-                d={CAR_GROUND}
-                stroke="rgba(246,243,236,0.35)"
-                strokeWidth={1.4}
-                strokeLinecap="round"
-                initial={{ pathLength: 0 }}
-                animate={{ pathLength: 1 }}
-                transition={{ duration: 0.6, delay: 1.1, ease: "easeOut" }}
-              />
-              {/* wheels — two fine platinum circles */}
-              {[152, 438].map((cx) => (
-                <motion.circle
-                  key={cx}
-                  cx={cx}
-                  cy={118}
-                  r={26}
-                  stroke="rgba(199,203,209,0.6)"
-                  strokeWidth={1.6}
-                  initial={{ pathLength: 0, rotate: -90 }}
-                  animate={{ pathLength: 1 }}
-                  transition={{ duration: 0.7, delay: 1.15, ease: "easeOut" }}
-                />
-              ))}
-            </svg>
-          )}
+          {/* soupçon de lumière chaude derrière le logo */}
+          <div
+            aria-hidden
+            className="absolute inset-0 [background:radial-gradient(46%_30%_at_50%_50%,rgba(198,161,91,0.10),transparent_70%)]"
+          />
 
-          {/* wordmark */}
+          {/* le logotype officiel, révélé de gauche à droite */}
+          <div className="relative w-[min(82vw,620px)]">
+            <motion.div
+              initial={reduce ? { opacity: 0 } : { clipPath: "inset(0 100% 0 0)" }}
+              animate={reduce ? { opacity: 1 } : { clipPath: "inset(0 0% 0 0)" }}
+              transition={
+                reduce
+                  ? { duration: 0.8 }
+                  : { duration: 1.45, ease: [0.65, 0, 0.35, 1], delay: 0.15 }
+              }
+            >
+              <Wordmark className="w-full" priority />
+            </motion.div>
+            {/* balayage de lumière champagne qui accompagne la révélation */}
+            {!reduce && (
+              <motion.span
+                aria-hidden
+                initial={{ left: "-12%" }}
+                animate={{ left: "104%" }}
+                transition={{ duration: 1.45, ease: [0.65, 0, 0.35, 1], delay: 0.15 }}
+                className="absolute top-1/2 h-[300%] w-16 -translate-y-1/2 bg-[linear-gradient(90deg,transparent,rgba(228,200,138,0.35),transparent)] blur-md"
+              />
+            )}
+          </div>
+
+          {/* signature */}
           <motion.div
-            initial={{ opacity: 0, y: 14 }}
-            animate={phase === "brand" ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.9, ease: EASE }}
-            className="mt-10 text-center"
+            initial={{ opacity: 0, y: 12 }}
+            animate={phase === "hold" ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.8, ease: EASE }}
+            className="mt-9 text-center"
           >
-            <Wordmark className="mx-auto h-7 w-auto md:h-9" priority />
-            <p className="mt-4 font-mono text-[0.66rem] uppercase tracking-[0.45em] text-fog">
+            <p className="font-mono text-[0.66rem] uppercase tracking-[0.45em] text-fog">
               {t.sub}
             </p>
             <motion.span
               initial={{ scaleX: 0 }}
-              animate={phase === "brand" ? { scaleX: 1 } : {}}
-              transition={{ duration: 1, ease: EASE, delay: 0.2 }}
+              animate={phase === "hold" ? { scaleX: 1 } : {}}
+              transition={{ duration: 0.9, ease: EASE, delay: 0.15 }}
               className="mx-auto mt-6 block h-px w-40 origin-center bg-gradient-to-r from-transparent via-accent to-transparent"
             />
           </motion.div>

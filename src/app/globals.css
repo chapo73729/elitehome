@@ -14,10 +14,11 @@
   --color-smoke: #16181e;       /* bg/elev-2 — menus, fields */
   --color-elev-3: #1c1f27;      /* bg/elev-3 — hover, tooltips */
 
-  /* Text — ivory whites + platinum greys, ≥4.5:1 on the dark surfaces */
-  --color-fog: #8d8a83;         /* text/muted — warm platinum grey */
-  --color-mist: #a8a49b;        /* text/secondary */
-  --color-chalk: #f6f3ec;       /* text/primary — luxury ivory white */
+  /* Text — ivory whites + platinum greys, ≥4.5:1 on the dark surfaces.
+     Kept a step brighter than usual "muted" scales: the house wants light. */
+  --color-fog: #9c988e;         /* text/muted — warm platinum grey */
+  --color-mist: #bcb7ab;        /* text/secondary */
+  --color-chalk: #f8f5ee;       /* text/primary — luxury ivory white */
   --color-white-pure: #ffffff;
 
   /* Platinum — metallic silver for numerals & fine rules */

@@ -146,12 +146,12 @@ export function NightDrive() {
         decoding="async"
         draggable={false}
       />
-      {/* night grade over the photo so it reads as one black world */}
-      <div className="absolute inset-0 bg-[radial-gradient(120%_90%_at_50%_-10%,rgba(13,14,18,0.55)_0%,rgba(5,5,5,0.55)_55%,rgba(5,5,5,0.6)_100%)]" />
+      {/* light night grade — keep the photograph alive and luminous */}
+      <div className="absolute inset-0 bg-[radial-gradient(120%_90%_at_50%_-10%,rgba(13,14,18,0.3)_0%,rgba(5,5,5,0.28)_55%,rgba(5,5,5,0.36)_100%)]" />
       <canvas ref={ref} className="absolute inset-0 h-full w-full" />
-      {/* readability veils — stronger on the text side, settled into void below */}
-      <div className="absolute inset-0 bg-gradient-to-r from-void/85 via-void/30 to-transparent" />
-      <div className="absolute inset-0 bg-gradient-to-b from-void/50 via-transparent to-void" />
+      {/* readability veils — only where the text sits, the rest breathes */}
+      <div className="absolute inset-0 bg-gradient-to-r from-void/75 via-void/20 to-transparent" />
+      <div className="absolute inset-0 bg-gradient-to-b from-void/35 via-transparent to-void" />
     </div>
   );
 }

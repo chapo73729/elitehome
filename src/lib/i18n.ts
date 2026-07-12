@@ -3,8 +3,9 @@
    Single source of truth for the /en and /fr URL prefixes.
    ============================================================ */
 
-export const locales = ["en", "fr"] as const;
-export const defaultLocale = "en";
+/* FR is the house language and the default; EN is the secondary locale. */
+export const locales = ["fr", "en"] as const;
+export const defaultLocale = "fr";
 export type AppLocale = (typeof locales)[number];
 
 /** Type guard: is the given value one of our supported locales? */
@@ -83,9 +84,9 @@ export function i18nAlternates(locale: AppLocale, path: string) {
   return {
     canonical: `/${locale}${clean}`,
     languages: {
-      en: `/en${clean}`,
       fr: `/fr${clean}`,
-      "x-default": `/en${clean}`,
+      en: `/en${clean}`,
+      "x-default": `/fr${clean}`,
     },
   };
 }

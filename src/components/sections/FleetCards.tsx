@@ -9,9 +9,7 @@ type Silhouette = "sedan" | "van" | "onebow";
 
 const SILHOUETTE: Record<string, Silhouette> = {
   "s-class": "sedan",
-  "e-class": "sedan",
   "v-class": "van",
-  eqs: "onebow",
 };
 
 /* Engraved-line vehicle drawings — one fine champagne stroke per body style,
@@ -114,8 +112,8 @@ export function FleetCards() {
               </div>
             </div>
 
-            {/* identity */}
-            <h3 className="mt-8 font-display text-2xl font-semibold text-chalk md:text-3xl">
+            {/* identity — label face (the serif hyphen read as a strike-through) */}
+            <h3 className="mt-8 text-xl font-medium tracking-[0.06em] text-chalk md:text-2xl">
               {item.name}
             </h3>
             <p className="mt-1.5 font-mono text-[0.66rem] uppercase tracking-[0.28em] text-accent-2">

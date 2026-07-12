@@ -46,10 +46,10 @@ export function PageHero({
             decoding="async"
             draggable={false}
           />
-          {/* graded into the black world; text side kept legible */}
-          <div className="absolute inset-0 bg-void/55" />
-          <div className="absolute inset-0 bg-gradient-to-r from-void/85 via-void/40 to-transparent" />
-          <div className="absolute inset-0 bg-gradient-to-b from-void/40 via-transparent to-void" />
+          {/* graded into the black world; text side kept legible, photo alive */}
+          <div className="absolute inset-0 bg-void/35" />
+          <div className="absolute inset-0 bg-gradient-to-r from-void/80 via-void/30 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-b from-void/30 via-transparent to-void" />
         </div>
       ) : (
         <PageHeaderFX accent={accent} />

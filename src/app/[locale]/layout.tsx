@@ -13,10 +13,11 @@ import "../globals.css";
 export const metadata: Metadata = {
   metadataBase: new URL(SITE.url),
   title: {
-    default: `${SITE.legal} — ${SITE.tagline}`,
+    default: `${SITE.legal} — Service de chauffeur privé à Genève`,
     template: `%s — ${SITE.legal}`,
   },
-  description: SITE.description,
+  description:
+    "BLACKFIRST® — chauffeur d'exception & mobilité privée à Genève. Transferts aéroport, déplacements d'affaires et longues distances, avec la précision suisse et une discrétion totale.",
   applicationName: SITE.legal,
   keywords: [
     "BLACKFIRST",
@@ -41,11 +42,12 @@ export const metadata: Metadata = {
   openGraph: {
       images: [{ url: "/opengraph-image", width: 1200, height: 630 }],
     type: "website",
-    locale: "en_US",
+    locale: "fr_CH",
     url: SITE.url,
     siteName: SITE.legal,
-    title: `${SITE.legal} — ${SITE.tagline}`,
-    description: SITE.description,
+    title: `${SITE.legal} — Service de chauffeur privé à Genève`,
+    description:
+      "Chauffeur d'exception & mobilité privée à Genève — transferts aéroport, affaires, événements et longues distances.",
   },
   // Card type + creator only: without a twitter:title/description here,
   // X/Twitter falls back to each page's LOCALIZED og:* tags instead of

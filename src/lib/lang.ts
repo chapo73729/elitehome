@@ -5,7 +5,7 @@ import { useSyncExternalStore } from "react";
 export type Lang = "en" | "fr";
 
 function langFromPathname(pathname: string): Lang {
-  return pathname === "/fr" || pathname.startsWith("/fr/") ? "fr" : "en";
+  return pathname === "/en" || pathname.startsWith("/en/") ? "en" : "fr";
 }
 
 /**
@@ -19,7 +19,7 @@ function langFromPathname(pathname: string): Lang {
 let current: Lang =
   typeof window !== "undefined"
     ? langFromPathname(window.location.pathname)
-    : "en";
+    : "fr";
 
 const subs = new Set<() => void>();
 
@@ -48,11 +48,11 @@ function subscribe(fn: () => void) {
   };
 }
 
-/** Reactive current language. SSR-safe (returns "en" on the server). */
+/** Reactive current language. SSR-safe (returns "fr" on the server). */
 export function useLang(): Lang {
   return useSyncExternalStore(
     subscribe,
     () => current,
-    () => "en"
+    () => "fr"
   );
 }

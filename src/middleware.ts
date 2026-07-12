@@ -15,11 +15,12 @@ function detectLocale(req: NextRequest): AppLocale {
   const cookie = req.cookies.get(COOKIE)?.value;
   if (isLocale(cookie)) return cookie;
 
-  // 2) Accept-Language (fr* → fr)
+  // 2) Accept-Language (en* → en; tout le reste reste en français)
   const accept = req.headers.get("accept-language")?.toLowerCase() ?? "";
-  if (accept.split(",").some((part) => part.trim().startsWith("fr"))) return "fr";
+  const first = accept.split(",")[0]?.trim() ?? "";
+  if (first.startsWith("en")) return "en";
 
-  // 3) default
+  // 3) défaut : le français, la langue de la maison
   return defaultLocale;
 }
 

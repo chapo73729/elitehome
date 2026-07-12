@@ -1,24 +1,24 @@
 # BLACKFIRST®
 
-> BLACKFIRST is an executive chauffeur and private mobility house based in
-> Geneva, Switzerland — airport transfers, business travel, private events and
-> long-distance journeys across Switzerland and Europe, with Swiss precision and
-> total discretion.
+> BLACKFIRST est une maison genevoise de chauffeurs privés et de mobilité
+> d'exception — transferts aéroport, déplacements d'affaires, événements
+> privés et longues distances à travers la Suisse et l'Europe, avec la
+> précision suisse et une discrétion totale.
 
-Contact: reservations@blackfirst.ch
+Contact : reservations@blackfirst.ch
 
 ## Services
-- [Airport Executive](https://blackfirst.ch/en/services/airport-transfer): private airport transfers, flight tracking, meet & greet — Geneva, Zurich, Lausanne, Alpine resorts.
-- [Business Mobility](https://blackfirst.ch/en/services/business-chauffeur): dedicated chauffeur by the hour, half-day or day; discreet, signal-clear cabin for executives.
-- [Luxury Events](https://blackfirst.ch/en/services/events): weddings, private galas and celebrations — one car or a coordinated fleet.
-- [International Chauffeur](https://blackfirst.ch/en/services/long-distance): long-distance journeys across Switzerland, France and Europe; tolls and vignettes included.
+- [Aéroport Executive](https://blackfirst.ch/fr/services/airport-transfer) : transferts aéroport privés, suivi des vols, accueil personnalisé — Genève, Zurich, Lausanne, stations alpines.
+- [Mobilité d'affaires](https://blackfirst.ch/fr/services/business-chauffeur) : chauffeur dédié à l'heure, à la demi-journée ou à la journée.
+- [Événements de prestige](https://blackfirst.ch/fr/services/events) : mariages, galas privés et célébrations — une voiture ou une flotte coordonnée.
+- [Chauffeur international](https://blackfirst.ch/fr/services/long-distance) : longues distances à travers la Suisse, la France et l'Europe.
 
 ## Pages
-- [Fleet](https://blackfirst.ch/en/fleet): recent Mercedes-Benz — S-Class, E-Class, V-Class VIP, electric EQS.
-- [Areas served](https://blackfirst.ch/en/locations): Geneva, Lausanne, Montreux, Verbier, Courchevel, Lyon, Milan.
-- [About](https://blackfirst.ch/en/about)
-- [Book a chauffeur](https://blackfirst.ch/en/booking)
-- [Contact](https://blackfirst.ch/en/contact)
+- [La flotte](https://blackfirst.ch/fr/fleet) : Mercedes-Benz Classe S et Classe V VIP.
+- [Zones desservies](https://blackfirst.ch/fr/locations) : Genève, Lausanne, Montreux, Verbier, Courchevel, Lyon, Milan.
+- [À propos](https://blackfirst.ch/fr/about)
+- [Réserver un chauffeur](https://blackfirst.ch/fr/booking)
+- [Contact](https://blackfirst.ch/fr/contact)
 
-## Languages
-- [Version française](https://blackfirst.ch/fr)
+## Langues
+- [English version](https://blackfirst.ch/en)

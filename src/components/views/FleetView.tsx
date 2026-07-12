@@ -14,8 +14,8 @@ export function FleetView() {
         eyebrow={f.eyebrow}
         title={f.title}
         intro={f.intro}
-        image="/images/garage-fleet.webp"
-        imagePosition="center 60%"
+        image="/images/duo-hotel.webp"
+        imagePosition="center 45%"
       />
       <section className="relative z-10 bg-void pb-28 md:pb-36">
         <div className="container-x">

@@ -220,31 +220,17 @@ const en = {
     items: [
       {
         id: "s-class",
-        name: "Mercedes-Benz S-Class",
+        name: "Mercedes S-Class",
         tagline: "The flagship.",
         blurb: "The definitive executive saloon — silent, spacious, exact.",
         features: ["Rear climate comfort", "Reclining rear seats", "Ambient lighting", "Privacy glass"],
       },
       {
-        id: "e-class",
-        name: "Mercedes-Benz E-Class",
-        tagline: "The everyday executive.",
-        blurb: "Refined business travel with the comfort you expect from us.",
-        features: ["Business-class comfort", "Generous luggage", "Quiet cabin", "On-board Wi-Fi"],
-      },
-      {
         id: "v-class",
-        name: "Mercedes-Benz V-Class VIP",
+        name: "Mercedes V-Class VIP",
         tagline: "For the party.",
         blurb: "A first-class cabin for groups, families and delegations.",
         features: ["Up to 7 seats", "Conference seating", "Generous luggage", "Full standing headroom"],
-      },
-      {
-        id: "eqs",
-        name: "Mercedes-Benz EQS",
-        tagline: "Silent. Electric.",
-        blurb: "Zero-emission luxury for the environmentally minded traveller.",
-        features: ["Fully electric", "Near-silent drive", "Rear comfort suite", "Long range"],
       },
     ],
   },
@@ -566,24 +552,16 @@ const fr: DeepPartial<Content> = {
     electricLabel: "Zéro émission",
     items: [
       {
+        name: "Mercedes Classe S",
         tagline: "Le vaisseau amiral.",
         blurb: "La berline d'exception par définition — silencieuse, spacieuse, exacte.",
         features: ["Confort climatique arrière", "Sièges arrière inclinables", "Éclairage d'ambiance", "Vitres teintées"],
       },
       {
-        tagline: "L'executive au quotidien.",
-        blurb: "Un déplacement d'affaires raffiné, avec le confort que vous attendez.",
-        features: ["Confort business", "Coffre généreux", "Cabine silencieuse", "Wi-Fi à bord"],
-      },
-      {
+        name: "Mercedes Classe V VIP",
         tagline: "Pour le groupe.",
         blurb: "Une cabine première classe pour groupes, familles et délégations.",
         features: ["Jusqu'à 7 places", "Sièges en conférence", "Coffre généreux", "Hauteur sous plafond"],
-      },
-      {
-        tagline: "Silencieuse. Électrique.",
-        blurb: "Un luxe zéro émission pour le voyageur soucieux de l'environnement.",
-        features: ["100 % électrique", "Conduite quasi silencieuse", "Suite de confort arrière", "Grande autonomie"],
       },
     ],
   },

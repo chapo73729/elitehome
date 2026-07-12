@@ -45,7 +45,7 @@ export function isServiceSlug(x: string): x is ServiceSlug {
 export const FLEET = [
   {
     id: "s-class",
-    name: "Mercedes-Benz S-Class",
+    name: "Mercedes Classe S",
     line: "Berline · Flagship",
     seats: 3,
     luggage: 3,
@@ -53,31 +53,13 @@ export const FLEET = [
     electric: false,
   },
   {
-    id: "e-class",
-    name: "Mercedes-Benz E-Class",
-    line: "Berline · Business",
-    seats: 3,
-    luggage: 2,
-    accent: "#d9c08a",
-    electric: false,
-  },
-  {
     id: "v-class",
-    name: "Mercedes-Benz V-Class VIP",
-    line: "Van · First-class cabin",
+    name: "Mercedes Classe V VIP",
+    line: "Van · Cabine première classe",
     seats: 7,
     luggage: 7,
-    accent: "#b8934d",
+    accent: "#d9c08a",
     electric: false,
-  },
-  {
-    id: "eqs",
-    name: "Mercedes-Benz EQS",
-    line: "Electric · Zero-emission",
-    seats: 3,
-    luggage: 2,
-    accent: "#c7cbd1",
-    electric: true,
   },
 ] as const;
 
