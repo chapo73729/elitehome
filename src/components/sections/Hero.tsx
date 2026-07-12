@@ -44,6 +44,13 @@ export function Hero({ ready }: { ready: boolean }) {
       {/* diegetic HUD */}
       <HeroHud ready={ready} />
 
+      {/* legibility scrim — a soft dark bloom behind the headline/subtitle so
+          the copy detaches cleanly from the particle sphere without hiding it */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 z-[5] bg-[radial-gradient(46%_30%_at_50%_60%,rgba(2,3,6,0.78),rgba(2,3,6,0.32)_55%,transparent_74%)]"
+      />
+
       {/* content */}
       <div className="container-x relative z-10 flex flex-col items-center text-center">
         <motion.span

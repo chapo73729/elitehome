@@ -81,7 +81,7 @@ const vert = /* glsl */ `
     float size = aCore > 0.5 ? 2.15 : 1.55 + aSeed * 0.9;
     size *= 1.0 + scan * 1.6;                 // the plane lights what it reads
     size *= 1.0 + (1.0 - e) * 0.35;           // wild while hostile
-    gl_PointSize = clamp(size * (34.0 / -mv.z) * 4.6, 1.3, 15.0);
+    gl_PointSize = clamp(size * (34.0 / -mv.z) * 3.5, 1.2, 11.0);
   }
 `;
 
@@ -101,7 +101,8 @@ const frag = /* glsl */ `
     vec2 uv = gl_PointCoord - 0.5;
     float d = length(uv);
     if (d > 0.5) discard;
-    float a = smoothstep(0.5, 0.1, d);
+    // a defined core with a tight halo — reads as a precise node, not a blob
+    float a = smoothstep(0.5, 0.34, d) * 0.55 + smoothstep(0.34, 0.0, d) * 0.9;
 
     // hostile: a dim, nervous, cold shade of the accent — chaotic but
     // in-palette. captured: the bright site accent, calm.
@@ -381,11 +382,11 @@ function Effects({ lite }: { lite: boolean }) {
   return (
     <EffectComposer multisampling={0}>
       <Bloom
-        intensity={lite ? 0.8 : 1.05}
-        luminanceThreshold={0.22}
-        luminanceSmoothing={0.85}
+        intensity={lite ? 0.7 : 0.92}
+        luminanceThreshold={0.3}
+        luminanceSmoothing={0.8}
         mipmapBlur
-        radius={0.72}
+        radius={0.55}
       />
       <Vignette eskil={false} offset={0.18} darkness={0.88} />
     </EffectComposer>
