@@ -1,5 +1,5 @@
 # BLACKFIRST security contact — https://securitytxt.org
-Contact: mailto:reservations@blackfirst.ch
+Contact: mailto:contact@blackfirst.ch
 Preferred-Languages: fr, en
 Canonical: https://blackfirst.ch/.well-known/security.txt
 Expires: 2027-01-01T00:00:00.000Z

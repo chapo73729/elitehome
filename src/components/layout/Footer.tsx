@@ -104,12 +104,31 @@ export function Footer() {
                   </span>
                 </a>
               </li>
-              <li className="hairline-t flex items-baseline gap-5 py-3">
-                <span aria-hidden className="font-mono text-xs text-accent tabular-nums">{num(2)}</span>
-                <span className="font-mono text-sm tracking-wider text-fog">{t.cities}</span>
+              <li className="hairline-t">
+                <a
+                  href={`https://wa.me/${SITE.whatsappHref}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group flex w-full items-baseline gap-5 py-3 text-left"
+                >
+                  <span className="font-mono text-xs text-accent tabular-nums">{num(2)}</span>
+                  <span className="font-mono text-sm tracking-wider text-mist transition-colors group-hover:text-chalk">
+                    WhatsApp
+                  </span>
+                  <span
+                    aria-hidden
+                    className="ml-auto font-mono text-xs text-fog opacity-0 transition-opacity group-hover:opacity-100"
+                  >
+                    ↗
+                  </span>
+                </a>
               </li>
               <li className="hairline-t flex items-baseline gap-5 py-3">
                 <span aria-hidden className="font-mono text-xs text-accent tabular-nums">{num(3)}</span>
+                <span className="font-mono text-sm tracking-wider text-fog">{t.cities}</span>
+              </li>
+              <li className="hairline-t flex items-baseline gap-5 py-3">
+                <span aria-hidden className="font-mono text-xs text-accent tabular-nums">{num(4)}</span>
                 <span className="font-mono text-sm tracking-wider text-fog">{t.cities2}</span>
               </li>
             </ul>

@@ -1,7 +1,7 @@
 /* BLACKFIRST® — Executive Chauffeur & Private Mobility */
 Site: https://blackfirst.ch
 Location: Geneva, Switzerland
-Contact: reservations@blackfirst.ch
+Contact: contact@blackfirst.ch
 
 /* Built with */
 Next.js · React · TypeScript · Tailwind CSS · Framer Motion

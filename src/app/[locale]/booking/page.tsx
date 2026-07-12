@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { SITE } from "@/lib/site";
+import { FAQ } from "@/lib/faq";
 import { i18nAlternates, isLocale, ogLocale, defaultLocale, type AppLocale } from "@/lib/i18n";
 import { pageMeta } from "@/lib/meta";
 import { BookingView } from "./BookingView";
@@ -26,6 +27,32 @@ export async function generateMetadata({
   };
 }
 
-export default function BookingPage() {
-  return <BookingView />;
+export default async function BookingPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale: raw } = await params;
+  const locale: AppLocale = isLocale(raw) ? raw : defaultLocale;
+
+  // FAQPage structured data — mirrors the on-page FAQ, per locale
+  const faqLd = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: FAQ[locale].items.map((f) => ({
+      "@type": "Question",
+      name: f.q,
+      acceptedAnswer: { "@type": "Answer", text: f.a },
+    })),
+  };
+
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqLd) }}
+      />
+      <BookingView />
+    </>
+  );
 }

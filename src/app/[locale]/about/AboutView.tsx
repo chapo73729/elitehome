@@ -10,7 +10,13 @@ export function AboutView() {
 
   return (
     <main className="relative">
-      <PageHero eyebrow={a.eyebrow} title={a.title} intro={a.lead} />
+      <PageHero
+        eyebrow={a.eyebrow}
+        title={a.title}
+        intro={a.lead}
+        image="/images/garage-fleet.webp"
+        imagePosition="center 60%"
+      />
 
       {/* body */}
       <section className="relative z-10 bg-void pb-8">

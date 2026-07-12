@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import { useContent } from "@/lib/content";
+import { useLang } from "@/lib/lang";
+import { FAQ } from "@/lib/faq";
 import { SITE, FLEET } from "@/lib/site";
 import { PageHero } from "@/components/ui/PageHero";
 import { Reveal } from "@/components/ui/Reveal";
@@ -14,6 +16,7 @@ const labelCls = "block font-mono text-[0.62rem] uppercase tracking-[0.25em] tex
 
 export function BookingView() {
   const b = useContent().booking;
+  const faq = FAQ[useLang()];
   const [status, setStatus] = useState<Status>("idle");
   const [form, setForm] = useState({
     from: "",
@@ -159,15 +162,15 @@ export function BookingView() {
               <div className="grid gap-6 sm:grid-cols-3">
                 <div>
                   <label className={labelCls} htmlFor="name">{b.nameLabel}</label>
-                  <input id="name" className={field} placeholder={b.namePlaceholder} value={form.name} onChange={set("name")} required />
+                  <input id="name" autoComplete="name" className={field} placeholder={b.namePlaceholder} value={form.name} onChange={set("name")} required />
                 </div>
                 <div>
                   <label className={labelCls} htmlFor="email">{b.emailLabel}</label>
-                  <input id="email" type="email" className={field} placeholder={b.emailPlaceholder} value={form.email} onChange={set("email")} required />
+                  <input id="email" type="email" autoComplete="email" className={field} placeholder={b.emailPlaceholder} value={form.email} onChange={set("email")} required />
                 </div>
                 <div>
                   <label className={labelCls} htmlFor="phone">{b.phoneLabel}</label>
-                  <input id="phone" className={field} placeholder={b.phonePlaceholder} value={form.phone} onChange={set("phone")} />
+                  <input id="phone" type="tel" autoComplete="tel" className={field} placeholder={b.phonePlaceholder} value={form.phone} onChange={set("phone")} />
                 </div>
               </div>
 
@@ -186,7 +189,7 @@ export function BookingView() {
                 <button
                   type="submit"
                   disabled={status === "sending"}
-                  className="rounded-full bg-chalk px-7 py-3.5 text-sm font-medium text-void transition-transform duration-300 hover:scale-[1.03] disabled:opacity-60"
+                  className="rounded-full bg-chalk px-8 py-4 text-[0.72rem] font-medium uppercase tracking-[0.22em] text-void transition-transform duration-300 hover:scale-[1.03] disabled:opacity-60"
                 >
                   {status === "sending" ? b.submitting : b.submit}
                 </button>
@@ -196,6 +199,44 @@ export function BookingView() {
               </div>
             </form>
           </Reveal>
+        </div>
+      </section>
+
+      {/* FAQ */}
+      <section className="relative z-10 bg-void pb-28 md:pb-36">
+        <div className="container-x max-w-3xl">
+          <Reveal>
+            <div className="flex items-center gap-4">
+              <span className="eyebrow">{faq.title}</span>
+              <span className="h-px flex-1 bg-gradient-to-r from-white/15 to-transparent" />
+            </div>
+          </Reveal>
+          <Reveal delay={0.06}>
+            <p className="text-lead mt-6">{faq.intro}</p>
+          </Reveal>
+          <div className="mt-10">
+            {faq.items.map((item, i) => (
+              <Reveal key={item.q} delay={0.04 * i}>
+                <details className="group hairline-t py-5 open:pb-7">
+                  <summary className="flex cursor-pointer list-none items-baseline gap-5 [&::-webkit-details-marker]:hidden">
+                    <span className="font-mono text-xs text-accent-3 tabular-nums">
+                      {String(i + 1).padStart(2, "0")}
+                    </span>
+                    <span className="flex-1 font-display text-xl font-medium text-chalk transition-colors group-hover:text-white md:text-2xl">
+                      {item.q}
+                    </span>
+                    <span
+                      aria-hidden
+                      className="font-mono text-lg text-fog transition-transform duration-300 group-open:rotate-45"
+                    >
+                      +
+                    </span>
+                  </summary>
+                  <p className="mt-4 pl-10 text-sm leading-relaxed text-mist md:pl-11">{item.a}</p>
+                </details>
+              </Reveal>
+            ))}
+          </div>
         </div>
       </section>
     </main>
