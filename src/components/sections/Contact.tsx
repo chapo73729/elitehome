@@ -124,19 +124,10 @@ export function Contact() {
         track("brief_transmitted", { domain: field });
         return;
       }
-      // not configured / failed → graceful mail fallback to the PUBLIC address.
-      // Cap the message so the encoded mailto: URL can't exceed browser/OS
-      // length limits (which would silently open an empty mail client).
-      const subject = encodeURIComponent(`ARDLABS enquiry — ${field}`);
-      const trimmed =
-        payload.message.length > 1200
-          ? `${payload.message.slice(0, 1200)}…`
-          : payload.message;
-      const body = encodeURIComponent(
-        `Name: ${payload.name}\nEmail: ${payload.email}\nDomain: ${field}\n\n${trimmed}`
-      );
-      window.location.href = `mailto:${SITE.email}?subject=${subject}&body=${body}`;
-      setStatus("sent");
+      // delivery failed — stay on the page and show the direct address
+      // instead (never bounce the visitor into their mail client).
+      setStatus("error");
+      track("brief_failed", { status: res.status });
     } catch {
       setStatus("error");
     }
@@ -592,12 +583,16 @@ export function Contact() {
                                 {status === "error" && (
                                   <span className="text-sm text-accent">
                                     {t.errorPrefix}{" "}
-                                    <a
+                                    <button
+                                      type="button"
+                                      data-cursor
                                       className="link-underline"
-                                      href={`mailto:${SITE.email}`}
+                                      onClick={async () => {
+                                        if (await copyText(SITE.email)) toast(t.copied, "✓");
+                                      }}
                                     >
                                       {SITE.email}
-                                    </a>
+                                    </button>
                                     .
                                   </span>
                                 )}
