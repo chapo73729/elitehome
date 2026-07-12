@@ -4,7 +4,6 @@ import { motion } from "framer-motion";
 import { useContent } from "@/lib/content";
 import { useSafeReducedMotion } from "@/lib/useSafeReducedMotion";
 import { usePerf } from "@/lib/perf";
-import { FilmPanel } from "@/components/ui/FilmPanel";
 import { audio } from "@/lib/audio";
 import { Reveal } from "@/components/ui/Reveal";
 import { SectionHeading } from "@/components/ui/Section";
@@ -136,7 +135,6 @@ function MemberCard({ member, index, stackLabel }: { member: Member; index: numb
 export function Team() {
   const c = useContent().team;
   const perf = usePerf();
-  const reduced = useSafeReducedMotion() || perf;
   const members = c.members as unknown as Member[];
 
   return (
@@ -159,16 +157,6 @@ export function Team() {
           ))}
         </SpotlightGroup>
 
-        {/* after hours — a cinematic beat of the studio at work */}
-        <div className="mt-16 md:mt-20">
-          <FilmPanel
-            base="/media/studio-life"
-            label={c.reel.label}
-            caption={c.reel.caption}
-            aspect="aspect-[21/9]"
-            reduced={reduced}
-          />
-        </div>
       </div>
     </section>
   );

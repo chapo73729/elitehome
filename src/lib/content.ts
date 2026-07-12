@@ -309,10 +309,6 @@ const en = {
     title: "The people behind the work.",
     intro: "Small. Senior. Accountable.",
     stackLabel: "Core stack",
-    reel: {
-      label: "after hours",
-      caption: "The work is quiet. The obsession is not.",
-    },
     members: [
       {
         id: "jakub",
@@ -697,10 +693,6 @@ const fr: DeepPartial<Content> = {
     title: "Les personnes derrière le travail.",
     intro: "Réduite. Senior. Responsable.",
     stackLabel: "Stack principale",
-    reel: {
-      label: "après les heures",
-      caption: "Le travail est silencieux. L'obsession, non.",
-    },
     members: [
       { role: "Ingénieur logiciel senior", bio: "Des systèmes qui tiennent la charge." },
       { role: "Spécialiste cybersécurité", bio: "Du red team au blue team." },
