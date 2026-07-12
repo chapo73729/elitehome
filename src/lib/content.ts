@@ -248,6 +248,7 @@ const en = {
       { id: "courchevel", name: "Courchevel", blurb: "The French Alps — direct from Geneva, door to chalet." },
       { id: "lyon", name: "Lyon", blurb: "Cross-border business and airport connections." },
       { id: "milan", name: "Milan", blurb: "Fashion, finance and the Italian lakes." },
+      { id: "zurich", name: "Zurich", blurb: "The financial capital — door to door, a rolling office." },
     ],
   },
   booking: {
@@ -579,6 +580,7 @@ const fr: DeepPartial<Content> = {
       { name: "Courchevel", blurb: "Les Alpes françaises — direct depuis Genève, de la porte au chalet." },
       { name: "Lyon", blurb: "Affaires transfrontalières et correspondances aéroport." },
       { name: "Milan", blurb: "La mode, la finance et les lacs italiens." },
+      { name: "Zurich", blurb: "La capitale financière — porte à porte, un bureau roulant." },
     ],
   },
   booking: {

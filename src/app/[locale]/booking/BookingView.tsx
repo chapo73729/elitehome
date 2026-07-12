@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useContent } from "@/lib/content";
 import { useLang } from "@/lib/lang";
 import { FAQ } from "@/lib/faq";
@@ -35,6 +35,20 @@ export function BookingView() {
 
   const set = (k: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) =>
     setForm((f) => ({ ...f, [k]: e.target.value }));
+
+  // Trajets signature : ?from=…&to=… pré-remplit le formulaire
+  useEffect(() => {
+    try {
+      const q = new URLSearchParams(window.location.search);
+      const from = q.get("from");
+      const to = q.get("to");
+      if (from || to) {
+        setForm((f) => ({ ...f, from: from ?? f.from, to: to ?? f.to }));
+      }
+    } catch {
+      /* non-fatal */
+    }
+  }, []);
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

@@ -10,6 +10,7 @@ import { Navbar } from "./Navbar";
 import { Footer } from "./Footer";
 import { BackToTop } from "./BackToTop";
 import { MobileCTA } from "./MobileCTA";
+import { FloatingWhatsApp } from "./FloatingWhatsApp";
 import { CookieConsent } from "./CookieConsent";
 import { ScrollProgress } from "@/components/ui/ScrollProgress";
 import { Toaster } from "@/components/ui/Toaster";
@@ -52,6 +53,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
         <Footer />
       </SmoothScroll>
       <MobileCTA />
+      <FloatingWhatsApp />
       <BackToTop />
     </MotionConfig>
   );

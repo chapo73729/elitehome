@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next";
 import { SITE, SERVICES } from "@/lib/site";
+import { DESTINATIONS } from "@/lib/destinations";
 import { locales } from "@/lib/i18n";
 
 /**
@@ -26,6 +27,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.8,
     })),
     { path: "/booking", lastModified: now, changeFrequency: "monthly", priority: 0.9 },
+    ...DESTINATIONS.map((d) => ({
+      path: `/locations/${d.slug}`,
+      lastModified: now,
+      changeFrequency: "monthly" as const,
+      priority: d.slug === "geneva" ? 0.9 : 0.8,
+    })),
     ...["fleet", "locations", "about", "contact"].map((p) => ({
       path: `/${p}`,
       lastModified: now,
