@@ -309,9 +309,6 @@ const en = {
     title: "The people behind the work.",
     intro: "Small. Senior. Accountable.",
     stackLabel: "Core stack",
-    photoLabel: "the studio",
-    photoCaption: "The team — Prague.",
-    photoAlt: "The ARDLABS team at the studio in Prague",
     reel: {
       label: "after hours",
       caption: "The work is quiet. The obsession is not.",
@@ -700,9 +697,6 @@ const fr: DeepPartial<Content> = {
     title: "Les personnes derrière le travail.",
     intro: "Réduite. Senior. Responsable.",
     stackLabel: "Stack principale",
-    photoLabel: "le studio",
-    photoCaption: "L'équipe — Prague.",
-    photoAlt: "L'équipe ARDLABS au studio à Prague",
     reel: {
       label: "après les heures",
       caption: "Le travail est silencieux. L'obsession, non.",

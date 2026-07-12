@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { useContent } from "@/lib/content";
 import { useSafeReducedMotion } from "@/lib/useSafeReducedMotion";
 import { usePerf } from "@/lib/perf";
+import { FilmPanel } from "@/components/ui/FilmPanel";
 import { audio } from "@/lib/audio";
 import { Reveal } from "@/components/ui/Reveal";
 import { SectionHeading } from "@/components/ui/Section";
@@ -135,6 +136,7 @@ function MemberCard({ member, index, stackLabel }: { member: Member; index: numb
 export function Team() {
   const c = useContent().team;
   const perf = usePerf();
+  const reduced = useSafeReducedMotion() || perf;
   const members = c.members as unknown as Member[];
 
   return (
@@ -157,29 +159,16 @@ export function Team() {
           ))}
         </SpotlightGroup>
 
-        {/* the real team — one honest photograph, framed in the blueprint idiom */}
-        <figure className="group mt-16 md:mt-20">
-          <div className="lit-top relative overflow-hidden rounded-xl border border-chalk/10 bg-[#05070c]">
-            <span aria-hidden className="pointer-events-none absolute left-3 top-3 z-10 h-4 w-4 border-l border-t border-accent/50" />
-            <span aria-hidden className="pointer-events-none absolute right-3 top-3 z-10 h-4 w-4 border-r border-t border-accent/50" />
-            <span aria-hidden className="pointer-events-none absolute bottom-3 left-3 z-10 h-4 w-4 border-b border-l border-accent/50" />
-            <span aria-hidden className="pointer-events-none absolute bottom-3 right-3 z-10 h-4 w-4 border-b border-r border-accent/50" />
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src="/team/team-group.webp"
-              alt={c.photoAlt}
-              width={1600}
-              height={1600}
-              loading="lazy"
-              decoding="async"
-              className="block aspect-[16/10] w-full object-cover object-[center_26%] grayscale transition-[filter,transform] duration-700 ease-[cubic-bezier(0.23,1,0.32,1)] group-hover:scale-[1.015] group-hover:grayscale-0"
-            />
-          </div>
-          <figcaption className="mt-3 flex items-baseline justify-between gap-4">
-            <span className="font-mono text-[0.6rem] uppercase tracking-[0.28em] text-fog">{c.photoLabel}</span>
-            <span className="text-sm text-mist">{c.photoCaption}</span>
-          </figcaption>
-        </figure>
+        {/* after hours — a cinematic beat of the studio at work */}
+        <div className="mt-16 md:mt-20">
+          <FilmPanel
+            base="/media/studio-life"
+            label={c.reel.label}
+            caption={c.reel.caption}
+            aspect="aspect-[21/9]"
+            reduced={reduced}
+          />
+        </div>
       </div>
     </section>
   );
