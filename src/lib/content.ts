@@ -316,14 +316,14 @@ const en = {
     members: [
       {
         id: "jakub",
-        name: "Jakub Novák",
+        name: "Jakub Ezer",
         role: "Senior Software Engineer",
         bio: "Systems that hold under load.",
         stack: ["Rust", "Go", "C++", "TypeScript", "React", "PostgreSQL"],
       },
       {
         id: "tomas",
-        name: "Tomáš Dvořák",
+        name: "Jan Novák",
         role: "Cybersecurity Specialist",
         bio: "Red team to blue team.",
         stack: ["Pentest", "Red Team", "Blue Team", "Threat Intel", "DevSecOps", "Linux"],
