@@ -8,14 +8,14 @@ import { MercedesStar } from "@/components/ui/MercedesStar";
 /* Photographies de la maison, par véhicule. */
 const PHOTOS: Record<string, { src: string; pos: string; alt: string }> = {
   "s-class": {
-    src: "/images/hero-chauffeur.webp",
-    pos: "70% 35%",
-    alt: "Mercedes Classe S BLACKFIRST — le chauffeur ouvre la portière sous la pluie",
+    src: "/images/fleet-s.webp",
+    pos: "center 62%",
+    alt: "Mercedes Classe S BLACKFIRST — berline noire, calandre chromée",
   },
   "v-class": {
-    src: "/images/cabin-vclass.webp",
+    src: "/images/fleet-v.webp",
     pos: "center 55%",
-    alt: "Cabine VIP de la Mercedes Classe V BLACKFIRST — sièges cuir face à face",
+    alt: "Mercedes Classe V BLACKFIRST devant un palace",
   },
 };
 

@@ -141,7 +141,7 @@ export function NightDrive() {
       <img
         src="/images/hero-chauffeur.webp"
         alt=""
-        className="absolute inset-0 h-full w-full object-cover object-[65%_30%]"
+        className="kenburns absolute inset-0 h-full w-full object-cover object-[65%_30%]"
         fetchPriority="high"
         decoding="async"
         draggable={false}

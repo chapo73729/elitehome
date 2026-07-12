@@ -474,6 +474,27 @@ html {
   to { opacity: 1; }
 }
 
+/* Marquee — the destinations ribbon; two copies of the track glide left.
+   Static under reduced motion (globals kill the animation below). */
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+.marquee-track {
+  animation: marquee 44s linear infinite;
+  will-change: transform;
+}
+
+/* Ken Burns — a barely-perceptible push-in on hero photography */
+@keyframes kenburns {
+  from { transform: scale(1); }
+  to   { transform: scale(1.09); }
+}
+.kenburns {
+  animation: kenburns 26s ease-in-out infinite alternate;
+  will-change: transform;
+}
+
 /* Slow-drifting aurora blobs for the persistent ambient backdrop */
 @keyframes aurora1 {
   0%, 100% { transform: translate(-50%, -50%) scale(1); }

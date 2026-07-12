@@ -2,6 +2,8 @@
 
 import { motion } from "framer-motion";
 import { useContent } from "@/lib/content";
+import { useLang } from "@/lib/lang";
+import { HALLMARKS } from "@/lib/site";
 import { Button } from "@/components/ui/Button";
 import { Wordmark } from "@/components/ui/Wordmark";
 import { NightDrive } from "@/components/visuals/NightDrive";
@@ -9,6 +11,11 @@ import { HeroHud } from "./HeroHud";
 import { scrollToTarget } from "@/components/layout/SmoothScroll";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
+
+const HALLMARK_LABELS = {
+  fr: { since: "Réservations", based: "Basés à", reach: "Rayon d’action", languages: "Langues" },
+  en: { since: "Reservations", based: "Based in", reach: "Coverage", languages: "Languages" },
+} as const;
 
 /**
  * Arrival. The Geneva night-drive backdrop, the wordmark at hero scale, the
@@ -18,6 +25,7 @@ const EASE = [0.16, 1, 0.3, 1] as const;
 export function Hero({ ready = true }: { ready?: boolean }) {
   const c = useContent();
   const h = c.hero;
+  const hallmarkLabels = HALLMARK_LABELS[useLang()];
 
   return (
     <section
@@ -76,6 +84,25 @@ export function Hero({ ready = true }: { ready?: boolean }) {
             {h.quote}
           </Button>
         </motion.div>
+
+        {/* repères de la maison */}
+        <motion.dl
+          initial={{ opacity: 0, y: 16 }}
+          animate={ready ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.9, ease: EASE, delay: 1.15 }}
+          className="mt-14 grid max-w-2xl grid-cols-2 gap-x-10 gap-y-6 border-t border-white/10 pt-8 sm:grid-cols-4"
+        >
+          {HALLMARKS.map((m) => (
+            <div key={m.id}>
+              <dt className="font-mono text-[0.58rem] uppercase tracking-[0.3em] text-fog">
+                {hallmarkLabels[m.id]}
+              </dt>
+              <dd className="mt-1.5 font-mono text-lg text-chalk tabular-nums md:text-xl">
+                {m.value}
+              </dd>
+            </div>
+          ))}
+        </motion.dl>
       </div>
 
       {/* scroll hint */}

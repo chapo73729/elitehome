@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Loader } from "@/components/loader/Loader";
 import { Hero } from "@/components/sections/Hero";
 import { Manifesto } from "@/components/sections/Manifesto";
+import { Marquee } from "@/components/sections/Marquee";
 import { ExperienceSection } from "@/components/sections/ExperienceSection";
 import { RouteMap } from "@/components/sections/RouteMap";
 import { ServicesSection } from "@/components/sections/ServicesSection";
@@ -25,13 +26,11 @@ export function Experience() {
       <main className="relative">
         <Hero ready={ready} />
         <Manifesto />
-        <Seam />
+        <Marquee />
         <ExperienceSection />
         <Seam />
         <RouteMap />
-        <Seam />
         <ServicesSection />
-        <Seam />
         <FleetSection />
         <Seam />
         <BookingCTA />
