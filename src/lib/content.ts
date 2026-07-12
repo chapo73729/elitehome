@@ -212,7 +212,7 @@ const en = {
   fleet: {
     eyebrow: "The Fleet",
     title: "A quiet fleet, immaculately kept.",
-    intro: "Recent Mercedes-Benz, detailed before every journey.",
+    intro: "Recent, top-of-the-range vehicles, detailed before every journey.",
     viewAll: "View the fleet",
     seatsLabel: "Passengers",
     luggageLabel: "Luggage",
@@ -559,7 +559,7 @@ const fr: DeepPartial<Content> = {
   fleet: {
     eyebrow: "La flotte",
     title: "Une flotte silencieuse, impeccablement tenue.",
-    intro: "Des Mercedes-Benz récentes, soignées avant chaque trajet.",
+    intro: "Des véhicules récents haut de gamme, soignés avant chaque trajet.",
     viewAll: "Voir la flotte",
     seatsLabel: "Passagers",
     luggageLabel: "Bagages",

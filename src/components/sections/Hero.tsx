@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import { useContent } from "@/lib/content";
 import { Button } from "@/components/ui/Button";
+import { Wordmark } from "@/components/ui/Wordmark";
 import { NightDrive } from "@/components/visuals/NightDrive";
 import { HeroHud } from "./HeroHud";
 import { scrollToTarget } from "@/components/layout/SmoothScroll";
@@ -36,24 +37,23 @@ export function Hero({ ready = true }: { ready?: boolean }) {
           {h.eyebrow}
         </motion.p>
 
-        {/* wordmark at hero scale — BLACK / FIRST stacked */}
-        <h1 className="mt-6 leading-[0.86]">
+        {/* the official wordmark at display scale */}
+        <h1 className="mt-10">
           <span className="sr-only">{h.headline}</span>
-          {h.lines.map((line, i) => (
-            <span key={line} className="block overflow-hidden">
-              <motion.span
-                initial={{ y: "110%" }}
-                animate={ready ? { y: "0%" } : {}}
-                transition={{ duration: 1.1, ease: EASE, delay: 0.4 + i * 0.12 }}
-                className="text-mega block text-chalk"
-              >
-                {line}
-                {i === h.lines.length - 1 && (
-                  <span className="align-top text-[0.16em] leading-none text-accent">®</span>
-                )}
-              </motion.span>
-            </span>
-          ))}
+          <span className="block overflow-hidden py-2">
+            <motion.span
+              initial={{ y: "115%" }}
+              animate={ready ? { y: "0%" } : {}}
+              transition={{ duration: 1.15, ease: EASE, delay: 0.45 }}
+              className="block"
+            >
+              <Wordmark
+                className="w-full max-w-[54rem] drop-shadow-[0_2px_24px_rgba(0,0,0,0.6)]"
+                alt=""
+                priority
+              />
+            </motion.span>
+          </span>
         </h1>
 
         <motion.p

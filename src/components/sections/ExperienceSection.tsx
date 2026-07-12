@@ -39,23 +39,21 @@ export function ExperienceSection() {
           </Reveal>
         </ul>
 
-        {/* lit-cabin panel */}
+        {/* the cabin itself — our V-Class VIP, photographed as it rides */}
         <Reveal delay={0.15} className="lg:col-span-6">
-          <div className="relative aspect-[4/3] overflow-hidden rounded-2xl hairline bg-gradient-to-br from-ink to-void">
-            {/* ambient interior light */}
-            <div className="absolute -right-1/4 top-1/4 h-2/3 w-2/3 rounded-full bg-[radial-gradient(circle,rgba(198,161,91,0.22),transparent_70%)] blur-2xl" />
-            <div className="absolute -left-10 bottom-0 h-1/2 w-1/2 rounded-full bg-[radial-gradient(circle,rgba(199,203,209,0.10),transparent_70%)] blur-2xl" />
-            {/* leather-stitch seams */}
-            <svg className="absolute inset-0 h-full w-full opacity-40" aria-hidden>
-              <defs>
-                <pattern id="stitch" width="26" height="26" patternUnits="userSpaceOnUse" patternTransform="rotate(18)">
-                  <line x1="0" y1="13" x2="8" y2="13" stroke="rgba(198,161,91,0.25)" strokeWidth="1" strokeDasharray="3 5" />
-                </pattern>
-              </defs>
-              <rect width="100%" height="100%" fill="url(#stitch)" />
-            </svg>
-            <div className="absolute bottom-6 left-6 font-mono text-[0.62rem] tracking-[0.3em] text-fog">
-              CABIN · SILENCE · CHAMPAGNE LIGHT
+          <div className="group relative aspect-[4/5] overflow-hidden rounded-2xl hairline sm:aspect-[4/3] lg:aspect-[4/5]">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/images/cabin-vclass.webp"
+              alt="Cabine VIP de la Mercedes-Benz V-Class BLACKFIRST — sièges cuir et éclairage d'ambiance"
+              loading="lazy"
+              decoding="async"
+              className="absolute inset-0 h-full w-full object-cover transition-transform duration-[1.4s] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.04]"
+            />
+            {/* night grade + caption */}
+            <div className="absolute inset-0 bg-gradient-to-t from-void/70 via-transparent to-void/20" />
+            <div className="absolute bottom-6 left-6 font-mono text-[0.62rem] uppercase tracking-[0.3em] text-chalk/80">
+              V-Class VIP · Cabine première classe
             </div>
           </div>
         </Reveal>

@@ -7,6 +7,14 @@ import { Reveal } from "@/components/ui/Reveal";
 import { LocaleLink } from "@/components/ui/LocaleLink";
 import { CtaBanner } from "@/components/ui/CtaBanner";
 
+/* The house's own photographs, per service (fallback: constellation canvas). */
+const SERVICE_IMAGES: Record<string, { src: string; pos?: string }> = {
+  "airport-transfer": { src: "/images/jet-sclass.webp", pos: "center 30%" },
+  "business-chauffeur": { src: "/images/hero-chauffeur.webp", pos: "65% 30%" },
+  "long-distance": { src: "/images/jet-sclass.webp", pos: "center 55%" },
+  events: { src: "/images/garage-fleet.webp", pos: "center 60%" },
+};
+
 export function ServiceDetailView({
   slug,
   prevSlug,
@@ -33,6 +41,8 @@ export function ServiceDetailView({
         intro={item.overview}
         accent={meta.accent}
         backHref="/services"
+        image={SERVICE_IMAGES[slug]?.src}
+        imagePosition={SERVICE_IMAGES[slug]?.pos}
       >
         <Reveal delay={0.24}>
           <p className="mt-6 font-mono text-xs uppercase tracking-[0.3em] text-accent-2">

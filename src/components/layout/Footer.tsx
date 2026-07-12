@@ -1,6 +1,7 @@
 "use client";
 
 import { LocaleLink } from "@/components/ui/LocaleLink";
+import { Wordmark } from "@/components/ui/Wordmark";
 import { SITE } from "@/lib/site";
 import { useContent } from "@/lib/content";
 import { copyText, toast } from "@/lib/toast";
@@ -31,12 +32,9 @@ export function Footer() {
   return (
     <footer className="relative z-10 hairline-t bg-void">
       <div className="container-x pb-14 pt-20 md:pb-16 md:pt-28">
-        {/* editorial masthead */}
-        <p className="text-giant select-none">
-          <span className="text-gradient">{SITE.name}</span>
-          <span className="text-accent">®</span>
-        </p>
-        <p className="mt-6 max-w-md text-mist md:text-lg">{f.tagline}</p>
+        {/* editorial masthead — the official wordmark */}
+        <Wordmark className="h-9 w-auto max-w-full select-none md:h-14" />
+        <p className="mt-8 max-w-md text-mist md:text-lg">{f.tagline}</p>
 
         <div className="mt-16 grid gap-14 md:mt-24 md:grid-cols-12 md:gap-10">
           {/* explore */}

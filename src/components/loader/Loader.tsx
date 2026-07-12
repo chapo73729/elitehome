@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
+import { Wordmark } from "@/components/ui/Wordmark";
 import { useLang } from "@/lib/lang";
 
 const T = {
@@ -219,9 +220,7 @@ export function Loader({ onComplete }: { onComplete: () => void }) {
             transition={{ duration: 0.9, ease: EASE }}
             className="mt-10 text-center"
           >
-            <p className="font-display text-4xl font-semibold tracking-[0.16em] text-chalk md:text-5xl">
-              BLACKFIRST<span className="text-accent">®</span>
-            </p>
+            <Wordmark className="mx-auto h-7 w-auto md:h-9" priority />
             <p className="mt-4 font-mono text-[0.66rem] uppercase tracking-[0.45em] text-fog">
               {t.sub}
             </p>

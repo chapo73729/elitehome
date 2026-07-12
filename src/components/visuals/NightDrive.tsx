@@ -136,30 +136,22 @@ export function NightDrive() {
 
   return (
     <div aria-hidden className="absolute inset-0 overflow-hidden">
-      {/* night sky + street gradient base */}
-      <div className="absolute inset-0 bg-[radial-gradient(120%_90%_at_50%_-10%,#0d0e12_0%,#050505_55%,#050505_100%)]" />
-      {/* faint Geneva skyline + Jet d'eau silhouette */}
-      <svg
-        viewBox="0 0 1440 320"
-        preserveAspectRatio="none"
-        className="absolute bottom-0 left-0 h-[38%] w-full opacity-[0.5]"
-      >
-        <defs>
-          <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0" stopColor="#14161c" />
-            <stop offset="1" stopColor="#070708" />
-          </linearGradient>
-        </defs>
-        <path
-          fill="url(#sky)"
-          d="M0 260 L60 250 L60 210 L96 210 L96 250 L150 244 L150 180 L190 180 L190 244 L250 236 L250 150 L300 150 L300 236 L360 232 L360 196 L410 196 L410 232 L470 226 L470 168 L520 168 L520 226 L600 222 L600 120 L640 120 L640 222 L720 216 L720 176 L770 176 L770 216 L840 212 L840 150 L890 150 L890 212 L980 210 L980 186 L1030 186 L1030 210 L1120 206 L1120 158 L1170 158 L1170 206 L1260 204 L1260 190 L1320 190 L1320 204 L1440 200 L1440 320 L0 320 Z"
-        />
-        {/* Jet d'eau */}
-        <path d="M708 230 C 712 120, 726 120, 730 40" stroke="rgba(199,203,209,0.35)" strokeWidth="3" fill="none" strokeLinecap="round" />
-      </svg>
+      {/* the house's own photograph — chauffeur, black saloon, rain */}
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src="/images/hero-chauffeur.webp"
+        alt=""
+        className="absolute inset-0 h-full w-full object-cover object-[65%_30%]"
+        fetchPriority="high"
+        decoding="async"
+        draggable={false}
+      />
+      {/* night grade over the photo so it reads as one black world */}
+      <div className="absolute inset-0 bg-[radial-gradient(120%_90%_at_50%_-10%,rgba(13,14,18,0.55)_0%,rgba(5,5,5,0.55)_55%,rgba(5,5,5,0.6)_100%)]" />
       <canvas ref={ref} className="absolute inset-0 h-full w-full" />
-      {/* readability veil */}
-      <div className="absolute inset-0 bg-gradient-to-b from-void/40 via-transparent to-void" />
+      {/* readability veils — stronger on the text side, settled into void below */}
+      <div className="absolute inset-0 bg-gradient-to-r from-void/85 via-void/30 to-transparent" />
+      <div className="absolute inset-0 bg-gradient-to-b from-void/50 via-transparent to-void" />
     </div>
   );
 }

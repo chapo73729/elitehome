@@ -8,6 +8,7 @@ import { useContent } from "@/lib/content";
 import { scrollToTarget } from "./SmoothScroll";
 import { Magnetic } from "@/components/ui/Magnetic";
 import { Brandmark } from "@/components/ui/Brandmark";
+import { Wordmark } from "@/components/ui/Wordmark";
 import { LanguageToggle } from "@/components/feature/LanguageToggle";
 import { useLang } from "@/lib/lang";
 import { useLocaleRouter } from "@/hooks/useLocaleRouter";
@@ -99,15 +100,12 @@ export function Navbar({ ready = true }: { ready?: boolean }) {
           <Magnetic strength={0.25}>
             <button
               onClick={goHome}
-              className="flex items-center gap-3 font-display text-xl font-semibold tracking-[0.14em] text-chalk"
+              className="flex items-center gap-3 text-chalk"
               data-cursor
               aria-label={SITE.name}
             >
               <Brandmark size={28} className="text-chalk" />
-              <span>
-                {SITE.name}
-                <span className="text-accent">®</span>
-              </span>
+              <Wordmark className="h-[13px] w-auto md:h-[15px]" priority />
             </button>
           </Magnetic>
 

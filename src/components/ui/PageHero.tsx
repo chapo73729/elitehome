@@ -8,7 +8,8 @@ import { useContent } from "@/lib/content";
 
 /**
  * Shared inner-page header: back-to-home link, eyebrow, display title and an
- * optional intro, over the drifting constellation backdrop.
+ * optional intro. Backdrop is either one of the house's own photographs
+ * (`image`) graded into the night, or the drifting constellation canvas.
  */
 export function PageHero({
   eyebrow,
@@ -16,6 +17,8 @@ export function PageHero({
   intro,
   accent = "#c6a15b",
   backHref = "/",
+  image,
+  imagePosition = "center",
   children,
 }: {
   eyebrow: string;
@@ -23,13 +26,34 @@ export function PageHero({
   intro?: string;
   accent?: string;
   backHref?: string;
+  /** Optional photographic backdrop (public path, e.g. /images/…webp). */
+  image?: string;
+  imagePosition?: string;
   children?: ReactNode;
 }) {
   const back = useContent().common.backHome;
 
   return (
     <section className="relative overflow-hidden pb-12 pt-36 md:pt-44">
-      <PageHeaderFX accent={accent} />
+      {image ? (
+        <div aria-hidden className="absolute inset-0">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={image}
+            alt=""
+            className="absolute inset-0 h-full w-full object-cover"
+            style={{ objectPosition: imagePosition }}
+            decoding="async"
+            draggable={false}
+          />
+          {/* graded into the black world; text side kept legible */}
+          <div className="absolute inset-0 bg-void/55" />
+          <div className="absolute inset-0 bg-gradient-to-r from-void/85 via-void/40 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-b from-void/40 via-transparent to-void" />
+        </div>
+      ) : (
+        <PageHeaderFX accent={accent} />
+      )}
       <div className="container-x relative">
         <Reveal>
           <LocaleLink
