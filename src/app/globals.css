@@ -31,10 +31,12 @@
   --color-accent-3: #a8843f;    /* accent/deep — antique gold */
   --color-glow: #c6a15b;
 
-  --font-display: var(--font-display), "Geist", system-ui, sans-serif;
-  /* body shares the display face — one Geist load, one preload (perf) */
-  --font-sans: var(--font-display), "Geist", system-ui, sans-serif;
-  --font-mono: var(--font-mono), "Geist Mono", ui-monospace, monospace;
+  /* Display: luxury serif. Body + labels: refined geometric sans (Jost) —
+     the "mono" slot intentionally maps to Jost: labels read as letterspaced
+     couture capitals, with tabular figures kept by the .font-mono utility. */
+  --font-display: var(--font-display), "Cormorant Garamond", Georgia, serif;
+  --font-sans: var(--font-mono), "Jost", system-ui, sans-serif;
+  --font-mono: var(--font-mono), "Jost", system-ui, sans-serif;
 
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-in-out-quint: cubic-bezier(0.83, 0, 0.17, 1);
@@ -184,18 +186,17 @@ html {
 }
 .font-mono {
   font-family: var(--font-mono);
-  /* technical labels: tabular figures so changing numbers never jitter, and
-     NO ligatures so `//`, `->`, `==` stay literal in the console idiom */
+  /* executive numerals: tabular figures so times, coordinates and fares
+     never jitter as they change */
   font-variant-numeric: tabular-nums;
-  font-variant-ligatures: none;
   font-feature-settings: "tnum", "kern";
 }
 
 .text-mega {
   font-family: var(--font-display);
-  font-weight: 700;
-  line-height: 0.9;
-  letter-spacing: -0.045em;
+  font-weight: 600;
+  line-height: 0.92;
+  letter-spacing: 0.02em; /* serif capitals breathe with light positive tracking */
   font-size: var(--step-mega);
   overflow-wrap: break-word;
   text-wrap: balance;
@@ -205,8 +206,8 @@ html {
 .text-giant {
   font-family: var(--font-display);
   font-weight: 600;
-  line-height: 0.96;
-  letter-spacing: -0.038em;
+  line-height: 1;
+  letter-spacing: -0.005em;
   font-size: var(--step-giant);
   /* no widows/orphans on display headlines — the award-tier typographic tell */
   text-wrap: balance;
@@ -215,9 +216,9 @@ html {
 
 .text-section-title {
   font-family: var(--font-display);
-  font-weight: 600;
-  line-height: 1.01;
-  letter-spacing: -0.032em;
+  font-weight: 500;
+  line-height: 1.05;
+  letter-spacing: -0.002em;
   font-size: var(--step-title);
   text-wrap: balance;
   hyphens: none;
@@ -328,26 +329,6 @@ html {
   50%  { transform: translate(0.6%, -1%); }
   75%  { transform: translate(-0.6%, -0.4%); }
   100% { transform: translate(1%, 0.6%); }
-}
-
-/* ---------- Scanline veil ----------
-   An extremely subtle horizontal line structure — the faint CRT/film-gate
-   texture award sites layer under everything. Kept near-invisible (it should
-   register as "fine texture", never visible lines) and behind the grain. */
-.scanlines {
-  position: fixed;
-  inset: 0;
-  z-index: 85;
-  pointer-events: none;
-  opacity: 0.5;
-  mix-blend-mode: overlay;
-  background-image: repeating-linear-gradient(
-    0deg,
-    rgba(255, 255, 255, 0.012) 0px,
-    rgba(255, 255, 255, 0.012) 1px,
-    transparent 1px,
-    transparent 3px
-  );
 }
 
 /* ---------- Vignette ---------- */
@@ -644,7 +625,6 @@ html {
   canvas,
   video,
   .grain,
-  .scanlines,
   .vignette,
   .marquee-track {
     display: none !important;

@@ -4,7 +4,6 @@ import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { useSafeReducedMotion } from "@/lib/useSafeReducedMotion";
 import { usePathname } from "next/navigation";
-import { stripLocale } from "@/lib/i18n";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 /** How long the void holds fully covering while the new route paints. */
@@ -20,14 +19,12 @@ const useIsomorphicLayoutEffect =
 type Phase = "idle" | "cover" | "reveal";
 
 /**
- * « Compile » page transition — an overlay cover in the site's blueprint
- * language. App Router swaps content on frame 1 of a navigation, so instead
- * of faking an exit animation we play the robust "reveal" variant: on
- * pathname change a full-screen void overlay appears INSTANTLY (already
- * fully covering the freshly swapped route), holds ~250ms while the page
- * paints — thin azure leading edge + mono `// compile: route … ok`
- * annotation — then sweeps up and away (translateY 0 → -100%) to reveal
- * the new page.
+ * Page transition — a black veil in the house's register. App Router swaps
+ * content on frame 1 of a navigation, so instead of faking an exit animation
+ * we play the robust "reveal" variant: on pathname change a full-screen void
+ * overlay appears INSTANTLY (already fully covering the freshly swapped
+ * route), holds ~250ms while the page paints — signed by the wordmark and a
+ * thin champagne leading edge — then sweeps up to reveal the new page.
  *
  * Skipped entirely on first mount and under prefers-reduced-motion
  * (instant swap). While covered the window is snapped to top (unless a
@@ -39,8 +36,6 @@ export function PageTransition() {
   const reduce = useSafeReducedMotion();
   const [phase, setPhase] = useState<Phase>("idle");
   const prevPath = useRef<string | null>(null);
-  // freeze the annotation label for the whole sweep
-  const [label, setLabel] = useState("/");
 
   useIsomorphicLayoutEffect(() => {
     // first mount — record and do nothing (the Loader owns first arrival)
@@ -65,8 +60,6 @@ export function PageTransition() {
 
     if (reduce) return; // instant swap, no choreography
 
-    const { rest } = stripLocale(pathname);
-    setLabel(rest === "/" ? "/index" : rest);
     setPhase("cover"); // overlay appears instantly, fully covering
     const t = window.setTimeout(() => setPhase("reveal"), HOLD_MS);
     return () => window.clearTimeout(t);
@@ -92,34 +85,18 @@ export function PageTransition() {
         if (phase === "reveal") setPhase("idle");
       }}
     >
-      {/* faint blueprint grid under the cover — the studio's build language */}
+      {/* a whisper of warm light in the black — no grids, no scanners */}
       <div
         aria-hidden
-        className="absolute inset-0 opacity-[0.6]"
-        style={{
-          backgroundImage:
-            "linear-gradient(color-mix(in oklab, var(--color-accent) 6%, transparent) 1px, transparent 1px), linear-gradient(90deg, color-mix(in oklab, var(--color-accent) 6%, transparent) 1px, transparent 1px)",
-          backgroundSize: "44px 44px",
-        }}
+        className="absolute inset-0 [background:radial-gradient(70%_50%_at_50%_100%,rgba(198,161,91,0.08),transparent_70%)]"
       />
-      {/* accent scanner sweeping across while the route compiles */}
-      {phase === "cover" && (
-        <motion.div
-          aria-hidden
-          className="absolute inset-y-0 w-40 bg-[linear-gradient(90deg,transparent,color-mix(in_oklab,var(--color-accent)_45%,transparent),transparent)] blur-md"
-          initial={{ x: "-10rem" }}
-          animate={{ x: "100vw" }}
-          transition={{ duration: 0.5, ease: "easeInOut" }}
-        />
-      )}
       {/* thin champagne leading edge — the line that passes over the content
           as the cover sweeps up */}
       <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-accent/70 to-transparent" />
-      {/* mono annotation, same register as the Loader's bottom strip */}
-      <div className="absolute inset-x-0 bottom-10 flex items-end justify-between px-6 font-mono text-[0.7rem] tracking-[0.3em] text-fog md:px-14">
-        <span>{`en route · ${label}`}</span>
-        <span className="hidden uppercase text-accent-2/80 sm:inline">
-          BLACKFIRST®
+      {/* the house signs the passage — wordmark alone, centered */}
+      <div className="absolute inset-x-0 bottom-12 flex justify-center">
+        <span className="font-display text-lg font-semibold tracking-[0.22em] text-chalk/80">
+          BLACKFIRST<span className="text-accent">®</span>
         </span>
       </div>
     </motion.div>

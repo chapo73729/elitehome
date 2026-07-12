@@ -13,6 +13,8 @@ constraints a new team should not rediscover the hard way.
 
 - **Next.js 15** (App Router, static generation) · **React 19** · **TypeScript (strict)**
 - **Tailwind CSS v4** — design tokens live in `@theme` inside `src/app/globals.css`
+- **Typography**: Cormorant Garamond (luxury display serif) + Jost (body & letterspaced
+  labels) via `next/font` — the label face keeps tabular "executive" numerals
 - **framer-motion 12** for UI motion, **Lenis** for smooth scroll (`window.__lenis`)
 - Light **2D-canvas** visuals (`NightDrive`, `PageHeaderFX`, `RouteMap`) instead of
   heavy WebGL — cheap, capped-DPR, paused off-screen, static under reduced motion

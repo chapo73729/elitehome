@@ -3,8 +3,6 @@
 import { type ReactNode } from "react";
 import clsx from "clsx";
 import { Reveal } from "./Reveal";
-import { SkewText } from "./SkewText";
-import { Decode } from "./Decode";
 
 export function Section({
   id,
@@ -39,8 +37,7 @@ export function SectionHeading({
   eyebrow: string;
   title: ReactNode;
   intro?: string;
-  /** Skip the built-in container — for callers that already provide one
-   *  (e.g. when wrapping the heading in a Compile frame). */
+  /** Skip the built-in container — for callers that already provide one. */
   flush?: boolean;
 }) {
   return (
@@ -48,18 +45,16 @@ export function SectionHeading({
       <Reveal>
         <div className="flex items-center gap-4">
           {index && (
-            <span className="font-mono text-xs text-accent">{index}</span>
+            <span className="font-mono text-xs text-accent tabular-nums">{index}</span>
           )}
-          <Decode text={eyebrow} className="eyebrow" />
+          <span className="eyebrow">{eyebrow}</span>
           <span className="h-px flex-1 bg-gradient-to-r from-white/15 to-transparent" />
         </div>
       </Reveal>
       <Reveal delay={0.08}>
-        <SkewText>
-          <h2 className="text-section-title text-chalk mt-7 max-w-4xl text-balance">
-            {title}
-          </h2>
-        </SkewText>
+        <h2 className="text-section-title text-chalk mt-7 max-w-4xl text-balance">
+          {title}
+        </h2>
       </Reveal>
       {intro && (
         <Reveal delay={0.16}>

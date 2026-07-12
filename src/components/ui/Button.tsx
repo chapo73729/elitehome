@@ -28,7 +28,7 @@ export function Button({
     href && !href.startsWith("#") ? localizePath(href, locale) : href;
 
   const base =
-    "group relative inline-flex items-center justify-center gap-2 overflow-hidden rounded-full px-5 py-2.5 text-sm font-medium tracking-wide transition-[color,transform] duration-500 active:scale-[0.97] active:duration-100 md:px-7 md:py-3.5 " +
+    "group relative inline-flex items-center justify-center gap-2 overflow-hidden rounded-full px-6 py-3 text-[0.72rem] font-medium uppercase tracking-[0.22em] transition-[color,transform] duration-500 active:scale-[0.97] active:duration-100 md:px-8 md:py-4 " +
     // arrow glyphs passed as children nudge along on hover
     "[&_span[aria-hidden]]:transition-transform [&_span[aria-hidden]]:duration-200 [&_span[aria-hidden]]:ease-[cubic-bezier(0.23,1,0.32,1)] hover:[&_span[aria-hidden]]:translate-x-[3px]";
   const styles =

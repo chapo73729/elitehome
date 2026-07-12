@@ -38,7 +38,6 @@ export function Providers({ children }: { children: React.ReactNode }) {
         {skip}
       </a>
       <AmbientBackdrop />
-      <div className="scanlines" aria-hidden />
       <PageTransition />
       <ScrollProgress />
       <PWARegister />

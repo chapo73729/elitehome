@@ -99,11 +99,11 @@ export function Navbar({ ready = true }: { ready?: boolean }) {
           <Magnetic strength={0.25}>
             <button
               onClick={goHome}
-              className="flex items-center gap-2.5 font-display text-lg font-semibold tracking-[0.02em] text-chalk"
+              className="flex items-center gap-3 font-display text-xl font-semibold tracking-[0.14em] text-chalk"
               data-cursor
               aria-label={SITE.name}
             >
-              <Brandmark size={26} className="text-chalk" />
+              <Brandmark size={28} className="text-chalk" />
               <span>
                 {SITE.name}
                 <span className="text-accent">®</span>
@@ -142,7 +142,7 @@ export function Navbar({ ready = true }: { ready?: boolean }) {
             <Magnetic strength={0.3}>
               <button
                 onClick={() => go("/booking")}
-                className="rounded-full bg-chalk px-5 py-2.5 text-sm font-medium text-void transition-transform duration-300 hover:scale-[1.03]"
+                className="rounded-full bg-chalk px-6 py-3 text-[0.68rem] font-medium uppercase tracking-[0.22em] text-void transition-transform duration-300 hover:scale-[1.03]"
               >
                 {c.common.book}
               </button>
@@ -201,7 +201,7 @@ export function Navbar({ ready = true }: { ready?: boolean }) {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.05 * NAV.length }}
               onClick={() => go("/booking")}
-              className="mt-6 rounded-full bg-chalk px-8 py-3.5 text-base font-medium text-void"
+              className="mt-6 rounded-full bg-chalk px-9 py-4 text-xs font-medium uppercase tracking-[0.22em] text-void"
             >
               {c.common.book}
             </motion.button>

@@ -19,8 +19,8 @@ const T = {
   },
 } as const;
 
-/** [01]-style register mark. */
-const num = (i: number) => `[${String(i + 1).padStart(2, "0")}]`;
+/** 01-style register mark. */
+const num = (i: number) => String(i + 1).padStart(2, "0");
 
 export function Footer() {
   const year = 2026;

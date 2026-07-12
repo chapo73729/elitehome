@@ -45,10 +45,12 @@ export function Hero({ ready = true }: { ready?: boolean }) {
                 initial={{ y: "110%" }}
                 animate={ready ? { y: "0%" } : {}}
                 transition={{ duration: 1.1, ease: EASE, delay: 0.4 + i * 0.12 }}
-                className="text-mega block font-display font-semibold tracking-[-0.03em] text-chalk"
+                className="text-mega block text-chalk"
               >
                 {line}
-                {i === h.lines.length - 1 && <span className="text-accent">®</span>}
+                {i === h.lines.length - 1 && (
+                  <span className="align-top text-[0.16em] leading-none text-accent">®</span>
+                )}
               </motion.span>
             </span>
           ))}
