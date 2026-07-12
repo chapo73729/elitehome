@@ -63,7 +63,7 @@ export function SectionHeading({
       </Reveal>
       {intro && (
         <Reveal delay={0.16}>
-          <p className="mt-6 max-w-xl text-balance text-mist">{intro}</p>
+          <p className="text-lead mt-6 max-w-xl">{intro}</p>
         </Reveal>
       )}
     </div>

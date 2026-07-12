@@ -44,6 +44,24 @@
 :root {
   --header-h: 88px;
   color-scheme: dark;
+
+  /* ---------- Modular type scale ----------
+     One fluid system, ~perfect-fourth ratio, anchored at 1rem body. Every
+     text utility below is expressed on these steps so the hierarchy reads
+     as one instrument rather than a pile of ad-hoc sizes. */
+  --step-mono: clamp(0.68rem, 0.66rem + 0.1vw, 0.72rem); /* labels / HUD */
+  --step--1: clamp(0.82rem, 0.8rem + 0.12vw, 0.9rem); /* fine print */
+  --step-0: 1rem; /* body */
+  --step-lead: clamp(1.08rem, 0.98rem + 0.5vw, 1.3rem); /* section intros */
+  --step-1: clamp(1.2rem, 1.06rem + 0.7vw, 1.6rem); /* card titles */
+  --step-2: clamp(1.55rem, 1.2rem + 1.7vw, 2.2rem); /* sub-heads */
+  --step-title: clamp(2.1rem, 1.3rem + 4vw, 4.6rem); /* section titles */
+  --step-giant: clamp(2.5rem, 1.2rem + 6.4vw, 6.75rem); /* display */
+  --step-mega: clamp(2.7rem, -0.5rem + 13vw, 16.5rem); /* hero-scale */
+
+  /* vertical rhythm — a small spacing scale headings hang their intros on */
+  --rhythm-eyebrow: clamp(1.1rem, 0.9rem + 1vw, 1.75rem);
+  --rhythm-intro: clamp(1.25rem, 1rem + 1.2vw, 2rem);
 }
 
 * {
@@ -105,6 +123,9 @@ body {
   color: var(--color-chalk);
   font-family: var(--font-sans);
   overflow-x: hidden;
+  /* comfortable default reading rhythm; display utilities set their own
+     tight leading, and Tailwind leading-* utilities still override */
+  line-height: 1.6;
 }
 
 @media (hover: none), (pointer: coarse) {
@@ -171,7 +192,7 @@ html {
   font-weight: 700;
   line-height: 0.9;
   letter-spacing: -0.045em;
-  font-size: clamp(2.6rem, 12vw, 16rem);
+  font-size: var(--step-mega);
   overflow-wrap: break-word;
   text-wrap: balance;
   hyphens: none;
@@ -180,9 +201,9 @@ html {
 .text-giant {
   font-family: var(--font-display);
   font-weight: 600;
-  line-height: 0.98;
-  letter-spacing: -0.035em;
-  font-size: clamp(2.4rem, 7vw, 6.5rem);
+  line-height: 0.96;
+  letter-spacing: -0.038em;
+  font-size: var(--step-giant);
   /* no widows/orphans on display headlines — the award-tier typographic tell */
   text-wrap: balance;
   hyphens: none;
@@ -191,18 +212,28 @@ html {
 .text-section-title {
   font-family: var(--font-display);
   font-weight: 600;
-  line-height: 1.02;
-  letter-spacing: -0.03em;
-  font-size: clamp(2rem, 5vw, 4.5rem);
+  line-height: 1.01;
+  letter-spacing: -0.032em;
+  font-size: var(--step-title);
   text-wrap: balance;
   hyphens: none;
 }
 
+/* Lead paragraph — the one consistent treatment for section intros: sits a
+   step above body, looser leading, muted, widow-controlled. */
+.text-lead {
+  font-size: var(--step-lead);
+  line-height: 1.5;
+  letter-spacing: -0.006em;
+  color: var(--color-mist);
+  text-wrap: pretty;
+}
+
 .eyebrow {
   font-family: var(--font-mono);
-  font-size: 0.72rem;
+  font-size: var(--step-mono);
   font-weight: 500;
-  letter-spacing: 0.42em;
+  letter-spacing: 0.4em;
   text-transform: uppercase;
   color: var(--color-fog);
 }

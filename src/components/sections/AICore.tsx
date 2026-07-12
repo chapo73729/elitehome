@@ -119,9 +119,7 @@ export function AICore() {
                 </Reveal>
 
                 <Reveal delay={0.16}>
-                  <p className="mt-6 max-w-md text-balance text-mist">
-                    {c.intro}
-                  </p>
+                  <p className="text-lead mt-6 max-w-md">{c.intro}</p>
                 </Reveal>
 
                 {/* vertical numbered capability list */}
