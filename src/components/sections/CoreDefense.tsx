@@ -24,26 +24,30 @@ const RED = { r: 255, g: 80, b: 64 };
 const RED2 = { r: 255, g: 150, b: 60 };
 const MAG = { r: 255, g: 70, b: 150 };
 const BOSSC = { r: 255, g: 60, b: 100 };
+const SHOOT = { r: 255, g: 210, b: 70 };
 const REPAIR = { r: 70, g: 230, b: 150 };
 type RGB = { r: number; g: number; b: number };
 
-type Kind = "basic" | "fast" | "armor" | "split" | "boss";
+type Kind = "basic" | "fast" | "armor" | "split" | "shooter" | "boss";
 type Threat = {
   x: number; y: number; px: number; py: number; vx: number; vy: number;
-  r: number; hp: number; maxHp: number; kind: Kind; seed: number;
+  r: number; hp: number; maxHp: number; kind: Kind; seed: number; ft: number;
 };
 type Particle = { x: number; y: number; vx: number; vy: number; life: number; c: RGB };
 type Popup = { x: number; y: number; life: number; text: string; big: boolean };
 type Pickup = { x: number; vx: number; baseY: number };
 type Beam = { x1: number; y1: number; x2: number; y2: number; life: number };
+type Proj = { x: number; y: number; vx: number; vy: number };
 type Star = { x: number; y: number; z: number };
 
 type Phase = "idle" | "playing" | "upgrade" | "over";
 
 const PULSE_CD = 6;
 const OC_CD = 12;
+const PURGE_CD = 26;
 const COMBO_WINDOW = 2.2;
 const WAVE_TIME = 14;
+const MILESTONES: [number, string][] = [[5, "RAMPAGE"], [10, "OVERLOAD"], [18, "UNSTOPPABLE"], [30, "GODLIKE"]];
 
 export function CoreDefense() {
   const c = useContent().game;
@@ -54,7 +58,10 @@ export function CoreDefense() {
   const [phase, setPhase] = useState<Phase>("idle");
   const [result, setResult] = useState({ score: 0, wave: 1, rank: 0 });
   const [best, setBest] = useState(0);
+  const [bestWave, setBestWave] = useState(1);
   const [choices, setChoices] = useState<number[]>([]);
+  const [hard, setHard] = useState(false);
+  const hardRef = useRef(false);
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const scoreElRef = useRef<HTMLSpanElement>(null);
@@ -63,21 +70,28 @@ export function CoreDefense() {
   const barElRef = useRef<HTMLDivElement>(null);
   const pulseFillRef = useRef<HTMLSpanElement>(null);
   const ocFillRef = useRef<HTMLSpanElement>(null);
+  const purgeFillRef = useRef<HTMLSpanElement>(null);
   const phaseRef = useRef<Phase>("idle");
   const doPulseRef = useRef<() => void>(() => {});
   const doOcRef = useRef<() => void>(() => {});
+  const doPurgeRef = useRef<() => void>(() => {});
   const applyUpgradeRef = useRef<(i: number) => void>(() => {});
 
   useEffect(() => {
     try {
       const b = parseInt(localStorage.getItem("ardlabs-coredef-best") || "0", 10);
       if (!Number.isNaN(b)) setBest(b);
+      const w = parseInt(localStorage.getItem("ardlabs-coredef-wave") || "1", 10);
+      if (!Number.isNaN(w)) setBestWave(w);
     } catch {}
   }, []);
 
   useEffect(() => {
     phaseRef.current = phase;
   }, [phase]);
+  useEffect(() => {
+    hardRef.current = hard;
+  }, [hard]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -114,27 +128,31 @@ export function CoreDefense() {
     const popups: Popup[] = [];
     const pickups: Pickup[] = [];
     const beams: Beam[] = [];
+    const projs: Proj[] = [];
     let integrity = 100;
-    let score = 0, combo = 0, comboT = 0;
+    let score = 0, combo = 0, comboT = 0, comboTier = 0;
     let wave = 1, waveT = 0, waveDmg = false;
     let elapsed = 0, spawnAcc = 0, pickupAcc = 0, turretT = 0, bossMinT = 0;
-    let shake = 0, coreFlash = 0, slowT = 0;
-    let pulseCd = 0, ocCd = 0;
+    let shake = 0, coreFlash = 0, slowT = 0, flashT = 0;
+    let pulseCd = 0, ocCd = 0, purgeCd = 0;
     let shock: { r: number; life: number } | null = null;
     let countdown = 0;
     let banner = { t: 0, text: "" };
     let raf = 0, last = 0, onScreen = true;
+    let dmgMul = 1, spawnMul = 1, scoreMul = 1;
     const mouse = { x: -999, y: -999 };
     // upgradeable params
     const P = { maxInteg: 100, cdMul: 1, turretBase: 2.4, hitR: 34, pulseScale: 1 };
 
     const reset = () => {
-      threats.length = particles.length = popups.length = pickups.length = beams.length = 0;
-      integrity = 100; score = 0; combo = 0; comboT = 0; wave = 1; waveT = 0; waveDmg = false;
+      threats.length = particles.length = popups.length = pickups.length = beams.length = projs.length = 0;
+      integrity = 100; score = 0; combo = 0; comboT = 0; comboTier = 0; wave = 1; waveT = 0; waveDmg = false;
       elapsed = 0; spawnAcc = 0; pickupAcc = 0; turretT = 0; bossMinT = 0;
-      shake = 0; coreFlash = 0; slowT = 0; pulseCd = 0; ocCd = 0; shock = null;
+      shake = 0; coreFlash = 0; slowT = 0; flashT = 0; pulseCd = 0; ocCd = 0; purgeCd = 0; shock = null;
       countdown = 3.2; banner = { t: 0, text: "" };
       P.maxInteg = 100; P.cdMul = 1; P.turretBase = 2.4; P.hitR = 34; P.pulseScale = 1;
+      const h = hardRef.current;
+      dmgMul = h ? 1.5 : 1; spawnMul = h ? 1.35 : 1; scoreMul = h ? 1.5 : 1;
     };
 
     const setHud = () => {
@@ -145,11 +163,23 @@ export function CoreDefense() {
     };
     const mult = () => 1 + Math.floor(combo / 4);
     const addScore = (n: number, x: number, y: number, withCombo: boolean) => {
+      if (withCombo) {
+        combo++; comboT = COMBO_WINDOW;
+        // milestone shout + flash
+        for (let i = MILESTONES.length - 1; i >= 0; i--) {
+          if (combo === MILESTONES[i][0] && MILESTONES[i][0] > comboTier) {
+            comboTier = MILESTONES[i][0];
+            banner = { t: 1.3, text: MILESTONES[i][1] };
+            flashT = 0.5;
+            audio.success();
+            break;
+          }
+        }
+      }
       const m = withCombo ? mult() : 1;
-      const gain = n * m;
+      const gain = Math.round(n * m * scoreMul);
       score += gain;
       popups.push({ x, y, life: 1, text: `+${gain}${m > 1 ? ` ×${m}` : ""}`, big: m > 1 });
-      if (withCombo) { combo++; comboT = COMBO_WINDOW; }
     };
     const burst = (x: number, y: number, col: RGB, n: number, spread = 150) => {
       for (let i = 0; i < n; i++) {
@@ -158,13 +188,13 @@ export function CoreDefense() {
         particles.push({ x, y, vx: Math.cos(a) * s, vy: Math.sin(a) * s, life: 1, c: col });
       }
     };
-    const colOf = (k: Kind): RGB => (k === "fast" ? RED2 : k === "split" ? MAG : k === "boss" ? BOSSC : RED);
+    const colOf = (k: Kind): RGB => (k === "fast" ? RED2 : k === "split" ? MAG : k === "shooter" ? SHOOT : k === "boss" ? BOSSC : RED);
 
     const spawnThreat = (kind?: Kind) => {
       if (!kind) {
         const pool: Kind[] = ["basic"];
         if (wave >= 2) pool.push("fast");
-        if (wave >= 3) pool.push("armor");
+        if (wave >= 3) { pool.push("armor"); pool.push("shooter"); }
         if (wave >= 4) pool.push("split");
         kind = pool[(Math.random() * pool.length) | 0];
       }
@@ -175,13 +205,13 @@ export function CoreDefense() {
       const ang = Math.atan2(cy - y, cx - x) + (Math.random() - 0.5) * 0.22;
       const isBoss = kind === "boss";
       const base = isBoss ? 26 + wave * 1.5 : 42 + wave * 6 + Math.min(40, elapsed * 1.4);
-      const km = kind === "fast" ? 1.7 : kind === "armor" ? 0.72 : 1;
+      const km = kind === "fast" ? 1.7 : kind === "armor" ? 0.72 : kind === "shooter" ? 0.85 : 1;
       const sp = base * km * (isBoss ? 1 : 0.85 + Math.random() * 0.4);
-      const hp = isBoss ? 10 + wave * 2 : kind === "armor" ? 2 : 1;
+      const hp = isBoss ? 10 + wave * 2 : kind === "armor" ? 2 : kind === "shooter" ? 2 : 1;
       threats.push({
         x, y, px: x, py: y, vx: Math.cos(ang) * sp, vy: Math.sin(ang) * sp,
-        r: isBoss ? 30 : kind === "armor" ? 12 : kind === "fast" ? 6 : kind === "split" ? 10 : 8,
-        hp, maxHp: hp, kind, seed: Math.random() * 6.28,
+        r: isBoss ? 30 : kind === "armor" ? 12 : kind === "fast" ? 6 : kind === "split" ? 10 : kind === "shooter" ? 9 : 8,
+        hp, maxHp: hp, kind, seed: Math.random() * 6.28, ft: 1.4,
       });
     };
     const bossAlive = () => threats.some((t) => t.kind === "boss");
@@ -205,7 +235,7 @@ export function CoreDefense() {
       if (t.kind === "split") {
         for (let s = 0; s < 2; s++) {
           const a = Math.atan2(cy - t.y, cx - t.x) + (s === 0 ? -0.6 : 0.6);
-          threats.push({ x: t.x, y: t.y, px: t.x, py: t.y, vx: Math.cos(a) * 120, vy: Math.sin(a) * 120, r: 6, hp: 1, maxHp: 1, kind: "fast", seed: Math.random() * 6.28 });
+          threats.push({ x: t.x, y: t.y, px: t.x, py: t.y, vx: Math.cos(a) * 120, vy: Math.sin(a) * 120, r: 6, hp: 1, maxHp: 1, kind: "fast", seed: Math.random() * 6.28, ft: 1.4 });
         }
       }
       threats.splice(i, 1);
@@ -222,6 +252,18 @@ export function CoreDefense() {
           popups.push({ x: p.x, y: p.baseY, life: 1, text: "+REPAIR", big: true });
           pickups.splice(i, 1);
           audio.success();
+          setHud();
+          return;
+        }
+      }
+      // shooter projectiles are clickable to shoot down
+      for (let i = projs.length - 1; i >= 0; i--) {
+        const q = projs[i];
+        if ((q.x - px) ** 2 + (q.y - py) ** 2 < 22 * 22) {
+          burst(q.x, q.y, SHOOT, 6, 60);
+          addScore(5, q.x, q.y, true);
+          projs.splice(i, 1);
+          audio.click();
           setHud();
           return;
         }
@@ -263,8 +305,23 @@ export function CoreDefense() {
       banner = { t: 1.1, text: c.overclock.toUpperCase() };
       audio.arrival();
     };
+    const doPurge = () => {
+      if (phaseRef.current !== "playing" || countdown > 0 || purgeCd > 0) return;
+      // vaporise everything on screen (bosses take heavy damage instead)
+      for (let i = threats.length - 1; i >= 0; i--) {
+        if (threats[i].kind === "boss") { threats[i].hp -= 6; if (threats[i].hp <= 0) killThreat(i, true); }
+        else { burst(threats[i].x, threats[i].y, A, 6, 80); threats.splice(i, 1); score += Math.round(8 * scoreMul); }
+      }
+      projs.length = 0;
+      purgeCd = PURGE_CD * P.cdMul;
+      flashT = 0.7; shake = 12;
+      banner = { t: 1.2, text: c.purge.toUpperCase() };
+      audio.whoosh();
+      setHud();
+    };
     doPulseRef.current = doPulse;
     doOcRef.current = doOc;
+    doPurgeRef.current = doPurge;
 
     applyUpgradeRef.current = (idx: number) => {
       if (idx === 0) { P.maxInteg += 25; integrity = P.maxInteg; }
@@ -301,6 +358,11 @@ export function CoreDefense() {
         const nb = Math.max(prev, score);
         try { localStorage.setItem("ardlabs-coredef-best", String(nb)); } catch {}
         return nb;
+      });
+      setBestWave((prev) => {
+        const nw = Math.max(prev, wave);
+        try { localStorage.setItem("ardlabs-coredef-wave", String(nw)); } catch {}
+        return nw;
       });
       setPhase("over");
     };
@@ -339,7 +401,7 @@ export function CoreDefense() {
 
       const boss = bossAlive();
       spawnAcc += dt;
-      const rate = Math.max(0.32, 0.95 - wave * 0.055 - elapsed * 0.005) * (boss ? 1.8 : 1);
+      const rate = (Math.max(0.32, 0.95 - wave * 0.055 - elapsed * 0.005) * (boss ? 1.8 : 1)) / spawnMul;
       while (spawnAcc >= rate) { spawnAcc -= rate; spawnThreat(); if (!boss && wave >= 3 && Math.random() < 0.25) spawnThreat(); }
       if (boss) { bossMinT += dt; if (bossMinT > 2.4) { bossMinT = 0; spawnThreat("fast"); } }
 
@@ -353,7 +415,9 @@ export function CoreDefense() {
       // cooldowns
       if (pulseCd > 0) { pulseCd = Math.max(0, pulseCd - dt); if (pulseFillRef.current) pulseFillRef.current.style.height = `${(1 - pulseCd / (PULSE_CD * P.cdMul)) * 100}%`; }
       if (ocCd > 0) { ocCd = Math.max(0, ocCd - dt); if (ocFillRef.current) ocFillRef.current.style.height = `${(1 - ocCd / (OC_CD * P.cdMul)) * 100}%`; }
+      if (purgeCd > 0) { purgeCd = Math.max(0, purgeCd - dt); if (purgeFillRef.current) purgeFillRef.current.style.height = `${(1 - purgeCd / (PURGE_CD * P.cdMul)) * 100}%`; }
       if (slowT > 0) slowT -= dt;
+      if (flashT > 0) flashT -= dt;
 
       // auto-turret
       turretT += dt;
@@ -390,15 +454,51 @@ export function CoreDefense() {
       for (let i = threats.length - 1; i >= 0; i--) {
         const t = threats[i];
         t.px = t.x; t.py = t.y;
+        // shooters hover at standoff range and fire glowing projectiles at the core
+        if (t.kind === "shooter") {
+          const dxc = cx - t.x, dyc = cy - t.y;
+          const dist = Math.hypot(dxc, dyc) || 1;
+          const STAND = 190;
+          if (dist > STAND + 8) { t.x += (dxc / dist) * 120 * dt * tm; t.y += (dyc / dist) * 120 * dt * tm; }
+          else {
+            // strafe around the core while in range
+            const px = -dyc / dist, py = dxc / dist;
+            t.x += px * 55 * dt * tm; t.y += py * 55 * dt * tm;
+            t.ft -= dt * tm;
+            if (t.ft <= 0) {
+              t.ft = 1.6;
+              const ps = 180;
+              projs.push({ x: t.x, y: t.y, vx: (dxc / dist) * ps, vy: (dyc / dist) * ps });
+              audio.hover();
+            }
+          }
+          continue;
+        }
         t.x += t.vx * dt * tm; t.y += t.vy * dt * tm;
         if ((t.x - cx) ** 2 + (t.y - cy) ** 2 < (coreR + t.r) ** 2) {
-          const dmg = t.kind === "boss" ? 45 : t.kind === "armor" ? 16 : 11;
+          const raw = t.kind === "boss" ? 45 : t.kind === "armor" ? 16 : 11;
+          const dmg = raw * dmgMul;
           threats.splice(i, 1);
           integrity -= dmg; combo = 0; comboT = 0; shake = t.kind === "boss" ? 20 : 13; coreFlash = 1; waveDmg = true;
           burst(t.x, t.y, RED, 12);
           audio.whoosh();
           setHud();
           if (integrity <= 0) { endGame(); return; }
+        }
+      }
+      // shooter projectiles travel to the core and chip integrity
+      for (let i = projs.length - 1; i >= 0; i--) {
+        const q = projs[i];
+        q.x += q.vx * dt * tm; q.y += q.vy * dt * tm;
+        if ((q.x - cx) ** 2 + (q.y - cy) ** 2 < (coreR + 6) ** 2) {
+          projs.splice(i, 1);
+          integrity -= 6 * dmgMul; combo = 0; comboT = 0; shake = Math.max(shake, 8); coreFlash = 0.8; waveDmg = true;
+          burst(cx, cy, SHOOT, 8, 80);
+          audio.whoosh();
+          setHud();
+          if (integrity <= 0) { endGame(); return; }
+        } else if (q.x < -30 || q.x > W + 30 || q.y < -30 || q.y > H + 30) {
+          projs.splice(i, 1);
         }
       }
       for (let i = pickups.length - 1; i >= 0; i--) { pickups[i].x += pickups[i].vx * dt; if (pickups[i].x < -40 || pickups[i].x > W + 40) pickups.splice(i, 1); }
@@ -502,6 +602,13 @@ export function CoreDefense() {
         ctx.beginPath(); ctx.arc(t.x, t.y, t.r, 0, 6.2832); ctx.fill();
         if (t.kind === "armor" && t.hp > 1) { ctx.strokeStyle = "rgba(255,255,255,0.7)"; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(t.x, t.y, t.r + 4, 0, 6.2832); ctx.stroke(); }
         if (t.kind === "split") { ctx.strokeStyle = "rgba(255,255,255,0.6)"; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.moveTo(t.x - 4, t.y); ctx.lineTo(t.x + 4, t.y); ctx.moveTo(t.x, t.y - 4); ctx.lineTo(t.x, t.y + 4); ctx.stroke(); }
+        if (t.kind === "shooter") {
+          // diamond turret ring — reads as a ranged attacker
+          ctx.save(); ctx.translate(t.x, t.y); ctx.rotate(elapsed * 1.4 + t.seed);
+          ctx.strokeStyle = "rgba(255,255,255,0.75)"; ctx.lineWidth = 1.5;
+          ctx.beginPath(); ctx.moveTo(0, -t.r - 4); ctx.lineTo(t.r + 4, 0); ctx.lineTo(0, t.r + 4); ctx.lineTo(-t.r - 4, 0); ctx.closePath(); ctx.stroke();
+          ctx.restore();
+        }
         if (t.kind === "boss") {
           // hp bar above the boss
           const bw = 60, hp = Math.max(0, t.hp) / t.maxHp;
@@ -510,6 +617,16 @@ export function CoreDefense() {
           ctx.strokeStyle = "rgba(255,255,255,0.5)"; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.arc(t.x, t.y, t.r + 5, 0, 6.2832); ctx.stroke();
         }
       }
+
+      // shooter projectiles — glowing tracers aimed at the core
+      ctx.globalCompositeOperation = "lighter";
+      for (const q of projs) {
+        const pg = ctx.createRadialGradient(q.x, q.y, 0, q.x, q.y, 12);
+        pg.addColorStop(0, `rgba(${SHOOT.r},${SHOOT.g},${SHOOT.b},0.9)`); pg.addColorStop(1, `rgba(${SHOOT.r},${SHOOT.g},${SHOOT.b},0)`);
+        ctx.fillStyle = pg; ctx.beginPath(); ctx.arc(q.x, q.y, 12, 0, 6.2832); ctx.fill();
+        ctx.fillStyle = "rgba(255,255,255,0.95)"; ctx.beginPath(); ctx.arc(q.x, q.y, 2.6, 0, 6.2832); ctx.fill();
+      }
+      ctx.globalCompositeOperation = "source-over";
 
       // particles
       ctx.globalCompositeOperation = "lighter";
@@ -545,6 +662,12 @@ export function CoreDefense() {
         ctx.fillStyle = vg; ctx.fillRect(-sx, -sy, W, H);
       }
 
+      // full-screen accent flash — milestone shout / purge detonation
+      if (flashT > 0) {
+        ctx.fillStyle = `rgba(${A.r},${A.g},${A.b},${Math.min(0.4, flashT * 0.45)})`;
+        ctx.fillRect(-sx, -sy, W, H);
+      }
+
       // countdown / banner
       if (countdown > 0) {
         ctx.textAlign = "center"; ctx.fillStyle = `rgba(${A.r},${A.g},${A.b},0.9)`;
@@ -567,7 +690,7 @@ export function CoreDefense() {
       draw();
     };
 
-    (canvas as unknown as { __reset?: () => void }).__reset = () => { reset(); setHud(); if (pulseFillRef.current) pulseFillRef.current.style.height = "0%"; if (ocFillRef.current) ocFillRef.current.style.height = "0%"; };
+    (canvas as unknown as { __reset?: () => void }).__reset = () => { reset(); setHud(); if (pulseFillRef.current) pulseFillRef.current.style.height = "0%"; if (ocFillRef.current) ocFillRef.current.style.height = "0%"; if (purgeFillRef.current) purgeFillRef.current.style.height = "0%"; };
 
     last = performance.now();
     raf = requestAnimationFrame(loop);
@@ -576,6 +699,7 @@ export function CoreDefense() {
       if (phaseRef.current !== "playing") return;
       if (e.code === "Space" || e.code === "Digit1") { e.preventDefault(); doPulse(); }
       else if (e.code === "Digit2") { e.preventDefault(); doOc(); }
+      else if (e.code === "Digit3") { e.preventDefault(); doPurge(); }
     };
     window.addEventListener("keydown", onKey);
 
@@ -624,7 +748,35 @@ export function CoreDefense() {
               </div>
               <AbilityBtn label={c.pulse} k="1 / Space" fillRef={pulseFillRef} onClick={() => doPulseRef.current()} disabled={phase !== "playing"} />
               <AbilityBtn label={c.overclock} k="2" fillRef={ocFillRef} onClick={() => doOcRef.current()} disabled={phase !== "playing"} />
-              <Stat label={c.best}><span className="text-mist">{best}</span></Stat>
+              <AbilityBtn label={c.purge} k="3" fillRef={purgeFillRef} onClick={() => doPurgeRef.current()} disabled={phase !== "playing"} />
+              <div className="col-span-3 flex items-end justify-between gap-4">
+                <div className="flex items-baseline gap-6">
+                  <Stat label={c.best}><span className="text-mist">{best}</span></Stat>
+                  <Stat label={c.bestWaveLabel}><span className="text-mist">{bestWave}</span></Stat>
+                </div>
+                {/* difficulty toggle — disabled once a run is live */}
+                <div className="flex flex-col items-end gap-1.5">
+                  <div className="inline-flex overflow-hidden rounded-full border border-white/12" role="group" aria-label={c.diffLabel}>
+                    <button
+                      onClick={() => phase !== "playing" && setHard(false)}
+                      disabled={phase === "playing"}
+                      aria-pressed={!hard}
+                      className={`px-3 py-1 font-mono text-[0.55rem] uppercase tracking-[0.16em] transition-colors ${!hard ? "bg-accent/20 text-accent" : "text-fog hover:text-mist"} disabled:opacity-50`}
+                    >
+                      {c.diffNormal}
+                    </button>
+                    <button
+                      onClick={() => phase !== "playing" && setHard(true)}
+                      disabled={phase === "playing"}
+                      aria-pressed={hard}
+                      className={`px-3 py-1 font-mono text-[0.55rem] uppercase tracking-[0.16em] transition-colors ${hard ? "bg-[#ff5040]/20 text-[#ff5040]" : "text-fog hover:text-mist"} disabled:opacity-50`}
+                    >
+                      {c.diffHard}
+                    </button>
+                  </div>
+                  <p className="font-mono text-[0.5rem] uppercase tracking-[0.16em] text-fog/70">{c.diffLabel}</p>
+                </div>
+              </div>
             </div>
           </Reveal>
         </div>
